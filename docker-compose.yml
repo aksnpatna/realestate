@@ -1,0 +1,47 @@
+services:
+  realestate:
+    build: .
+    container_name: realestate-engine
+    ports:
+      - "8082:80"
+    restart: unless-stopped
+    tmpfs:
+      - /var/cache/nginx
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: realestate-backend
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://realestate_user:realestate_pass@db:5432/realestate
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    container_name: realestate-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: realestate_user
+      POSTGRES_PASSWORD: realestate_pass
+      POSTGRES_DB: realestate
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U realestate_user -d realestate"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

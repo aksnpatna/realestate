@@ -1,0 +1,38 @@
+[
+  {
+    "id": "belconnen-act-2617",
+    "name": "Belconnen",
+    "postcode": "2617",
+    "state": "ACT",
+    "coordinates": [
+      -35.2375,
+      149.067
+    ],
+    "pois": [],
+    "schools": []
+  },
+  {
+    "id": "queanbeyan-nsw-2620",
+    "name": "Queanbeyan",
+    "postcode": "2620",
+    "state": "NSW",
+    "coordinates": [
+      -35.3535,
+      149.2348
+    ],
+    "pois": [],
+    "schools": []
+  },
+  {
+    "id": "melton-vic-3337",
+    "name": "Melton",
+    "postcode": "3337",
+    "state": "VIC",
+    "coordinates": [
+      -37.6833,
+      144.5833
+    ],
+    "pois": [],
+    "schools": []
+  }
+]

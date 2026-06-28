@@ -1,0 +1,544 @@
+{
+  "suburbs": [
+    {
+      "name": "Point Cook",
+      "postcode": "3030",
+      "lga": "Wyndham",
+      "center_gps": { "lat": -37.909, "lng": 144.752 },
+      "cbd_distance_km": 22,
+      "cbd_drive_min_offpeak": 25,
+      "cbd_drive_min_peak": 40,
+      "cbd_train_min": 30,
+      "median_house_price": 836500,
+      "median_house_price_12m_growth_pct": 7.5,
+      "median_house_rent_weekly": 575,
+      "median_unit_price": 610000,
+      "median_unit_rent_weekly": 530,
+      "population_2021": 66781,
+      "train_station": {
+        "name": "Williams Landing",
+        "gps": { "lat": -37.87004, "lng": 144.74696 },
+        "line": "Werribee",
+        "distance_from_center_km": 4.5
+      },
+      "shopping_centre": {
+        "name": "Point Cook Town Centre",
+        "gps": { "lat": -37.896, "lng": 144.749 },
+        "description": "150 stores, Coles, Woolworths, Target"
+      },
+      "schools": [
+        { "name": "Alamanda K-9 College", "type": "Government", "levels": "Prep-9" },
+        { "name": "Carranballac College", "type": "Government", "levels": "Prep-9" },
+        { "name": "Emmanuel College", "type": "Catholic", "levels": "Prep-12" }
+      ],
+      "highlights": [
+        "Part of Wyndham growth corridor, population grew 33.8% 2016–2021",
+        "RAAF Base Point Cook and RAAF Museum",
+        "Sneydes Road full diamond interchange completed on Princes Freeway",
+        "East Werribee Employment Precinct planned nearby",
+        "100+ parks covering 27.7% of suburb area",
+        "Sanctuary Lakes Shopping Centre as secondary retail"
+      ]
+    },
+    {
+      "name": "Berwick",
+      "postcode": "3806",
+      "lga": "Casey",
+      "center_gps": { "lat": -38.0397, "lng": 145.3450 },
+      "cbd_distance_km": 44,
+      "cbd_drive_min_offpeak": 45,
+      "cbd_drive_min_peak": 65,
+      "cbd_train_min": 55,
+      "median_house_price": 910000,
+      "median_house_price_12m_growth_pct": 4.6,
+      "median_house_rent_weekly": 620,
+      "median_unit_price": 702500,
+      "median_unit_rent_weekly": 560,
+      "population_2021": 50298,
+      "train_station": {
+        "name": "Berwick",
+        "gps": { "lat": -38.0397, "lng": 145.3450 },
+        "line": "Pakenham",
+        "distance_from_center_km": 0.1
+      },
+      "shopping_centre": {
+        "name": "Eden Rise Shopping Centre",
+        "gps": { "lat": -38.051, "lng": 145.351 },
+        "description": "Coles, specialty stores; secondary: Berwick Village, Westfield Fountain Gate 10 min"
+      },
+      "schools": [
+        { "name": "Nossal High School", "type": "Government Selective", "levels": "9-12" },
+        { "name": "Berwick Secondary College", "type": "Government", "levels": "7-12" },
+        { "name": "Haileybury College (Berwick Campus)", "type": "Independent", "levels": "Prep-12" }
+      ],
+      "highlights": [
+        "Established suburb with tree-lined streets and heritage buildings",
+        "Home to Nossal High School (selective entry, consistently top VCE results)",
+        "Wilson Botanic Park and Akoonah Park",
+        "Clyde Road level crossing removed February 2022",
+        "Federation University Berwick Campus",
+        "Casey Hospital and St John of God Hospital"
+      ]
+    },
+    {
+      "name": "Cranbourne",
+      "postcode": "3977",
+      "lga": "Casey",
+      "center_gps": { "lat": -38.1000, "lng": 145.2811 },
+      "cbd_distance_km": 43,
+      "cbd_drive_min_offpeak": 42,
+      "cbd_drive_min_peak": 60,
+      "cbd_train_min": 58,
+      "median_house_price": 720000,
+      "median_house_price_12m_growth_pct": 9.1,
+      "median_house_rent_weekly": 550,
+      "median_unit_price": 530000,
+      "median_unit_rent_weekly": 480,
+      "population_2021": 21281,
+      "train_station": {
+        "name": "Cranbourne",
+        "gps": { "lat": -38.09973, "lng": 145.28073 },
+        "line": "Cranbourne",
+        "distance_from_center_km": 0.1
+      },
+      "shopping_centre": {
+        "name": "Cranbourne Park Shopping Centre",
+        "gps": { "lat": -38.081, "lng": 145.286 },
+        "description": "Major regional centre with Kmart, Coles, Woolworths, 100+ stores"
+      },
+      "schools": [
+        { "name": "Cranbourne Secondary College", "type": "Government", "levels": "7-12" },
+        { "name": "St Peter's College (Cranbourne Campus)", "type": "Catholic", "levels": "7-12" },
+        { "name": "Cranbourne Carlisle Primary School", "type": "Government", "levels": "Prep-6" }
+      ],
+      "highlights": [
+        "Royal Botanic Gardens Victoria – Cranbourne Gardens (world-class attraction)",
+        "Cranbourne Racecourse and recreation reserve",
+        "Cranbourne line terminus with frequent Metro services",
+        "Casey Fields regional sporting complex nearby",
+        "Affordable entry point in Casey growth corridor",
+        "Blend of established streets and new housing estates"
+      ]
+    },
+    {
+      "name": "Cranbourne East",
+      "postcode": "3977",
+      "lga": "Casey",
+      "center_gps": { "lat": -38.115, "lng": 145.300 },
+      "cbd_distance_km": 45,
+      "cbd_drive_min_offpeak": 45,
+      "cbd_drive_min_peak": 60,
+      "cbd_train_min": 62,
+      "median_house_price": 700000,
+      "median_house_price_12m_growth_pct": 7.0,
+      "median_house_rent_weekly": 530,
+      "median_unit_price": 550000,
+      "median_unit_rent_weekly": 480,
+      "population_2021": 16197,
+      "train_station": {
+        "name": "Cranbourne",
+        "gps": { "lat": -38.09973, "lng": 145.28073 },
+        "line": "Cranbourne",
+        "distance_from_center_km": 2.5
+      },
+      "shopping_centre": {
+        "name": "Hunt Club Village / Casey Central",
+        "gps": { "lat": -38.094, "lng": 145.305 },
+        "description": "Woolworths, specialty shops; near Casey Fields"
+      },
+      "schools": [
+        { "name": "Cranbourne East Primary School", "type": "Government", "levels": "Prep-6" },
+        { "name": "Cranbourne East Secondary College", "type": "Government", "levels": "7-12" },
+        { "name": "Casey Grammar School", "type": "Independent", "levels": "Prep-12" }
+      ],
+      "highlights": [
+        "Fast-growing family suburb with new estates",
+        "Casey Fields – major regional sports precinct with AFL, cricket, athletics",
+        "Marnebek School (specialist education facility)",
+        "Cranbourne East railway station proposed (future extension of Cranbourne line)",
+        "Master-planned communities with modern housing stock"
+      ]
+    },
+    {
+      "name": "Clyde North",
+      "postcode": "3978",
+      "lga": "Casey",
+      "center_gps": { "lat": -38.10, "lng": 145.36 },
+      "cbd_distance_km": 47,
+      "cbd_drive_min_offpeak": 48,
+      "cbd_drive_min_peak": 70,
+      "cbd_train_min": 70,
+      "median_house_price": 749000,
+      "median_house_price_12m_growth_pct": 3.3,
+      "median_house_rent_weekly": 600,
+      "median_unit_price": 600000,
+      "median_unit_rent_weekly": 550,
+      "population_2021": 31681,
+      "train_station": {
+        "name": "Cranbourne (via bus)",
+        "gps": { "lat": -38.09973, "lng": 145.28073 },
+        "line": "Cranbourne",
+        "distance_from_center_km": 8
+      },
+      "shopping_centre": {
+        "name": "Selandra Rise Town Centre",
+        "gps": { "lat": -38.108, "lng": 145.355 },
+        "description": "Woolworths, medical centre, cafes; new local hub"
+      },
+      "schools": [
+        { "name": "Hillcrest Christian College", "type": "Independent", "levels": "Prep-12" },
+        { "name": "Rivercrest Christian College", "type": "Independent", "levels": "Prep-12" },
+        { "name": "Clyde Grammar", "type": "Independent", "levels": "Prep-6" }
+      ],
+      "highlights": [
+        "Melbourne's fastest-growing suburb – population grew 288% 2016–2021",
+        "Predominantly new estates with house-and-land packages",
+        "Selandra Rise and Cascades on Clyde major estates",
+        "Strong Indian and Sri Lankan community",
+        "Clyde railway station planned as part of future rail extension",
+        "Affordable entry for first-home buyers"
+      ]
+    },
+    {
+      "name": "Tarneit",
+      "postcode": "3029",
+      "lga": "Wyndham",
+      "center_gps": { "lat": -37.847, "lng": 144.688 },
+      "cbd_distance_km": 26,
+      "cbd_drive_min_offpeak": 35,
+      "cbd_drive_min_peak": 50,
+      "cbd_train_min": 38,
+      "median_house_price": 670000,
+      "median_house_price_12m_growth_pct": 3.1,
+      "median_house_rent_weekly": 530,
+      "median_unit_price": 485000,
+      "median_unit_rent_weekly": 465,
+      "population_2021": 56370,
+      "train_station": {
+        "name": "Tarneit",
+        "gps": { "lat": -37.8321, "lng": 144.6954 },
+        "line": "Geelong (V/Line)",
+        "distance_from_center_km": 2.0
+      },
+      "shopping_centre": {
+        "name": "Tarneit Central Shopping Centre",
+        "gps": { "lat": -37.837, "lng": 144.675 },
+        "description": "Coles, Kmart, Aldi, 40+ specialty stores"
+      },
+      "schools": [
+        { "name": "Tarneit P-9 College", "type": "Government", "levels": "Prep-9" },
+        { "name": "Baden Powell P-9 College", "type": "Government", "levels": "Prep-9" },
+        { "name": "Thomas Carr College", "type": "Catholic", "levels": "7-12" }
+      ],
+      "highlights": [
+        "One of Australia's fastest-growing postcodes – population grew 63% 2016–2021",
+        "West Tarneit Station opening 2026 (new V/Line station near Leakes/Davis roads)",
+        "Tarneit Stadium and sporting precinct planned",
+        "Harpley and Habitat master-planned estates",
+        "Riverdale Shopping Centre secondary retail",
+        "Part of Western growth corridor with strong multicultural community"
+      ]
+    },
+    {
+      "name": "Truganina",
+      "postcode": "3029",
+      "lga": "Melton",
+      "center_gps": { "lat": -37.81, "lng": 144.72 },
+      "cbd_distance_km": 21,
+      "cbd_drive_min_offpeak": 25,
+      "cbd_drive_min_peak": 40,
+      "cbd_train_min": 35,
+      "median_house_price": 671000,
+      "median_house_price_12m_growth_pct": 2.4,
+      "median_house_rent_weekly": 530,
+      "median_unit_price": 530000,
+      "median_unit_rent_weekly": 480,
+      "population_2021": 36305,
+      "train_station": {
+        "name": "Williams Landing / Tarneit",
+        "gps": { "lat": -37.87004, "lng": 144.74696 },
+        "line": "Werribee / V/Line",
+        "distance_from_center_km": 5
+      },
+      "shopping_centre": {
+        "name": "Tarneit Central Shopping Centre",
+        "gps": { "lat": -37.837, "lng": 144.675 },
+        "description": "Nearest major centre with Coles, Kmart, Aldi"
+      },
+      "schools": [
+        { "name": "Truganina P-9 College", "type": "Government", "levels": "Prep-9" },
+        { "name": "Westbourne Grammar School", "type": "Independent", "levels": "Prep-12" },
+        { "name": "Al-Taqwa College", "type": "Independent", "levels": "Prep-12" }
+      ],
+      "highlights": [
+        "Adjacent to major industrial/logistics parks – strong local employment",
+        "Population grew 75% 2016–2021 – rapid transformation from farmland",
+        "Westbourne Grammar School – prestigious independent school in area",
+        "Close to Western Ring Road and Princes Freeway access",
+        "Part of Western growth corridor; strong multicultural community",
+        "Truganina railway station proposed (future line planning)"
+      ]
+    },
+    {
+      "name": "Tarneit West",
+      "postcode": "3029",
+      "lga": "Wyndham",
+      "center_gps": { "lat": -37.850, "lng": 144.660 },
+      "cbd_distance_km": 28,
+      "cbd_drive_min_offpeak": 38,
+      "cbd_drive_min_peak": 55,
+      "cbd_train_min": 42,
+      "median_house_price": 650000,
+      "median_house_price_12m_growth_pct": 2.5,
+      "median_house_rent_weekly": 500,
+      "median_unit_price": 470000,
+      "median_unit_rent_weekly": 450,
+      "population_2021": 12000,
+      "train_station": {
+        "name": "West Tarneit (opening 2026)",
+        "gps": { "lat": -37.840, "lng": 144.645 },
+        "line": "Geelong (V/Line)",
+        "distance_from_center_km": 1.5
+      },
+      "shopping_centre": {
+        "name": "Tarneit West Town Centre (proposed)",
+        "gps": { "lat": -37.848, "lng": 144.655 },
+        "description": "Planned town centre; currently served by nearby Tarneit Central"
+      },
+      "schools": [
+        { "name": "Davis Creek Primary School", "type": "Government", "levels": "Prep-6" },
+        { "name": "Wimba Primary School", "type": "Government", "levels": "Prep-6" },
+        { "name": "Nearnung Primary School", "type": "Government", "levels": "Prep-6" }
+      ],
+      "highlights": [
+        "New West Tarneit Station opening 2026 – major infrastructure catalyst",
+        "Emerging suburb within Tarneit growth corridor",
+        "New housing estates with house-and-land packages",
+        "Planned town centre and community facilities",
+        "Significant future growth potential with rail investment",
+        "Affordable western corridor entry point"
+      ]
+    },
+    {
+      "name": "Wyndham Vale",
+      "postcode": "3024",
+      "lga": "Wyndham",
+      "center_gps": { "lat": -37.86, "lng": 144.60 },
+      "cbd_distance_km": 32,
+      "cbd_drive_min_offpeak": 35,
+      "cbd_drive_min_peak": 55,
+      "cbd_train_min": 42,
+      "median_house_price": 610000,
+      "median_house_price_12m_growth_pct": 5.2,
+      "median_house_rent_weekly": 450,
+      "median_unit_price": 500000,
+      "median_unit_rent_weekly": 428,
+      "population_2021": 20518,
+      "train_station": {
+        "name": "Wyndham Vale",
+        "gps": { "lat": -37.872131, "lng": 144.608800 },
+        "line": "Geelong (V/Line)",
+        "distance_from_center_km": 1.5
+      },
+      "shopping_centre": {
+        "name": "Manor Lakes Central Shopping Centre",
+        "gps": { "lat": -37.873, "lng": 144.588 },
+        "description": "Woolworths, specialty shops, medical centre"
+      },
+      "schools": [
+        { "name": "Manor Lakes P-12 College", "type": "Government", "levels": "Prep-12" },
+        { "name": "Wyndham Vale Primary School", "type": "Government", "levels": "Prep-6" },
+        { "name": "Our Lady of the Southern Cross Catholic Primary School", "type": "Catholic", "levels": "Prep-6" }
+      ],
+      "highlights": [
+        "V/Line rail access direct to Southern Cross – strong commuter appeal",
+        "Planned transition to Metro rail under Western Rail Plan",
+        "Jubilee Estate and Manor Lakes master-planned communities",
+        "Wyndham Vale stabling yard and future service frequency upgrades",
+        "Affordable entry in western Melbourne growth corridor",
+        "Manor Lakes P-12 College – major local education hub"
+      ]
+    },
+    {
+      "name": "Pakenham",
+      "postcode": "3810",
+      "lga": "Cardinia",
+      "center_gps": { "lat": -38.0803, "lng": 145.4859 },
+      "cbd_distance_km": 56,
+      "cbd_drive_min_offpeak": 50,
+      "cbd_drive_min_peak": 70,
+      "cbd_train_min": 65,
+      "median_house_price": 715000,
+      "median_house_price_12m_growth_pct": 8.3,
+      "median_house_rent_weekly": 560,
+      "median_unit_price": 535000,
+      "median_unit_rent_weekly": 500,
+      "population_2021": 54118,
+      "train_station": {
+        "name": "Pakenham",
+        "gps": { "lat": -38.0803, "lng": 145.4859 },
+        "line": "Pakenham / Gippsland (V/Line)",
+        "distance_from_center_km": 0.1
+      },
+      "shopping_centre": {
+        "name": "Pakenham Place / Pakenham Central Marketplace",
+        "gps": { "lat": -38.075, "lng": 145.485 },
+        "description": "Woolworths, Coles, Target, Big W, 100+ stores"
+      },
+      "schools": [
+        { "name": "Beaconhills College (Pakenham Campus)", "type": "Independent", "levels": "Prep-12" },
+        { "name": "Pakenham Secondary College", "type": "Government", "levels": "7-12" },
+        { "name": "Pakenham Springs Primary School", "type": "Government", "levels": "Prep-6" }
+      ],
+      "highlights": [
+        "Gateway between suburban Melbourne and Gippsland region",
+        "New elevated station rebuilt 2024 as part of Level Crossing Removal Project",
+        "East Pakenham station opened 2024 – Metro line extension",
+        "Pakenham East train maintenance facility (HCMT depot)",
+        "Cardinia Life aquatic and recreation centre",
+        "Lakeside and Cardinia Lakes estates – master-planned communities"
+      ]
+    },
+    {
+      "name": "Officer",
+      "postcode": "3809",
+      "lga": "Cardinia",
+      "center_gps": { "lat": -38.05, "lng": 145.41 },
+      "cbd_distance_km": 47,
+      "cbd_drive_min_offpeak": 45,
+      "cbd_drive_min_peak": 65,
+      "cbd_train_min": 60,
+      "median_house_price": 750000,
+      "median_house_price_12m_growth_pct": 5.3,
+      "median_house_rent_weekly": 556,
+      "median_unit_price": 529000,
+      "median_unit_rent_weekly": 480,
+      "population_2021": 18503,
+      "train_station": {
+        "name": "Officer",
+        "gps": { "lat": -38.0590, "lng": 145.4100 },
+        "line": "Pakenham",
+        "distance_from_center_km": 1.0
+      },
+      "shopping_centre": {
+        "name": "Arena Shopping Centre",
+        "gps": { "lat": -38.058, "lng": 145.406 },
+        "description": "Woolworths, specialty shops, cafes"
+      },
+      "schools": [
+        { "name": "Officer Primary School", "type": "Government", "levels": "Prep-6" },
+        { "name": "St Margaret's School – Berwick Grammar Campus", "type": "Independent", "levels": "Prep-12" },
+        { "name": "Officer Secondary College", "type": "Government", "levels": "7-12" }
+      ],
+      "highlights": [
+        "Rail-connected growth suburb with genuine train connectivity",
+        "Population surged from small rural town to 18,500 in 2021",
+        "Officer Town Centre developing as new retail/community hub",
+        "Timbertop and Grandvue master-planned estates",
+        "Between Berwick and Pakenham – access to both town centres",
+        "St Margaret's Berwick Grammar located in Officer"
+      ]
+    },
+    {
+      "name": "Mernda",
+      "postcode": "3754",
+      "lga": "Whittlesea",
+      "center_gps": { "lat": -37.59944, "lng": 145.10139 },
+      "cbd_distance_km": 30,
+      "cbd_drive_min_offpeak": 35,
+      "cbd_drive_min_peak": 55,
+      "cbd_train_min": 50,
+      "median_house_price": 750000,
+      "median_house_price_12m_growth_pct": 4.0,
+      "median_house_rent_weekly": 506,
+      "median_unit_price": 560000,
+      "median_unit_rent_weekly": 480,
+      "population_2021": 23369,
+      "train_station": {
+        "name": "Mernda",
+        "gps": { "lat": -37.59944, "lng": 145.10139 },
+        "line": "Mernda",
+        "distance_from_center_km": 0.1
+      },
+      "shopping_centre": {
+        "name": "Mernda Junction / Mernda Town Centre",
+        "gps": { "lat": -37.594, "lng": 145.098 },
+        "description": "Woolworths, Aldi, specialty shops, medical centre"
+      },
+      "schools": [
+        { "name": "Mernda Central College", "type": "Government", "levels": "Prep-12" },
+        { "name": "Marymede Catholic College", "type": "Catholic", "levels": "Prep-12" },
+        { "name": "Mernda Park Primary School", "type": "Government", "levels": "Prep-6" }
+      ],
+      "highlights": [
+        "Rail line reopened 2018 with new elevated station – major catalyst",
+        "Plenty Gorge Parklands and Blue Lake – natural recreation",
+        "1,000 commuter car parks at station",
+        "Farm Vigano and local food scene",
+        "Growing infrastructure – schools, shops and community facilities",
+        "Northeastern growth corridor with established community feel"
+      ]
+    },
+    {
+      "name": "Doreen",
+      "postcode": "3754",
+      "lga": "Whittlesea / Nillumbik",
+      "center_gps": { "lat": -37.60, "lng": 145.14 },
+      "cbd_distance_km": 29,
+      "cbd_drive_min_offpeak": 38,
+      "cbd_drive_min_peak": 55,
+      "cbd_train_min": 55,
+      "median_house_price": 753000,
+      "median_house_price_12m_growth_pct": 5.0,
+      "median_house_rent_weekly": 530,
+      "median_unit_price": 650000,
+      "median_unit_rent_weekly": 480,
+      "population_2021": 27122,
+      "train_station": {
+        "name": "Mernda",
+        "gps": { "lat": -37.59944, "lng": 145.10139 },
+        "line": "Mernda",
+        "distance_from_center_km": 3.5
+      },
+      "shopping_centre": {
+        "name": "Laurimar Town Centre",
+        "gps": { "lat": -37.592, "lng": 145.130 },
+        "description": "Woolworths, BWS, pharmacy, cafes, medical centre"
+      },
+      "schools": [
+        { "name": "Hazel Glen College", "type": "Government", "levels": "Prep-12" },
+        { "name": "Ivanhoe Grammar School – Plenty Campus", "type": "Independent", "levels": "Prep-12" },
+        { "name": "Doreen Primary School", "type": "Government", "levels": "Prep-6" }
+      ],
+      "highlights": [
+        "Thriving growth suburb with semi-rural edges near Plenty River",
+        "Ivanhoe Grammar Plenty Campus – prestigious independent school",
+        "Laurimar Estate master-planned community",
+        "Population grew 27% 2016–2021 – strong family demand",
+        "Green wedge access: Plenty Gorge Park, wetlands and walking trails",
+        "Proximity to RMIT Bundoora campus and La Trobe University"
+      ]
+    }
+  ],
+  "_metadata": {
+    "generated": "2026-06-27",
+    "sources": [
+      "CoreLogic (via Your Investment Property Magazine)",
+      "property.com.au (PropTrack)",
+      "OnTheHouse.com.au (Cotality)",
+      "Domain Suburb Profiles",
+      "Wikipedia – railway station pages",
+      "inthesuburbs.com.au",
+      "Mapcarta / OpenStreetMap",
+      "Victoria's Big Build (bigbuild.vic.gov.au)",
+      "bestSchools.com.au"
+    ],
+    "notes": [
+      "Median house prices are CoreLogic 12-month median as of ~March 2026 unless otherwise noted",
+      "Train station GPS coordinates sourced from Wikipedia / OpenStreetMap",
+      "Shopping centre GPS coordinates are approximate (derived from location descriptions)",
+      "CBD distance calculated from Melbourne GPO (-37.814, 144.963)",
+      "Suburb center GPS coordinates sourced from Wikipedia / inthesuburbs.com.au"
+    ]
+  }
+}
