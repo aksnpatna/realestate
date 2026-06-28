@@ -4,3 +4,11 @@ psycopg2-binary
 sqlalchemy
 pydantic
 asyncpg
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-groq
+langgraph
+tavily-python
+python-dotenv

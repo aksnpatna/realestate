@@ -274,6 +274,45 @@ function App() {
                           : activeSuburb.metrics.rentalYield}
                       </div>
                     </div>
+                    <div className="metric-box" style={{ gridColumn: 'span 2' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <div className="metric-label" style={{ marginBottom: 0 }}>AI News Sentiment</div>
+                        <button 
+                          onClick={async () => {
+                            try {
+                              const res = await fetch('/api/analyze-suburb', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id: activeSuburb.id })
+                              });
+                              if(res.ok) {
+                                const data = await res.json();
+                                alert(`Analysis Complete!\nSentiment: ${data.sentiment}\nSummary: ${data.summary}`);
+                                window.location.reload(); // Quick hack to refresh data
+                              }
+                            } catch(e) {
+                              alert("Analysis failed.");
+                            }
+                          }}
+                          style={{
+                            background: 'var(--accent-cyan)', color: '#000', border: 'none', 
+                            padding: '4px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold'
+                          }}
+                        >
+                          Analyze Live News
+                        </button>
+                      </div>
+                      <div className={`metric-value ${
+                        activeSuburb.metrics.aiNewsSentiment?.includes('Bullish') ? 'highlight-cyan' :
+                        activeSuburb.metrics.aiNewsSentiment?.includes('Bearish') ? 'text-warning' : 'text-muted'
+                      }`}>
+                        {activeSuburb.metrics.aiNewsSentiment || 'Neutral (0.0)'}
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontStyle: 'italic' }}>
+                        {activeSuburb.metrics.aiNewsSummary || 'Disclaimer: AI generated sentiment based on live news. Always verify with actual market data before considering.'}
+                        {activeSuburb.metrics.aiNewsSummary && <div style={{marginTop: '4px'}}>*Disclaimer: AI generated sentiment based on live news. Always verify with actual market data before considering.</div>}
+                      </div>
+                    </div>
                   </div>
 
                   {activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every(h =>

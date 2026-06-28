@@ -1,10 +1,14 @@
 import os
 import json
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, String, JSON
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from ai_agent import get_suburb_sentiment
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -20,6 +24,13 @@ DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestat
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 class SuburbModel(Base):
     __tablename__ = "suburbs"
@@ -63,7 +74,6 @@ def load_initial_data():
         print("Failed to load initial data:", e)
     db.close()
 
-# Load on startup
 @app.on_event("startup")
 def startup_event():
     load_initial_data()
@@ -72,7 +82,6 @@ def startup_event():
         start_scheduler()
     except Exception as e:
         print(f"Scheduler start failed (non-fatal): {e}")
-
 
 class LoginRequest(BaseModel):
     email: str
@@ -91,6 +100,28 @@ def get_suburbs():
     db.close()
     return [s.data for s in suburbs]
 
+class AnalyzeRequest(BaseModel):
+    suburb: str
+    state: str
+    id: str
+
+@app.post("/api/analyze-suburb")
+def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db)):
+    try:
+        ai_result = get_suburb_sentiment(req.suburb, req.state)
+        suburb_record = db.query(SuburbModel).filter(SuburbModel.id == req.id).first()
+        if suburb_record:
+            data = suburb_record.data
+            if "metrics" not in data:
+                data["metrics"] = {}
+            data["metrics"]["aiNewsSentiment"] = ai_result["sentiment"]
+            data["metrics"]["aiNewsSummary"] = ai_result["summary"]
+            suburb_record.data = data
+            db.commit()
+            return {"status": "success", "sentiment": ai_result["sentiment"], "summary": ai_result["summary"]}
+        return {"status": "error", "message": "Suburb not found in database"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/reload")
 def reload_suburbs():
@@ -99,7 +130,6 @@ def reload_suburbs():
     total = db.query(SuburbModel).count()
     db.close()
     return {"status": "ok", "suburbs": total}
-
 
 @app.post("/api/pipeline/run")
 def run_pipeline_manually():

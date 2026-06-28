@@ -30,6 +30,8 @@ export interface SuburbData {
     medianPrice: number;
     rentalYield: number;
     weeklyRent?: number;
+    aiNewsSentiment?: string;
+    aiNewsSummary?: string;
   };
   highlights: string[];
   pois: POI[];

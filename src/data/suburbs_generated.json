@@ -18,7 +18,8 @@
       "schoolQuality": 7.8,
       "transitAccessibility": 8,
       "medianPrice": 950000,
-      "rentalYield": 4.5
+      "rentalYield": 4.5,
+      "aiNewsSentiment": "Bearish (0.9)"
     },
     "highlights": [
       "7.3% YoY price growth to Feb 2026",
@@ -96,7 +97,8 @@
       "schoolQuality": 8.2,
       "transitAccessibility": 7.8,
       "medianPrice": 980000,
-      "rentalYield": 4.2
+      "rentalYield": 4.2,
+      "aiNewsSentiment": "Bullish (7.8)"
     },
     "highlights": [
       "One of Australia's fastest-growing regions (87K+ population)",
@@ -174,7 +176,8 @@
       "schoolQuality": 7.5,
       "transitAccessibility": 7,
       "medianPrice": 894000,
-      "rentalYield": 4.6
+      "rentalYield": 4.6,
+      "aiNewsSentiment": "Bullish (9.5)"
     },
     "highlights": [
       "Most affordable ACT district centre",
@@ -252,7 +255,8 @@
       "schoolQuality": 8,
       "transitAccessibility": 8.2,
       "medianPrice": 1050000,
-      "rentalYield": 4
+      "rentalYield": 4,
+      "aiNewsSentiment": "Neutral (6.9)"
     },
     "highlights": [
       "Light Rail Stage 2B to Woden (route confirmed May 2026)",
@@ -330,7 +334,8 @@
       "schoolQuality": 7.3,
       "transitAccessibility": 7.5,
       "medianPrice": 870000,
-      "rentalYield": 4.8
+      "rentalYield": 4.8,
+      "aiNewsSentiment": "Bearish (1.0)"
     },
     "highlights": [
       "More affordable than ACT suburbs",
@@ -408,10 +413,11 @@
       "schoolQuality": 8.8,
       "transitAccessibility": 9.5,
       "medianPrice": 1450000,
-      "rentalYield": 3.8
+      "rentalYield": 3.8,
+      "aiNewsSentiment": "Bearish (2.1)"
     },
     "highlights": [
-      "Sydney's second CBD — $10B+ development pipeline",
+      "Sydney's second CBD \u2014 $10B+ development pipeline",
       "Parramatta Light Rail Stage 1 operational 2026",
       "Powerhouse Museum and Riverside cultural precinct",
       "Sydney Metro West under construction (City ~20 min)"
@@ -486,7 +492,8 @@
       "schoolQuality": 7.5,
       "transitAccessibility": 8.5,
       "medianPrice": 1150000,
-      "rentalYield": 4
+      "rentalYield": 4,
+      "aiNewsSentiment": "Bullish (7.8)"
     },
     "highlights": [
       "Largest LGA by population in NSW",
@@ -564,13 +571,14 @@
       "schoolQuality": 7.2,
       "transitAccessibility": 8,
       "medianPrice": 1230000,
-      "rentalYield": 4.2
+      "rentalYield": 4.2,
+      "aiNewsSentiment": "Neutral (5.1)"
     },
     "highlights": [
       "#1 destination for first-home buyers in NSW",
       "10.8% YoY growth",
       "Western Sydney Airport proximity catalyst",
-      "0.6% vacancy rate — undersupplied market"
+      "0.6% vacancy rate \u2014 undersupplied market"
     ],
     "pois": [
       {
@@ -642,11 +650,12 @@
       "schoolQuality": 7.8,
       "transitAccessibility": 7.5,
       "medianPrice": 1100000,
-      "rentalYield": 4.3
+      "rentalYield": 4.3,
+      "aiNewsSentiment": "Bearish (1.9)"
     },
     "highlights": [
       "Regional capital of Western Sydney",
-      "16.65% YoY house growth — strongest in Sydney",
+      "16.65% YoY house growth \u2014 strongest in Sydney",
       "Winter Sports World $300M development (200K visitors/yr)",
       "0.6% vacancy rate, 15 days on market"
     ],
@@ -720,7 +729,8 @@
       "schoolQuality": 7,
       "transitAccessibility": 7.5,
       "medianPrice": 1000500,
-      "rentalYield": 4.5
+      "rentalYield": 4.5,
+      "aiNewsSentiment": "Bullish (8.3)"
     },
     "highlights": [
       "Regional centre of Macarthur",
@@ -798,7 +808,8 @@
       "schoolQuality": 7.3,
       "transitAccessibility": 8.5,
       "medianPrice": 1300000,
-      "rentalYield": 3.7
+      "rentalYield": 3.7,
+      "aiNewsSentiment": "Bearish (3.2)"
     },
     "highlights": [
       "Sydney Metro City & Southwest conversion (trains every 4 min)",
@@ -876,10 +887,11 @@
       "schoolQuality": 8.2,
       "transitAccessibility": 9,
       "medianPrice": 1650000,
-      "rentalYield": 3.5
+      "rentalYield": 3.5,
+      "aiNewsSentiment": "Bullish (8.8)"
     },
     "highlights": [
-      "\"Little Hong Kong\" of Sydney — major Asian business district",
+      "\"Little Hong Kong\" of Sydney \u2014 major Asian business district",
       "St George regional centre",
       "T4 express line to CBD (20-25 min)",
       "Kogarah health and medical jobs hub nearby"
@@ -954,7 +966,8 @@
       "schoolQuality": 9.2,
       "transitAccessibility": 9.5,
       "medianPrice": 3000000,
-      "rentalYield": 2.8
+      "rentalYield": 2.8,
+      "aiNewsSentiment": "Bearish (2.8)"
     },
     "highlights": [
       "Second only to Sydney CBD in office space",
@@ -1032,10 +1045,11 @@
       "schoolQuality": 8.1,
       "transitAccessibility": 7.5,
       "medianPrice": 2200000,
-      "rentalYield": 3.1
+      "rentalYield": 3.1,
+      "aiNewsSentiment": "Bearish (0.6)"
     },
     "highlights": [
-      "Between Sydney CBD and Parramatta — dual city access",
+      "Between Sydney CBD and Parramatta \u2014 dual city access",
       "Macquarie Park corporate hub proximity",
       "Parramatta Light Rail Stage 2 planned",
       "Sydney Olympic Park nearby"
@@ -1110,11 +1124,12 @@
       "schoolQuality": 9,
       "transitAccessibility": 8,
       "medianPrice": 2200000,
-      "rentalYield": 3
+      "rentalYield": 3,
+      "aiNewsSentiment": "Bearish (1.8)"
     },
     "highlights": [
       "Metro North West (trains every 4 min to CBD)",
-      "Castle Towers — one of Australia's largest shopping centres",
+      "Castle Towers \u2014 one of Australia's largest shopping centres",
       "Premium Hills District family location",
       "Baulkham Hills High School catchment (top selective)"
     ],
@@ -1188,7 +1203,8 @@
       "schoolQuality": 9.2,
       "transitAccessibility": 9.5,
       "medianPrice": 3300000,
-      "rentalYield": 2.6
+      "rentalYield": 2.6,
+      "aiNewsSentiment": "Bearish (1.6)"
     },
     "highlights": [
       "Sydney's major rail interchange (T1/T9/T2/Central Coast lines)",
@@ -1266,11 +1282,12 @@
       "schoolQuality": 8.8,
       "transitAccessibility": 9.5,
       "medianPrice": 3500000,
-      "rentalYield": 2.5
+      "rentalYield": 2.5,
+      "aiNewsSentiment": "Bullish (7.5)"
     },
     "highlights": [
       "Premier Eastern Suburbs gateway",
-      "Westfield Bondi Junction — top-performing centre",
+      "Westfield Bondi Junction \u2014 top-performing centre",
       "Express train to CBD (10-12 min)",
       "Bondi Beach proximity (short bus)"
     ],
@@ -1344,7 +1361,8 @@
       "schoolQuality": 6.8,
       "transitAccessibility": 6,
       "medianPrice": 950000,
-      "rentalYield": 4.5
+      "rentalYield": 4.5,
+      "aiNewsSentiment": "Bearish (3.7)"
     },
     "highlights": [
       "Macarthur growth corridor",
@@ -1422,7 +1440,8 @@
       "schoolQuality": 6.5,
       "transitAccessibility": 5,
       "medianPrice": 550000,
-      "rentalYield": 5.2
+      "rentalYield": 5.2,
+      "aiNewsSentiment": "Bullish (8.9)"
     },
     "highlights": [
       "Regional NSW hub on Canberra-Sydney corridor",
@@ -1490,7 +1509,8 @@
       "schoolQuality": 7,
       "transitAccessibility": 4.5,
       "medianPrice": 520000,
-      "rentalYield": 5
+      "rentalYield": 5,
+      "aiNewsSentiment": "Bullish (9.4)"
     },
     "highlights": [
       "Largest inland NSW city",
@@ -1558,10 +1578,11 @@
       "schoolQuality": 7.8,
       "transitAccessibility": 7,
       "medianPrice": 950000,
-      "rentalYield": 4.1
+      "rentalYield": 4.1,
+      "aiNewsSentiment": "Neutral (5.8)"
     },
     "highlights": [
-      "NSW second city — major port and university hub",
+      "NSW second city \u2014 major port and university hub",
       "Light rail operational in CBD",
       "Newcastle City Deal urban renewal",
       "Port of Newcastle renewable energy hub"
@@ -1636,7 +1657,8 @@
       "schoolQuality": 7.5,
       "transitAccessibility": 6.5,
       "medianPrice": 980000,
-      "rentalYield": 3.9
+      "rentalYield": 3.9,
+      "aiNewsSentiment": "Neutral (6.5)"
     },
     "highlights": [
       "Coastal lifestyle city",
@@ -1704,7 +1726,8 @@
       "schoolQuality": 7.2,
       "transitAccessibility": 3.5,
       "medianPrice": 650000,
-      "rentalYield": 4.8
+      "rentalYield": 4.8,
+      "aiNewsSentiment": "Bearish (2.9)"
     },
     "highlights": [
       "Growing regional centre with strong culture scene",
@@ -1772,7 +1795,8 @@
       "schoolQuality": 6,
       "transitAccessibility": 3,
       "medianPrice": 460000,
-      "rentalYield": 5.8
+      "rentalYield": 5.8,
+      "aiNewsSentiment": "Bullish (9.2)"
     },
     "highlights": [
       "Major inland regional hub",
@@ -1840,7 +1864,8 @@
       "schoolQuality": 7.2,
       "transitAccessibility": 8,
       "medianPrice": 520000,
-      "rentalYield": 4.8
+      "rentalYield": 4.8,
+      "aiNewsSentiment": "Bullish (7.5)"
     },
     "highlights": [
       "Designated Victorian State Growth Corridor",
@@ -1938,7 +1963,8 @@
       "schoolQuality": 8.1,
       "transitAccessibility": 8.5,
       "medianPrice": 940000,
-      "rentalYield": 3.9
+      "rentalYield": 3.9,
+      "aiNewsSentiment": "Bearish (2.5)"
     },
     "highlights": [
       "Rapidly gentrifying middle-ring northern suburb",
@@ -2026,7 +2052,8 @@
       "schoolQuality": 7.8,
       "transitAccessibility": 9.5,
       "medianPrice": 980000,
-      "rentalYield": 4.1
+      "rentalYield": 4.1,
+      "aiNewsSentiment": "Bearish (3.2)"
     },
     "highlights": [
       "Major beneficiary of new Metro Tunnel project",
@@ -2104,11 +2131,12 @@
       "schoolQuality": 7.5,
       "transitAccessibility": 7.8,
       "medianPrice": 825000,
-      "rentalYield": 4.5
+      "rentalYield": 4.5,
+      "aiNewsSentiment": "Neutral (5.7)"
     },
     "highlights": [
       "11.49% YoY house price growth",
-      "77% auction clearance rate — strong market",
+      "77% auction clearance rate \u2014 strong market",
       "Frankston High School zone (+20% price premium)",
       "15 days on market, tight stock (0.53 months)"
     ],
@@ -2182,10 +2210,11 @@
       "schoolQuality": 7,
       "transitAccessibility": 7.5,
       "medianPrice": 650000,
-      "rentalYield": 4.6
+      "rentalYield": 4.6,
+      "aiNewsSentiment": "Neutral (4.9)"
     },
     "highlights": [
-      "Wyndham — one of Australia's fastest-growing LGAs",
+      "Wyndham \u2014 one of Australia's fastest-growing LGAs",
       "$3B in new projects pipeline",
       "Werribee East employment precinct",
       "Good rental yields (4-4.5%)"
@@ -2260,12 +2289,13 @@
       "schoolQuality": 6.8,
       "transitAccessibility": 7,
       "medianPrice": 700000,
-      "rentalYield": 4.7
+      "rentalYield": 4.7,
+      "aiNewsSentiment": "Neutral (6.6)"
     },
     "highlights": [
       "Very affordable entry point (youngest median age: 32)",
       "6.4% YoY house growth",
-      "65K+ population — multicultural hub",
+      "65K+ population \u2014 multicultural hub",
       "Craigieburn Central major expansion"
     ],
     "pois": [
@@ -2338,7 +2368,8 @@
       "schoolQuality": 8.5,
       "transitAccessibility": 9.5,
       "medianPrice": 1350000,
-      "rentalYield": 3.5
+      "rentalYield": 3.5,
+      "aiNewsSentiment": "Bearish (2.7)"
     },
     "highlights": [
       "Inner-city lifestyle precinct",
@@ -2406,7 +2437,8 @@
       "schoolQuality": 7,
       "transitAccessibility": 8,
       "medianPrice": 850000,
-      "rentalYield": 4.2
+      "rentalYield": 4.2,
+      "aiNewsSentiment": "Bullish (9.4)"
     },
     "highlights": [
       "Melbourne Airport Rail super-hub (key interchange)",
@@ -2484,10 +2516,11 @@
       "schoolQuality": 8.8,
       "transitAccessibility": 9,
       "medianPrice": 1730000,
-      "rentalYield": 3
+      "rentalYield": 3,
+      "aiNewsSentiment": "Bearish (2.3)"
     },
     "highlights": [
-      "Melbourne's second Chinatown — premier Asian business hub",
+      "Melbourne's second Chinatown \u2014 premier Asian business hub",
       "Suburban Rail Loop East station (major uplift)",
       "Box Hill High School catchment premium",
       "Box Hill Hospital and ATO employment precinct"
@@ -2572,13 +2605,14 @@
       "schoolQuality": 9.5,
       "transitAccessibility": 8.5,
       "medianPrice": 1820000,
-      "rentalYield": 3
+      "rentalYield": 3,
+      "aiNewsSentiment": "Bullish (9.2)"
     },
     "highlights": [
-      "GWSC school zone — $200K-$400K catchment premium",
+      "GWSC school zone \u2014 $200K-$400K catchment premium",
       "7.8% YoY house growth",
       "The Glen redevelopment completed",
-      "1.1% vacancy — very tight market"
+      "1.1% vacancy \u2014 very tight market"
     ],
     "pois": [
       {
@@ -2660,7 +2694,8 @@
       "schoolQuality": 6.5,
       "transitAccessibility": 8,
       "medianPrice": 730000,
-      "rentalYield": 4.6
+      "rentalYield": 4.6,
+      "aiNewsSentiment": "Neutral (4.9)"
     },
     "highlights": [
       "Most affordable south-east corridor",
@@ -2738,7 +2773,8 @@
       "schoolQuality": 7.8,
       "transitAccessibility": 8.5,
       "medianPrice": 1200000,
-      "rentalYield": 3.6
+      "rentalYield": 3.6,
+      "aiNewsSentiment": "Bearish (3.7)"
     },
     "highlights": [
       "Inner-north gentrification hotspot",
@@ -2826,7 +2862,8 @@
       "schoolQuality": 7,
       "transitAccessibility": 7.5,
       "medianPrice": 750000,
-      "rentalYield": 4.4
+      "rentalYield": 4.4,
+      "aiNewsSentiment": "Bullish (7.6)"
     },
     "highlights": [
       "Northern growth corridor",
@@ -2904,10 +2941,11 @@
       "schoolQuality": 7.5,
       "transitAccessibility": 6.5,
       "medianPrice": 850000,
-      "rentalYield": 4.3
+      "rentalYield": 4.3,
+      "aiNewsSentiment": "Bullish (8.7)"
     },
     "highlights": [
-      "VIC second city — major port and Deakin University",
+      "VIC second city \u2014 major port and Deakin University",
       "TAC and WorkSafe headquarters employment",
       "Geelong City Deal infrastructure investment",
       "Coastal lifestyle at lower price than Melbourne"
@@ -2982,7 +3020,8 @@
       "schoolQuality": 7.2,
       "transitAccessibility": 5,
       "medianPrice": 620000,
-      "rentalYield": 4.5
+      "rentalYield": 4.5,
+      "aiNewsSentiment": "Bearish (0.6)"
     },
     "highlights": [
       "Regional city growth with strong heritage",
@@ -3060,7 +3099,8 @@
       "schoolQuality": 7,
       "transitAccessibility": 5,
       "medianPrice": 580000,
-      "rentalYield": 5
+      "rentalYield": 5,
+      "aiNewsSentiment": "Bearish (1.2)"
     },
     "highlights": [
       "Growing arts and culture hub",
@@ -3129,10 +3169,11 @@
       "transitAccessibility": 3,
       "medianPrice": 420000,
       "rentalYield": 5.5,
-      "weeklyRent": 445
+      "weeklyRent": 445,
+      "aiNewsSentiment": "Bearish (1.0)"
     },
     "highlights": [
-      "Regional agricultural hub — Sunraysia food bowl",
+      "Regional agricultural hub \u2014 Sunraysia food bowl",
       "Murray River lifestyle",
       "Growing tourism and wine industry",
       "Affordable regional entry"
@@ -3198,10 +3239,11 @@
       "transitAccessibility": 7,
       "medianPrice": 837000,
       "rentalYield": 4.1,
-      "weeklyRent": 575
+      "weeklyRent": 575,
+      "aiNewsSentiment": "Bullish (7.9)"
     },
     "highlights": [
-      "Population grew 33.8% 2016–2021",
+      "Population grew 33.8% 2016\u20132021",
       "East Werribee Employment Precinct planned",
       "Sneydes Road interchange completed",
       "100+ parks covering 27.7% of suburb area"
@@ -3277,10 +3319,11 @@
       "transitAccessibility": 7.5,
       "medianPrice": 910000,
       "rentalYield": 3.9,
-      "weeklyRent": 620
+      "weeklyRent": 620,
+      "aiNewsSentiment": "Bullish (9.4)"
     },
     "highlights": [
-      "Nossal High School — selective entry, top VCE results",
+      "Nossal High School \u2014 selective entry, top VCE results",
       "Haileybury College Berwick campus",
       "Federation University Berwick Campus",
       "Clyde Road level crossing removed"
@@ -3356,10 +3399,11 @@
       "transitAccessibility": 7.5,
       "medianPrice": 720000,
       "rentalYield": 4.4,
-      "weeklyRent": 550
+      "weeklyRent": 550,
+      "aiNewsSentiment": "Bearish (1.5)"
     },
     "highlights": [
-      "Royal Botanic Gardens Cranbourne — world-class attraction",
+      "Royal Botanic Gardens Cranbourne \u2014 world-class attraction",
       "Casey Fields regional sports precinct",
       "Cranbourne line terminus with frequent Metro services",
       "Blend of established streets and new housing estates"
@@ -3435,10 +3479,11 @@
       "transitAccessibility": 6.5,
       "medianPrice": 700000,
       "rentalYield": 4.5,
-      "weeklyRent": 530
+      "weeklyRent": 530,
+      "aiNewsSentiment": "Neutral (6.1)"
     },
     "highlights": [
-      "Casey Fields — major regional sports precinct",
+      "Casey Fields \u2014 major regional sports precinct",
       "Cranbourne East station proposed (future rail extension)",
       "Master-planned communities with modern housing stock",
       "Fast-growing family suburb with new estates"
@@ -3514,10 +3559,11 @@
       "transitAccessibility": 5.5,
       "medianPrice": 749000,
       "rentalYield": 4.6,
-      "weeklyRent": 600
+      "weeklyRent": 600,
+      "aiNewsSentiment": "Neutral (5.5)"
     },
     "highlights": [
-      "Melbourne's fastest-growing suburb — population grew 288% 2016–2021",
+      "Melbourne's fastest-growing suburb \u2014 population grew 288% 2016\u20132021",
       "Clyde station planned as part of future rail extension",
       "House-and-land packages dominant",
       "Selandra Rise and Cascades on Clyde major estates"
@@ -3593,10 +3639,11 @@
       "transitAccessibility": 7,
       "medianPrice": 670000,
       "rentalYield": 4.6,
-      "weeklyRent": 530
+      "weeklyRent": 530,
+      "aiNewsSentiment": "Neutral (5.9)"
     },
     "highlights": [
-      "One of Australia's fastest-growing postcodes — 63% growth 2016–2021",
+      "One of Australia's fastest-growing postcodes \u2014 63% growth 2016\u20132021",
       "West Tarneit Station opening 2026 (V/Line)",
       "Harpley and Habitat master-planned estates",
       "Tarneit Stadium and sporting precinct planned"
@@ -3672,11 +3719,12 @@
       "transitAccessibility": 6.5,
       "medianPrice": 671000,
       "rentalYield": 4.6,
-      "weeklyRent": 530
+      "weeklyRent": 530,
+      "aiNewsSentiment": "Bullish (7.1)"
     },
     "highlights": [
-      "Adjacent to major industrial/logistics parks — strong local employment",
-      "Population grew 75% 2016–2021",
+      "Adjacent to major industrial/logistics parks \u2014 strong local employment",
+      "Population grew 75% 2016\u20132021",
       "Westbourne Grammar School prestigious independent",
       "Truganina station proposed in future rail planning"
     ],
@@ -3751,10 +3799,11 @@
       "transitAccessibility": 6,
       "medianPrice": 650000,
       "rentalYield": 4.8,
-      "weeklyRent": 500
+      "weeklyRent": 500,
+      "aiNewsSentiment": "Bearish (0.6)"
     },
     "highlights": [
-      "New West Tarneit Station opening 2026 — major infrastructure catalyst",
+      "New West Tarneit Station opening 2026 \u2014 major infrastructure catalyst",
       "Emerging suburb within Tarneit growth corridor",
       "House-and-land packages",
       "Significant future growth potential with rail investment"
@@ -3830,7 +3879,8 @@
       "transitAccessibility": 7,
       "medianPrice": 610000,
       "rentalYield": 4.9,
-      "weeklyRent": 450
+      "weeklyRent": 450,
+      "aiNewsSentiment": "Bullish (8.3)"
     },
     "highlights": [
       "V/Line rail direct to Southern Cross",
@@ -3909,7 +3959,8 @@
       "transitAccessibility": 7,
       "medianPrice": 715000,
       "rentalYield": 4.5,
-      "weeklyRent": 560
+      "weeklyRent": 560,
+      "aiNewsSentiment": "Bullish (7.2)"
     },
     "highlights": [
       "Gateway between suburban Melbourne and Gippsland",
@@ -3988,13 +4039,14 @@
       "transitAccessibility": 7.5,
       "medianPrice": 750000,
       "rentalYield": 4.2,
-      "weeklyRent": 556
+      "weeklyRent": 556,
+      "aiNewsSentiment": "Neutral (4.5)"
     },
     "highlights": [
       "Rail-connected growth suburb with genuine train connectivity",
       "Population surged from rural town to 18,500 in 2021",
       "Officer Town Centre developing",
-      "Between Berwick and Pakenham — access to both town centres"
+      "Between Berwick and Pakenham \u2014 access to both town centres"
     ],
     "pois": [
       {
@@ -4067,7 +4119,8 @@
       "transitAccessibility": 7,
       "medianPrice": 750000,
       "rentalYield": 4.2,
-      "weeklyRent": 506
+      "weeklyRent": 506,
+      "aiNewsSentiment": "Neutral (5.6)"
     },
     "highlights": [
       "Rail line reopened 2018 with new elevated station",
@@ -4146,13 +4199,14 @@
       "transitAccessibility": 6.5,
       "medianPrice": 753000,
       "rentalYield": 4.1,
-      "weeklyRent": 530
+      "weeklyRent": 530,
+      "aiNewsSentiment": "Bullish (7.5)"
     },
     "highlights": [
       "Thriving growth suburb with semi-rural edges",
-      "Ivanhoe Grammar Plenty Campus — prestigious independent school",
+      "Ivanhoe Grammar Plenty Campus \u2014 prestigious independent school",
       "Laurimar Estate master-planned community",
-      "Population grew 27% 2016–2021"
+      "Population grew 27% 2016\u20132021"
     ],
     "pois": [
       {
@@ -4225,7 +4279,8 @@
       "transitAccessibility": 7,
       "medianPrice": 750000,
       "rentalYield": 4.8,
-      "weeklyRent": 600
+      "weeklyRent": 600,
+      "aiNewsSentiment": "Neutral (5.0)"
     },
     "highlights": [
       "Fastest-growing Gold Coast suburb",
@@ -4304,7 +4359,8 @@
       "transitAccessibility": 6.5,
       "medianPrice": 580000,
       "rentalYield": 5.5,
-      "weeklyRent": 480
+      "weeklyRent": 480,
+      "aiNewsSentiment": "Bullish (9.3)"
     },
     "highlights": [
       "Most affordable Brisbane-adjacent LGA",
@@ -4383,7 +4439,8 @@
       "transitAccessibility": 6,
       "medianPrice": 610000,
       "rentalYield": 5.2,
-      "weeklyRent": 520
+      "weeklyRent": 520,
+      "aiNewsSentiment": "Neutral (5.6)"
     },
     "highlights": [
       "Northern Brisbane growth corridor",
@@ -4462,11 +4519,12 @@
       "transitAccessibility": 6,
       "medianPrice": 550000,
       "rentalYield": 5.5,
-      "weeklyRent": 480
+      "weeklyRent": 480,
+      "aiNewsSentiment": "Bearish (1.5)"
     },
     "highlights": [
       "Most affordable SEQ corridor",
-      "RAAF Base Amberley — Australia's largest airbase employer",
+      "RAAF Base Amberley \u2014 Australia's largest airbase employer",
       "Ipswich CBD redevelopment",
       "Heritage city character with strong yields"
     ],
@@ -4541,7 +4599,8 @@
       "transitAccessibility": 7,
       "medianPrice": 1050000,
       "rentalYield": 3.8,
-      "weeklyRent": 650
+      "weeklyRent": 650,
+      "aiNewsSentiment": "Bearish (1.4)"
     },
     "highlights": [
       "Brisbane's largest shopping destination (Westfield Chermside)",
@@ -4620,7 +4679,8 @@
       "transitAccessibility": 7,
       "medianPrice": 650000,
       "rentalYield": 4.5,
-      "weeklyRent": 520
+      "weeklyRent": 520,
+      "aiNewsSentiment": "Bullish (9.0)"
     },
     "highlights": [
       "Australia's largest master-planned city",
@@ -4699,7 +4759,8 @@
       "transitAccessibility": 8,
       "medianPrice": 1800000,
       "rentalYield": 3.5,
-      "weeklyRent": 800
+      "weeklyRent": 800,
+      "aiNewsSentiment": "Neutral (6.5)"
     },
     "highlights": [
       "Iconic Gold Coast tourism destination",
@@ -4778,7 +4839,8 @@
       "transitAccessibility": 8,
       "medianPrice": 850000,
       "rentalYield": 4.5,
-      "weeklyRent": 650
+      "weeklyRent": 650,
+      "aiNewsSentiment": "Bearish (1.3)"
     },
     "highlights": [
       "Gold Coast CBD and major employment hub",
@@ -4857,7 +4919,8 @@
       "transitAccessibility": 6,
       "medianPrice": 420000,
       "rentalYield": 5.8,
-      "weeklyRent": 420
+      "weeklyRent": 420,
+      "aiNewsSentiment": "Bearish (2.5)"
     },
     "highlights": [
       "Australia's most affordable capital city corridor",
@@ -4936,7 +4999,8 @@
       "transitAccessibility": 6.5,
       "medianPrice": 520000,
       "rentalYield": 5.2,
-      "weeklyRent": 470
+      "weeklyRent": 470,
+      "aiNewsSentiment": "Bearish (2.9)"
     },
     "highlights": [
       "Defence industry employment corridor",
@@ -5015,7 +5079,8 @@
       "transitAccessibility": 6.5,
       "medianPrice": 620000,
       "rentalYield": 4.8,
-      "weeklyRent": 520
+      "weeklyRent": 520,
+      "aiNewsSentiment": "Neutral (6.1)"
     },
     "highlights": [
       "Southern Adelaide regional hub",
@@ -5094,7 +5159,8 @@
       "transitAccessibility": 8,
       "medianPrice": 1000000,
       "rentalYield": 3.5,
-      "weeklyRent": 580
+      "weeklyRent": 580,
+      "aiNewsSentiment": "Neutral (5.9)"
     },
     "highlights": [
       "Premier inner-north Adelaide suburb",
@@ -5173,11 +5239,12 @@
       "transitAccessibility": 8,
       "medianPrice": 951000,
       "rentalYield": 4,
-      "weeklyRent": 650
+      "weeklyRent": 650,
+      "aiNewsSentiment": "Bearish (2.8)"
     },
     "highlights": [
       "Perth's northern regional centre",
-      "13.55% annual growth — fastest selling (9 days)",
+      "13.55% annual growth \u2014 fastest selling (9 days)",
       "Edith Cowan University campus employment",
       "Joondalup Health Campus major hospital"
     ],
@@ -5252,7 +5319,8 @@
       "transitAccessibility": 7.5,
       "medianPrice": 1295000,
       "rentalYield": 3.5,
-      "weeklyRent": 750
+      "weeklyRent": 750,
+      "aiNewsSentiment": "Bearish (2.1)"
     },
     "highlights": [
       "29.5% YoY house price growth",
@@ -5331,7 +5399,8 @@
       "transitAccessibility": 6.5,
       "medianPrice": 615000,
       "rentalYield": 4.8,
-      "weeklyRent": 500
+      "weeklyRent": 500,
+      "aiNewsSentiment": "Bearish (2.9)"
     },
     "highlights": [
       "16.70% annual growth",
@@ -5410,7 +5479,8 @@
       "transitAccessibility": 6,
       "medianPrice": 400000,
       "rentalYield": 5.5,
-      "weeklyRent": 400
+      "weeklyRent": 400,
+      "aiNewsSentiment": "Bearish (3.2)"
     },
     "highlights": [
       "Perth's most affordable corridor",
@@ -5489,7 +5559,8 @@
       "transitAccessibility": 7.5,
       "medianPrice": 480000,
       "rentalYield": 5.2,
-      "weeklyRent": 430
+      "weeklyRent": 430,
+      "aiNewsSentiment": "Bullish (9.0)"
     },
     "highlights": [
       "METRONET new Midland Station under construction",
@@ -5568,7 +5639,8 @@
       "transitAccessibility": 7,
       "medianPrice": 530000,
       "rentalYield": 5,
-      "weeklyRent": 460
+      "weeklyRent": 460,
+      "aiNewsSentiment": "Neutral (5.0)"
     },
     "highlights": [
       "Coastal lifestyle at affordable prices",
@@ -5646,12 +5718,13 @@
       "schoolQuality": 7.5,
       "transitAccessibility": 6,
       "medianPrice": 900000,
-      "rentalYield": 4.3
+      "rentalYield": 4.3,
+      "aiNewsSentiment": "Neutral (6.6)"
     },
     "highlights": [
       "25.5% five-year growth trajectory",
       "Hobart City Deal driving investment",
-      "MONA — world-class tourism drawcard",
+      "MONA \u2014 world-class tourism drawcard",
       "Antarctic science and UTAS city campus"
     ],
     "pois": [
@@ -5724,7 +5797,8 @@
       "schoolQuality": 7.2,
       "transitAccessibility": 5,
       "medianPrice": 560000,
-      "rentalYield": 5.2
+      "rentalYield": 5.2,
+      "aiNewsSentiment": "Bearish (1.7)"
     },
     "highlights": [
       "Northern TAS regional capital",
@@ -5802,7 +5876,8 @@
       "schoolQuality": 6,
       "transitAccessibility": 4,
       "medianPrice": 480000,
-      "rentalYield": 5.5
+      "rentalYield": 5.5,
+      "aiNewsSentiment": "Bullish (8.1)"
     },
     "highlights": [
       "Spirit of Tasmania ferry terminal (Melbourne link)",
@@ -5870,7 +5945,8 @@
       "schoolQuality": 6.5,
       "transitAccessibility": 5,
       "medianPrice": 710000,
-      "rentalYield": 5.5
+      "rentalYield": 5.5,
+      "aiNewsSentiment": "Bullish (7.7)"
     },
     "highlights": [
       "35.2% five-year growth",
@@ -5948,10 +6024,11 @@
       "schoolQuality": 6,
       "transitAccessibility": 5.5,
       "medianPrice": 570000,
-      "rentalYield": 5.8
+      "rentalYield": 5.8,
+      "aiNewsSentiment": "Bearish (1.8)"
     },
     "highlights": [
-      "27.3% YoY growth — fastest in Darwin region",
+      "27.3% YoY growth \u2014 fastest in Darwin region",
       "Defence force family housing (Robertson Barracks)",
       "Palmerston Hospital employment",
       "Master-planned satellite city"
@@ -6026,7 +6103,8 @@
       "schoolQuality": 5.5,
       "transitAccessibility": 3,
       "medianPrice": 400000,
-      "rentalYield": 6
+      "rentalYield": 6,
+      "aiNewsSentiment": "Neutral (5.8)"
     },
     "highlights": [
       "Central Australian service hub",
