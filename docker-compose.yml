@@ -23,6 +23,8 @@ services:
     restart: unless-stopped
     environment:
       - DATABASE_URL=postgresql://realestate_user:realestate_pass@db:5432/realestate
+      - ADMIN_EMAIL=teraamit@gmail.com
+      - ADMIN_PASSWORD=password321
     depends_on:
       db:
         condition: service_healthy

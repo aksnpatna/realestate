@@ -98,29 +98,59 @@ def estimate_price_movement(suburb: dict, rba_data: dict) -> float:
 def compute_growth_score(suburb: dict, vacancy_rate: Optional[float]) -> int:
     """Recompute growthScore 0-100 from actual metrics."""
     metrics = suburb.get("metrics", {})
-    score = 50 + sum(ord(c) for c in suburb["name"]) % 15
+    
+    # Extract numerical values
+    pop_num = 0
     pop_str = metrics.get("populationGrowth", "0")
     try:
-        pop_num = float(re.search(r"[\d.]+", str(pop_str)).group())
-        if pop_num > 4:
-            score += 12
-        elif pop_num > 2:
-            score += 6
+        pop_num = float(re.search(r"[-+]?[\d.]+", str(pop_str)).group())
     except Exception:
         pass
+        
+    infra_val = 0
+    infra_str = metrics.get("infrastructureInvestment", "0")
+    try:
+        infra_val = float(re.search(r"[\d.]+", str(infra_str)).group())
+    except Exception:
+        pass
+        
+    school_quality = metrics.get("schoolQuality", 5)
+    transit_access = metrics.get("transitAccessibility", 5)
+    rental_yield = metrics.get("rentalYield", 4.0)
+    
+    # Some suburbs might have string yields or none
+    if isinstance(rental_yield, str):
+        try:
+            rental_yield = float(re.search(r"[\d.]+", rental_yield).group())
+        except Exception:
+            rental_yield = 4.0
+            
+    cbd_distance = suburb.get("cbdDistanceMins")
+    if cbd_distance is None:
+        cbd_distance = 60
+        
+    # User's formula:
+    # growthScore = (populationGrowth% * 10) 
+    #             + (infraInvestment$B * 3)   [Note: infra is in M, so divide by 1000]
+    #             + (schoolQuality * 3) 
+    #             + (transitAccess * 2) 
+    #             + (rentalYield * 2 if yield > 4.5)
+    #             - (cbdDistanceMins * 0.1 if > 50)
+    
+    infra_b = infra_val / 1000.0
+    yield_bonus = (rental_yield * 2) if rental_yield > 4.5 else 0
+    dist_penalty = (cbd_distance * 0.1) if cbd_distance > 50 else 0
+    
+    score = (pop_num * 10) + (infra_b * 3) + (school_quality * 3) + (transit_access * 2) + yield_bonus - dist_penalty
+    
+    # Vacancy rate addition from user spec Phase 2 logic (optional)
     if vacancy_rate is not None:
         if vacancy_rate < 1.0:
             score += 15
         elif vacancy_rate < 2.0:
             score += 8
-    infra_str = metrics.get("infrastructureInvestment", "0")
-    try:
-        infra_val = float(re.search(r"[\d.]+", str(infra_str)).group())
-        if infra_val > 500:
-            score += 8
-    except Exception:
-        pass
-    return min(99, max(10, score))
+            
+    return min(99, max(10, int(round(score))))
 
 
 def update_suburb_metrics(suburb: dict, pop_data: dict, rba_data: dict) -> dict:

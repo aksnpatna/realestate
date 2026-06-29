@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
-import { mockSuburbsData } from '../data/suburbs';
 import type { SuburbData } from '../data/suburbs';
 
-export default function HouseSearch() {
+export default function HouseSearch({ suburbsData }: { suburbsData: SuburbData[] }) {
   const [searchText, setSearchText] = useState('');
   const [selectedStates, setSelectedStates] = useState<Set<string>>(new Set());
   const [minGrowthScore, setMinGrowthScore] = useState(0);
@@ -12,7 +11,7 @@ export default function HouseSearch() {
   const [metroOnly, setMetroOnly] = useState(false);
   const [maxCBDMins, setMaxCBDMins] = useState<number | null>(null);
 
-  const allStates = useMemo(() => Array.from(new Set(mockSuburbsData.map(s => s.state))).sort(), []);
+  const allStates = useMemo(() => Array.from(new Set(suburbsData.map(s => s.state))).sort(), [suburbsData]);
 
   const toggleState = (s: string) => {
     setSelectedStates(prev => {
@@ -24,7 +23,7 @@ export default function HouseSearch() {
   };
 
   const results = useMemo(() => {
-    return mockSuburbsData.filter(suburb => {
+    return suburbsData.filter(suburb => {
       if (searchText && !suburb.name.toLowerCase().includes(searchText.toLowerCase()) && !suburb.postcode.includes(searchText)) return false;
       if (selectedStates.size > 0 && !selectedStates.has(suburb.state)) return false;
       if (minGrowthScore > 0 && suburb.growthScore < minGrowthScore) return false;
@@ -35,6 +34,7 @@ export default function HouseSearch() {
       if (maxCBDMins !== null && suburb.cbdDistanceMins !== null && suburb.cbdDistanceMins > maxCBDMins) return false;
       return true;
     }).sort((a, b) => b.growthScore - a.growthScore);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, selectedStates, minGrowthScore, maxPrice, minSchoolQuality, minTransit, metroOnly, maxCBDMins]);
 
   return (
@@ -179,12 +179,12 @@ function SearchResultCard({ suburb }: { suburb: SuburbData }) {
         </div>
         {suburb.highlights.length > 0 && (
           <div className="result-highlights">
-            {suburb.highlights.filter(h => !h.includes('generated') && !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('Pending')).slice(0, 2).map((h, i) => (
+            {suburb.highlights.filter((h: string) => !h.includes('generated') && !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('Pending')).slice(0, 2).map((h: string, i: number) => (
               <span key={i} className="highlight-chip">{h}</span>
             ))}
           </div>
         )}
-        {suburb.highlights.every(h => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) && (
+        {suburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) && (
           <p className="no-data-msg">No data available to forecast</p>
         )}
       </div>

@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
-import { mockSuburbsData, calculateStampDuty } from '../data/suburbs';
+import { useState, useMemo, useEffect } from 'react';
+import { calculateStampDuty } from '../data/suburbs';
+import type { SuburbData } from '../data/suburbs';
 
 interface GearingResult {
   purchasePrice: number;
@@ -16,7 +17,7 @@ interface GearingResult {
   lvr: number;
 }
 
-export default function CashflowGearing() {
+export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbData[] }) {
   const [selectedSuburbId, setSelectedSuburbId] = useState<string>('');
   const [purchasePrice, setPurchasePrice] = useState<number>(700000);
   const [weeklyRent, setWeeklyRent] = useState<number>(550);
@@ -31,35 +32,52 @@ export default function CashflowGearing() {
   const [pmFeePct, setPmFeePct] = useState<number>(7.5);
   const maintenancePct = 1.0;
   const [vacancyWeeks, setVacancyWeeks] = useState<number>(2);
+  const [rateLoading, setRateLoading] = useState<boolean>(true);
+
+  // Fetch dynamic interest rate
+  useEffect(() => {
+    fetch('/api/mortgage-rate')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && data.effective_mortgage_rate) {
+          setInterestRate(data.effective_mortgage_rate);
+        }
+        setRateLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch dynamic mortgage rate, falling back to default.", err);
+        setRateLoading(false);
+      });
+  }, []);
 
   // Auto-fill from suburb selection
   useMemo(() => {
     if (selectedSuburbId) {
-      const sub = mockSuburbsData.find(s => s.id === selectedSuburbId);
+      const sub = suburbsData.find(s => s.id === selectedSuburbId);
       if (sub) {
         setPurchasePrice(sub.metrics.medianPrice);
         const rent = sub.metrics.weeklyRent ?? Math.round(sub.metrics.medianPrice * sub.metrics.rentalYield / 100 / 52);
         setWeeklyRent(rent);
       }
     }
-  }, [selectedSuburbId]);
+  }, [selectedSuburbId, suburbsData]);
 
   const stateOptions = useMemo(() =>
-    Array.from(new Set(mockSuburbsData.map(s => s.state))).sort(),
-    []
+    Array.from(new Set(suburbsData.map(s => s.state))).sort(),
+    [suburbsData]
   );
 
   const [filterState, setFilterState] = useState<string>('VIC');
   const suburbOptions = useMemo(() =>
-    mockSuburbsData.filter(s => s.state === filterState).sort((a, b) => a.name.localeCompare(b.name)),
-    [filterState]
+    suburbsData.filter(s => s.state === filterState).sort((a, b) => a.name.localeCompare(b.name)),
+    [filterState, suburbsData]
   );
 
   const result = useMemo((): GearingResult | null => {
     if (!purchasePrice || purchasePrice <= 0) return null;
 
     const state = selectedSuburbId
-      ? mockSuburbsData.find(s => s.id === selectedSuburbId)?.state ?? 'VIC'
+      ? suburbsData.find(s => s.id === selectedSuburbId)?.state ?? 'VIC'
       : 'VIC';
 
     const sd = calculateStampDuty(purchasePrice, state);
@@ -110,6 +128,7 @@ export default function CashflowGearing() {
       gearingStatus,
       lvr: Math.round(lvr * 10) / 10,
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchasePrice, weeklyRent, depositPct, interestRate, loanType, loanTerm,
     customCosts, ratesBill, waterBill, insurance, pmFeePct, maintenancePct,
     vacancyWeeks, selectedSuburbId]);
@@ -159,7 +178,9 @@ export default function CashflowGearing() {
                 </div>
               </div>
               <div className="control-group">
-                <label className="control-label">Interest Rate % p.a.</label>
+                <label className="control-label">
+                  Interest Rate % p.a. {rateLoading && <span style={{fontSize: '0.8em', color: 'var(--accent-cyan)'}}>(Live fetching...)</span>}
+                </label>
                 <input type="number" className="premium-input" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value) || 0)} step={0.05} min={1} max={15} />
               </div>
             </div>

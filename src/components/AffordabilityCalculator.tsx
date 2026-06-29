@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { mockSuburbsData, calculateMaxPurchase } from '../data/suburbs';
+import { calculateMaxPurchase } from '../data/suburbs';
+import type { SuburbData } from '../data/suburbs';
 
 type SortKey = 'name' | 'medianPrice' | 'growthScore' | 'rentalYield' | 'schoolQuality' | 'transitAccessibility' | 'cbdDistanceMins' | 'state';
 
-export default function AffordabilityCalculator() {
+export default function AffordabilityCalculator({ suburbsData }: { suburbsData: SuburbData[] }) {
   const [deposit, setDeposit] = useState<number>(150000);
   const [lvrPct, setLvrPct] = useState<number>(80);
   const [stateFilter, setStateFilter] = useState<string>('ALL');
@@ -11,7 +12,7 @@ export default function AffordabilityCalculator() {
   const [sortAsc, setSortAsc] = useState(false);
 
   const lvr = lvrPct / 100;
-  const states = useMemo(() => ['ALL', ...Array.from(new Set(mockSuburbsData.map(s => s.state)))], []);
+  const states = useMemo(() => ['ALL', ...Array.from(new Set(suburbsData.map(s => s.state)))], [suburbsData]);
 
   const calc = useMemo(() => {
     if (!deposit || deposit <= 0) return null;
@@ -25,11 +26,12 @@ export default function AffordabilityCalculator() {
       ACT: calculateMaxPurchase(deposit, 'ACT', lvr),
       NT: calculateMaxPurchase(deposit, 'NT', lvr),
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deposit, lvr]);
 
   const matchingSuburbs = useMemo(() => {
     if (!deposit || deposit <= 0) return [];
-    let filtered = mockSuburbsData.filter(s => {
+    let filtered = suburbsData.filter(s => {
       const stateCalc = calc?.[s.state as keyof typeof calc];
       if (!stateCalc) return false;
       return s.metrics.medianPrice <= stateCalc.maxPrice;
@@ -57,6 +59,7 @@ export default function AffordabilityCalculator() {
       }
       return sortAsc ? cmp : -cmp;
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deposit, calc, stateFilter, sortBy, sortAsc]);
 
   return (

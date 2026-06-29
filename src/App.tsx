@@ -5,6 +5,7 @@ import SuburbMap from './components/SuburbMap'
 import AffordabilityCalculator from './components/AffordabilityCalculator'
 import HouseSearch from './components/HouseSearch'
 import CashflowGearing from './components/CashflowGearing'
+import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import './index.css'
 
 type TabName = 'profile' | 'search' | 'affordability' | 'gearing';
@@ -17,6 +18,10 @@ function App() {
   
   const [suburbsData, setSuburbsData] = useState<SuburbData[]>([])
   const [loadingData, setLoadingData] = useState(true)
+  const [livabilityData, setLivabilityData] = useState<LivabilityData | null>(null)
+  const [loadingLivability, setLoadingLivability] = useState(false)
+  const [showPrimarySchools, setShowPrimarySchools] = useState(false)
+  const [showSecondarySchools, setShowSecondarySchools] = useState(false)
 
   const [activeTab, setActiveTab] = useState<TabName>('profile')
   const [activeState, setActiveState] = useState<string>('VIC')
@@ -41,7 +46,7 @@ function App() {
           }
           setLoadingData(false)
         })
-        .catch(err => {
+        .catch((err: unknown) => {
           console.error("API error, using full mock data:", err)
           setSuburbsData(mockSuburbsData)
           setLoadingData(false)
@@ -65,6 +70,10 @@ function App() {
     }
   }, [activeState, stateSuburbs, activeSuburb])
 
+  useEffect(() => {
+    setLivabilityData(null)
+  }, [activeSuburb])
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -83,7 +92,7 @@ function App() {
       } else {
         setLoginError(`Invalid credentials (Status: ${res.status})`)
       }
-    } catch (err) {
+    } catch {
       // Fallback local check if API is not fully up yet
       if (cleanEmail === 'teraamit@gmail.com' && cleanPassword === 'password321') {
         setIsAuthenticated(true)
@@ -218,10 +227,20 @@ function App() {
                           ? `${activeSuburb.cbdDistanceMins} min to ${activeSuburb.metroCBD}`
                           : activeSuburb.metroCBD}
                       </p>
+                      {activeSuburb.lastUpdated && (
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                          Data Last Updated: {new Date(activeSuburb.lastUpdated).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
                     <div className="main-score">
-                      <div className="main-score-value">{activeSuburb.growthScore}</div>
+                      <div className="main-score-value" title="Formula: (Pop% * 10) + (Infra$B * 3) + (School * 3) + (Transit * 2) + (Yield * 2) - Distance Penalty">
+                        {activeSuburb.growthScore}
+                      </div>
                       <div className="main-score-label">Growth Probability</div>
+                      <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '4px', textAlign: 'center', maxWidth: '120px' }}>
+                        *Score = PopGrowth + Infra + Schools + Transit + Yield - Distance
+                      </div>
                     </div>
                   </div>
 
@@ -290,7 +309,7 @@ function App() {
                                 alert(`Analysis Complete!\nSentiment: ${data.sentiment}\nSummary: ${data.summary}`);
                                 window.location.reload(); // Quick hack to refresh data
                               }
-                            } catch(e) {
+                            } catch {
                               alert("Analysis failed.");
                             }
                           }}
@@ -330,6 +349,72 @@ function App() {
                     </div>
                   )}
 
+                  {/* NEW LIVABILITY SECTION */}
+                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h3>Real-Time Livability & Amenities</h3>
+                      {!livabilityData && !loadingLivability && (
+                        <button
+                          onClick={async () => {
+                            setLoadingLivability(true);
+                            try {
+                              const data = await fetchLivabilityData(activeSuburb.coordinates[0], activeSuburb.coordinates[1]);
+                              setLivabilityData(data);
+                            } catch {
+                              alert("Failed to load livability data");
+                            }
+                            setLoadingLivability(false);
+                          }}
+                          style={{
+                            background: 'var(--accent-purple)', color: '#fff', border: 'none', 
+                            padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold'
+                          }}
+                        >
+                          Scan Area (Live)
+                        </button>
+                      )}
+                    </div>
+                    {loadingLivability && <p style={{ color: 'var(--text-secondary)' }}>Scanning neighborhood via OpenStreetMap...</p>}
+                    {livabilityData && (
+                      <div style={{ marginTop: '15px' }}>
+                        <div className="metrics-grid" style={{ marginBottom: '15px' }}>
+                          <div className="metric-box">
+                            <div className="metric-label">Walkability Score</div>
+                            <div className="metric-value highlight-cyan">{livabilityData.walkabilityScore}/100</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Cafes & Dining</div>
+                            <div className="metric-value">{livabilityData.cafes.length}</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Parks & Leisure</div>
+                            <div className="metric-value">{livabilityData.parks.length}</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Transit Stops</div>
+                            <div className="metric-value">{livabilityData.transit.length}</div>
+                          </div>
+                        </div>
+                        {livabilityData.cafes.length > 0 && (
+                          <div style={{ marginBottom: '10px' }}>
+                            <strong>Popular Spots: </strong>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                              {livabilityData.cafes.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.cafes.length > 5 ? '...' : ''}
+                            </span>
+                          </div>
+                        )}
+                        {livabilityData.schools.length > 0 && (
+                          <div>
+                            <strong>Local Schools (OSM): </strong>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                              {livabilityData.schools.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.schools.length > 5 ? '...' : ''}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   {activeSuburb.schools.length === 0 && activeSuburb.pois.length === 0 && (
                     <div className="no-data-banner">
                       <p>Limited data available for this suburb. Core metrics are estimated from market trends. School zones, POIs, and historical data are being collected.</p>
@@ -339,76 +424,92 @@ function App() {
                   {activeSuburb.schools.length > 0 && (
                     <div className="schools-section">
                       {((() => {
-                        const primaries = activeSuburb.schools.filter(s => s.type === 'Primary');
-                        const secondaries = activeSuburb.schools.filter(s => s.type === 'Secondary' || s.type === 'Combined');
+                        const primaries = activeSuburb.schools.filter(s => ['primary', 'combined'].includes(s.type.toLowerCase()));
+                        const secondaries = activeSuburb.schools.filter(s => ['secondary', 'combined'].includes(s.type.toLowerCase()));
                         return (
                           <>
                             {primaries.length > 0 && (
                               <div className="school-table-group">
-                                <h3>🏫 Primary Schools ({primaries.length})</h3>
-                                <div className="table-responsive">
-                                  <table className="schools-table">
-                                    <thead>
-                                      <tr>
-                                        <th>School Name</th>
-                                        <th>Type</th>
-                                        <th>State Rank</th>
-                                        <th>Academic Score</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {primaries.map((school, idx) => (
-                                        <tr key={idx}>
-                                          <td className="school-name-cell">{school.name}</td>
-                                          <td><span className="type-badge type-primary">Primary</span></td>
-                                          <td>#{school.stateRank}</td>
-                                          <td>
-                                            <div className="score-bar-wrapper">
-                                              <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
-                                              <span>{school.score}/100</span>
-                                            </div>
-                                          </td>
+                                <h3 
+                                  onClick={() => setShowPrimarySchools(!showPrimarySchools)}
+                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}
+                                >
+                                  <span>🏫 Primary Schools ({primaries.length})</span>
+                                  <span style={{ fontSize: '0.8rem' }}>{showPrimarySchools ? '▲ Hide' : '▼ Show'}</span>
+                                </h3>
+                                {showPrimarySchools && (
+                                  <div className="table-responsive" style={{ marginTop: '10px' }}>
+                                    <table className="schools-table">
+                                      <thead>
+                                        <tr>
+                                          <th>School Name</th>
+                                          <th>Type</th>
+                                          <th>State Rank</th>
+                                          <th>Academic Score</th>
                                         </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
+                                      </thead>
+                                      <tbody>
+                                        {primaries.map((school, idx) => (
+                                          <tr key={idx}>
+                                            <td className="school-name-cell">{school.name}</td>
+                                            <td><span className="type-badge type-primary">Primary</span></td>
+                                            <td>#{school.stateRank}</td>
+                                            <td>
+                                              <div className="score-bar-wrapper">
+                                                <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
+                                                <span>{school.score}/100 <span style={{fontSize: '0.7rem', color: '#94a3b8'}}>(Est.)</span></span>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                )}
                               </div>
                             )}
                             {secondaries.length > 0 && (
-                              <div className="school-table-group">
-                                <h3>🎓 Secondary Schools ({secondaries.length})</h3>
-                                <div className="table-responsive">
-                                  <table className="schools-table">
-                                    <thead>
-                                      <tr>
-                                        <th>School Name</th>
-                                        <th>Type</th>
-                                        <th>State Rank</th>
-                                        <th>Academic Score</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {secondaries.map((school, idx) => (
-                                        <tr key={idx}>
-                                          <td className="school-name-cell">{school.name}</td>
-                                          <td>
-                                            <span className={`type-badge type-${school.type.toLowerCase()}`}>
-                                              {school.type}
-                                            </span>
-                                          </td>
-                                          <td>#{school.stateRank}</td>
-                                          <td>
-                                            <div className="score-bar-wrapper">
-                                              <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
-                                              <span>{school.score}/100</span>
-                                            </div>
-                                          </td>
+                              <div className="school-table-group" style={{ marginTop: '15px' }}>
+                                <h3 
+                                  onClick={() => setShowSecondarySchools(!showSecondarySchools)}
+                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}
+                                >
+                                  <span>🎓 Secondary Schools ({secondaries.length})</span>
+                                  <span style={{ fontSize: '0.8rem' }}>{showSecondarySchools ? '▲ Hide' : '▼ Show'}</span>
+                                </h3>
+                                {showSecondarySchools && (
+                                  <div className="table-responsive" style={{ marginTop: '10px' }}>
+                                    <table className="schools-table">
+                                      <thead>
+                                        <tr>
+                                          <th>School Name</th>
+                                          <th>Type</th>
+                                          <th>State Rank</th>
+                                          <th>Academic Score</th>
                                         </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
+                                      </thead>
+                                      <tbody>
+                                        {secondaries.map((school, idx) => (
+                                          <tr key={idx}>
+                                            <td className="school-name-cell">{school.name}</td>
+                                            <td>
+                                              <span className={`type-badge type-${school.type.toLowerCase()}`}>
+                                                {school.type}
+                                              </span>
+                                            </td>
+                                            <td>#{school.stateRank}</td>
+                                            <td>
+                                              <div className="score-bar-wrapper">
+                                                <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
+                                                <span>{school.score}/100 <span style={{fontSize: '0.7rem', color: '#94a3b8'}}>(Est.)</span></span>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </>
@@ -436,9 +537,9 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'search' && <HouseSearch />}
-      {activeTab === 'affordability' && <AffordabilityCalculator />}
-      {activeTab === 'gearing' && <CashflowGearing />}
+      {activeTab === 'search' && <HouseSearch suburbsData={suburbsData} />}
+      {activeTab === 'affordability' && <AffordabilityCalculator suburbsData={suburbsData} />}
+      {activeTab === 'gearing' && <CashflowGearing suburbsData={suburbsData} />}
     </div>
   )
 }

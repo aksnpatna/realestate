@@ -36,6 +36,7 @@ export interface SuburbData {
   highlights: string[];
   pois: POI[];
   schools: School[];
+  lastUpdated?: string;
 }
 
 export interface StampDutyRates {

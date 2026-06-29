@@ -61,6 +61,7 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
         const sf = stateFull[stateName] || stateName;
 
         const queries = [
+          `${suburbName} suburb, ${sf}, Australia`,
           `${suburbName}, ${sf}, Australia`,
           `${suburbName} ${postcode}, ${sf}, Australia`,
           `${suburbName}, ${stateName} ${postcode}, Australia`,
@@ -136,7 +137,7 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
               <Popup className="premium-popup">
                 <strong>{school.name}</strong><br/>
                 <span style={{textTransform: 'capitalize'}}>{school.type} School</span><br/>
-                <span style={{color: '#94a3b8'}}>State Rank: #{school.stateRank} | Score: {school.score}/100</span>
+                <span style={{color: '#94a3b8'}}>State Rank: #{school.stateRank} | Score: {school.score}/100 (Est.)</span>
               </Popup>
             </Marker>
           ))}
