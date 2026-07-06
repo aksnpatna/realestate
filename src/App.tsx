@@ -27,6 +27,18 @@ function App() {
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
 
+  const loadColdSuburb = async (id: string) => {
+    try {
+      const res = await fetch(`/api/suburbs/${id}`)
+      if (res.ok) {
+        const data = await res.json()
+        setActiveSuburb(data)
+      }
+    } catch (e) {
+      console.error('Failed to load suburb', e)
+    }
+  }
+
   useEffect(() => {
     if (isAuthenticated) {
       fetch('/api/suburbs')
@@ -60,15 +72,16 @@ function App() {
     [activeState, suburbsData]
   )
 
-  useMemo(() => {
+  useEffect(() => {
     if (stateSuburbs.length > 0) {
       if (!activeSuburb || activeSuburb.state !== activeState) {
-        setActiveSuburb(stateSuburbs[0])
+        loadColdSuburb(stateSuburbs[0].id)
       }
     } else {
       setActiveSuburb(null)
     }
-  }, [activeState, stateSuburbs, activeSuburb])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeState, stateSuburbs])
 
   useEffect(() => {
     setLivabilityData(null)
@@ -90,16 +103,11 @@ function App() {
         setIsAuthenticated(true)
         setLoginError('')
       } else {
-        setLoginError(`Invalid credentials (Status: ${res.status})`)
+        const msg = await res.text();
+        setLoginError(msg || `Invalid credentials (Status: ${res.status})`)
       }
     } catch {
-      // Fallback local check if API is not fully up yet
-      if (cleanEmail === 'teraamit@gmail.com' && cleanPassword === 'password321') {
-        setIsAuthenticated(true)
-        setLoginError('')
-      } else {
-        setLoginError('Invalid credentials or network error')
-      }
+      setLoginError('Network error — check if backend is running')
     }
   }
 
@@ -358,7 +366,8 @@ function App() {
                           onClick={async () => {
                             setLoadingLivability(true);
                             try {
-                              const data = await fetchLivabilityData(activeSuburb.coordinates[0], activeSuburb.coordinates[1]);
+                              const coords = activeSuburb.coordinates || [-37.8, 145.0];
+                              const data = await fetchLivabilityData(coords[0], coords[1]);
                               setLivabilityData(data);
                             } catch {
                               alert("Failed to load livability data");
@@ -415,17 +424,17 @@ function App() {
                     )}
                   </div>
 
-                  {activeSuburb.schools.length === 0 && activeSuburb.pois.length === 0 && (
+                  {(!activeSuburb.schools || activeSuburb.schools.length === 0) && (!activeSuburb.pois || activeSuburb.pois.length === 0) && (
                     <div className="no-data-banner">
                       <p>Limited data available for this suburb. Core metrics are estimated from market trends. School zones, POIs, and historical data are being collected.</p>
                     </div>
                   )}
 
-                  {activeSuburb.schools.length > 0 && (
+                  {activeSuburb.schools && activeSuburb.schools.length > 0 && (
                     <div className="schools-section">
                       {((() => {
-                        const primaries = activeSuburb.schools.filter(s => ['primary', 'combined'].includes(s.type.toLowerCase()));
-                        const secondaries = activeSuburb.schools.filter(s => ['secondary', 'combined'].includes(s.type.toLowerCase()));
+                        const primaries = activeSuburb.schools!.filter(s => ['primary', 'combined'].includes(s.type.toLowerCase()));
+                        const secondaries = activeSuburb.schools!.filter(s => ['secondary', 'combined'].includes(s.type.toLowerCase()));
                         return (
                           <>
                             {primaries.length > 0 && (
@@ -520,9 +529,9 @@ function App() {
                 </div>
 
                 <SuburbMap
-                  center={activeSuburb.coordinates}
-                  pois={activeSuburb.pois}
-                  schools={activeSuburb.schools}
+                  center={activeSuburb.coordinates || [-25.2744, 133.7751]}
+                  pois={activeSuburb.pois || []}
+                  schools={activeSuburb.schools || []}
                   suburbName={activeSuburb.name}
                   stateName={activeSuburb.state}
                   postcode={activeSuburb.postcode}
