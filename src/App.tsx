@@ -655,9 +655,16 @@ function App() {
                               body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id: activeSuburb.id })
                             });
                             const data = await res.json();
-                            if(res.ok && data.status === 'success') {
-                              const aiData = data.result;
-                              setActiveSuburb((prev: any) => ({...prev, aiVerdict: aiData.verdict, aiConsensus: aiData.consensus, aiRiskLevel: aiData.risk_level, aiBullView: aiData.bull_view, aiBearView: aiData.bear_view, aiBaseView: aiData.base_view }));
+                            if(res.ok && data.verdict) {
+                              setActiveSuburb((prev: any) => ({
+                                ...prev,
+                                aiVerdict: data.verdict,
+                                aiConsensus: data.playbook,
+                                aiRiskLevel: data.reality_check,
+                                aiBullView: data.bull,
+                                aiBearView: data.bear,
+                                aiUrbanView: data.urban
+                              }));
                             }
                           } catch(e){ console.error(e) }
                           finally { setIsAnalyzingAI(false) }
@@ -672,19 +679,29 @@ function App() {
                     </div>
                     {(activeSuburb as any).aiVerdict ? (
                       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                        <div style={{ flex: '1 1 250px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                        <div style={{ flex: '1 1 100%', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px', marginBottom: '8px' }}>
                           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>Consensus Verdict</div>
                           <div style={{ fontWeight: 800, fontSize: '1.3rem', color: 'var(--accent-cyan)' }}>{(activeSuburb as any).aiVerdict}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{(activeSuburb as any).aiRiskLevel}</span></div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{(activeSuburb as any).aiRiskLevel || '—'}</span></div>
                         </div>
                         <div style={{ flex: '1 1 250px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '0.75rem', color: '#10b981', marginBottom: '4px' }}>🐂 Bull View</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>{(activeSuburb as any).aiBullView || 'Awaiting analysis'}</div>
+                          <div style={{ fontSize: '0.75rem', color: '#10b981', marginBottom: '4px' }}>🐂 Bull — Anna</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{(activeSuburb as any).aiBullView || 'Awaiting analysis'}</div>
                         </div>
                         <div style={{ flex: '1 1 250px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '15px', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '0.75rem', color: '#ef4444', marginBottom: '4px' }}>🐻 Bear View</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>{(activeSuburb as any).aiBearView || 'Awaiting analysis'}</div>
+                          <div style={{ fontSize: '0.75rem', color: '#ef4444', marginBottom: '4px' }}>🐻 Bear — Alex</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{(activeSuburb as any).aiBearView || 'Awaiting analysis'}</div>
                         </div>
+                        <div style={{ flex: '1 1 250px', background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', padding: '15px', borderRadius: '8px' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#8b5cf6', marginBottom: '4px' }}>🏙️ Urban Planner</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{(activeSuburb as any).aiUrbanView || 'Awaiting analysis'}</div>
+                        </div>
+                        {(activeSuburb as any).aiConsensus && (
+                          <div style={{ flex: '1 1 100%', background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', marginBottom: '4px' }}>📋 Investor CEO Playbook</div>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap', maxHeight: '200px', overflowY: 'auto' }}>{(activeSuburb as any).aiConsensus}</div>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
