@@ -209,18 +209,19 @@ def get_livability(lat, lng, radius_m=2500):
     }
 
 def get_boundary(suburb_name: str, state: str = ""):
-    """Fetch geojson boundary and center coordinates from PostGIS.
-    Filters by state bounding box when provided to disambiguate suburbs with same name."""
-    # State bounding boxes (approx lat/lng ranges)
-    STATE_BOUNDS = {
-        "VIC": (141.0, 150.0, -39.2, -34.0),
-        "NSW": (141.0, 154.0, -37.5, -28.0),
-        "QLD": (138.0, 154.0, -29.2, -10.0),
-        "WA":  (113.0, 129.0, -35.0, -14.0),
-        "SA":  (129.0, 141.0, -38.0, -26.0),
-        "TAS": (144.5, 148.5, -43.7, -39.5),
-        "NT":  (129.0, 138.0, -26.0, -11.0),
-        "ACT": (148.8, 149.4, -35.9, -35.1),
+    """Fetch geojson boundary and center coordinates from local PostGIS.
+    When state is provided, finds the polygon closest to the state's approximate center
+    to disambiguate suburbs with the same name across states."""
+    # State approximate centroid coordinates (lat, lng)
+    STATE_CENTERS = {
+        "VIC": (-37.0, 145.0),
+        "NSW": (-33.0, 147.0),
+        "QLD": (-23.0, 145.0),
+        "WA":  (-26.0, 121.0),
+        "SA":  (-32.0, 136.0),
+        "TAS": (-42.0, 147.0),
+        "NT":  (-20.0, 133.0),
+        "ACT": (-35.3, 149.1),
     }
     sql = """
     SELECT ST_AsGeoJSON(ST_Transform(way, 4326)) as geojson,
@@ -229,15 +230,30 @@ def get_boundary(suburb_name: str, state: str = ""):
     FROM planet_osm_polygon
     WHERE name ILIKE :name
       AND (boundary = 'administrative' OR place IN ('suburb', 'locality', 'town'))
+    ORDER BY way_area DESC NULLS LAST LIMIT 10
     """
     params = {"name": suburb_name}
-    if state and state.upper() in STATE_BOUNDS:
-        bounds = STATE_BOUNDS[state.upper()]
-        sql += " AND way && ST_MakeEnvelope(:minx, :miny, :maxx, :maxy, 4326)"
-        params.update({"minx": bounds[0], "miny": bounds[2], "maxx": bounds[1], "maxy": bounds[3]})
-    sql += " ORDER BY way_area DESC NULLS LAST LIMIT 1;"
+    
     with engine.connect() as conn:
-        row = conn.execute(text(sql), params).first()
+        rows = conn.execute(text(sql), params).all()
+    
+    if not rows:
+        return None
+    
+    # If state provided, pick the polygon whose centroid is closest to the state center
+    if state and state.upper() in STATE_CENTERS:
+        sc = STATE_CENTERS[state.upper()]
+        best_row = None
+        best_dist = float('inf')
+        for row in rows:
+            rlat, rlng = row[1] or 0, row[2] or 0
+            dist = (rlat - sc[0])**2 + (rlng - sc[1])**2
+            if dist < best_dist:
+                best_dist = dist
+                best_row = row
+        row = best_row
+    else:
+        row = rows[0]
     
     if row:
         return {
