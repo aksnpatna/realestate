@@ -5,11 +5,13 @@ import SuburbMap from './components/SuburbMap'
 import AffordabilityCalculator from './components/AffordabilityCalculator'
 import HouseSearch from './components/HouseSearch'
 import CashflowGearing from './components/CashflowGearing'
+import InstitutionalV3Panel from './components/InstitutionalV3Panel'
+import MyPurchasePlan from './components/MyPurchasePlan'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
 
-type TabName = 'profile' | 'search' | 'affordability' | 'gearing';
+type TabName = 'profile' | 'search' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -27,6 +29,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabName>('profile')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
+  const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
 
   const loadColdSuburb = async (id: string) => {
     const cacheBuster = '?t=' + Date.now()
@@ -164,6 +167,18 @@ function App() {
         >
           Cashflow &amp; Gearing
         </button>
+        <button
+          className={`tab-btn ${activeTab === 'purchase-plan' ? 'tab-active' : ''}`}
+          onClick={() => setActiveTab('purchase-plan')}
+        >
+          My Purchase Plan
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'institutional' ? 'tab-active' : ''}`}
+          onClick={() => setActiveTab('institutional')}
+        >
+          Institutional
+        </button>
       </nav>
 
       {activeTab === 'profile' && (
@@ -227,7 +242,21 @@ function App() {
                 <div className="glass-card">
                     <div className="detail-header">
                       <div>
-                        <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}</h2>
+                        <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}
+                        {(()=>{
+                          const dq = (activeSuburb as any).dqScore;
+                          if(dq==null)return null;
+                          const c=dq>=90?'#10b981':dq>=70?'#f59e0b':'#ef4444';
+                          const bg=dq>=90?'rgba(16,185,129,0.15)':dq>=70?'rgba(245,158,11,0.15)':'rgba(239,68,68,0.15)';
+                          return <span title="Data Quality Score" style={{marginLeft:'12px',fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:'4px',background:bg,color:c,border:`1px solid ${c}40`}}>DQ {Math.round(dq)}</span>;
+                        })()}
+                        {(activeSuburb as any).lastV3Update && (
+                          <span style={{ marginLeft: '8px', fontSize: '0.6rem', color: 'var(--text-secondary)' }}>
+                            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', display: 'inline-block', marginRight: '4px' }} />
+                            V3 · {new Date((activeSuburb as any).lastV3Update).toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'})}
+                          </span>
+                        )}
+                      </h2>
                       <p className="subtitle">
                         {activeSuburb.isMetro && activeSuburb.cbdDistanceMins !== null
                           ? `${activeSuburb.cbdDistanceMins} min to ${activeSuburb.metroCBD}`
@@ -614,6 +643,59 @@ function App() {
                     </div>
                   </div>
 
+                  {/* PANEL D: AI Investment Committee */}
+                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
+                      <h3>Panel D: AI Investment Committee</h3>
+                      <button
+                        disabled={isAnalyzingAI}
+                        onClick={async () => {
+                          try {
+                            setIsAnalyzingAI(true);
+                            const res = await fetch('/api/analyze-suburb', {
+                              method: 'POST',
+                              headers: {'Content-Type': 'application/json'},
+                              body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id: activeSuburb.id })
+                            });
+                            const data = await res.json();
+                            if(res.ok && data.status === 'success') {
+                              const aiData = data.result;
+                              setActiveSuburb((prev: any) => ({...prev, aiVerdict: aiData.verdict, aiConsensus: aiData.consensus, aiRiskLevel: aiData.risk_level, aiBullView: aiData.bull_view, aiBearView: aiData.bear_view, aiBaseView: aiData.base_view }));
+                            }
+                          } catch(e){ console.error(e) }
+                          finally { setIsAnalyzingAI(false) }
+                        }}
+                        style={{
+                          padding: '8px 16px', background: 'var(--accent-purple)', color: '#fff',
+                          border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem'
+                        }}
+                      >
+                        {isAnalyzingAI ? 'Analyzing...' : 'Run AI Committee'}
+                      </button>
+                    </div>
+                    {(activeSuburb as any).aiVerdict ? (
+                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                        <div style={{ flex: '1 1 250px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>Consensus Verdict</div>
+                          <div style={{ fontWeight: 800, fontSize: '1.3rem', color: 'var(--accent-cyan)' }}>{(activeSuburb as any).aiVerdict}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{(activeSuburb as any).aiRiskLevel}</span></div>
+                        </div>
+                        <div style={{ flex: '1 1 250px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#10b981', marginBottom: '4px' }}>🐂 Bull View</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>{(activeSuburb as any).aiBullView || 'Awaiting analysis'}</div>
+                        </div>
+                        <div style={{ flex: '1 1 250px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '15px', borderRadius: '8px' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#ef4444', marginBottom: '4px' }}>🐻 Bear View</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>{(activeSuburb as any).aiBearView || 'Awaiting analysis'}</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+                        Click "Run AI Committee" to get a multi-agent analysis of {activeSuburb.name}.
+                      </div>
+                    )}
+                  </div>
+
                   {(!activeSuburb.schools || activeSuburb.schools.length === 0) && (!activeSuburb.pois || activeSuburb.pois.length === 0) && (
                     <div className="no-data-banner">
                       <p>Limited data available for this suburb. Core metrics are estimated from market trends. School zones, POIs, and historical data are being collected.</p>
@@ -739,6 +821,8 @@ function App() {
       {activeTab === 'search' && <HouseSearch suburbsData={suburbsData} />}
       {activeTab === 'affordability' && <AffordabilityCalculator suburbsData={suburbsData} />}
       {activeTab === 'gearing' && <CashflowGearing suburbsData={suburbsData} />}
+      {activeTab === 'purchase-plan' && <MyPurchasePlan suburbsData={suburbsData} />}
+      {activeTab === 'institutional' && <InstitutionalV3Panel />}
     </div>
   )
 }
