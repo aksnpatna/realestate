@@ -21,22 +21,28 @@ services:
       dockerfile: Dockerfile
     container_name: realestate-backend
     restart: unless-stopped
-    environment:
-      - DATABASE_URL=postgresql://realestate_user:realestate_pass@db:5432/realestate
-      - ADMIN_EMAIL=teraamit@gmail.com
-      - ADMIN_PASSWORD=password321
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  osm-updater:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.osm
+    container_name: realestate-osm-updater
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: postgres:15-alpine
+    image: postgis/postgis:15-3.4-alpine
     container_name: realestate-db
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: realestate_user
-      POSTGRES_PASSWORD: realestate_pass
-      POSTGRES_DB: realestate
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

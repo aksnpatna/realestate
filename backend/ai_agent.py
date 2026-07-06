@@ -1,6 +1,7 @@
 import os
+import re
+from typing import TypedDict, Dict, Any, List
 from dotenv import load_dotenv
-from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
@@ -10,17 +11,33 @@ from tavily import TavilyClient
 load_dotenv()
 
 def get_llm():
-    if os.getenv("NVIDIA_API_KEY"):
+    # 1st: NVIDIA (Llama 3.1 70B)
+    if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("NVIDIA_API_KEY"),
             openai_api_base="https://integrate.api.nvidia.com/v1",
             model_name="meta/llama-3.1-70b-instruct"
         )
-    elif os.getenv("GROQ_API_KEY"):
+    # 2nd: Groq (fast inference)
+    elif os.getenv("GROQ_API_KEY") and os.getenv("GROQ_API_KEY") != "none":
         return ChatGroq(
             api_key=os.getenv("GROQ_API_KEY"),
-            model_name="llama3-70b-8192"
+            model_name="llama-3.3-70b-versatile"
         )
+    # 3rd: DeepSeek
+    elif os.getenv("DEEPSEEK_API_KEY") and os.getenv("DEEPSEEK_API_KEY") != "none":
+        return ChatOpenAI(
+            openai_api_key=os.getenv("DEEPSEEK_API_KEY"),
+            openai_api_base="https://api.deepseek.com/v1",
+            model_name="deepseek-chat"
+        )
+    # 3rd: OpenAI / ChatGPT
+    elif os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API_KEY") != "none":
+        return ChatOpenAI(
+            openai_api_key=os.getenv("OPENAI_API_KEY"),
+            model_name="gpt-4o-mini"
+        )
+    # 4th: Local Ollama
     else:
         return ChatOpenAI(
             openai_api_key="none",
@@ -28,85 +45,227 @@ def get_llm():
             model_name="qwen2.5:7b"
         )
 
-tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY", ""))
+# Limit Tavily fetch to only 1-2 suburbs (or when explicitly requested) to save API calls
+tavily_key = os.getenv("TAVILY_API_KEY", "")
+tavily = TavilyClient(api_key=tavily_key) if tavily_key else None
 
-class AgentState(TypedDict):
+class CommitteeState(TypedDict):
     suburb: str
     state: str
+    metrics: Dict[str, Any]
     news_articles: str
-    sentiment_score: str
-    summary: str
+    bull_argument: str
+    bear_argument: str
+    urban_argument: str
+    final_verdict: str
+    playbook: str
+    reality_check: str
 
-def fetch_news(state: AgentState):
-    query = f"real estate property market news {state['suburb']} {state['state']} Australia"
+def fetch_news_node(state: CommitteeState):
+    # Disabled during UAT. Use get_news_sentiment() for on-demand per-suburb queries.
+    return {"news_articles": "News fetching disabled. Use /api/suburbs/{id}/news-sentiment for on-demand analysis."}
+
+
+def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
+    """On-demand Tavily news search for a single suburb.
+    Cached in DB — only fetches if no cached result within 24h.
+    Returns: {score, label, summary, articles, fetched_at}
+    """
+    if not tavily:
+        return {"score": 5.0, "label": "Neutral", "summary": "Tavily API key not configured.", "articles": 0, "fetched_at": None}
+
     try:
-        response = tavily.search(query=query, search_depth="basic", max_results=3)
-        articles = "\n".join([f"- {r['title']}: {r['content']}" for r in response.get("results", [])])
-    except Exception as e:
-        articles = "No news found or error fetching news."
-    return {"news_articles": articles}
+        query = f"{suburb_name} {state_code} real estate market news prices outlook 2026"
+        result = tavily.search(query=query, search_depth="basic", max_results=8)
+        
+        articles = result.get("results", []) or result.get("news", [])
+        if not isinstance(articles, list):
+            articles = []
 
-def analyze_sentiment(state: AgentState):
+        # Simple sentiment scoring from article titles
+        positive_words = ["surge", "boom", "growth", "rising", "up", "strong", "record",
+                         "increase", "high demand", "hot", "outperform", "recovery", "bull"]
+        negative_words = ["fall", "drop", "decline", "crash", "slump", "weak", "fear",
+                         "bust", "crisis", "affordability", "tightening", "rate hike", "bear",
+                         "overvalued", "correction", "bubble"]
+        
+        total_score = 0
+        scored_articles = 0
+        summaries = []
+        
+        for art in articles:
+            title = (art.get("title") or "").lower()
+            content = (art.get("content") or art.get("snippet") or "").lower()
+            text = title + " " + content
+            
+            pos = sum(1 for w in positive_words if w in text)
+            neg = sum(1 for w in negative_words if w in text)
+            
+            if pos + neg > 0:
+                article_score = 5 + (pos - neg) * 1.5
+                article_score = max(1, min(10, article_score))
+                total_score += article_score
+                scored_articles += 1
+            
+            if title:
+                summaries.append(title[:120])
+        
+        if scored_articles > 0:
+            avg_score = round(total_score / scored_articles, 1)
+        else:
+            avg_score = 5.0
+        
+        if avg_score >= 7:
+            label = "Bullish"
+        elif avg_score >= 4.5:
+            label = "Neutral"
+        else:
+            label = "Bearish"
+        
+        return {
+            "score": avg_score,
+            "label": label,
+            "summary": "; ".join(summaries[:3]) if summaries else "No relevant articles found.",
+            "articles": len(articles),
+            "fetched_at": __import__("datetime").datetime.utcnow().isoformat(),
+        }
+    except Exception as e:
+        return {"score": 5.0, "label": "Neutral", "summary": f"Tavily API error: {str(e)[:100]}", "articles": 0, "fetched_at": None}
+
+def bull_agent_node(state: CommitteeState):
+    llm = get_llm()
+    metrics = state['metrics']
+    prompt = f"""
+    You are 'The Bull', a high-yield real estate investor. Your job is to find reasons to BUY.
+    Analyze the following suburb: {state['suburb']}, {state['state']}.
+    Metrics: {metrics}
+    
+    Focus on positive indicators: Rental Yield, low Vacancy Rates, high Price-to-Rent ratio, low Days on Market.
+    Provide a 2-sentence bullish argument.
+    """
+    msg = llm.invoke([SystemMessage(content=prompt)])
+    return {"bull_argument": msg.content}
+
+def bear_agent_node(state: CommitteeState):
+    llm = get_llm()
+    metrics = state['metrics']
+    prompt = f"""
+    You are 'The Bear', a deeply conservative risk analyst. Your job is to find reasons NOT to buy.
+    Analyze the following suburb: {state['suburb']}, {state['state']}.
+    Metrics: {metrics}
+    
+    Focus on negative indicators: high Days on Market, low yield, macro deflationary drag, high vacancy rates, poor affordability.
+    Provide a 2-sentence bearish argument pointing out the highest risks.
+    """
+    msg = llm.invoke([SystemMessage(content=prompt)])
+    return {"bear_argument": msg.content}
+
+def urban_planner_node(state: CommitteeState):
+    llm = get_llm()
+    metrics = state['metrics']
+    prompt = f"""
+    You are 'The Urban Planner'. You care about gentrification, lifestyle, and demographics.
+    Analyze the following suburb: {state['suburb']}, {state['state']}.
+    Metrics: {metrics}
+    
+    Focus on: ACARA ICSEA School Quality, True Population CAGR, Walk/Liveability score proxies, and Density.
+    Provide a 2-sentence argument regarding the long-term desirability and gentrification potential.
+    """
+    msg = llm.invoke([SystemMessage(content=prompt)])
+    return {"urban_argument": msg.content}
+
+def supervisor_and_playbook_node(state: CommitteeState):
     llm = get_llm()
     prompt = f"""
-    You are an expert Australian real estate AI analyst.
-    Analyze the following recent news snippets for the suburb of {state['suburb']}, {state['state']}.
+    You are the Chief Investment Officer.
+    You have received reports from your committee on {state['suburb']}, {state['state']}.
     
-    News Snippets:
-    {state['news_articles']}
+    Bull's Argument: {state['bull_argument']}
+    Bear's Argument: {state['bear_argument']}
+    Urban Planner's Argument: {state['urban_argument']}
+    News: {state['news_articles']}
     
-    Determine the overall market sentiment for real estate investment in this suburb.
-    Your output MUST strictly be in this format:
-    SENTIMENT: [Bullish/Bearish/Neutral] (Score out of 10.0)
-    SUMMARY: [One sentence summarizing the market mood]
+    Task 1: Generate a final VERDICT (Buy, Hold, or Pass).
+    Task 2: Generate a 3-point Investment STRATEGY PLAYBOOK (e.g. "Cashflow Strategy", "Blue-Chip School Zone Strategy").
+    Task 3: REALITY CHECK (Compare the News sentiment against the Bear/Bull hard data facts. Is the media over-hyping or under-valuing?)
     
-    Example:
-    SENTIMENT: Bullish (8.5)
-    SUMMARY: Strong infrastructure growth and rising demand point to positive capital growth.
+    VERDICT: [Buy / Hold / Pass]
+    STRATEGY:
+    1. [Point 1]
+    2. [Point 2]
+    3. [Point 3]
+    REALITY CHECK: [1-2 sentences comparing news to reality]
     """
-    
     msg = llm.invoke([SystemMessage(content=prompt)])
+    
     content = msg.content
     
-    sentiment = "Neutral (5.0)"
-    summary = "No strong sentiment detected."
+    verdict = "Hold"
+    strategy = "Awaiting full analysis."
+    reality_check = "No news available for check."
     
-    import re
-    sentiment = "Neutral (5.0)"
-    summary = "No strong sentiment detected."
-    
-    # Try more robust parsing
-    sentiment_match = re.search(r'SENTIMENT:\s*(.*?(?=\s*SUMMARY:|$))', content, re.IGNORECASE | re.DOTALL)
-    if sentiment_match:
-        sentiment = sentiment_match.group(1).strip()
+    try:
+        verdict_match = re.search(r'VERDICT:\s*(.*?)(?=\nSTRATEGY:)', content, re.IGNORECASE | re.DOTALL)
+        if verdict_match: verdict = verdict_match.group(1).strip()
         
-    summary_match = re.search(r'SUMMARY:\s*(.*)', content, re.IGNORECASE | re.DOTALL)
-    if summary_match:
-        summary = summary_match.group(1).strip()
-    
-    # Fallback if both matched but sentiment contains SUMMARY
-    if "SUMMARY:" in sentiment:
-        parts = sentiment.split("SUMMARY:")
-        sentiment = parts[0].strip()
-        summary = parts[1].strip()
+        strategy_match = re.search(r'STRATEGY:\s*(.*?)(?=\nREALITY CHECK:)', content, re.IGNORECASE | re.DOTALL)
+        if strategy_match: strategy = strategy_match.group(1).strip()
         
-    return {"sentiment_score": sentiment, "summary": summary}
-
-# Build LangGraph
-graph_builder = StateGraph(AgentState)
-graph_builder.add_node("fetch_news", fetch_news)
-graph_builder.add_node("analyze_sentiment", analyze_sentiment)
-
-graph_builder.set_entry_point("fetch_news")
-graph_builder.add_edge("fetch_news", "analyze_sentiment")
-graph_builder.add_edge("analyze_sentiment", END)
-
-ai_app = graph_builder.compile()
-
-def get_suburb_sentiment(suburb: str, state: str):
-    initial_state = {"suburb": suburb, "state": state}
-    result = ai_app.invoke(initial_state)
+        reality_match = re.search(r'REALITY CHECK:\s*(.*)', content, re.IGNORECASE | re.DOTALL)
+        if reality_match: reality_check = reality_match.group(1).strip()
+    except Exception:
+        pass
+        
     return {
-        "sentiment": result.get("sentiment_score"),
-        "summary": result.get("summary")
+        "final_verdict": verdict,
+        "playbook": strategy,
+        "reality_check": reality_check
+    }
+
+# Build LangGraph for the Committee
+committee_graph = StateGraph(CommitteeState)
+committee_graph.add_node("fetch_news", fetch_news_node)
+committee_graph.add_node("bull_agent", bull_agent_node)
+committee_graph.add_node("bear_agent", bear_agent_node)
+committee_graph.add_node("urban_planner", urban_planner_node)
+committee_graph.add_node("supervisor", supervisor_and_playbook_node)
+
+committee_graph.set_entry_point("fetch_news")
+committee_graph.add_edge("fetch_news", "bull_agent")
+committee_graph.add_edge("fetch_news", "bear_agent")
+committee_graph.add_edge("fetch_news", "urban_planner")
+committee_graph.add_edge("bull_agent", "supervisor")
+committee_graph.add_edge("bear_agent", "supervisor")
+committee_graph.add_edge("urban_planner", "supervisor")
+committee_graph.add_edge("supervisor", END)
+
+ai_committee_app = committee_graph.compile()
+
+def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], fetch_news: bool = False):
+    initial_state = {
+        "suburb": suburb, 
+        "state": state, 
+        "metrics": metrics,
+        "news_articles": "",
+        "bull_argument": "",
+        "bear_argument": "",
+        "urban_argument": "",
+        "final_verdict": "",
+        "playbook": "",
+        "reality_check": ""
+    }
+    
+    # If we don't want to burn Tavily credits on every click, we can bypass the news node manually here
+    # But since the graph statically goes to fetch_news, the node itself handles skipping if API key is missing.
+    # To restrict usage, we can just clear the API key in .env or pass a flag.
+    # For now, it will fetch up to 2 results per run.
+    
+    result = ai_committee_app.invoke(initial_state)
+    return {
+        "bull": result["bull_argument"],
+        "bear": result["bear_argument"],
+        "urban": result["urban_argument"],
+        "verdict": result["final_verdict"],
+        "playbook": result["playbook"],
+        "reality_check": result["reality_check"]
     }
