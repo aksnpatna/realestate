@@ -437,7 +437,7 @@ function App() {
                       </div>
                       {/* 10-Year Historical Chart */}
                       {activeSuburb.history && activeSuburb.history.length >= 2 && (
-                        <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                        <div style={{ flex: '1 1 350px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
                           <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>10-Year Historical Median Price</h4>
                           <div style={{ height: '220px' }}>
                             <ResponsiveContainer width="100%" height="100%">
@@ -634,11 +634,8 @@ function App() {
                       </div>
                       <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                         <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                          {(activeSuburb as any).houseSold12m || 'N/A'} sold in past 12 months
+                          {(activeSuburb as any).houseSold12m ? `${(activeSuburb as any).houseSold12m} sales in past 12 months` : 'Market data loading...'}
                         </div>
-                        <a href={`https://www.onthehouse.com.au/suburb/${activeSuburb.state.toLowerCase()}/${activeSuburb.name.toLowerCase().replace(/\s+/g, '-')}-${activeSuburb.postcode}`} target="_blank" rel="noreferrer" style={{ background: 'var(--accent-purple)', color: '#fff', padding: '8px 16px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' }}>
-                          View All on OnTheHouse ↗
-                        </a>
                       </div>
                     </div>
                   </div>
