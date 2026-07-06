@@ -50,14 +50,7 @@ function App() {
         .then(res => res.json())
         .then(apiData => {
           if (apiData && apiData.length > 0) {
-            const dbIds = new Set(apiData.map((s: SuburbData) => s.id))
-            const merged = [...apiData]
-            for (const sub of mockSuburbsData) {
-              if (!dbIds.has(sub.id)) {
-                merged.push(sub)
-              }
-            }
-            setSuburbsData(merged)
+            setSuburbsData(apiData)
           } else {
             setSuburbsData(mockSuburbsData)
           }
@@ -234,11 +227,7 @@ function App() {
                 <div className="glass-card">
                     <div className="detail-header">
                       <div>
-                        <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}
-                          <span style={{fontSize:'0.5rem',color:'var(--warning)',marginLeft:'12px'}}>
-                            [S:{Object.keys(activeSuburb).length}k|K:{Object.keys(activeSuburb).filter(k=>k.indexOf('house')>=0||k.indexOf('owner')>=0||k.indexOf('age')>=0||k.indexOf('invest')>=0).join(',')||'NONE'}]
-                          </span>
-                        </h2>
+                        <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}</h2>
                       <p className="subtitle">
                         {activeSuburb.isMetro && activeSuburb.cbdDistanceMins !== null
                           ? `${activeSuburb.cbdDistanceMins} min to ${activeSuburb.metroCBD}`
@@ -548,7 +537,7 @@ function App() {
 
                   {/* PANEL B: Demographics */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics <span style={{fontSize:'0.5rem',color:'var(--warning)'}}>[keys:{Object.keys(activeSuburb||{}).filter(k=>k.indexOf('house')>=0||k.indexOf('owner')>=0||k.indexOf('age')>=0||k.indexOf('invest')>=0).join(',')}]</span></h3>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Key Demographics</h4>
@@ -557,8 +546,8 @@ function App() {
                           <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Investor Owned</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.investorRate != null ? `${activeSuburb.investorRate}%` : '—'}</div></div>
                           <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Median Age</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.medianAge || '—'}</div></div>
                           <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Household Size</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.averageHouseholdSize || '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Age Group</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.predominantAgeGroup || '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Occupation</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem', textTransform: 'capitalize' }}>{activeSuburb.predominantOccupation || '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Age Group</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).predominantAgeGroup || activeSuburb.metrics?.predominantAgeGroup || '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Occupation</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem', textTransform: 'capitalize' }}>{(activeSuburb as any).predominantOccupation || activeSuburb.metrics?.predominantOccupation || '—'}</div></div>
                           <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Total Properties</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).totalProperties?.toLocaleString() || '—'}</div></div>
                           <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Price/Rent Ratio</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).priceToRentRatio?.toFixed(1) || '—'}</div></div>
                         </div>
@@ -575,7 +564,7 @@ function App() {
                                 <Cell fill="var(--accent-purple)" />
                                 <Cell fill="var(--accent-cyan)" />
                               </Pie>
-                              <RechartsTooltip formatter={(value: number) => [`${value.toFixed(1)}%`, '']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                              <RechartsTooltip formatter={(value: number, name: string) => [`${value.toFixed(1)}%`, name]} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
                             </PieChart>
                           </ResponsiveContainer>
                         </div>
@@ -610,7 +599,7 @@ function App() {
                         <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
                           <div>For Sale: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).houseStockOnMarket || '—'}</strong></div>
                           <div>Sold (12m): <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).houseSold12m?.toLocaleString() || '—'}</strong></div>
-                          <div>Rental Stock: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).rentalStock || '—'}</strong></div>
+                          <div>Rental Stock: <strong style={{ color: 'var(--text-primary)' }}>{activeSuburb.metrics?.rentalStock || (activeSuburb as any).rentalStock || '—'}</strong></div>
                           <div>Supply/Demand: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).supplyDemandRatio?.toFixed(2) || '—'}</strong></div>
                         </div>
                       </div>
