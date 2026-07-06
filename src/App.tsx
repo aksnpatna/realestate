@@ -884,8 +884,18 @@ function App() {
 
                 <SuburbMap
                   center={activeSuburb.coordinates || [-25.2744, 133.7751]}
-                  pois={activeSuburb.pois || []}
-                  schools={activeSuburb.schools || []}
+                  pois={[
+                    ...(activeSuburb.pois || []),
+                    ...(livabilityData ? [
+                      ...(livabilityData.cafes || []).map((c:any) => ({...c, type: 'cafe', coordinates: c.coordinates || c.latlon})),
+                      ...(livabilityData.parks || []).map((p:any) => ({...p, type: 'park', coordinates: p.coordinates || p.latlon})),
+                      ...(livabilityData.transit || []).map((t:any) => ({...t, type: 'transit', coordinates: t.coordinates || t.latlon})),
+                    ] : [])
+                  ]}
+                  schools={[
+                    ...(activeSuburb.schools || []),
+                    ...(livabilityData?.schools || []).map((s:any) => ({...s, type: s.type || 'Primary'}))
+                  ]}
                   suburbName={activeSuburb.name}
                   stateName={activeSuburb.state}
                   postcode={activeSuburb.postcode}
