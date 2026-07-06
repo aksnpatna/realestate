@@ -30,6 +30,8 @@ function App() {
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
+  const [isClustering, setIsClustering] = useState(false)
+  const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
 
   const loadColdSuburb = async (id: string) => {
     const cacheBuster = '?t=' + Date.now()
@@ -86,6 +88,7 @@ function App() {
 
   useEffect(() => {
     setLivabilityData(null)
+    setClusteringResults(null)
   }, [activeSuburb])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -706,6 +709,57 @@ function App() {
                     ) : (
                       <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
                         Click "Run AI Committee" to get a multi-agent analysis of {activeSuburb.name}.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* K-Means Clustering: Similar Suburbs */}
+                  <div style={{ marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <h4 style={{ fontSize: '0.95rem', color: 'var(--accent-cyan)' }}>🔍 Find Similar Suburbs (K-Means Clustering)</h4>
+                      <button
+                        disabled={isClustering}
+                        onClick={async () => {
+                          try {
+                            setIsClustering(true);
+                            setClusteringResults(null);
+                            const res = await fetch('/api/similar-suburbs', {
+                              method: 'POST',
+                              headers: {'Content-Type': 'application/json'},
+                              body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id: activeSuburb.id })
+                            });
+                            const data = await res.json();
+                            if (res.ok && data.similar) setClusteringResults(data.similar);
+                          } catch(e){ console.error(e) }
+                          finally { setIsClustering(false) }
+                        }}
+                        style={{
+                          padding: '6px 14px', background: 'var(--accent-cyan)', color: '#000',
+                          border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem'
+                        }}
+                      >
+                        {isClustering ? 'Clustering...' : 'Find Similar'}
+                      </button>
+                    </div>
+                    {clusteringResults && clusteringResults.length > 0 ? (
+                      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                        {clusteringResults.map((s: any, i: number) => (
+                          <div key={i} style={{ flex: '1 1 220px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '12px', borderRadius: '8px' }}>
+                            <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{s.suburb}, {s.state}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{s.postcode}</div>
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '8px', fontSize: '0.8rem' }}>
+                              <span>🏷️ ${Math.round(s.price).toLocaleString()}</span>
+                              <span style={{color:'var(--accent-cyan)'}}>{s.similarity}% match</span>
+                            </div>
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                              ICSEA {s.icsea} • Yield {s.yield}%
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : clusteringResults === null ? null : (
+                      <div style={{ padding: '10px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                        No similar cheaper suburbs found in this cluster.
                       </div>
                     )}
                   </div>
