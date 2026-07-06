@@ -996,10 +996,10 @@ def get_osm_livability(lat: float, lng: float, radius: int = 2500):
     }
 
 @app.get("/api/osm/boundary")
-def get_osm_boundary(suburb: str):
+def get_osm_boundary(suburb: str, state: str = ""):
     """Returns suburb boundary geojson and center coordinates from local PostGIS."""
     from osm_local import get_boundary
-    data = get_boundary(suburb)
+    data = get_boundary(suburb, state)
     if not data:
         raise HTTPException(status_code=404, detail="Boundary not found")
     return data
