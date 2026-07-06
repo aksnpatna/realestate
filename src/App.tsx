@@ -29,14 +29,18 @@ function App() {
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
 
   const loadColdSuburb = async (id: string) => {
+    const cacheBuster = '?t=' + Date.now()
     try {
-      const res = await fetch(`/api/suburbs/${id}`)
+      const res = await fetch(`/api/suburbs/${id}${cacheBuster}`)
       if (res.ok) {
         const data = await res.json()
+        console.log('loadColdSuburb success', id, Object.keys(data).slice(0,8))
         setActiveSuburb(data)
+      } else {
+        console.error('loadColdSuburb failed', id, res.status)
       }
     } catch (e) {
-      console.error('Failed to load suburb', e)
+      console.error('loadColdSuburb error', id, e)
     }
   }
 
@@ -228,9 +232,13 @@ function App() {
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card">
-                  <div className="detail-header">
-                    <div>
-                      <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}</h2>
+                    <div className="detail-header">
+                      <div>
+                        <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}
+                          <span style={{fontSize:'0.5rem',color:'var(--warning)',marginLeft:'12px'}}>
+                            [S:{Object.keys(activeSuburb).length}k|K:{Object.keys(activeSuburb).filter(k=>k.indexOf('house')>=0||k.indexOf('owner')>=0||k.indexOf('age')>=0||k.indexOf('invest')>=0).join(',')||'NONE'}]
+                          </span>
+                        </h2>
                       <p className="subtitle">
                         {activeSuburb.isMetro && activeSuburb.cbdDistanceMins !== null
                           ? `${activeSuburb.cbdDistanceMins} min to ${activeSuburb.metroCBD}`
@@ -343,7 +351,7 @@ function App() {
                     </div>
                   </div>
 
-                  {activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every(h =>
+                  {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every(h =>
                     h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')
                   ) && (
                     <div className="highlights-section">
@@ -540,7 +548,7 @@ function App() {
 
                   {/* PANEL B: Demographics */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics <span style={{fontSize:'0.5rem',color:'var(--warning)'}}>[keys:{Object.keys(activeSuburb||{}).filter(k=>k.indexOf('house')>=0||k.indexOf('owner')>=0||k.indexOf('age')>=0||k.indexOf('invest')>=0).join(',')}]</span></h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Key Demographics</h4>
