@@ -6,7 +6,7 @@ import AffordabilityCalculator from './components/AffordabilityCalculator'
 import HouseSearch from './components/HouseSearch'
 import CashflowGearing from './components/CashflowGearing'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
-import { Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
 
 type TabName = 'profile' | 'search' | 'affordability' | 'gearing';
@@ -494,9 +494,127 @@ function App() {
                               {livabilityData.schools.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.schools.length > 5 ? '...' : ''}
                             </span>
                           </div>
+                      )}
+                      {/* 10-Year Projection */}
+                      {activeSuburb.history && activeSuburb.history.length >= 2 && (() => {
+                        const hist = activeSuburb.history as any[];
+                        const firstVal = Number(hist[0]?.value || 0);
+                        const lastVal = Number(hist[hist.length-1]?.value || 0);
+                        const years = Math.max(1, hist.length-1);
+                        const baseRate = firstVal > 0 && lastVal > 0 ? Math.max(0.02, Math.min(0.08, Math.pow(lastVal/firstVal, 1/years)-1)) : 0.05;
+                        const bullRate = baseRate * 1.3;
+                        const bearRate = Math.max(0.005, baseRate * 0.3);
+                        const projData = Array.from({length:10}, (_, y) => ({
+                          year: `+${y+1}y`,
+                          bull: Math.round(lastVal * Math.pow(1+bullRate, y+1)),
+                          base: Math.round(lastVal * Math.pow(1+baseRate, y+1)),
+                          bear: Math.round(lastVal * Math.pow(1+bearRate, y+1)),
+                        }));
+                        return (
+                          <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                            <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Next 10-Year Projection</h4>
+                            <div style={{ height: '220px' }}>
+                              <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={projData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-card)" vertical={false} />
+                                  <XAxis dataKey="year" stroke="var(--text-muted)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
+                                  <YAxis stroke="var(--text-muted)" fontSize={11} tickFormatter={(val) => `$${Math.round(val/1000)}k`} />
+                                  <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, '']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                                  <Line type="monotone" dataKey="bull" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Bull" />
+                                  <Line type="monotone" dataKey="base" stroke="var(--accent-cyan)" strokeWidth={3} dot={false} name="Base" />
+                                  <Line type="monotone" dataKey="bear" stroke="#ef4444" strokeWidth={2} strokeDasharray="3 3" dot={false} name="Bear" />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <div style={{ textAlign:'center', marginTop:'10px', fontSize:'0.75rem', color:'var(--text-secondary)', display:'flex', justifyContent:'center', gap:'16px' }}>
+                              <span><span style={{color:'#10b981',fontWeight:600}}>── Bull</span> (+{(bullRate*100).toFixed(1)}%)</span>
+                              <span><span style={{color:'var(--accent-cyan)',fontWeight:600}}>── Base</span> (+{(baseRate*100).toFixed(1)}%)</span>
+                              <span><span style={{color:'#ef4444',fontWeight:600}}>── Bear</span> (+{(bearRate*100).toFixed(1)}%)</span>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                    )}
+                  </div>
+
+                  {/* PANEL B: Demographics */}
+                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Key Demographics</h4>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Owner Occupied</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.ownerOccupierRate ?? '—'}%</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Investor Owned</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.investorRate != null ? `${activeSuburb.investorRate}%` : '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Median Age</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.medianAge || '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Household Size</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.averageHouseholdSize || '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Age Group</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.predominantAgeGroup || '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Occupation</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem', textTransform: 'capitalize' }}>{activeSuburb.predominantOccupation || '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Total Properties</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).totalProperties?.toLocaleString() || '—'}</div></div>
+                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Price/Rent Ratio</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).priceToRentRatio?.toFixed(1) || '—'}</div></div>
+                        </div>
+                      </div>
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Occupancy Split</h4>
+                        <div style={{ height: '180px' }}>
+                          <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                              <Pie data={[
+                                { name: 'Owner', value: activeSuburb.ownerOccupierRate || 65 },
+                                { name: 'Renter', value: 100 - (activeSuburb.ownerOccupierRate || 65) },
+                              ]} cx="50%" cy="50%" innerRadius={40} outerRadius={60} dataKey="value" stroke="none">
+                                <Cell fill="var(--accent-purple)" />
+                                <Cell fill="var(--accent-cyan)" />
+                              </Pie>
+                              <RechartsTooltip formatter={(value: number) => [`${value.toFixed(1)}%`, '']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                            </PieChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', fontSize: '0.75rem', marginTop: '5px' }}>
+                          <span style={{ color: 'var(--accent-purple)' }}>Owner: {activeSuburb.ownerOccupierRate || '—'}%</span>
+                          <span style={{ color: 'var(--accent-cyan)' }}>Renter: {activeSuburb.ownerOccupierRate != null ? (100 - activeSuburb.ownerOccupierRate).toFixed(1) : '—'}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* PANEL C: Live Listings Feed */}
+                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel C: Live Listings Feed</h3>
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ color: 'var(--accent-purple)', marginBottom: '10px' }}>💰 Recently Sold</h4>
+                        {activeSuburb && (activeSuburb as any).salesSummaryV3 && ((activeSuburb as any).salesSummaryV3 as any[]).length > 0 ? (
+                          ((activeSuburb as any).salesSummaryV3 as any[]).slice(0, 4).map((s: any, i: number) => (
+                            <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '6px', marginBottom: '6px' }}>
+                              <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{s.address || `Sample ${i+1}`}</div>
+                              <div style={{ color: '#10b981', fontWeight: 'bold' }}>{s.salePrice ? `$${s.salePrice.toLocaleString()}` : 'Price N/A'}</div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{s.beds ? `${s.beds} Bed` : ''}{s.baths ? ` / ${s.baths} Bath` : ''}{s.type ? ` • ${s.type}` : ''}</div>
+                            </div>
+                          ))
+                        ) : (
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No recent sales data available</div>
                         )}
                       </div>
-                    )}
+                      <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '10px' }}>🏷️ Market Stats</h4>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+                          <div>For Sale: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).houseStockOnMarket || '—'}</strong></div>
+                          <div>Sold (12m): <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).houseSold12m?.toLocaleString() || '—'}</strong></div>
+                          <div>Rental Stock: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).rentalStock || '—'}</strong></div>
+                          <div>Supply/Demand: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).supplyDemandRatio?.toFixed(2) || '—'}</strong></div>
+                        </div>
+                      </div>
+                      <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                          {(activeSuburb as any).houseSold12m || 'N/A'} sold in past 12 months
+                        </div>
+                        <a href={`https://www.onthehouse.com.au/suburb/${activeSuburb.state.toLowerCase()}/${activeSuburb.name.toLowerCase().replace(/\s+/g, '-')}-${activeSuburb.postcode}`} target="_blank" rel="noreferrer" style={{ background: 'var(--accent-purple)', color: '#fff', padding: '8px 16px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                          View All on OnTheHouse ↗
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
                   {(!activeSuburb.schools || activeSuburb.schools.length === 0) && (!activeSuburb.pois || activeSuburb.pois.length === 0) && (
