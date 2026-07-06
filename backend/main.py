@@ -753,9 +753,12 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
             SuburbAllModel.is_live == True,
             SuburbAllModel.state == target_suburb.state
         ).all()
-        all_data = [s.data for s in all_suburbs]
+        print(f"[cluster] Loaded {len(all_suburbs)} live suburbs in {target_suburb.state}")
+        all_data = [{**s.data, "id": s.id, "name": s.name, "state": s.state, "postcode": s.postcode} for s in all_suburbs]
+        target_data = {**target_suburb.data, "id": target_suburb.id, "name": target_suburb.name, "state": target_suburb.state, "postcode": target_suburb.postcode}
         
-        similar = find_similar_suburbs(target_suburb.data, all_data, limit=5)
+        similar = find_similar_suburbs(target_data, all_data, limit=5)
+        print(f"[cluster] Found {len(similar)} similar suburbs for {req.suburb}")
         return {"status": "success", "similar": similar}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
