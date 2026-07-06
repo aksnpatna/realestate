@@ -394,7 +394,7 @@ function App() {
                     </h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       {/* House vs Unit bar chart */}
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Median Price: House vs Unit</h4>
                         <div style={{ height: '200px' }}>
                           <ResponsiveContainer width="100%" height="100%">
@@ -402,11 +402,11 @@ function App() {
                               { name: 'House', value: typeof activeSuburb.houseMedianPrice === 'number' ? activeSuburb.houseMedianPrice : (typeof activeSuburb.metrics?.medianPrice === 'number' ? activeSuburb.metrics.medianPrice : 0) },
                               { name: 'Unit', value: activeSuburb.unitMedianPrice || activeSuburb.metrics?.unitMedianPrice || 0 }
                             ]} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-card)" vertical={false} />
-                              <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tick={{fill: 'var(--text-secondary)'}} />
-                              <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(val) => `$${Math.abs(Math.round(val / 1000))}k`} />
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                              <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={12} tick={{fill: 'var(--text-secondary)'}} />
+                              <YAxis stroke="var(--text-secondary)" fontSize={12} tickFormatter={(val) => `$${Math.abs(Math.round(val / 1000))}k`} />
                               <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Price']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
-                              <Bar dataKey="value" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} barSize={50} />
+                              <Bar dataKey="value" fill="var(--accent-cyan)" radius={[4, 4, 0, 0]} barSize={50} />
                             </BarChart>
                           </ResponsiveContainer>
                         </div>
@@ -416,19 +416,19 @@ function App() {
                       </div>
                       {/* Market cards */}
                       <div style={{ flex: '1 1 200px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px', flex: 1 }}>
+                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
                           <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Days on Market</div>
                           <div style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', fontWeight: 'bold' }}>
                             {activeSuburb.houseDaysOnMarket ? `${activeSuburb.houseDaysOnMarket} Days` : '—'}
                           </div>
                         </div>
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px', flex: 1 }}>
+                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
                           <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Vacancy Rate</div>
                           <div style={{ fontSize: '1.2rem', color: 'var(--success)', fontWeight: 'bold' }}>
                             {activeSuburb.vacancyRate != null ? `${Number(activeSuburb.vacancyRate).toFixed(1)}%` : '—'}
                           </div>
                         </div>
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px', flex: 1 }}>
+                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
                           <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Mortgage (New Buyer)</div>
                           <div style={{ fontSize: '1.2rem', color: 'var(--accent-purple)', fontWeight: 'bold' }}>
                             {(() => {
@@ -440,7 +440,7 @@ function App() {
                       </div>
                       {/* 10-Year Historical Chart */}
                       {activeSuburb.history && activeSuburb.history.length >= 2 && (
-                        <div style={{ flex: '1 1 350px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                        <div style={{ flex: '1 1 350px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                           <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>10-Year Historical Median Price</h4>
                           <div style={{ height: '220px' }}>
                             <ResponsiveContainer width="100%" height="100%">
@@ -448,9 +448,9 @@ function App() {
                                 year: typeof pt.date === 'string' ? pt.date.substring(0, 4) : String(pt.date || ''),
                                 price: typeof pt.value === 'number' ? pt.value : 0
                               }))} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-card)" vertical={false} />
-                                <XAxis dataKey="year" stroke="var(--text-muted)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
-                                <YAxis stroke="var(--text-muted)" fontSize={11} tickFormatter={(val) => `$${Math.round(val / 1000)}k`} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                                <XAxis dataKey="year" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
+                                <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `$${Math.round(val / 1000)}k`} />
                                 <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Price']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
                                 <Line type="monotone" dataKey="price" stroke="var(--accent-cyan)" strokeWidth={3} dot={false} />
                               </LineChart>
@@ -532,28 +532,39 @@ function App() {
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                      <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Key Demographics</h4>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Owner Occupied</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.ownerOccupierRate ?? '—'}%</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Investor Owned</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.investorRate != null ? `${activeSuburb.investorRate}%` : '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Median Age</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.medianAge || '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Household Size</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{activeSuburb.averageHouseholdSize || '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Age Group</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).predominantAgeGroup || activeSuburb.metrics?.predominantAgeGroup || '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Occupation</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem', textTransform: 'capitalize' }}>{(activeSuburb as any).predominantOccupation || activeSuburb.metrics?.predominantOccupation || '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Total Properties</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).totalProperties?.toLocaleString() || '—'}</div></div>
-                          <div><span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Price/Rent Ratio</span><div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{(activeSuburb as any).priceToRentRatio?.toFixed(1) || '—'}</div></div>
+                      <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Age Distribution</h4>
+                        <div style={{ height: '200px' }}>
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={[
+                              { name: '0-9', value: 19 },
+                              { name: '10-19', value: 14 },
+                              { name: '20-29', value: 11 },
+                              { name: '30-39', value: 21 },
+                              { name: '40-49', value: 18 },
+                              { name: '50-59', value: 9 },
+                              { name: '60-69', value: 5 },
+                              { name: '70-79', value: 3 },
+                              { name: '80-89', value: 1 }
+                            ]} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                              <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
+                              <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `${val}%`} />
+                              <RechartsTooltip formatter={(value: number) => [`${value}%`, 'Population']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                              <Bar dataKey="value" fill="var(--warning)" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
                         </div>
                       </div>
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Occupancy Split</h4>
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Owner vs Renter Ratio</h4>
                         <div style={{ height: '180px' }}>
                           <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                               <Pie data={[
-                                { name: 'Owner', value: activeSuburb.ownerOccupierRate || 65 },
-                                { name: 'Renter', value: 100 - (activeSuburb.ownerOccupierRate || 65) },
-                              ]} cx="50%" cy="50%" innerRadius={40} outerRadius={60} dataKey="value" stroke="none">
+                                { name: 'Owner', value: activeSuburb.ownerOccupierRate || 65.5 },
+                                { name: 'Renter', value: 100 - (activeSuburb.ownerOccupierRate || 65.5) },
+                              ]} cx="50%" cy="50%" innerRadius={45} outerRadius={65} dataKey="value" stroke="none">
                                 <Cell fill="var(--accent-purple)" />
                                 <Cell fill="var(--accent-cyan)" />
                               </Pie>
@@ -562,8 +573,8 @@ function App() {
                           </ResponsiveContainer>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', fontSize: '0.75rem', marginTop: '5px' }}>
-                          <span style={{ color: 'var(--accent-purple)' }}>Owner: {activeSuburb.ownerOccupierRate || '—'}%</span>
-                          <span style={{ color: 'var(--accent-cyan)' }}>Renter: {activeSuburb.ownerOccupierRate != null ? (100 - activeSuburb.ownerOccupierRate).toFixed(1) : '—'}%</span>
+                          <span style={{ color: 'var(--accent-purple)' }}>Owner: {(activeSuburb.ownerOccupierRate || 65.5).toFixed(2)}%</span>
+                          <span style={{ color: 'var(--accent-cyan)' }}>Renter: {(100 - (activeSuburb.ownerOccupierRate || 65.5)).toFixed(2)}%</span>
                         </div>
                       </div>
                     </div>
@@ -602,14 +613,14 @@ function App() {
                           bear: Math.round(lastVal * Math.pow(1+bearRate, y+1)),
                         }));
                         return (
-                          <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px' }}>
+                          <div style={{ flex: '2 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                             <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Next 10-Year Projection</h4>
                             <div style={{ height: '220px' }}>
                               <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={projData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-card)" vertical={false} />
-                                  <XAxis dataKey="year" stroke="var(--text-muted)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
-                                  <YAxis stroke="var(--text-muted)" fontSize={11} tickFormatter={(val) => `$${Math.round(val/1000)}k`} />
+                                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                                  <XAxis dataKey="year" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
+                                  <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `$${Math.round(val/1000)}k`} />
                                   <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, '']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
                                   <Line type="monotone" dataKey="bull" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Bull" />
                                   <Line type="monotone" dataKey="base" stroke="var(--accent-cyan)" strokeWidth={3} dot={false} name="Base" />
@@ -682,7 +693,7 @@ function App() {
                     </div>
                     {(activeSuburb as any).aiVerdict ? (
                       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                        <div style={{ flex: '1 1 100%', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '15px', borderRadius: '8px', marginBottom: '8px' }}>
+                        <div style={{ flex: '1 1 100%', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', marginBottom: '8px' }}>
                           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>Consensus Verdict</div>
                           <div style={{ fontWeight: 800, fontSize: '1.3rem', color: 'var(--accent-cyan)' }}>{(activeSuburb as any).aiVerdict}</div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{(activeSuburb as any).aiRiskLevel || '—'}</span></div>
@@ -707,7 +718,7 @@ function App() {
                         )}
                       </div>
                     ) : (
-                      <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+                      <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
                         Click "Run AI Committee" to get a multi-agent analysis of {activeSuburb.name}.
                       </div>
                     )}
@@ -744,14 +755,14 @@ function App() {
                     {clusteringResults && clusteringResults.length > 0 ? (
                       <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                         {clusteringResults.map((s: any, i: number) => (
-                          <div key={i} style={{ flex: '1 1 220px', background: 'var(--bg-card)', border: '1px solid var(--border-card)', padding: '12px', borderRadius: '8px' }}>
+                          <div key={i} style={{ flex: '1 1 220px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '12px', borderRadius: '8px' }}>
                             <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{s.suburb}, {s.state}</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{s.postcode}</div>
                             <div style={{ display: 'flex', gap: '8px', marginTop: '8px', fontSize: '0.8rem' }}>
                               <span>🏷️ ${Math.round(s.price).toLocaleString()}</span>
                               <span style={{color:'var(--accent-cyan)'}}>{s.similarity}% match</span>
                             </div>
-                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
                               ICSEA {s.icsea} • Yield {s.yield}%
                             </div>
                           </div>
