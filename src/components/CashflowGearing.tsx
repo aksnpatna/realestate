@@ -43,6 +43,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
   const [pmFeePct, setPmFeePct] = useState<number>(7.5);
   const maintenancePct = 1.0;
   const [vacancyWeeks, setVacancyWeeks] = useState<number>(2);
+  const [vacancyFromAPI, setVacancyFromAPI] = useState<number | null>(null);
   const [rateLoading, setRateLoading] = useState<boolean>(true);
 
   // Fetch dynamic interest rate
@@ -66,10 +67,17 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
     if (selectedSuburbId) {
       const sub = suburbsData.find(s => s.id === selectedSuburbId);
       if (sub) {
-        const price = sub.metrics?.medianPrice ?? 0;
+        const price = (sub as any).houseMedianPrice ?? sub.metrics?.medianPrice ?? 0;
         setPurchasePrice(price);
-        const rent = sub.metrics?.weeklyRent ?? Math.round(price * (sub.metrics?.rentalYield ?? 0) / 100 / 52);
+        const rent = (sub as any).houseMedianRent ?? (sub as any).weeklyRent ?? sub.metrics?.weeklyRent ?? Math.round(price * ((sub as any).rentalYield ?? sub.metrics?.rentalYield ?? 0) / 100 / 52);
         setWeeklyRent(rent || 0);
+        // Auto-set vacancy from real V3 vacancy rate
+        const vacRate = (sub as any).vacancyRate ?? (sub as any).metrics?.vacancyRate;
+        if (vacRate != null && vacRate > 0) {
+          const vacWeeks = Math.max(0.1, (vacRate / 100) * 52);
+          setVacancyWeeks(Math.round(vacWeeks * 10) / 10);
+          setVacancyFromAPI(vacRate);
+        }
       }
     }
   }, [selectedSuburbId, suburbsData]);
@@ -266,8 +274,11 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
 
             <div className="input-row">
               <div className="control-group">
-                <label className="control-label">Vacancy (weeks/year)</label>
-                <input type="number" className="premium-input small" value={vacancyWeeks} onChange={(e) => setVacancyWeeks(Number(e.target.value) || 0)} min={0} max={8} step={1} />
+                <label className="control-label">
+                  Vacancy (weeks/year)
+                  {vacancyFromAPI != null && <span style={{ color: 'var(--success)', fontSize: '0.7rem', marginLeft: '6px' }}>📊 {vacancyFromAPI}% real data</span>}
+                </label>
+                <input type="number" className="premium-input small" value={vacancyWeeks} onChange={(e) => setVacancyWeeks(Number(e.target.value) || 0)} min={0} max={8} step={0.5} />
               </div>
               <div className="control-group">
                 <label className="control-label">Property Mgmt Fee %</label>

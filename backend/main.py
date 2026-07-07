@@ -379,7 +379,7 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
             "medianPrice": v3.house_median_price or 0,
             "weeklyRent": v3.house_median_rent or 0,
             "rentalYield": v3.house_gross_rental_yield or 0,
-            "populationGrowth": f"+{v3.population_cagr}% YoY" if v3.population_cagr else "N/A",
+            "populationGrowth": f"+{_annualize_cagr(v3.population_cagr):.1f}% CAGR" if v3.population_cagr else "N/A",
             "ownerOccupierRate": v3.owner_occupier_rate or 0,
             "investorRate": v3.investor_rate or 0,
             "medianAge": v3.median_age or 0,
@@ -405,7 +405,7 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
         "highlights": [
             f"V3 Enriched | DQ Score: {_calibrate_dq(v3):.0f}%",
             f"{v3.house_sold_12m or 0} sales in 12 months",
-            f"Population: {v3.population_2021 or 'N/A'} ({v3.population_cagr or 0}% growth)",
+            f"Population: {v3.population_2021 or 'N/A'} ({_annualize_cagr(v3.population_cagr):.1f}% CAGR)",
         ],
         "schools": [],
         "demographics": v3.demographics_detail or {},
@@ -968,7 +968,7 @@ def get_suburb_v3(suburb_id: str):
         },
         "demographics": {
             "population2021": r.population_2021,
-            "populationCagr": r.population_cagr,
+            "populationCagr": round(_annualize_cagr(r.population_cagr), 2) if r.population_cagr else None,
             "ownerOccupierRate": r.owner_occupier_rate,
             "investorRate": r.investor_rate,
             "medianAge": r.median_age,
