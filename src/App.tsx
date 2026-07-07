@@ -20,6 +20,74 @@ function App() {
   const [loginError, setLoginError] = useState('')
   const [isRegistering, setIsRegistering] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
+  
+  const [suburbsData, setSuburbsData] = useState<SuburbData[]>([])
+  const [loadingData, setLoadingData] = useState(true)
+  const [livabilityData, setLivabilityData] = useState<LivabilityData | null>(null)
+  const [loadingLivability, setLoadingLivability] = useState(false)
+  const [showPrimarySchools, setShowPrimarySchools] = useState(false)
+  const [showSecondarySchools, setShowSecondarySchools] = useState(false)
+
+  const [activeTab, setActiveTab] = useState<TabName>('profile')
+  const [activeState, setActiveState] = useState<string>('VIC')
+  const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
+  const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
+  const [isClustering, setIsClustering] = useState(false)
+  const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
+
+  const loadColdSuburb = async (id: string) => {
+    try {
+      const res = await fetch(`/api/suburbs/${id}`)
+      if (res.ok) {
+        const data = await res.json()
+        setActiveSuburb(data)
+      }
+    } catch (e) {
+      console.error('loadColdSuburb error', id, e)
+    }
+  }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetch('/api/suburbs')
+        .then(res => res.json())
+        .then(apiData => {
+          if (apiData && apiData.length > 0) {
+            setSuburbsData(apiData)
+          } else {
+            setSuburbsData(mockSuburbsData)
+          }
+          setLoadingData(false)
+        })
+        .catch((err: unknown) => {
+          console.error("API error, using full mock data:", err)
+          setSuburbsData(mockSuburbsData)
+          setLoadingData(false)
+        })
+    }
+  }, [isAuthenticated])
+
+  const states = useMemo(() => Array.from(new Set(suburbsData.map(s => s.state))).sort(), [suburbsData])
+  const stateSuburbs = useMemo(() =>
+    suburbsData.filter(s => s.state === activeState).sort((a, b) => a.name.localeCompare(b.name)),
+    [activeState, suburbsData]
+  )
+
+  useEffect(() => {
+    if (stateSuburbs.length > 0) {
+      if (!activeSuburb || activeSuburb.state !== activeState) {
+        loadColdSuburb(stateSuburbs[0].id)
+      }
+    } else {
+      setActiveSuburb(null)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeState, stateSuburbs])
+
+  useEffect(() => {
+    setLivabilityData(null)
+    setClusteringResults(null)
+  }, [activeSuburb])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -128,7 +196,7 @@ function App() {
             </button>
             <div style={{ textAlign: 'center', marginTop: '8px' }}>
               <button type="button" onClick={() => { setIsRegistering(!isRegistering); setLoginError(''); setConfirmPassword(''); }} style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', fontSize: '0.85rem', textDecoration: 'underline' }}>
-                {isRegistering ? 'Already have an account? Login' : 'Don\'t have an account? Register'}
+                {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
               </button>
             </div>
           </form>
@@ -241,7 +309,6 @@ function App() {
 
           <main className="main-content">
             {activeSuburb ? (
-              <>
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card">
                     <div className="detail-header">
@@ -381,90 +448,83 @@ function App() {
                       Panel A: Market Snapshot
                     </h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '20px' }}>
-                      
-                      {/* LEFT COLUMN: Price Chart & Household Types */}
-                      <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Median Price: House vs Unit</h4>
-                          <div style={{ height: '150px' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={[
-                                { name: 'House', value: typeof activeSuburb.houseMedianPrice === 'number' ? activeSuburb.houseMedianPrice : (typeof activeSuburb.metrics?.medianPrice === 'number' ? activeSuburb.metrics.medianPrice : 0) },
-                                { name: 'Unit', value: activeSuburb.unitMedianPrice || activeSuburb.metrics?.unitMedianPrice || 0 }
-                              ]} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
-                                <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={12} tick={{fill: 'var(--text-secondary)'}} />
-                                <YAxis stroke="var(--text-secondary)" fontSize={12} tickFormatter={(val) => `$${Math.abs(Math.round(val / 1000))}k`} />
-                                <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Price']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
-                                <Bar dataKey="value" fill="var(--accent-cyan)" radius={[4, 4, 0, 0]} barSize={50} />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-                          <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                            House: {activeSuburb.houseMedianPrice12mChangePct ? `${Number(activeSuburb.houseMedianPrice12mChangePct) > 0 ? '+' : ''}${Number(activeSuburb.houseMedianPrice12mChangePct).toFixed(2)}%` : '—'} | Unit: {activeSuburb.unitMedianPrice12mChangePct ? `${Number(activeSuburb.unitMedianPrice12mChangePct) > 0 ? '+' : ''}${Number(activeSuburb.unitMedianPrice12mChangePct).toFixed(2)}%` : '—'}
-                          </div>
+                      {/* House vs Unit bar chart */}
+                      <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Median Price: House vs Unit</h4>
+                        <div style={{ height: '200px' }}>
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={[
+                              { name: 'House', value: typeof activeSuburb.houseMedianPrice === 'number' ? activeSuburb.houseMedianPrice : (typeof activeSuburb.metrics?.medianPrice === 'number' ? activeSuburb.metrics.medianPrice : 0) },
+                              { name: 'Unit', value: activeSuburb.unitMedianPrice || activeSuburb.metrics?.unitMedianPrice || 0 }
+                            ]} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                              <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={12} tick={{fill: 'var(--text-secondary)'}} />
+                              <YAxis stroke="var(--text-secondary)" fontSize={12} tickFormatter={(val) => `$${Math.abs(Math.round(val / 1000))}k`} />
+                              <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Price']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                              <Bar dataKey="value" fill="var(--accent-cyan)" radius={[4, 4, 0, 0]} barSize={50} />
+                            </BarChart>
+                          </ResponsiveContainer>
                         </div>
-
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Types</h4>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', justifyContent: 'center', height: '100%' }}>
-                            {(() => {
-                              const hhData = ((activeSuburb as any).demographicsDetailV3?.household_distribution) || {}
-                              const total = Object.values(hhData).reduce((a:number,b:any) => a + Number(b), 0) || 1
-                              return Object.entries(hhData).map(([k,v]) => (
-                                <div key={k}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                                    <span>{k}</span><span>{Number(v).toFixed(0)}%</span>
-                                  </div>
-                                  <div style={{ height: '8px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', marginTop: '4px' }}>
-                                    <div style={{ height: '100%', width: `${(Number(v)/total*100).toFixed(0)}%`, background: 'var(--accent-purple)', borderRadius: '4px' }} />
-                                  </div>
-                                </div>
-                              ))
-                            })()}
-                          </div>
+                        <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                          House: {activeSuburb.houseMedianPrice12mChangePct ? `${Number(activeSuburb.houseMedianPrice12mChangePct) > 0 ? '+' : ''}${Number(activeSuburb.houseMedianPrice12mChangePct).toFixed(2)}%` : '—'} | Unit: {activeSuburb.unitMedianPrice12mChangePct ? `${Number(activeSuburb.unitMedianPrice12mChangePct) > 0 ? '+' : ''}${Number(activeSuburb.unitMedianPrice12mChangePct).toFixed(2)}%` : '—'}
                         </div>
                       </div>
-
-                      {/* RIGHT COLUMN: Market cards & Income Bands */}
-                      <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Days on Market (Liquidity)</div>
-                            <div style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', fontWeight: 'bold' }}>
-                              {activeSuburb.houseDaysOnMarket ? `${activeSuburb.houseDaysOnMarket} Days` : '—'}
-                            </div>
-                          </div>
-                          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Vacancy Rate</div>
-                            <div style={{ fontSize: '1.2rem', color: 'var(--success)', fontWeight: 'bold' }}>
-                              {activeSuburb.vacancyRate != null ? `${Number(activeSuburb.vacancyRate).toFixed(1)}% for rent` : '—'}
-                            </div>
-                          </div>
-                          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Typical Mortgage Band</div>
-                            <div style={{ fontSize: '1.2rem', color: 'var(--accent-purple)', fontWeight: 'bold' }}>
-                              {(activeSuburb as any).typicalMortgageBand || (activeSuburb.metrics as any)?.mortgageBand || '—'}
-                            </div>
+                      {/* Market cards */}
+                      <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Days on Market (Liquidity)</div>
+                          <div style={{ fontSize: '1.2rem', color: 'var(--accent-cyan)', fontWeight: 'bold' }}>
+                            {activeSuburb.houseDaysOnMarket ? `${activeSuburb.houseDaysOnMarket} Days` : '—'}
                           </div>
                         </div>
-
                         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Income Bands</h4>
-                          <div style={{ height: '180px' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={(() => {
-                                const incData = ((activeSuburb as any).demographicsDetailV3?.income_distribution) || {}
-                                return Object.entries(incData).map(([k,v]) => ({ name: k, value: Number(v) }))
-                              })()} margin={{ top: 10, right: 10, left: 20, bottom: 0 }} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
-                                <XAxis type="number" stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `${val}%`} />
-                                <YAxis type="category" dataKey="name" stroke="var(--text-secondary)" fontSize={10} width={60} />
-                                <RechartsTooltip formatter={(value: number) => [`${value}%`, 'Households']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
-                                <Bar dataKey="value" fill="var(--accent-cyan)" radius={[0, 4, 4, 0]} />
-                              </BarChart>
-                            </ResponsiveContainer>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Vacancy Rate</div>
+                          <div style={{ fontSize: '1.2rem', color: 'var(--success)', fontWeight: 'bold' }}>
+                            {activeSuburb.vacancyRate != null ? `${Number(activeSuburb.vacancyRate).toFixed(1)}% for rent` : '—'}
                           </div>
+                        </div>
+                         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
+                           <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Typical Mortgage Band</div>
+                           <div style={{ fontSize: '1.2rem', color: 'var(--accent-purple)', fontWeight: 'bold' }}>
+                             {(activeSuburb as any).typicalMortgageBand || (activeSuburb.metrics as any)?.mortgageBand || '—'}
+                      </div>
+                    </div>
+                    {/* Income Distribution */}
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '15px' }}>
+                      <div style={{ flex: '1 1 350px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Income Bands</h4>
+                        <div style={{ height: '180px' }}>
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={(() => {
+                              const incData = ((activeSuburb as any).demographicsDetailV3?.income_distribution) || {}
+                              return Object.entries(incData).map(([k,v]) => ({ name: k, value: Number(v) }))
+                            })()} margin={{ top: 10, right: 10, left: 20, bottom: 0 }} layout="vertical">
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
+                              <XAxis type="number" stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `${val}%`} />
+                              <YAxis type="category" dataKey="name" stroke="var(--text-secondary)" fontSize={10} width={60} />
+                              <RechartsTooltip formatter={(value: number) => [`${value}%`, 'Households']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                              <Bar dataKey="value" fill="var(--accent-cyan)" radius={[0, 4, 4, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                      <div style={{ flex: '1 1 250px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Types</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {(() => {
+                            const hhData = ((activeSuburb as any).demographicsDetailV3?.household_distribution) || {}
+                            const total = Object.values(hhData).reduce((a:number,b:any) => a + Number(b), 0) || 1
+                            return Object.entries(hhData).map(([k,v]) => (
+                              <div key={k}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                                  <span>{k}</span><span>{Number(v).toFixed(0)}%</span>
+                                </div>
+                                <div style={{ height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', marginTop: '2px' }}>
+                                  <div style={{ height: '100%', width: `${(Number(v)/total*100).toFixed(0)}%`, background: 'var(--accent-purple)', borderRadius: '3px' }} />
+                                </div>
+                              </div>
+                            ))
+                          })()}
                         </div>
                       </div>
                     </div>
@@ -473,9 +533,9 @@ function App() {
                   {/* BUYER AGENT SUMMARY */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                      📊 Agent Scorecard
+                      📊 Realta Buyer Agent Scorecard
                     </h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                       {(() => {
                         const s = activeSuburb
                         const demo = ((s as any).demographicsDetailV3) || {}
@@ -511,15 +571,15 @@ function App() {
                         return indicators.flatMap((section) => [
                           <div key={section.label} style={{ 
                             background: 'var(--bg-card)', border: '1px solid var(--border-glass)', 
-                            padding: '15px', borderRadius: '8px', gridColumn: 'span 1'
+                            padding: '12px', borderRadius: '8px', gridColumn: 'span 1'
                           }}>
-                            <div style={{ color: 'var(--accent-cyan)', fontSize: '0.9rem', fontWeight: 700, marginBottom: '10px' }}>
+                            <div style={{ color: 'var(--accent-cyan)', fontSize: '0.75rem', fontWeight: 700, marginBottom: '8px' }}>
                               {section.label}
                             </div>
                             {section.items.map((item) => (
-                              <div key={item.label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'6px' }}>
-                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{item.icon} {item.label}</span>
-                                <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                              <div key={item.label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'4px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{item.icon} {item.label}</span>
+                                <span style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 600 }}>
                                   {item.value}
                                 </span>
                               </div>
@@ -529,7 +589,7 @@ function App() {
                       })()}
                     </div>
                   </div>
-                  </div>
+                    </div>
                     {/* Bottom Row: Charts */}
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       {/* 10-Year Historical Chart */}
@@ -592,6 +652,7 @@ function App() {
                         );
                       })()}
                     </div>
+                  </div>
 
                   {/* NEW LIVABILITY SECTION */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
@@ -965,6 +1026,8 @@ function App() {
                       })())}
                     </div>
                   )}
+                </div>
+
                 <SuburbMap
                   center={activeSuburb.coordinates || [-25.2744, 133.7751]}
                   pois={[
@@ -984,7 +1047,6 @@ function App() {
                   postcode={activeSuburb.postcode}
                 />
               </div>
-              </>
             ) : (
               <div className="glass-card empty-state">
                 <p>Please select a state and suburb to view the profile.</p>
