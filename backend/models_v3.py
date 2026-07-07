@@ -139,6 +139,8 @@ class SuburbUIV3(Base):
     nearby_pois = Column(JSON)
     population = Column(Integer)
     is_live = Column(Boolean, default=True)
+    rental_stock = Column(Integer)
+    current_median_price = Column(Float)
 
     # ---- DQ METADATA & LINEAGE ----
     dq_issues = Column(JSON)                                   # [{field: "house_yield", issue: "negative", severity: "warning"}, ...]

@@ -581,9 +581,7 @@ def get_suburb(suburb_id: str):
         db.close()
         raise HTTPException(status_code=404, detail="Suburb not found")
     
-    # Get current AVM median from V2 (more current than history endpoint)
-    v2 = db.query(SuburbUIModel).filter(SuburbUIModel.id == suburb_id.lower()).first()
-    current_median = (v2.median_price if v2 and v2.median_price else None) or v3.house_median_price
+    current_median = v3.current_median_price or v3.house_median_price
     
     growth = _compute_growth_score(v3)
     
@@ -595,7 +593,7 @@ def get_suburb(suburb_id: str):
         "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
         "dqScore": _calibrate_dq(v3),
         "dqIssues": v3.dq_issues,
-        # House — use current AVM median for display, V3 data for charts
+        # House — current AVM median for display, V3 history for charts
         "medianPrice": current_median,
         "weeklyRent": v3.house_median_rent,
         "rentalYield": v3.house_gross_rental_yield,
@@ -659,7 +657,7 @@ def get_suburb(suburb_id: str):
         "nearby_pois": v3.nearby_pois or {},
         "pois": v3.pois or [],
         "coordinates": v3.coordinates,
-        "metrics": {"rentalStock": (v2.metrics.get("rentalStock") if v2 and v2.metrics else None)},
+        "metrics": {"rentalStock": v3.rental_stock},
         # Growth Score
         "growthScore": growth["score"],
         "growthFactors": growth["factors"],

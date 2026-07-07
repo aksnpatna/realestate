@@ -331,8 +331,14 @@ function App() {
                               });
                               if(res.ok) {
                                 const data = await res.json();
-                                alert(`Analysis Complete!\nSentiment: ${data.sentiment}\nSummary: ${data.summary}`);
-                                window.location.reload(); // Quick hack to refresh data
+                                setActiveSuburb((prev: any) => ({
+                                  ...prev,
+                                  metrics: {
+                                    ...prev.metrics,
+                                    aiNewsSentiment: data.verdict || 'Analysis Complete',
+                                    aiNewsSummary: data.playbook || data.reality_check || 'AI analysis completed. Check Panel D for detailed results.'
+                                  }
+                                }));
                               }
                             } catch {
                               alert("Analysis failed.");
