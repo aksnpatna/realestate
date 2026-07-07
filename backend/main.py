@@ -326,7 +326,7 @@ def _build_v2_only_response(v2) -> dict:
 def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
     """Build a SuburbData-compatible response from V3-only data when V2 record is missing."""
     return {
-        "id": v3.id,
+        "id": v3.id.lower(),
         "name": v3.name,
         "state": v3.state,
         "postcode": v3.postcode,
@@ -584,7 +584,7 @@ def get_suburb(suburb_id: str):
     growth = _compute_growth_score(v3)
     
     response = {
-        "id": v3.id,
+        "id": v3.id.lower(),
         "name": v3.name, "state": v3.state, "postcode": v3.postcode,
         "isLive": bool(v3.is_live) if v3.is_live is not None else True,
         "v3Enriched": bool(v3.is_enriched),

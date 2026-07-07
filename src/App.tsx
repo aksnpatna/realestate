@@ -226,9 +226,9 @@ function App() {
                   <span className="preview-score-label">Score</span>
                 </div>
                 <p className="preview-text">
-                  {activeSuburb.isMetro && activeSuburb.cbdDistanceMins !== null
-                    ? `${activeSuburb.cbdDistanceMins} min to ${activeSuburb.metroCBD}`
-                    : 'Regional suburb'}
+                  {(activeSuburb as any).cbdDistance
+                    ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
+                    : activeSuburb.metroCBD || 'Regional suburb'}
                 </p>
               </div>
                 )}
@@ -258,13 +258,13 @@ function App() {
                         )}
                       </h2>
                       <p className="subtitle">
-                        {activeSuburb.isMetro && activeSuburb.cbdDistanceMins !== null
-                          ? `${activeSuburb.cbdDistanceMins} min to ${activeSuburb.metroCBD}`
-                          : activeSuburb.metroCBD}
+                        {(activeSuburb as any).cbdDistance
+                          ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
+                          : activeSuburb.metroCBD || 'Regional'}
                       </p>
-                      {activeSuburb.lastUpdated && (
+                      {(activeSuburb as any).lastUpdated && (
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                          Data Last Updated: {new Date(activeSuburb.lastUpdated).toLocaleDateString()}
+                          Data Last Updated: {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
                         </p>
                       )}
                     </div>
@@ -283,9 +283,7 @@ function App() {
                     <div className="metric-box">
                       <div className="metric-label">Median Price</div>
                       <div className="metric-value">
-                        {typeof activeSuburb.metrics.medianPrice === 'number'
-                          ? `$${activeSuburb.metrics.medianPrice.toLocaleString()}`
-                          : activeSuburb.metrics.medianPrice}
+                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : (activeSuburb as any).medianPrice ? `$${(activeSuburb as any).medianPrice.toLocaleString()}` : activeSuburb.metrics?.medianPrice ? `$${activeSuburb.metrics.medianPrice.toLocaleString()}` : 'No data'}
                       </div>
                     </div>
                     <div className="metric-box">
@@ -299,33 +297,25 @@ function App() {
                     <div className="metric-box">
                       <div className="metric-label">Infrastructure Inv.</div>
                       <div className="metric-value highlight-purple">
-                        {activeSuburb.metrics.infrastructureInvestment && activeSuburb.metrics.infrastructureInvestment !== 'N/A'
-                          ? activeSuburb.metrics.infrastructureInvestment
-                          : 'No data'}
+                        No data
                       </div>
                     </div>
                     <div className="metric-box">
                       <div className="metric-label">School Quality (0-10)</div>
                       <div className="metric-value">
-                        {typeof activeSuburb.metrics.schoolQuality === 'number'
-                          ? activeSuburb.metrics.schoolQuality
-                          : 'No data'}
+                        {(activeSuburb as any).schoolQuality || activeSuburb.metrics?.schoolQuality || 'No data'}
                       </div>
                     </div>
                     <div className="metric-box">
                       <div className="metric-label">Transit Access (0-10)</div>
                       <div className="metric-value">
-                        {typeof activeSuburb.metrics.transitAccessibility === 'number'
-                          ? activeSuburb.metrics.transitAccessibility
-                          : 'No data'}
+                        {(activeSuburb as any).transitAccessibility || activeSuburb.metrics?.transitAccessibility || 'No data'}
                       </div>
                     </div>
                     <div className="metric-box">
                       <div className="metric-label">Avg Rental Yield</div>
                       <div className="metric-value">
-                        {typeof activeSuburb.metrics.rentalYield === 'number'
-                          ? `${activeSuburb.metrics.rentalYield}%`
-                          : activeSuburb.metrics.rentalYield}
+                        {(activeSuburb as any).rentalYield ? `${(activeSuburb as any).rentalYield}%` : (activeSuburb as any).houseGrossRentalYield ? `${(activeSuburb as any).houseGrossRentalYield}%` : activeSuburb.metrics?.rentalYield ? `${activeSuburb.metrics.rentalYield}%` : 'No data'}
                       </div>
                     </div>
                     <div className="metric-box" style={{ gridColumn: 'span 2' }}>
