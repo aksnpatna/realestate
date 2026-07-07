@@ -172,7 +172,7 @@
   "src/assets/hero.png": {
     "mtime": 1782529570.4833744,
     "ast_hash": "aead493361b27e7510691c5d7072dfc1",
-    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
+    "semantic_hash": ""
   },
   "src/assets/react.svg": {
     "mtime": 1782529570.4834871,
@@ -393,10 +393,5 @@
     "mtime": 1783346707.4644957,
     "ast_hash": "b29360797c3468144c812ccee7cab534",
     "semantic_hash": "b29360797c3468144c812ccee7cab534"
-  },
-  "ETL_RUNBOOK.md": {
-    "mtime": 1783431951.6316955,
-    "ast_hash": "b087681a68069173e45b10bf98513b2d",
-    "semantic_hash": "b087681a68069173e45b10bf98513b2d"
   }
 }
