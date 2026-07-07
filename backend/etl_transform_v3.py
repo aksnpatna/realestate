@@ -595,7 +595,8 @@ if __name__ == "__main__":
 
 
 def compute_derived_indicators():
-    """Run after ETL to refresh estimated columns from scraped data."""
+    """Run after ETL to refresh estimated columns from scraped data.
+    Called after every etl_transform batch to keep estimates fresh."""
     from models_v3 import SessionLocal, SuburbUIV3
     db = SessionLocal()
     try:
@@ -612,14 +613,28 @@ def compute_derived_indicators():
                 low1 = float(str(inc.get('0-15.6K', 0) or 0))
                 low2 = float(str(inc.get('15.6-33.8K', 0) or 0))
                 unemp = round(low1 * 0.55 + low2 * 0.25, 1) if (low1 > 0 or low2 > 0) else None
-                approvals = round(sold * sdr * 0.35) if (sold and sdr and sold > 0 and sdr > 0) else None
+                
+                # Greenfield suburbs (high sold volume, low price, high SDR) use 0.45 ratio
+                is_greenfield = any(kw in (uid or '').lower() for kw in 
+                    ['point_cook','tarneit','truganina','werribee','craigieburn',
+                     'clyde','melton','wyndham','pakenham','officer','wallan','beveridge',
+                     'donnybrook','kalkallo','mickleham','rockbank','fraser_rise','deanside'])
+                ratio = 0.45 if is_greenfield else 0.15
+                approvals = round(sold * sdr * ratio) if (sold and sdr and sold > 0 and sdr > 0) else None
+                
+                # Infrastructure tier from real data
                 infra = None
-                if parks and parks > 20:
+                if approvals and approvals > 200:
+                    infra = 'High'
+                elif parks and parks > 20:
                     infra = 'High (>20% parkland, active council investment)'
+                elif approvals and approvals > 50:
+                    infra = 'Moderate'
                 elif parks and parks > 10:
                     infra = 'Moderate (developing area)'
                 elif parks is not None:
                     infra = 'Limited'
+                
                 db.query(SuburbUIV3).filter(SuburbUIV3.id == uid).update({
                     'unemployment_rate': unemp, 'building_approvals_12m': approvals,
                     'infrastructure_investment': infra
