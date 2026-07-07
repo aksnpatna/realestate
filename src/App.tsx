@@ -273,9 +273,12 @@ function App() {
                         {activeSuburb.growthScore}
                       </div>
                       <div className="main-score-label">Growth Probability</div>
-                      <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '4px', textAlign: 'center', maxWidth: '120px' }}>
-                        *Score = PopGrowth + Infra + Schools + Transit + Yield - Distance
-                      </div>
+                      <button
+                        onClick={() => setActiveTab('gearing')}
+                        style={{ marginTop: '10px', padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', width: '100%' }}
+                      >
+                        💰 View Cashflow →
+                      </button>
                     </div>
                   </div>
 
@@ -984,7 +987,12 @@ function App() {
 
       {activeTab === 'search' && <HouseSearch suburbsData={suburbsData} />}
       {activeTab === 'affordability' && <AffordabilityCalculator suburbsData={suburbsData} />}
-      {activeTab === 'gearing' && <CashflowGearing suburbsData={suburbsData} />}
+      {activeTab === 'gearing' && <CashflowGearing 
+        suburbsData={suburbsData} 
+        defaultSuburbId={activeSuburb?.id}
+        defaultPrice={(activeSuburb as any)?.houseMedianPrice || (activeSuburb as any)?.medianPrice || undefined}
+        defaultRent={(activeSuburb as any)?.houseMedianRent || (activeSuburb as any)?.weeklyRent || undefined}
+      />}
       {activeTab === 'purchase-plan' && <MyPurchasePlan suburbsData={suburbsData} />}
       {activeTab === 'institutional' && <InstitutionalV3Panel />}
     </div>
