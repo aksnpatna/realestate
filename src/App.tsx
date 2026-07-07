@@ -425,9 +425,108 @@ function App() {
                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Typical Mortgage Band</div>
                            <div style={{ fontSize: '1.2rem', color: 'var(--accent-purple)', fontWeight: 'bold' }}>
                              {(activeSuburb as any).typicalMortgageBand || (activeSuburb.metrics as any)?.mortgageBand || '—'}
-                           </div>
-                         </div>
                       </div>
+                    </div>
+                    {/* Income Distribution */}
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '15px' }}>
+                      <div style={{ flex: '1 1 350px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Income Bands</h4>
+                        <div style={{ height: '180px' }}>
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={(() => {
+                              const incData = ((activeSuburb as any).demographicsDetailV3?.income_distribution) || {}
+                              return Object.entries(incData).map(([k,v]) => ({ name: k, value: Number(v) }))
+                            })()} margin={{ top: 10, right: 10, left: 20, bottom: 0 }} layout="vertical">
+                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
+                              <XAxis type="number" stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `${val}%`} />
+                              <YAxis type="category" dataKey="name" stroke="var(--text-secondary)" fontSize={10} width={60} />
+                              <RechartsTooltip formatter={(value: number) => [`${value}%`, 'Households']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                              <Bar dataKey="value" fill="var(--accent-cyan)" radius={[0, 4, 4, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                      <div style={{ flex: '1 1 250px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Types</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {(() => {
+                            const hhData = ((activeSuburb as any).demographicsDetailV3?.household_distribution) || {}
+                            const total = Object.values(hhData).reduce((a:number,b:any) => a + Number(b), 0) || 1
+                            return Object.entries(hhData).map(([k,v]) => (
+                              <div key={k}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                                  <span>{k}</span><span>{Number(v).toFixed(0)}%</span>
+                                </div>
+                                <div style={{ height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', marginTop: '2px' }}>
+                                  <div style={{ height: '100%', width: `${(Number(v)/total*100).toFixed(0)}%`, background: 'var(--accent-purple)', borderRadius: '3px' }} />
+                                </div>
+                              </div>
+                            ))
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BUYER AGENT SUMMARY */}
+                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
+                      📊 Realta Buyer Agent Scorecard
+                    </h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                      {(() => {
+                        const s = activeSuburb
+                        const demo = ((s as any).demographicsDetailV3) || {}
+                        const hist = (s as any).history || []
+                        const yr3growth = hist.length >= 3 
+                          ? ((Number(hist[hist.length-1]?.value || 0) / Number(hist[hist.length-4]?.value || 1) - 1) * 100).toFixed(1) + '%'
+                          : '—'
+                        const indicators = [
+                          { label: 'Supply', items: [
+                            { label:'Stock on Market', value: (s as any).houseStockOnMarket, icon:'🏠' },
+                            { label:'Supply/Demand Ratio', value: (s as any).supplyDemandRatio?.toFixed(2) || '—', icon:'📊' },
+                            { label:'Building Approvals', value: 'Council data Pending', icon:'🔨' },
+                          ]},
+                          { label: 'Demand', items: [
+                            { label:'Rental Yield', value: (s as any).houseGrossRentalYield + '%', icon:'💰' },
+                            { label:'Days on Market', value: (s as any).houseDaysOnMarket || '—', icon:'⏱️' },
+                            { label:'Vacancy Rate', value: (s as any).vacancyRate?.toFixed(1) + '%' || '—', icon:'🏚️' },
+                            { label:'Auction Clearance', value: (s as any).houseAuctionClearanceRate || '—', icon:'🔨' },
+                          ]},
+                          { label: 'Affordability', items: [
+                            { label:'Mortgage Band', value: (s as any).typicalMortgageBand || '—', icon:'💳' },
+                            { label:'3yr Price Growth', value: yr3growth, icon:'📈' },
+                            { label:'CBD Mins', value: (s as any).cbdDistance + ' min' || '—', icon:'🚗' },
+                            { label:'Prof. Occupation', value: (s as any).ownerOccupierRate + '%' || '—', icon:'👔' },
+                          ]},
+                          { label: 'Income & Jobs', items: [
+                            { label:'Predominant Income', value: demo.predominant_income_band || '—', icon:'💵' },
+                            { label:'Population CAGR', value: (s as any).populationCagr?.toFixed(1) + '%' || '—', icon:'👥' },
+                            { label:'Median Age', value: s.medianAge || '—', icon:'🎂' },
+                            { label:'Unemployment', value: 'ABS data pending', icon:'📉' },
+                          ]},
+                        ]
+                        return indicators.flatMap((section) => [
+                          <div key={section.label} style={{ 
+                            background: 'var(--bg-card)', border: '1px solid var(--border-glass)', 
+                            padding: '12px', borderRadius: '8px', gridColumn: 'span 1'
+                          }}>
+                            <div style={{ color: 'var(--accent-cyan)', fontSize: '0.75rem', fontWeight: 700, marginBottom: '8px' }}>
+                              {section.label}
+                            </div>
+                            {section.items.map((item) => (
+                              <div key={item.label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'4px' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{item.icon} {item.label}</span>
+                                <span style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 600 }}>
+                                  {item.value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        ])
+                      })()}
+                    </div>
+                  </div>
                     </div>
                     {/* Bottom Row: Charts */}
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
@@ -568,17 +667,12 @@ function App() {
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Age Distribution</h4>
                         <div style={{ height: '200px' }}>
                           <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={[
-                              { name: '0-9', value: 19 },
-                              { name: '10-19', value: 14 },
-                              { name: '20-29', value: 11 },
-                              { name: '30-39', value: 21 },
-                              { name: '40-49', value: 18 },
-                              { name: '50-59', value: 9 },
-                              { name: '60-69', value: 5 },
-                              { name: '70-79', value: 3 },
-                              { name: '80-89', value: 1 }
-                            ]} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <BarChart data={(() => {
+                              const ageData = ((activeSuburb as any).demographicsDetailV3?.age_distribution) || {}
+                              return Object.entries(ageData)
+                                .filter(([k,_]) => k !== '100+')
+                                .map(([k,v]) => ({ name: k, value: Number(v) }))
+                            })()} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
                               <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
                               <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `${val}%`} />
