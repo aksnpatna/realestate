@@ -1,0 +1,125 @@
+"""SQL-level fast fix for description-derived fields using PostgreSQL regex."""
+import sys
+from models_v3 import engine
+from sqlalchemy import text
+
+QUERIES = [
+    # Mortgage band
+    """UPDATE suburbs_ui_v3 SET typical_mortgage_band = subq.mortgage, last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'likely\s+to\s+be\s+repaying\s+(\$\s*\d[\d,]*\s*-\s*\$\s*[\d,]+)\s+per\s+month', 'i'
+        ))[1] AS mortgage
+        FROM suburbs_raw_v3 r
+        WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.typical_mortgage_band IS NULL
+      AND subq.mortgage IS NOT NULL""",
+
+    # Occupation
+    """UPDATE suburbs_ui_v3 SET predominant_occupation = initcap(subq.occ), last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'people\s+in\s+\w+\s+work\s+in\s+(?:a\s+|an\s+)?([\w\s\-]+?)\s+occupation', 'i'
+        ))[1] AS occ
+        FROM suburbs_raw_v3 r WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.predominant_occupation IS NULL AND subq.occ IS NOT NULL""",
+
+    # Area
+    """UPDATE suburbs_ui_v3 SET area_sqkm = replace(subq.area_sqkm, ',', '')::numeric(10,2), last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'approximately\s+([\d,.]+)\s+square\s+kilometres?', 'i'
+        ))[1] AS area_sqkm
+        FROM suburbs_raw_v3 r WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.area_sqkm IS NULL AND subq.area_sqkm IS NOT NULL""",
+
+    # Parks count
+    """UPDATE suburbs_ui_v3 SET parks_count = subq.parks::int, last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'There\s+are\s+(\d+)\s+parks?', 'i'
+        ))[1] AS parks
+        FROM suburbs_raw_v3 r WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.parks_count IS NULL AND subq.parks IS NOT NULL""",
+
+    # Population 2016
+    """UPDATE suburbs_ui_v3 SET population_2016 = replace(subq.pop2016, ',', '')::int, last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'population\s+in\s+2016\s+was\s+([\d,]+)\s+people', 'i'
+        ))[1] AS pop2016
+        FROM suburbs_raw_v3 r WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.population_2016 IS NULL AND subq.pop2016 IS NOT NULL""",
+
+    # Population CAGR
+    """UPDATE suburbs_ui_v3 SET population_cagr = replace(subq.cagr, ',', '')::numeric(10,2), last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'population\s+growth\s+of\s+([\d,\-.]+)\s*%', 'i'
+        ))[1] AS cagr
+        FROM suburbs_raw_v3 r WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.population_cagr IS NULL AND subq.cagr IS NOT NULL""",
+
+    # Parks coverage
+    """UPDATE suburbs_ui_v3 SET parks_coverage_pct = replace(subq.cov, ',', '')::numeric(10,2), last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'covering\s+(?:nearly\s+)?([\d,.]+)\s*%', 'i'
+        ))[1] AS cov
+        FROM suburbs_raw_v3 r WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.parks_coverage_pct IS NULL AND subq.cov IS NOT NULL""",
+
+    # Owner occupier from description
+    """UPDATE suburbs_ui_v3 SET owner_occupier_rate = replace(subq.own, ',', '')::numeric(10,2), last_updated = NOW()
+    FROM (
+        SELECT r.id, (regexp_match(
+            r.raw_json #>> '{suburb,suburb_detail,description}',
+            'In\s+2021,\s+([\d,.]+)\s*%\s+of\s+the\s+homes.*?were\s+owner-occupied', 'i'
+        ))[1] AS own
+        FROM suburbs_raw_v3 r WHERE r.status = 'complete'
+          AND r.raw_json #>> '{suburb,suburb_detail,description}' IS NOT NULL
+    ) subq
+    WHERE suburbs_ui_v3.id = subq.id
+      AND suburbs_ui_v3.owner_occupier_rate IS NULL AND subq.own IS NOT NULL""",
+]
+
+def run():
+    with engine.connect() as conn:
+        for i, q in enumerate(QUERIES):
+            r = conn.execute(text(q))
+            # Get rowcount
+            affected = r.rowcount
+            print(f'  Query {i+1}: {affected} rows updated')
+            conn.commit()
+    print('Done')
+
+if __name__ == '__main__':
+    run()

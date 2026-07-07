@@ -1,0 +1,70 @@
+import os
+import json
+import urllib.request
+import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from parallel_scraper import SuburbAllModel, SuburbGeodataModel, Base
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def populate_geodata_from_seed():
+    """Fetch coordinates from the Australian suburbs GitHub dataset and insert into suburbs_geodata."""
+    db = SessionLocal()
+    Base.metadata.create_all(bind=engine)
+    
+    # Fetch dataset
+    url = 'https://raw.githubusercontent.com/michalsn/australian-suburbs/master/data/suburbs.json'
+    print("Fetching Australian suburbs dataset for coordinates...")
+    raw = json.loads(urllib.request.urlopen(url).read())
+    suburbs_list = raw.get('data', [])
+    
+    # Build lookup: (state_lower_name_underscored_postcode) -> (lat, lng)
+    coord_lookup = {}
+    for s in suburbs_list:
+        state = s.get('state', '').upper()
+        name = s.get('suburb', '')
+        postcode = str(s.get('postcode', ''))
+        lat = s.get('lat')
+        lng = s.get('lng')
+        if not name or not postcode or lat is None or lng is None:
+            continue
+        suburb_id = f"{state.lower()}_{name.lower().replace(' ', '_')}_{postcode}"
+        coord_lookup[suburb_id] = (lat, lng)
+    
+    print(f"Built coordinate lookup for {len(coord_lookup)} suburbs.")
+    
+    # Get all suburbs_all IDs that don't yet have geodata
+    existing = set(row[0] for row in db.query(SuburbGeodataModel.suburb_id).all())
+    all_ids = [row[0] for row in db.query(SuburbAllModel.id).all()]
+    
+    inserted = 0
+    skipped_no_coords = 0
+    already_exists = 0
+    
+    for sid in all_ids:
+        if sid in existing:
+            already_exists += 1
+            continue
+        if sid in coord_lookup:
+            lat, lng = coord_lookup[sid]
+            geo = SuburbGeodataModel(
+                suburb_id=sid,
+                lat=lat,
+                lon=lng,
+                pois=[],
+                last_updated=datetime.datetime.utcnow()
+            )
+            db.add(geo)
+            inserted += 1
+        else:
+            skipped_no_coords += 1
+    
+    db.commit()
+    db.close()
+    print(f"Done. Inserted: {inserted}, Already existed: {already_exists}, No coords: {skipped_no_coords}")
+
+if __name__ == "__main__":
+    populate_geodata_from_seed()

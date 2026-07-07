@@ -43,10 +43,13 @@ def find_similar_suburbs(target_suburb: Dict, all_suburbs: List[Dict], limit=5):
                 'density': float(density),
                 'growth': float(growth)
             })
-            
+        
         if not data_rows:
+            print(f"[cluster] No valid data rows from {len(all_suburbs)} suburbs")
             return []
-            
+        
+        print(f"[cluster] Built {len(data_rows)} data rows for clustering")
+
         df = pd.DataFrame(data_rows)
         
         # Institutional-grade features for clustering

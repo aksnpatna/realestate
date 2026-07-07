@@ -34,7 +34,7 @@ export default function AffordabilityCalculator({ suburbsData }: { suburbsData: 
     let filtered = suburbsData.filter(s => {
       const stateCalc = calc?.[s.state as keyof typeof calc];
       if (!stateCalc) return false;
-      return s.metrics.medianPrice <= stateCalc.maxPrice;
+      return (s.metrics?.medianPrice ?? Infinity) <= stateCalc.maxPrice;
     });
     if (stateFilter !== 'ALL') {
       filtered = filtered.filter(s => s.state === stateFilter);
@@ -43,11 +43,11 @@ export default function AffordabilityCalculator({ suburbsData }: { suburbsData: 
       let cmp = 0;
       switch (sortBy) {
         case 'name': cmp = a.name.localeCompare(b.name); break;
-        case 'medianPrice': cmp = a.metrics.medianPrice - b.metrics.medianPrice; break;
-        case 'growthScore': cmp = a.growthScore - b.growthScore; break;
-        case 'rentalYield': cmp = a.metrics.rentalYield - b.metrics.rentalYield; break;
-        case 'schoolQuality': cmp = a.metrics.schoolQuality - b.metrics.schoolQuality; break;
-        case 'transitAccessibility': cmp = a.metrics.transitAccessibility - b.metrics.transitAccessibility; break;
+        case 'medianPrice': cmp = (a.metrics?.medianPrice ?? 0) - (b.metrics?.medianPrice ?? 0); break;
+        case 'growthScore': cmp = (a.growthScore ?? 0) - (b.growthScore ?? 0); break;
+        case 'rentalYield': cmp = (a.metrics?.rentalYield ?? 0) - (b.metrics?.rentalYield ?? 0); break;
+        case 'schoolQuality': cmp = (a.metrics?.schoolQuality ?? 0) - (b.metrics?.schoolQuality ?? 0); break;
+        case 'transitAccessibility': cmp = (a.metrics?.transitAccessibility ?? 0) - (b.metrics?.transitAccessibility ?? 0); break;
         case 'cbdDistanceMins': {
           const aVal = a.cbdDistanceMins ?? 999;
           const bVal = b.cbdDistanceMins ?? 999;
@@ -67,6 +67,9 @@ export default function AffordabilityCalculator({ suburbsData }: { suburbsData: 
       <div className="glass-card calculator-card">
         <h2 className="detail-title">Affordability Calculator</h2>
         <p className="subtitle">See what you can buy based on your deposit (80% LVR + stamp duty)</p>
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+          <span role="img" aria-label="Warning">⚠️</span> Stamp duty rates are based on 2024 thresholds and do not reflect recent state budgets. Please consult a conveyancer.
+        </div>
 
         <div className="calculator-inputs">
           <div className="control-group">
@@ -152,7 +155,7 @@ export default function AffordabilityCalculator({ suburbsData }: { suburbsData: 
               <tbody>
                 {matchingSuburbs.map(suburb => {
                   const stateCalc = calc?.[suburb.state as keyof typeof calc];
-                  const priceGap = stateCalc ? stateCalc.maxPrice - suburb.metrics.medianPrice : 0;
+                  const priceGap = stateCalc ? stateCalc.maxPrice - (suburb.metrics?.medianPrice ?? 0) : 0;
                   return (
                     <tr key={suburb.id} className={priceGap > 50000 ? 'good-value' : ''}>
                       <td className="school-name-cell">
@@ -161,16 +164,16 @@ export default function AffordabilityCalculator({ suburbsData }: { suburbsData: 
                       </td>
                       <td>{suburb.state}</td>
                       <td className={priceGap > 0 ? 'text-success' : 'text-warning'}>
-                        ${suburb.metrics.medianPrice.toLocaleString()}
+                        ${(suburb.metrics?.medianPrice ?? 0).toLocaleString()}
                       </td>
                       <td>
-                        <span className={`growth-badge ${suburb.growthScore >= 80 ? 'growth-high' : suburb.growthScore >= 60 ? 'growth-med' : 'growth-low'}`}>
-                          {suburb.growthScore}
+                        <span className={`growth-badge ${(suburb.growthScore ?? 0) >= 80 ? 'growth-high' : (suburb.growthScore ?? 0) >= 60 ? 'growth-med' : 'growth-low'}`}>
+                          {suburb.growthScore ?? '—'}
                         </span>
                       </td>
-                      <td>{suburb.metrics.rentalYield}%</td>
-                      <td>{suburb.metrics.schoolQuality}/10</td>
-                      <td>{suburb.metrics.transitAccessibility}/10</td>
+                      <td>{suburb.metrics?.rentalYield ?? '—'}%</td>
+                      <td>{suburb.metrics?.schoolQuality ?? '—'}/10</td>
+                      <td>{suburb.metrics?.transitAccessibility ?? '—'}/10</td>
                       <td>
                         {suburb.cbdDistanceMins !== null ? (
                           <span title={`To ${suburb.metroCBD}`}>{suburb.cbdDistanceMins} min</span>

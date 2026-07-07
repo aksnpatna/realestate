@@ -1,0 +1,309 @@
+"""High-performance bulk enrichment: SQL-level extraction + Python batch processing."""
+import json, re, datetime, sys
+from sqlalchemy import text, or_
+from models_v3 import SuburbRawV3, SuburbUIV3, SessionLocal, engine
+from collections import defaultdict
+
+CHUNK = 500
+
+def r2(val):
+    try: return round(float(val), 2)
+    except: return None
+
+def parse_desc(raw):
+    if not raw or not isinstance(raw, str): return {}
+    d = {}
+    m = re.search(r'approximately\s+([\d,.]+)\s+square\s+kilometres?', raw, re.I)
+    if m: d['area_sqkm'] = r2(m.group(1).replace(',', ''))
+    m = re.search(r'There\s+are\s+(\d+)\s+parks?', raw, re.I)
+    if m: d['parks_count'] = int(m.group(1))
+    m = re.search(r'covering\s+(?:nearly\s+)?([\d,.]+)\s*%', raw, re.I)
+    if m: d['parks_coverage_pct'] = r2(m.group(1).replace(',', ''))
+    m = re.search(r'population\s+(?:of\s+\w+\s+)?in\s+2016\s+was\s+([\d,]+)\s+people', raw, re.I)
+    if m: d['population_2016'] = int(m.group(1).replace(',', ''))
+    m = re.search(r'population\s+growth\s+of\s+([\d,\-.]+)\s*%', raw, re.I)
+    if m: d['population_cagr'] = r2(m.group(1).replace(',', ''))
+    m = re.search(r'likely\s+to\s+be\s+repaying\s+(\$[\d,]+\s*-\s*\$[\d,]+)\s+per\s+month', raw, re.I)
+    if m: d['typical_mortgage_band'] = m.group(1).strip()
+    m = re.search(r'people\s+in\s+\w+\s+work\s+in\s+(?:a\s+|an\s+)?([\w\s\-]+?)\s+occupation', raw, re.I)
+    if m: d['predominant_occupation'] = m.group(1).strip().title()
+    m = re.search(r'In\s+2021,\s+([\d,.]+)\s*%\s+of\s+the\s+homes.*?were\s+owner-occupied\s+compared\s+with\s+([\d,.]+)\s*%', raw, re.I)
+    if m: d['owner_2021_desc'] = r2(m.group(1).replace(',', ''))
+    return d
+
+
+def extract_census(data):
+    """Fast census extraction."""
+    r = {}
+    c = data.get('census')
+    if not isinstance(c, dict): return r
+    cm = c.get('metrics', {})
+    if not isinstance(cm, dict): return r
+    for item in cm.get('populationMetrics', []):
+        if isinstance(item, dict) and item.get('category') == 'Both':
+            try: r['population_2021'] = int(float(item.get('percentVal', 0)))
+            except: pass
+            break
+    op = 0.0; ip = 0.0
+    for item in cm.get('occupancyMetrics', []):
+        if isinstance(item, dict):
+            cat = str(item.get('category', '')).lower()
+            pct = float(item.get('percentVal', 0))
+            if 'owns' in cat or 'purchaser' in cat: op += pct
+            elif 'renting' in cat: ip += pct
+    if op > 0: r['owner_occupier_rate'] = r2(op)
+    if ip > 0: r['investor_rate'] = r2(ip)
+    ba = None; bap = 0.0; tp = 0.0; ws = 0.0
+    for item in cm.get('ageMetrics', []):
+        if isinstance(item, dict):
+            try:
+                pct = float(item.get('percentVal', 0)); cat = str(item.get('category', ''))
+                if pct > bap: bap = pct; ba = cat
+                if '-' in cat:
+                    l, h = cat.split('-'); ma = (int(l) + int(h)) / 2
+                elif '+' in cat: ma = float(cat.replace('+', ''))
+                else: continue
+                ws += ma * pct; tp += pct
+            except: pass
+    if ba: r['predominant_age_group'] = ba
+    if tp > 0: r['median_age'] = int(round(ws / tp))
+    bi = None; bip = 0.0
+    for item in cm.get('incomeMetrics', []):
+        if isinstance(item, dict):
+            try:
+                pct = float(item.get('percentVal', 0))
+                if pct > bip: bip = pct; bi = str(item.get('category', ''))
+            except: pass
+    if bi: r['predominant_income_band'] = bi
+    return r
+
+
+def extract_metrics_json(raw_json):
+    """Extract all market metrics from raw_json. Returns dict."""
+    m = {}
+    mt = raw_json.get('marketTrends') or {}
+    metrics = mt.get('metrics') or {}
+    if not isinstance(metrics, dict): return m
+    
+    for etype, ptype in [('_h', 'House'), ('_u', 'Unit')]:
+        pt_data = metrics.get(ptype) or {}
+        if not isinstance(pt_data, dict): continue
+        ml = pt_data.get('10', [])
+        if not isinstance(ml, list):
+            if isinstance(ml, dict): ml = list(ml.values())
+            else: continue
+        
+        for metric in ml:
+            if not isinstance(metric, dict): continue
+            mt_name = metric.get('metricType', '')
+            series = metric.get('seriesDataList', [])
+            if not isinstance(series, list) or len(series) == 0: continue
+            last_val = series[-1].get('value') if isinstance(series[-1], dict) else None
+            
+            if mt_name == 'Median Sale Price (12 months)':
+                m[f'sale_price{etype}'] = last_val
+            elif mt_name == 'Median Value (monthly)':
+                m[f'value{etype}'] = last_val
+            elif mt_name == 'Change in Median Value (12 months)':
+                m[f'change_12m{etype}'] = last_val
+            elif mt_name == 'Change in Median Value (5 years)':
+                m[f'change_5yr{etype}'] = last_val
+            elif mt_name == 'Median Asking Rent (12 months)':
+                m[f'rent{etype}'] = last_val
+            elif mt_name == 'Change in Rental Rate (12 months)':
+                m[f'rent_change{etype}'] = last_val
+            elif mt_name == 'Value Based Gross Rental Yield':
+                m[f'yield{etype}'] = last_val
+            elif mt_name == 'Number Sold (12 months)':
+                m[f'sold_12m{etype}'] = last_val
+    
+    return m
+
+
+def bulk_enrich(max_batches=None):
+    db = SessionLocal()
+    
+    done_ids = {r[0] for r in db.query(SuburbUIV3.id).all()}
+    
+    pending = db.query(SuburbRawV3).filter(
+        SuburbRawV3.status == 'complete',
+        ~SuburbRawV3.id.in_(done_ids) if done_ids else True
+    ).all()
+    
+    print(f'Pending new: {len(pending)}')
+    
+    total = 0
+    for offset in range(0, len(pending), CHUNK):
+        if max_batches and offset // CHUNK >= max_batches: break
+        chunk = pending[offset:offset + CHUNK]
+        
+        for raw in chunk:
+            try:
+                data = raw.raw_json
+                if not data: continue
+                if isinstance(data, str): data = json.loads(data)
+                
+                mm = extract_metrics_json(data)
+                demog = extract_census(data)
+                
+                # Price
+                h_price = mm.get('sale_price_h') or mm.get('value_h')
+                u_price = mm.get('sale_price_u') or mm.get('value_u')
+                
+                # Description
+                si = data.get('suburb')
+                sd = None
+                if isinstance(si, dict):
+                    sdi = si.get('suburb_detail')
+                    if isinstance(sdi, dict): sd = sdi
+                
+                desc = {}
+                if sd:
+                    desc_raw = sd.get('description', '')
+                    desc = parse_desc(desc_raw)
+                    
+                    # Merge description fallbacks
+                    for k in ['population_2016', 'population_cagr', 'parks_count',
+                             'parks_coverage_pct', 'area_sqkm', 'typical_mortgage_band',
+                             'predominant_occupation']:
+                        if k in desc and k not in demog and desc[k] is not None:
+                            demog[k] = desc[k]
+                    if 'owner_2021_desc' in desc and 'owner_occupier_rate' not in demog and desc['owner_2021_desc'] is not None:
+                        demog['owner_occupier_rate'] = desc['owner_2021_desc']
+                
+                # Derived
+                supply_demand = None
+                ptr = None
+                total_props = None
+                vr = None
+                if sd:
+                    sl = sd.get('currentSaleListingCount')
+                    rs = sd.get('currentRecentSalesCount', sd.get('currentRecentSalesCountByHouse'))
+                    if sl is not None and rs is not None:
+                        try: 
+                            sl_i, rs_i = int(sl), int(rs)
+                            if rs_i > 0: supply_demand = r2(sl_i / rs_i)
+                        except: pass
+                    tp_raw = sd.get('currentOffMarketCount')
+                    if tp_raw is not None:
+                        try: total_props = int(tp_raw)
+                        except: pass
+                    rl = sd.get('currentRentalListingCount')
+                    if rl is not None and total_props and total_props > 0:
+                        try: vr = r2((int(rl) / total_props) * 100)
+                        except: pass
+                
+                if h_price and mm.get('rent_h') and mm['rent_h'] > 0:
+                    ptr = r2(h_price / (mm['rent_h'] * 52))
+                
+                # DQ
+                dq_issues = []
+                if mm.get('yield_h') is not None and mm['yield_h'] < 0:
+                    dq_issues.append({"field": "house_yield", "issue": "negative", "value": mm['yield_h'], "severity": "warning"})
+                if mm.get('yield_h') is not None and mm['yield_h'] > 12:
+                    dq_issues.append({"field": "house_yield", "issue": "outlier_high", "value": mm['yield_h'], "severity": "warning"})
+                if h_price is not None and h_price < 50000:
+                    dq_issues.append({"field": "house_median_price", "issue": "suspiciously_low", "value": h_price, "severity": "warning"})
+                if h_price is None:
+                    dq_issues.append({"field": "house_median_price", "issue": "missing", "severity": "error"})
+                for cf in ['population_2021', 'owner_occupier_rate', 'median_age']:
+                    if cf not in demog:
+                        dq_issues.append({"field": cf, "issue": "missing", "severity": "warning"})
+                
+                dq_score = 100.0 - sum(15 if i.get('severity') == 'error' else 5 for i in dq_issues)
+                dq_score = r2(max(0.0, min(100.0, dq_score)))
+                
+                # Upsert
+                ui = SuburbUIV3(id=raw.id)
+                db.add(ui)
+                ui.state = raw.state
+                ui.name = raw.name
+                ui.postcode = raw.postcode
+                ui.is_enriched = True
+                
+                ui.house_median_price = h_price
+                ui.house_median_price_12m_change_pct = r2(mm.get('change_12m_h'))
+                ui.house_median_price_12m_change = r2(mm.get('change_5yr_h'))
+                ui.house_median_rent = r2(mm.get('rent_h'))
+                ui.house_median_rent_12m_change = r2(mm.get('rent_change_h'))
+                ui.house_gross_rental_yield = r2(mm.get('yield_h'))
+                ui.house_sold_12m = int(mm['sold_12m_h']) if mm.get('sold_12m_h') else None
+                
+                ui.unit_median_price = u_price
+                ui.unit_median_price_12m_change_pct = r2(mm.get('change_12m_u'))
+                ui.unit_median_rent = r2(mm.get('rent_u'))
+                ui.unit_gross_rental_yield = r2(mm.get('yield_u'))
+                
+                ui.supply_demand_ratio = supply_demand
+                ui.price_to_rent_ratio = ptr
+                ui.total_properties = total_props
+                ui.vacancy_rate = vr
+                
+                for k, v in demog.items():
+                    if hasattr(ui, k):
+                        setattr(ui, k, v)
+                
+                for f in ['area_sqkm', 'parks_count', 'parks_coverage_pct', 'typical_mortgage_band', 'predominant_occupation']:
+                    if f in desc and desc[f] is not None:
+                        setattr(ui, f, desc[f])
+                
+                if sd:
+                    nearby_raw = extract_nearby_fast(data)
+                    ui.nearby_suburbs = nearby_raw
+                    sales_raw = extract_sales_fast(data)
+                    ui.sales_summary = sales_raw if sales_raw else None
+                
+                ui.dq_issues = dq_issues if dq_issues else None
+                ui.dq_score = dq_score
+                ui.transform_version = 3
+                ui.last_updated = datetime.datetime.utcnow()
+                
+                total += 1
+                
+            except Exception as e:
+                print(f'  ERR {raw.id}: {e}')
+        
+        db.commit()
+        print(f'  [{total}] batch commit...')
+    
+    db.close()
+    print(f'Done: {total} enriched')
+    return total
+
+
+def extract_nearby_fast(data):
+    ss = data.get('surroundingSuburbs')
+    if not isinstance(ss, dict): return None
+    subs = ss.get('surroundingSuburbs', [])
+    if not isinstance(subs, list) or len(subs) == 0: return None
+    return [{"id": s.get("propertyId", ""), "name": s.get("suburb", ""),
+             "state": s.get("stateCode", ""), "postcode": s.get("postCode", "")}
+            for s in subs[:20] if isinstance(s, dict)]
+
+
+def extract_sales_fast(data):
+    sp = data.get('suburbProperty')
+    if not isinstance(sp, dict): return None
+    detail = sp.get('detail')
+    if not isinstance(detail, dict): return None
+    sold = detail.get('sold', [])
+    if not isinstance(sold, list) or len(sold) == 0: return None
+    result = []
+    for item in sold[:10]:
+        if not isinstance(item, dict): continue
+        addr = item.get('address', {})
+        ls = item.get('lastSale', {})
+        gs = item.get('guesstimate', {})
+        result.append({
+            'address': addr.get('formattedAddress', '') if isinstance(addr, dict) else '',
+            'type': item.get('type'),
+            'beds': item.get('beds'),
+            'salePrice': ls.get('salePrice') if isinstance(ls, dict) else None,
+            'saleDate': ls.get('eventDate') if isinstance(ls, dict) else None,
+        })
+    return result if result else None
+
+
+if __name__ == '__main__':
+    mb = int(sys.argv[1]) if len(sys.argv) > 1 else None
+    bulk_enrich(max_batches=mb)

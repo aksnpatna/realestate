@@ -297,19 +297,7 @@ function App() {
                     <div className="metric-box">
                       <div className="metric-label">Infrastructure Inv.</div>
                       <div className="metric-value highlight-purple">
-                        No data
-                      </div>
-                    </div>
-                    <div className="metric-box">
-                      <div className="metric-label">School Quality (0-10)</div>
-                      <div className="metric-value">
-                        {(activeSuburb as any).schoolQuality || activeSuburb.metrics?.schoolQuality || 'No data'}
-                      </div>
-                    </div>
-                    <div className="metric-box">
-                      <div className="metric-label">Transit Access (0-10)</div>
-                      <div className="metric-value">
-                        {(activeSuburb as any).transitAccessibility || activeSuburb.metrics?.transitAccessibility || 'No data'}
+                        {(activeSuburb as any).infrastructureInvestment || (activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount || 0} parks (${(activeSuburb as any).parksCoveragePct || 0}% coverage)` : 'No data'}
                       </div>
                     </div>
                     <div className="metric-box">
@@ -485,7 +473,7 @@ function App() {
                           { label: 'Supply', items: [
                             { label:'Stock on Market', value: (s as any).houseStockOnMarket, icon:'🏠' },
                             { label:'Supply/Demand Ratio', value: (s as any).supplyDemandRatio?.toFixed(2) || '—', icon:'📊' },
-                            { label:'Building Approvals', value: 'Council data Pending', icon:'🔨' },
+                            { label:'Building Approvals (est)', value: (s as any).buildingApprovals12m ? `${(s as any).buildingApprovals12m} (est.)` : '—', icon:'🔨' },
                           ]},
                           { label: 'Demand', items: [
                             { label:'Rental Yield', value: (s as any).houseGrossRentalYield + '%', icon:'💰' },
@@ -503,7 +491,7 @@ function App() {
                             { label:'Predominant Income', value: demo.predominant_income_band || '—', icon:'💵' },
                             { label:'Population CAGR', value: (s as any).populationCagr?.toFixed(1) + '%' || '—', icon:'👥' },
                             { label:'Median Age', value: s.medianAge || '—', icon:'🎂' },
-                            { label:'Unemployment', value: 'ABS data pending', icon:'📉' },
+                            { label:'Unemployment (est)', value: (s as any).unemploymentRate ? `${(s as any).unemploymentRate}% (est.)` : '—', icon:'📉' },
                           ]},
                         ]
                         return indicators.flatMap((section) => [

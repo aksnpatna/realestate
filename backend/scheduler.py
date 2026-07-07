@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
 Background scheduler for suburb data updates.
-- Daily: refresh metrics (population growth, prices, infrastructure)
-- Monthly: enrich POIs/schools via Overpass API + metrics refresh
+V3 Pipeline (tiered):
+  - Monthly: Metro/live suburbs only — re-scrape + unpack + enrich changed
+  - Quarterly: Full national refresh — re-scrape all + unpack + enrich changed
+  - Change detection: only re-process if source data actually changed
 Runs inside the same Docker container as the API.
 """
 
@@ -10,7 +12,8 @@ import os
 import sys
 import time
 import threading
-from datetime import datetime, timedelta
+import subprocess
+from datetime import datetime
 
 BASE_DIR = os.path.dirname(__file__)
 sys.path.insert(0, BASE_DIR)
@@ -18,96 +21,64 @@ sys.path.insert(0, BASE_DIR)
 
 class UpdateScheduler:
     """
-    Daily metrics refresh (fast, no external API calls for most suburbs).
-    Monthly full enrichment including Overpass POI/school data (slow).
+    V3 Tiered Update Scheduler.
+    Monthly metro (~3,953 suburbs), quarterly full (13,150).
+    Only V3 pipeline runs — old update_pipeline/transform_data retired.
     """
 
     def __init__(self):
         self.running = True
-        self.last_metrics: datetime | None = None
-        self.last_enrichment: datetime | None = None
-        self.startup_delay = 30
-        self.metrics_interval = 24 * 60 * 60       # daily
-        self.enrichment_interval = 30 * 24 * 60 * 60  # monthly
+        self.last_monthly: datetime | None = None
+        self.last_quarterly: datetime | None = None
+        self.startup_delay = 60
+        self.monthly_interval = 30 * 24 * 60 * 60      # 30 days
+        self.quarterly_interval = 90 * 24 * 60 * 60    # 90 days
         self._thread: threading.Thread | None = None
 
-    def _run_with_lock(self, label: str, fn):
-        lock_path = os.path.join(BASE_DIR, ".pipeline_lock")
-        if os.path.exists(lock_path):
-            age = time.time() - os.path.getmtime(lock_path)
-            if age < 3600:
-                print(f"  [{label}] Pipeline lock active (<1hr), skipping")
-                return
-        open(lock_path, "w").close()
-        try:
-            fn()
-        except Exception as e:
-            print(f"  [{label}] ERROR: {e}")
-        finally:
-            if os.path.exists(lock_path):
-                os.remove(lock_path)
-
-    def run_metrics_update(self):
+    def _run_v3_monthly_metro(self):
         print(f"\n{'='*60}")
-        print(f"[{datetime.now()}] SCHEDULER: Daily metrics update")
-        from update_pipeline import run_update
-        self._run_with_lock("metrics", lambda: run_update(trigger_reload=True))
-        self.last_metrics = datetime.now()
-
-    def run_full_enrichment(self):
-        print(f"\n{'='*60}")
-        print(f"[{datetime.now()}] SCHEDULER: Monthly full enrichment")
-        import subprocess
-
-        # Step 1: Enrich POIs/schools from Overpass (skip suburbs that already have data)
-        print("  Step 1/2: POI/School enrichment (Overpass API)")
-        result = subprocess.run(
-            [sys.executable, os.path.join(BASE_DIR, "enrich_pipeline.py"), "--skip-existing"],
-            capture_output=True, text=True, timeout=600
+        print(f"[{datetime.now()}] SCHEDULER: Monthly Metro Update (~3,953 live suburbs)")
+        print(f"{'='*60}")
+        subprocess.run(
+            [sys.executable, os.path.join(BASE_DIR, "v3_scheduler.py"), "--monthly"]
         )
-        print(result.stdout[-500:])
-        if result.stderr:
-            print("  stderr:", result.stderr[-200:])
+        self.last_monthly = datetime.now()
 
-        # Step 2: Refresh metrics
-        print("  Step 2/2: Metrics refresh")
-        from update_pipeline import run_update
-        run_update(trigger_reload=True)
-
-        self.last_enrichment = datetime.now()
+    def _run_v3_quarterly_full(self):
+        print(f"\n{'='*60}")
+        print(f"[{datetime.now()}] SCHEDULER: Quarterly Full National Refresh (13,150 suburbs)")
+        print(f"{'='*60}")
+        subprocess.run(
+            [sys.executable, os.path.join(BASE_DIR, "v3_scheduler.py"), "--quarterly"]
+        )
+        self.last_quarterly = datetime.now()
 
     def _loop(self):
         time.sleep(self.startup_delay)
 
-        # Run metrics update immediately on startup
-        self.run_metrics_update()
-
-        # Also run enrichment if never run before
-        self.run_full_enrichment()
+        # Run quarterly on first startup (if data is stale)
+        self._run_v3_quarterly_full()
 
         while self.running:
             now = datetime.now()
 
-            # Check if enrichment is due (monthly)
-            if self.last_enrichment is None or \
-               (now - self.last_enrichment).total_seconds() >= self.enrichment_interval:
-                self.run_full_enrichment()
+            if self.last_quarterly is None or \
+               (now - self.last_quarterly).total_seconds() >= self.quarterly_interval:
+                self._run_v3_quarterly_full()
 
-            # Check if metrics are due (daily)
-            if self.last_metrics is None or \
-               (now - self.last_metrics).total_seconds() >= self.metrics_interval:
-                self.run_metrics_update()
+            if self.last_monthly is None or \
+               (now - self.last_monthly).total_seconds() >= self.monthly_interval:
+                self._run_v3_monthly_metro()
 
-            # Sleep in 10-minute chunks
-            for _ in range(600):
+            for _ in range(360):
                 if not self.running:
                     break
-                time.sleep(6)
+                time.sleep(10)
 
     def start(self):
         self._thread = threading.Thread(target=self._loop, daemon=True)
         self._thread.start()
-        print(f"[{datetime.now()}] Scheduler started: daily metrics + monthly enrichment")
+        print(f"[{datetime.now()}] V3 Scheduler started: monthly metro + quarterly full")
 
     def stop(self):
         self.running = False

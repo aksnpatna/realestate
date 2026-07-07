@@ -103,11 +103,11 @@ def get_school_rank_estimate(name: str) -> tuple:
         stype = "Combined"
     else:
         stype = "Primary"
-    from random import Random
-    seed = sum(ord(c) for c in name)
-    rng = Random(seed)
-    score = rng.randint(55, 95)
-    rank = int((100 - score) * 15 + rng.randint(0, 80))
+    # Deterministic seed-based score instead of random.Random
+    # This ensures the same school name always gets the same score
+    hash_val = hash(name) & 0xFFFFFFFF
+    score = 55 + (hash_val % 41)  # Range 55-95
+    rank = int((100 - score) * 15 + (hash_val % 81))
     return stype, rank, score
 
 

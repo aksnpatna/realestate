@@ -1,0 +1,38 @@
+/* Theme variables */
+.dark {
+  --bg: #212121;
+  --card-bg: #2b2b2b;
+  --text: #fafafa;
+  --text-secondary: #c0c0c0;
+  --accent-primary: #0fa9b8;
+  --accent-secondary: #ffb400;
+}
+.light {
+  --bg: #e8e8e8;
+  --card-bg: #f0f0f0;
+  --text: #2a2a2a;
+  --text-secondary: #6b6b6b;
+  --accent-primary: #0fa9b8;
+  --accent-secondary: #ffb400;
+}
+.dashboard-container {
+  background: var(--bg);
+  color: var(--text);
+}
+.glass-card {
+  background: var(--card-bg);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 8px 0;
+}
+.theme-toggle {
+  margin-left: 1rem;
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-secondary);
+}

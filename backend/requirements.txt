@@ -4,6 +4,8 @@ psycopg2-binary
 sqlalchemy
 pydantic
 asyncpg
+PyJWT
+passlib[bcrypt]
 langchain
 langchain-core
 langchain-community
@@ -12,3 +14,15 @@ langchain-groq
 langgraph
 tavily-python
 python-dotenv
+requests
+beautifulsoup4
+playwright
+playwright-stealth
+aiohttp
+openpyxl
+scikit-learn
+pandas
+yfinance
+pandera
+scipy
+headroom-ai[all]

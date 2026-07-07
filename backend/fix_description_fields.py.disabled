@@ -1,0 +1,122 @@
+"""Fast-fix script: only re-parse description-derived fields for existing records."""
+import json, re, datetime, sys
+from sqlalchemy import or_
+from models_v3 import SuburbRawV3, SuburbUIV3, SessionLocal
+
+def r2(val):
+    if val is None: return None
+    try: return round(float(val), 2)
+    except: return val
+
+def parse_description(raw):
+    if not raw or not isinstance(raw, str): return {}
+    r = {}
+    m = re.search(r'approximately\s+([\d,.]+)\s+square\s+kilometres?', raw, re.IGNORECASE)
+    if m:
+        try: r["area_sqkm"] = r2(m.group(1).replace(",", ""))
+        except: pass
+    m = re.search(r'There\s+are\s+(\d+)\s+parks?', raw, re.IGNORECASE)
+    if m:
+        try: r["parks_count"] = int(m.group(1))
+        except: pass
+    m = re.search(r'covering\s+(?:nearly\s+)?([\d,.]+)\s*%', raw, re.IGNORECASE)
+    if m:
+        try: r["parks_coverage_pct"] = r2(m.group(1).replace(",", ""))
+        except: pass
+    m = re.search(r'population\s+(?:of\s+\w+\s+)?in\s+2016\s+was\s+([\d,]+)\s+people', raw, re.IGNORECASE)
+    if m:
+        try: r["population_2016"] = int(m.group(1).replace(",", ""))
+        except: pass
+    m = re.search(r'population\s+growth\s+of\s+([\d,\-.]+)\s*%', raw, re.IGNORECASE)
+    if m:
+        try: r["population_cagr"] = r2(m.group(1).replace(",", ""))
+        except: pass
+    m = re.search(r'likely\s+to\s+be\s+repaying\s+(\$[\d,]+\s*-\s*\$[\d,]+)\s+per\s+month', raw, re.IGNORECASE)
+    if m: r["typical_mortgage_band"] = m.group(1).strip()
+    m = re.search(r'people\s+in\s+\w+\s+work\s+in\s+(?:a\s+|an\s+)?([\w\s\-]+?)\s+occupation', raw, re.IGNORECASE)
+    if m: r["predominant_occupation"] = m.group(1).strip().title()
+    m = re.search(r'In\s+2021,\s+([\d,.]+)\s*%\s+of\s+the\s+homes.*?were\s+owner-occupied\s+compared\s+with\s+([\d,.]+)\s*%', raw, re.IGNORECASE)
+    if m:
+        try:
+            r["owner_2021_desc"] = r2(m.group(1).replace(",", ""))
+        except: pass
+    return r
+
+def fix_description_fields(batch=500):
+    db = SessionLocal()
+    
+    ids = [r[0] for r in db.query(SuburbUIV3.id).filter(
+        SuburbUIV3.is_enriched == True,
+        or_(
+            SuburbUIV3.typical_mortgage_band.is_(None),
+            SuburbUIV3.predominant_occupation.is_(None),
+            SuburbUIV3.area_sqkm.is_(None),
+            SuburbUIV3.parks_count.is_(None),
+            SuburbUIV3.population_2016.is_(None)
+        )
+    ).all()]
+    
+    print(f"Need fix: {len(ids)} records")
+    
+    raw_records = db.query(SuburbRawV3).filter(
+        SuburbRawV3.id.in_(ids),
+        SuburbRawV3.status == "complete"
+    ).limit(batch).all()
+    
+    if not raw_records:
+        print("No records to fix.")
+        db.close()
+        return
+    
+    print(f"Fixing {len(raw_records)} records...")
+    fixed = 0
+    
+    for raw in raw_records:
+        try:
+            data = raw.raw_json or {}
+            if isinstance(data, str): data = json.loads(data)
+            
+            suburb_info = data.get("suburb")
+            if not isinstance(suburb_info, dict): continue
+            sd = suburb_info.get("suburb_detail")
+            if not isinstance(sd, dict): continue
+            desc_raw = sd.get("description", "")
+            if not desc_raw: continue
+            
+            desc = parse_description(desc_raw)
+            if not desc: continue
+            
+            ui = db.query(SuburbUIV3).filter(SuburbUIV3.id == raw.id).first()
+            if not ui: continue
+            
+            updated = False
+            for field in ["area_sqkm", "parks_count", "parks_coverage_pct", "population_2016",
+                         "population_cagr", "typical_mortgage_band", "predominant_occupation"]:
+                if field in desc and desc[field] is not None and getattr(ui, field) is None:
+                    setattr(ui, field, desc[field])
+                    updated = True
+            
+            if "owner_2021_desc" in desc and desc["owner_2021_desc"] is not None:
+                if ui.owner_occupier_rate is None:
+                    ui.owner_occupier_rate = desc["owner_2021_desc"]
+                    updated = True
+            
+            if updated:
+                ui.last_updated = datetime.datetime.utcnow()
+                fixed += 1
+            
+            if fixed % 200 == 0:
+                db.commit()
+                print(f"  [{fixed}/{len(raw_records)}]...")
+                
+        except Exception as e:
+            print(f"  ERROR {raw.id}: {e}")
+    
+    db.commit()
+    db.close()
+    print(f"Done: fixed {fixed} records")
+
+
+if __name__ == "__main__":
+    batch = int(sys.argv[1]) if len(sys.argv) > 1 else 500
+    fix_description_fields(batch=batch)

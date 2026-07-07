@@ -1,7 +1,12 @@
 node_modules
-dist
+npm-debug.log
+Dockerfile
+.dockerignore
 .git
-backend
-*.md
-.kilo
-.vite
+.gitignore
+dist
+src/**/*.test.*
+src/**/*.spec.*
+.env
+.idea
+.vscode

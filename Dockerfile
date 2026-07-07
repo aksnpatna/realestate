@@ -1,16 +1,26 @@
-# Stage 1: Build React app
-FROM node:22-alpine AS builder
+# ---------- Build Stage ----------
+FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json ./
+
+# Install dependencies (package.json + lock if exists)
+COPY package.json ./
+COPY package-lock.json* ./
 RUN npm ci
+
+# Copy source files
 COPY . .
+
+# Build the React/Vite app
 RUN npm run build
 
-# Stage 2: Serve with Nginx
-FROM nginx:1.27-alpine
+# ---------- Production Stage ----------
+FROM nginx:alpine-slim
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+# Copy custom nginx config (optional – basic static serve)
+COPY nginx.conf /etc/nginx/conf.d
+# Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -q --spider http://127.0.0.1/ || exit 1
 CMD ["nginx", "-g", "daemon off;"]

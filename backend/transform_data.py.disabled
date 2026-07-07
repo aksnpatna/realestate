@@ -1,0 +1,315 @@
+import os
+import json
+import datetime
+from math import isnan, isinf
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.attributes import flag_modified
+from parallel_scraper import SuburbAllModel, SuburbUIModel, SuburbGeodataModel
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def safe_float(val):
+    if val is None:
+        return None
+    try:
+        f = float(val)
+        if isnan(f) or isinf(f):
+            return None
+        return f
+    except (ValueError, TypeError):
+        return None
+
+def safe_int(val):
+    if val is None:
+        return None
+    try:
+        return int(float(val))
+    except (ValueError, TypeError):
+        return None
+
+def compute_growth_score(metrics, is_live, cbd_distance_mins):
+    """
+    Compute a 0-100 growth score using all available real scraped metrics.
+    Formula: Base 30 + PopGrowth(0-25) + Yield(0-20) + School(0-15) + Transit(0-10) + MetroBonus(10) - Distance(0-15)
+    """
+    score = 30.0
+    
+    # 1. Population Growth CAGR (0-25 points)
+    pop_2016 = safe_int(metrics.get('population2016'))
+    pop_2021 = safe_int(metrics.get('population2021'))
+    if pop_2016 and pop_2021 and pop_2016 > 0:
+        cagr = ((pop_2021 / pop_2016) ** (1/5)) - 1
+        cagr_pct = cagr * 100
+        score += min(25, max(0, cagr_pct * 4.0))
+    
+    # 2. Rental Yield (0-20 points)
+    median_price = safe_float(metrics.get('medianPrice'))
+    weekly_rent = safe_float(metrics.get('weeklyRent'))
+    if median_price and weekly_rent and median_price > 0:
+        yield_pct = (weekly_rent * 52) / median_price * 100
+        score += min(20, max(0, (yield_pct - 1.5) * 4.0))
+    
+    # 3. School Quality via ICSEA (0-15 points)
+    icsea = safe_float(metrics.get('icseaAvg'))
+    if icsea and icsea > 800:
+        score += min(15, max(0, (icsea - 850) * 0.03))
+    
+    # 4. Transit & Parks (0-10 points)
+    parks = safe_int(metrics.get('parksCount'))
+    park_score = min(5, (parks or 0) * 0.05)
+    transit_score = 2.5  # default
+    score += park_score + transit_score
+    
+    # 5. Metro bonus (+5 points for metro, +5 for close to CBD)
+    if is_live:
+        score += 5
+        if cbd_distance_mins is not None and cbd_distance_mins > 0:
+            if cbd_distance_mins <= 20:
+                score += 5
+            elif cbd_distance_mins <= 40:
+                score += 3
+            else:
+                score += 1
+    
+    # 6. Distance penalty for regional ((0-15))
+    if not is_live:
+        score -= 10
+    
+    # 7. Supply-demand bonus (tight market = growth potential)
+    stock = safe_int(metrics.get('stockOnMarket'))
+    sold = safe_int(metrics.get('soldStock'))
+    if stock and sold and sold > 0:
+        ratio = stock / sold
+        if ratio < 0.5:
+            score += 5
+        elif ratio < 1.0:
+            score += 3
+    
+    # 8. Owner-occupier stability
+    oo = safe_float(metrics.get('ownerOccupierRate'))
+    if oo and oo > 50:
+        score += min(3, (oo - 50) * 0.06)
+    
+    return round(max(5, min(99, score)), 1)
+
+def compute_cbd_distance(postcode, state, is_live):
+    """Estimate CBD distance from postcode and state for metro suburbs."""
+    if not is_live:
+        return None, None
+    
+    cbd_map = {
+        'VIC': (-37.8136, 144.9631, 'Melbourne CBD'),
+        'NSW': (-33.8688, 151.2093, 'Sydney CBD'),
+        'QLD': (-27.4698, 153.0251, 'Brisbane CBD'),
+        'SA':  (-34.9285, 138.6007, 'Adelaide CBD'),
+        'WA':  (-31.9505, 115.8605, 'Perth CBD'),
+        'TAS': (-42.8821, 147.3272, 'Hobart CBD'),
+    }
+    if state not in cbd_map:
+        return None, None
+    
+    _, _, cbd_name = cbd_map[state]
+    return None, cbd_name  # We'll set distance once we have lat/lon; for now just the CBD name
+
+def run_transformation():
+    print("Starting data transformation from suburbs_all to suburbs_ui...")
+    db = SessionLocal()
+    
+    batch_size = 500
+    offset = 0
+    total_processed = 0
+    total_inserted = 0
+    total_updated = 0
+    
+    while True:
+        suburbs = db.query(SuburbAllModel).offset(offset).limit(batch_size).all()
+        if not suburbs:
+            break
+            
+        for s in suburbs:
+            total_processed += 1
+            if not s.data:
+                continue
+                
+            data = s.data
+            raw_metrics = data.get('metrics', {}) or {}
+            
+            ui_record = db.query(SuburbUIModel).filter(SuburbUIModel.id == s.id).first()
+            is_new = False
+            if not ui_record:
+                ui_record = SuburbUIModel(id=s.id)
+                is_new = True
+            
+            # --- Basic identity fields ---
+            ui_record.state = s.state or data.get('state', 'Unknown')
+            ui_record.name = s.name or data.get('name', 'Unknown')
+            ui_record.postcode = s.postcode or data.get('postcode', 'Unknown')
+            ui_record.is_live = s.is_live
+            
+            # --- Build normalized metrics dict (preserve existing, merge fresh raw) ---
+            nm = dict(ui_record.metrics) if ui_record and ui_record.metrics else {}
+            for k, v in raw_metrics.items():
+                nm[k] = v
+            
+            # -- Extract numeric values from raw_metrics (scraped) --
+            median_price = safe_float(raw_metrics.get('medianPrice'))
+            weekly_rent = safe_float(raw_metrics.get('weeklyRent'))
+            unit_median_price = safe_float(raw_metrics.get('unitMedianPrice'))
+            parks_count = safe_int(raw_metrics.get('parksCount'))
+            owner_occ = safe_float(raw_metrics.get('ownerOccupierRate'))
+            stock_on_market = safe_int(raw_metrics.get('stockOnMarket'))
+            rental_stock = safe_int(raw_metrics.get('rentalStock'))
+            sold_stock = safe_int(raw_metrics.get('soldStock'))
+            
+            # -- Population & Area: prefer scraped, fall back to seed --
+            pop_2016 = safe_int(raw_metrics.get('population2016'))
+            pop_2021 = safe_int(raw_metrics.get('population2021'))
+            if not pop_2016:
+                pop_2016 = safe_int(data.get('population_baseline'))
+            if not pop_2021 and pop_2016:
+                pop_2021 = pop_2016  # no growth data
+            
+            sqkm = safe_float(raw_metrics.get('suburbAreaKm2'))
+            if not sqkm:
+                sqkm = safe_float(data.get('sqkm'))
+            
+            # -- ICSEA / School --
+            icsea_avg = safe_float(raw_metrics.get('icseaAvg'))
+            icsea_quality = safe_float(raw_metrics.get('icseaSchoolQuality'))
+            icsea_count = safe_int(raw_metrics.get('icseaSchoolCount'))
+            
+            # -- Distance --
+            cbd_distance = safe_int(data.get('cbdDistanceMins'))
+            metro_cbd = data.get('metroCBD')
+            if not metro_cbd:
+                _, metro_cbd = compute_cbd_distance(s.postcode, s.state, s.is_live)
+            
+            # ---- COMPUTE DERIVED METRICS ----
+            
+            # Rental Yield
+            if median_price and weekly_rent and median_price > 0:
+                yield_val = (weekly_rent * 52) / median_price * 100
+                nm['rentalYield'] = round(yield_val, 2)
+                nm['rentalYieldPct'] = round(yield_val, 2)
+            
+            # Price-to-Rent Ratio
+            if median_price and weekly_rent and weekly_rent > 0:
+                nm['priceToRentRatio'] = round(median_price / (weekly_rent * 52), 1)
+            
+            # Population Density (use scraped area and latest population)
+            effective_pop = pop_2021 or pop_2016
+            effective_area = sqkm
+            if effective_pop and effective_area and effective_area > 0:
+                nm['populationDensity'] = round(effective_pop / effective_area)
+            
+            # True Population Growth CAGR (2016-2021)
+            if pop_2016 and pop_2021 and pop_2016 > 0:
+                cagr = ((pop_2021 / pop_2016) ** (1/5)) - 1
+                nm['truePopulationGrowth'] = round(cagr * 100, 2)
+                nm['truePopulationCAGR'] = round(cagr * 100, 2)
+            
+            # Typical Mortgage Repayments (80% LVR, 6.5%, 30yr)
+            if median_price:
+                principal = median_price * 0.8
+                r_monthly = 0.065 / 12
+                n = 360
+                if r_monthly > 0:
+                    monthly_payment = principal * (r_monthly * (1 + r_monthly)**n) / ((1 + r_monthly)**n - 1)
+                    nm['mortgageBand'] = f"${int(monthly_payment):,}/mo"
+            
+            # School Quality mapping
+            if icsea_quality is not None:
+                nm['schoolQuality'] = icsea_quality
+            nm['icseaSchoolQuality'] = icsea_quality
+            nm['icseaAvg'] = icsea_avg
+            nm['icseaSchoolCount'] = icsea_count
+            
+            # Transit (fallback to 5.0 if not scraped)
+            if not nm.get('transitAccessibility'):
+                nm['transitAccessibility'] = 5.0
+            
+            # Unit growth
+            nm['unitMedianPrice'] = unit_median_price
+            nm['unitGrowth5yr'] = nm.get('unitGrowth5yr') or raw_metrics.get('unitGrowth5yr')
+            
+            # ---- COMPUTE GROWTH SCORE ----
+            growth_score = compute_growth_score(nm, s.is_live, cbd_distance)
+            
+            # ---- PERSIST TO SUBURBS_UI ----
+            # Set typed columns with COMPUTED values (not raw)
+            ui_record.growth_score = growth_score
+            ui_record.median_price = median_price
+            ui_record.weekly_rent = weekly_rent
+            ui_record.rental_yield = safe_float(nm.get('rentalYield'))
+            ui_record.rental_yield_pct = safe_float(nm.get('rentalYieldPct'))
+            ui_record.total_properties = safe_int(raw_metrics.get('totalProperties'))
+            ui_record.owner_occupier_rate = owner_occ
+            ui_record.population = effective_pop
+            ui_record.area_sqkm = effective_area
+            ui_record.parks_count = parks_count
+            ui_record.school_quality = icsea_quality
+            ui_record.transit_accessibility = safe_float(nm.get('transitAccessibility'))
+            ui_record.cbd_distance_mins = cbd_distance
+            ui_record.metro_cbd = metro_cbd
+            
+            # JSON fields
+            ui_record.schools = data.get('acara_schools') or data.get('schools')
+            ui_record.history = data.get('history')
+            ui_record.highlights = data.get('highlights')
+            ui_record.ai_insights = data.get('ai_insights')
+            ui_record.nearby_pois = data.get('nearby_pois')
+            ui_record.demographics = data.get('demographics')
+            
+            # Assign metrics payload
+            ui_record.metrics = nm
+            ui_record.last_updated = datetime.datetime.utcnow()
+            
+            # Fetch geodata
+            geo = db.query(SuburbGeodataModel).filter(SuburbGeodataModel.suburb_id == s.id).first()
+            if geo:
+                ui_record.lat = geo.lat
+                ui_record.lon = geo.lon
+                ui_record.pois = geo.pois or []
+                # Compute CBD distance if we have lat/lon
+                if ui_record.lat is not None and ui_record.lon is not None and ui_record.is_live:
+                    cbd_coords = {
+                        'VIC': (-37.8136, 144.9631),
+                        'NSW': (-33.8688, 151.2093),
+                        'QLD': (-27.4698, 153.0251),
+                        'SA':  (-34.9285, 138.6007),
+                        'WA':  (-31.9505, 115.8605),
+                        'TAS': (-42.8821, 147.3272),
+                    }
+                    if ui_record.state in cbd_coords:
+                        cbd_lat, cbd_lon = cbd_coords[ui_record.state]
+                        import math
+                        dlat = ui_record.lat - cbd_lat
+                        dlon = ui_record.lon - cbd_lon
+                        dist_km = math.sqrt(dlat**2 + dlon**2) * 111.32
+                        ui_record.cbd_distance_mins = int(dist_km / 0.8)  # ~50km/h average
+                        # Recompute score with real distance
+                        ui_record.growth_score = compute_growth_score(nm, s.is_live, ui_record.cbd_distance_mins)
+            else:
+                ui_record.lat = None
+                ui_record.lon = None
+                ui_record.pois = []
+            
+            if is_new:
+                db.add(ui_record)
+                total_inserted += 1
+            else:
+                flag_modified(ui_record, "metrics")
+                total_updated += 1
+                
+        db.commit()
+        offset += batch_size
+        print(f"Processed {total_processed} records...")
+        
+    db.close()
+    print(f"Transformation complete. Inserted: {total_inserted}, Updated: {total_updated}")
+
+if __name__ == "__main__":
+    run_transformation()

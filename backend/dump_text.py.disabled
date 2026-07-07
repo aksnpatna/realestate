@@ -1,0 +1,26 @@
+import asyncio
+from playwright.async_api import async_playwright
+
+async def main():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(args=['--disable-dev-shm-usage', '--no-sandbox'])
+        context = await browser.new_context(
+            viewport={'width': 1920, 'height': 1080},
+            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        )
+        page = await context.new_page()
+        
+        # Penrith NSW 2750
+        url = "https://www.onthehouse.com.au/suburb/nsw/penrith-2750"
+        await page.goto(url, wait_until="domcontentloaded")
+        await page.wait_for_timeout(3000)
+        
+        text_content = await page.evaluate("document.body.innerText")
+        with open("penrith_text.txt", "w") as f:
+            f.write(text_content)
+            
+        print("Text dumped to penrith_text.txt")
+        await browser.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())

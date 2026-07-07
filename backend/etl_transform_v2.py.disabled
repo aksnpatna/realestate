@@ -1,0 +1,120 @@
+import json
+import datetime
+from sqlalchemy.orm import sessionmaker
+from models_v2 import SuburbRawV2, SuburbUIV2, SessionLocal, engine
+
+def extract_metric(metrics_list, metric_type, display_type="Percent"):
+    for m in metrics_list:
+        if m.get('metricType') == metric_type and m.get('metricDisplayType') == display_type:
+            series = m.get('seriesDataList', [])
+            if series:
+                # The latest value is usually at the end of the series
+                latest = series[-1].get('value')
+                # Calculate trend: (latest - previous) if available
+                trend = None
+                if len(series) >= 2:
+                    prev = series[-2].get('value')
+                    if prev and latest:
+                        # For percentages, usually absolute difference or percentage change?
+                        # OnTheHouse typically shows the absolute value of the 12-month change.
+                        trend = latest - prev
+                return latest, trend
+    return None, None
+
+def transform_suburb_data():
+    db = SessionLocal()
+    
+    # Get all successfully scraped raw suburbs that aren't yet in UI v2 (or update them)
+    # For now, just process a batch of 500
+    raw_suburbs = db.query(SuburbRawV2).filter(SuburbRawV2.status == 'complete').limit(500).all()
+    
+    if not raw_suburbs:
+        print("No raw suburbs to transform.")
+        db.close()
+        return
+
+    print(f"Transforming {len(raw_suburbs)} suburbs...")
+    
+    batch = []
+    
+    for raw in raw_suburbs:
+        try:
+            data = raw.raw_json
+            if not data:
+                continue
+            if isinstance(data, str):
+                import json
+                data = json.loads(data)
+                
+            mt = data.get('marketTrends', {}).get('metrics', {})
+            houses = (mt.get('House') or {}).get('10', []) if isinstance(mt, dict) else []
+            units = (mt.get('Unit') or {}).get('10', []) if isinstance(mt, dict) else []
+            
+            # House Metrics
+            h_price, _ = extract_metric(houses, 'Median Value (monthly)', 'Dollar')
+            h_growth, _ = extract_metric(houses, 'Change in Median Value (12 months)', 'Percent')
+            h_rent, _ = extract_metric(houses, 'Median Asking Rent (12 months)', 'Dollar')
+            h_yield, h_yield_trend = extract_metric(houses, 'Value Based Gross Rental Yield', 'Percent')
+            
+            # Unit Metrics
+            u_price, _ = extract_metric(units, 'Median Value (monthly)', 'Dollar')
+            u_growth, _ = extract_metric(units, 'Change in Median Value (12 months)', 'Percent')
+            u_rent, _ = extract_metric(units, 'Median Asking Rent (12 months)', 'Dollar')
+            u_yield, u_yield_trend = extract_metric(units, 'Value Based Gross Rental Yield', 'Percent')
+            
+            # Find 10-year History Series (Median Value) for Houses
+            history_series = []
+            for m in houses:
+                if m.get('metricType') == 'Median Value (monthly)' and m.get('metricDisplayType') == 'Dollar':
+                    for pt in m.get('seriesDataList', []):
+                        history_series.append({
+                            'date': pt.get('dateTime'),
+                            'value': pt.get('value')
+                        })
+                    break
+                    
+            # Demographics (Census)
+            demographics = {}
+            census_metrics = data.get('census', {}).get('metrics', {})
+            if isinstance(census_metrics, dict):
+                for k, v in census_metrics.items():
+                    demographics[k] = v
+                    
+            # Upsert into SuburbUIV2
+            ui_record = db.query(SuburbUIV2).filter(SuburbUIV2.id == raw.id).first()
+            if not ui_record:
+                ui_record = SuburbUIV2(id=raw.id)
+                db.add(ui_record)
+                
+            ui_record.state = raw.state
+            ui_record.name = raw.name
+            ui_record.postcode = raw.postcode
+            ui_record.is_live = True
+            
+            ui_record.house_median_price = h_price
+            ui_record.house_median_growth = h_growth
+            ui_record.house_weekly_rent = h_rent
+            ui_record.house_rental_yield = h_yield
+            ui_record.house_rental_yield_trend = h_yield_trend
+            
+            ui_record.unit_median_price = u_price
+            ui_record.unit_median_growth = u_growth
+            ui_record.unit_weekly_rent = u_rent
+            ui_record.unit_rental_yield = u_yield
+            ui_record.unit_rental_yield_trend = u_yield_trend
+            
+            ui_record.history = history_series
+            ui_record.demographics = demographics
+            ui_record.last_updated = datetime.datetime.utcnow()
+            
+        except Exception as e:
+            import traceback
+            print(f"Error transforming {raw.id}:")
+            traceback.print_exc()
+            
+    db.commit()
+    db.close()
+    print("Transformation complete.")
+
+if __name__ == "__main__":
+    transform_suburb_data()

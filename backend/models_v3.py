@@ -141,6 +141,9 @@ class SuburbUIV3(Base):
     is_live = Column(Boolean, default=True)
     rental_stock = Column(Integer)
     current_median_price = Column(Float)
+    unemployment_rate = Column(Float)
+    building_approvals_12m = Column(Integer)
+    infrastructure_investment = Column(String)
 
     # ---- DQ METADATA & LINEAGE ----
     dq_issues = Column(JSON)                                   # [{field: "house_yield", issue: "negative", severity: "warning"}, ...]

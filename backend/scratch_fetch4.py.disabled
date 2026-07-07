@@ -1,0 +1,44 @@
+import asyncio
+import re
+import json
+from playwright.async_api import async_playwright
+from playwright_stealth import Stealth
+
+async def fetch():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(
+            viewport={'width': 1920, 'height': 1080},
+            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        )
+        page = await context.new_page()
+        await Stealth().apply_stealth_async(page)
+        
+        await page.goto("https://www.onthehouse.com.au/suburb/vic/wyndham-vale-3024", wait_until="domcontentloaded")
+        await page.wait_for_timeout(3000)
+        
+        html = await page.evaluate("document.documentElement.innerHTML")
+        
+        # Look for the JSON payload
+        match = re.search(r'<script[^>]*>window\.__NUXT__=(.*?);</script>', html)
+        if match:
+            print("Found __NUXT__ state!")
+        else:
+            match = re.search(r'data-state="(.*?)"', html)
+            if match:
+                print("Found data-state")
+            else:
+                # Try finding any large JSON object with localityName
+                # Find the script tag containing localityName
+                match = re.search(r'<script[^>]*>(.*?localityName.*?)</script>', html, re.DOTALL)
+                if match:
+                    print("Found generic script tag with localityName")
+                    with open("script_data.txt", "w") as f:
+                        f.write(match.group(1))
+                else:
+                    print("Could not find the JSON container.")
+        
+        await browser.close()
+
+if __name__ == "__main__":
+    asyncio.run(fetch())
