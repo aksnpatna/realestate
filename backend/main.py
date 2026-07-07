@@ -14,6 +14,12 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, String, JSON
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from dotenv import load_dotenv
+from parallel_scraper import SuburbAllModel, SuburbUIModel
+from models_v2 import SuburbUIV2
+from models_v3 import SuburbUIV3, PropertyListing
+
+Base = declarative_base()
+
 import jwt
 from passlib.context import CryptContext
 
@@ -49,9 +55,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Rate limiting store for auth endpoints
+# Rate limiting for auth endpoints (20 req/min per IP)
 _rate_limit_auth = OrderedDict()
-MAX_AUTH_REQUESTS = 20  # per minute
+MAX_AUTH_REQUESTS = 20
 
 def _check_auth_rate(client_ip: str):
     now = datetime.utcnow().timestamp()
@@ -61,6 +67,10 @@ def _check_auth_rate(client_ip: str):
     if len(_rate_limit_auth[client_ip]) >= MAX_AUTH_REQUESTS:
         raise HTTPException(status_code=429, detail="Too many login attempts. Try again in 1 minute.")
     _rate_limit_auth[client_ip].append(now)
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
+engine = create_engine(DATABASE_URL, pool_size=20, max_overflow=30, pool_pre_ping=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 class UserModel(Base):
     __tablename__ = "users"
@@ -82,16 +92,12 @@ def get_db():
 
 @app.on_event("startup")
 async def startup_event():
+    # Wait for DB readiness to avoid race condition
     await asyncio.sleep(10)
     db = SessionLocal()
     try:
         from sqlalchemy import text
         db.execute(text("SELECT 1 FROM suburbs_raw_v3 LIMIT 1"))
-        # Seed admin user if not exists
-        admin_email = "teraamit@gmail.com"
-        if not db.query(UserModel).filter(UserModel.email == admin_email).first():
-            db.add(UserModel(id=secrets.token_hex(16), email=admin_email, password_hash=hash_password("guest321"), salt="", created_at=datetime.now().isoformat()))
-            db.commit()
         from scheduler import start_scheduler
         start_scheduler()
     except Exception as e:
