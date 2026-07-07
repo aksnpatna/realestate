@@ -34,15 +34,10 @@ function App() {
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
 
   const loadColdSuburb = async (id: string) => {
-    const cacheBuster = '?t=' + Date.now()
     try {
-      const res = await fetch(`/api/suburbs/${id}${cacheBuster}`)
+      const res = await fetch(`/api/suburbs/${id}`)
       if (res.ok) {
         const data = await res.json()
-        // Ensure critical V3 fields are present and not overridden by stale list data
-        if (!data.houseMedianPrice && data.medianPrice) data.houseMedianPrice = data.medianPrice
-        if (!data.houseDaysOnMarket) data.houseDaysOnMarket = data.metrics?.daysOnMarket
-        if (!data.vacancyRate && data.metrics?.vacancyRate) data.vacancyRate = data.metrics.vacancyRate
         setActiveSuburb(data)
       }
     } catch (e) {
@@ -210,8 +205,9 @@ function App() {
                   className="premium-select"
                   value={activeSuburb?.id || ''}
                   onChange={(e) => {
-                    const sub = stateSuburbs.find(s => s.id === e.target.value)
-                    if (sub) setActiveSuburb(sub)
+                    if (e.target.value) {
+                      loadColdSuburb(e.target.value)
+                    }
                   }}
                 >
                   {stateSuburbs.map(suburb => (
@@ -226,7 +222,7 @@ function App() {
             {activeSuburb && (
               <div className="sidebar-preview">
                 <div className="preview-score">
-                  <span className="preview-score-value">{activeSuburb.growthScore}</span>
+                  <span className="preview-score-value">{Math.round(activeSuburb.growthScore ?? 0)}</span>
                   <span className="preview-score-label">Score</span>
                 </div>
                 <p className="preview-text">
