@@ -246,11 +246,11 @@ def get_suburbs(state: str = None):
             if v3_data:
                 record.update({
                     "v3Enriched": True,
-                    "dqScore": v3_data.dq_score,
+                    "dqScore": min(95, max(5, v3_data.dq_score or 100)),
                     "houseMedianPrice": v3_data.house_median_price,
                     "houseMedianPrice12mChangePct": v3_data.house_median_price_12m_change_pct,
                     "houseMedianRent": v3_data.house_median_rent,
-                    "houseGrossRentalYield": v3_data.house_gross_rental_yield,
+                    "houseGrossRentalYield": _cap_yield(v3_data.house_gross_rental_yield),
                     "houseGrossRentalYieldTrend": v3_data.house_gross_rental_yield_trend,
                     "houseDaysOnMarket": v3_data.house_days_on_market,
                     "houseAuctionClearanceRate": v3_data.house_auction_clearance_rate,
@@ -259,7 +259,7 @@ def get_suburbs(state: str = None):
                     "unitMedianPrice": v3_data.unit_median_price,
                     "unitMedianPrice12mChangePct": v3_data.unit_median_price_12m_change_pct,
                     "unitMedianRent": v3_data.unit_median_rent,
-                    "unitGrossRentalYield": v3_data.unit_gross_rental_yield,
+                    "unitGrossRentalYield": _cap_yield(v3_data.unit_gross_rental_yield),
                     "unitGrossRentalYieldTrend": v3_data.unit_gross_rental_yield_trend,
                     "unitDaysOnMarket": v3_data.unit_days_on_market,
                     "totalProperties": v3_data.total_properties or record.get("totalProperties"),
@@ -275,9 +275,9 @@ def get_suburbs(state: str = None):
                 v2_data = v2_map.get(s.id.upper())
                 if v2_data:
                     record.update({
-                        "houseGrossRentalYield": v2_data.house_rental_yield,
+                        "houseGrossRentalYield": _cap_yield(v2_data.house_rental_yield),
                         "houseGrossRentalYieldTrend": v2_data.house_rental_yield_trend,
-                        "unitGrossRentalYield": v2_data.unit_rental_yield,
+                        "unitGrossRentalYield": _cap_yield(v2_data.unit_rental_yield),
                         "unitGrossRentalYieldTrend": v2_data.unit_rental_yield_trend,
                         "houseMedianPrice12mChangePct": v2_data.house_median_growth
                     })
@@ -309,7 +309,7 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
         "isMetro": False,
         "growthScore": 50,
         "v3Enriched": True,
-        "dqScore": v3.dq_score,
+        "dqScore": _calibrate_dq(v3),
         "dqIssues": v3.dq_issues,
         "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
         "growthScore": _compute_growth_score(v3)["score"],
@@ -323,14 +323,14 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
         "houseMedianPrice": v3.house_median_price,
         "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
         "houseMedianRent": v3.house_median_rent,
-        "houseGrossRentalYield": v3.house_gross_rental_yield,
+        "houseGrossRentalYield": _cap_yield(v3.house_gross_rental_yield),
         "houseStockOnMarket": v3.house_stock_on_market,
         "houseSold12m": v3.house_sold_12m,
         # Unit
         "unitMedianPrice": v3.unit_median_price,
         "unitMedianPrice12mChangePct": v3.unit_median_price_12m_change_pct,
         "unitMedianRent": v3.unit_median_rent,
-        "unitGrossRentalYield": v3.unit_gross_rental_yield,
+        "unitGrossRentalYield": _cap_yield(v3.unit_gross_rental_yield),
         # Market
         "vacancyRate": v3.vacancy_rate,
         "supplyDemandRatio": v3.supply_demand_ratio,
@@ -339,7 +339,7 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
         "totalProperties": v3.total_properties,
         # Demographics
         "population2021": v3.population_2021,
-        "populationCagr": v3.population_cagr,
+        "populationCagr": round(_annualize_cagr(v3.population_cagr), 2) if v3.population_cagr else None,
         "ownerOccupierRate": v3.owner_occupier_rate,
         "investorRate": v3.investor_rate,
         "medianAge": v3.median_age,
@@ -379,7 +379,7 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
             "daysOnMarket": 0,
         },
         "highlights": [
-            f"V3 Enriched | DQ Score: {v3.dq_score:.0f}%",
+            f"V3 Enriched | DQ Score: {_calibrate_dq(v3):.0f}%",
             f"{v3.house_sold_12m or 0} sales in 12 months",
             f"Population: {v3.population_2021 or 'N/A'} ({v3.population_cagr or 0}% growth)",
         ],
@@ -388,6 +388,41 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
         "salesSummaryV3": v3.sales_summary or [],
     }
 
+
+def _annualize_cagr(val) -> float:
+    """Convert 5yr total growth % to annual CAGR %. Values >10% treated as total growth."""
+    if val is None: return 0
+    val = float(val)
+    if val > 10:
+        return ((1 + val/100) ** (1./5) - 1) * 100
+    return val
+
+def _cap_yield(val, max_yield=25.0) -> float | None:
+    """Clamp rental yields to prevent absurd outliers from low-price suburbs."""
+    if val is None: return None
+    val = float(val)
+    return min(val, max_yield) if val >= 0 else None
+
+def _calibrate_dq(v3) -> float:
+    """Recalibrate DQ Score: subtract points for NULL critical fields."""
+    raw = float(v3.dq_score or 100)
+    penalties = 0
+    # Critical data points — subtract 3 pts each if NULL
+    checks = [
+        v3.house_days_on_market,
+        v3.unit_days_on_market,
+        v3.house_auction_clearance_rate,
+        v3.predominant_occupation,
+        v3.avg_icsea,
+        v3.school_count,
+        v3.price_to_income_ratio,
+        v3.typical_mortgage_band,
+        v3.vacancy_rate,
+    ]
+    for c in checks:
+        if c is None or c == 0:
+            penalties += 3
+    return max(5, min(95, raw - penalties))
 
 def _compute_growth_score(v3: SuburbUIV3) -> dict:
     """
@@ -583,7 +618,7 @@ def get_suburb(suburb_id: str):
     if v3_data:
         response.update({
             "v3Enriched": True,
-            "dqScore": v3_data.dq_score,
+            "dqScore": min(95, max(5, v3_data.dq_score or 100)),
             "dqIssues": v3_data.dq_issues,
             "houseMedianPrice": v3_data.house_median_price,
             "houseMedianPrice12mChangePct": v3_data.house_median_price_12m_change_pct,
@@ -612,7 +647,7 @@ def get_suburb(suburb_id: str):
             "predominantAgeGroup": v3_data.predominant_age_group,
             "predominantOccupation": v3_data.predominant_occupation,
             "averageHouseholdSize": v3_data.average_household_size,
-            "populationCagr": v3_data.population_cagr,
+            "populationCagr": round(_annualize_cagr(v3_data.population_cagr), 2) if v3_data.population_cagr else None,
             "parksCoveragePct": v3_data.parks_coverage_pct,
             "avgIcsea": v3_data.avg_icsea,
             "schoolCount": v3_data.school_count,
@@ -868,7 +903,7 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50):
             },
             "demographics": {
                 "population2021": r.population_2021,
-                "populationCagr": r.population_cagr,
+                "populationCagr": round(_annualize_cagr(r.population_cagr), 2) if r.population_cagr else None,
                 "ownerOccupierRate": r.owner_occupier_rate,
                 "investorRate": r.investor_rate,
                 "medianAge": r.median_age,
@@ -890,7 +925,7 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50):
             "historyRent10yr": r.history_rent_10yr,
             "demographicsDetail": r.demographics_detail,
             "salesSummary": r.sales_summary,
-            "dqScore": r.dq_score,
+            "dqScore": _calibrate_dq(r) if hasattr(r, 'dq_score') else min(95, max(5, r.dq_score or 100)),
             "dqIssues": r.dq_issues,
             "lastUpdated": str(r.last_updated) if r.last_updated else None,
         }
@@ -964,7 +999,7 @@ def get_suburb_v3(suburb_id: str):
         "demographicsDetail": r.demographics_detail,
         "salesSummary": r.sales_summary,
         "nearbySuburbs": r.nearby_suburbs,
-        "dqScore": r.dq_score,
+        "dqScore": _calibrate_dq(r) if hasattr(r, 'dq_score') else min(95, max(5, r.dq_score or 100)),
         "dqIssues": r.dq_issues,
         "lastUpdated": str(r.last_updated) if r.last_updated else None,
     }
