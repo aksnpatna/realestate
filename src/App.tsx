@@ -428,15 +428,12 @@ function App() {
                             {activeSuburb.vacancyRate != null ? `${Number(activeSuburb.vacancyRate).toFixed(1)}% for rent` : '—'}
                           </div>
                         </div>
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
-                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Typical Mortgage Repayments</div>
-                          <div style={{ fontSize: '1.2rem', color: 'var(--accent-purple)', fontWeight: 'bold' }}>
-                            {(() => {
-                              const price = activeSuburb.houseMedianPrice || activeSuburb.metrics?.medianPrice || 0;
-                              return typeof price === 'number' && price > 0 ? `$${Math.round(price * 0.8 * 0.062 / 12).toLocaleString()}/mo` : '—';
-                            })()}
-                          </div>
-                        </div>
+                         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', flex: 1 }}>
+                           <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Typical Mortgage Band</div>
+                           <div style={{ fontSize: '1.2rem', color: 'var(--accent-purple)', fontWeight: 'bold' }}>
+                             {(activeSuburb as any).typicalMortgageBand || (activeSuburb.metrics as any)?.mortgageBand || '—'}
+                           </div>
+                         </div>
                       </div>
                     </div>
                     {/* Bottom Row: Charts */}
