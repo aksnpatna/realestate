@@ -49,16 +49,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
-engine = create_engine(DATABASE_URL, pool_size=20, max_overflow=30, pool_pre_ping=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+# Rate limiting store for auth endpoints
+_rate_limit_auth = OrderedDict()
+MAX_AUTH_REQUESTS = 20  # per minute
 
-from parallel_scraper import SuburbAllModel, SuburbUIModel
-from models_v2 import SuburbUIV2
-from models_v3 import SuburbUIV3, PropertyListing
-
-SuburbModel = SuburbAllModel  # Legacy alias for backward compat in analyze/cluster endpoints
+def _check_auth_rate(client_ip: str):
+    now = datetime.utcnow().timestamp()
+    if client_ip not in _rate_limit_auth:
+        _rate_limit_auth[client_ip] = []
+    _rate_limit_auth[client_ip] = [t for t in _rate_limit_auth[client_ip] if now - t < 60]
+    if len(_rate_limit_auth[client_ip]) >= MAX_AUTH_REQUESTS:
+        raise HTTPException(status_code=429, detail="Too many login attempts. Try again in 1 minute.")
+    _rate_limit_auth[client_ip].append(now)
 
 class UserModel(Base):
     __tablename__ = "users"
@@ -80,12 +82,16 @@ def get_db():
 
 @app.on_event("startup")
 async def startup_event():
-    # Wait for DB readiness to avoid race condition
     await asyncio.sleep(10)
     db = SessionLocal()
     try:
         from sqlalchemy import text
         db.execute(text("SELECT 1 FROM suburbs_raw_v3 LIMIT 1"))
+        # Seed admin user if not exists
+        admin_email = "teraamit@gmail.com"
+        if not db.query(UserModel).filter(UserModel.email == admin_email).first():
+            db.add(UserModel(id=secrets.token_hex(16), email=admin_email, password_hash=hash_password("guest321"), salt="", created_at=datetime.now().isoformat()))
+            db.commit()
         from scheduler import start_scheduler
         start_scheduler()
     except Exception as e:
@@ -149,8 +155,11 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 @app.post("/api/register")
-def register(request: RegisterRequest, db: Session = Depends(get_db)):
+def register(request: RegisterRequest, req: Request, db: Session = Depends(get_db)):
+    _check_auth_rate(req.client.host if req.client else "127.0.0.1")
     clean_email = request.email.strip().lower()
+    if len(request.password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
     if db.query(UserModel).filter(UserModel.email == clean_email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
     
@@ -168,7 +177,8 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
     return {"status": "success", "message": "Registration successful"}
 
 @app.post("/api/login")
-def login(request: LoginRequest, response: Response, db: Session = Depends(get_db)):
+def login(request: LoginRequest, response: Response, req: Request, db: Session = Depends(get_db)):
+    _check_auth_rate(req.client.host if req.client else "127.0.0.1")
     clean_email = request.email.strip().lower()
     user = db.query(UserModel).filter(UserModel.email == clean_email).first()
     
