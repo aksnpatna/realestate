@@ -39,10 +39,11 @@ function App() {
       const res = await fetch(`/api/suburbs/${id}${cacheBuster}`)
       if (res.ok) {
         const data = await res.json()
-        console.log('loadColdSuburb success', id, Object.keys(data).slice(0,8))
+        // Ensure critical V3 fields are present and not overridden by stale list data
+        if (!data.houseMedianPrice && data.medianPrice) data.houseMedianPrice = data.medianPrice
+        if (!data.houseDaysOnMarket) data.houseDaysOnMarket = data.metrics?.daysOnMarket
+        if (!data.vacancyRate && data.metrics?.vacancyRate) data.vacancyRate = data.metrics.vacancyRate
         setActiveSuburb(data)
-      } else {
-        console.error('loadColdSuburb failed', id, res.status)
       }
     } catch (e) {
       console.error('loadColdSuburb error', id, e)
@@ -292,11 +293,11 @@ function App() {
                       </div>
                     </div>
                     <div className="metric-box">
-                      <div className="metric-label">Population Growth</div>
+                      <div className="metric-label">Population Growth (CAGR)</div>
                       <div className="metric-value highlight-cyan">
-                        {activeSuburb.metrics.populationGrowth && activeSuburb.metrics.populationGrowth !== 'N/A'
+                        {activeSuburb.populationCagr ? `${Number(activeSuburb.populationCagr).toFixed(1)}%` : (activeSuburb.metrics?.populationGrowth && activeSuburb.metrics.populationGrowth !== 'N/A'
                           ? activeSuburb.metrics.populationGrowth
-                          : 'No data'}
+                          : 'No data')}
                       </div>
                     </div>
                     <div className="metric-box">
