@@ -299,6 +299,30 @@ def search_suburbs(q: str = ""):
     db.close()
     return [{"id": s.id, "name": s.name, "state": s.state, "postcode": s.postcode} for s in suburbs]
 
+def _build_v2_only_response(v2) -> dict:
+    """Pure V2 fallback when no V3 data exists."""
+    coords = [v2.lat, v2.lon] if (v2.lat and v2.lon) else None
+    return {
+        "id": v2.id, "name": v2.name, "state": v2.state, "postcode": v2.postcode,
+        "isLive": v2.is_live, "v3Enriched": False,
+        "medianPrice": v2.median_price, "weeklyRent": v2.weekly_rent,
+        "rentalYield": v2.rental_yield, "totalProperties": v2.total_properties,
+        "ownerOccupierRate": v2.owner_occupier_rate, "population": v2.population,
+        "areaSqkm": v2.area_sqkm, "parksCount": v2.parks_count,
+        "schoolQuality": v2.school_quality, "transitAccessibility": v2.transit_accessibility,
+        "cbdDistance": v2.cbd_distance_mins, "metroCBD": v2.metro_cbd or f"{v2.state} CBD",
+        "growthScore": v2.growth_score or 50,
+        "metrics": v2.metrics or {}, "safetyScore": v2.safety_score,
+        "crimeRate": v2.crime_rate_per_100k, "highlights": v2.highlights or [],
+        "history": v2.history or [], "schools": v2.schools or [],
+        "acara_schools": v2.schools or [], "ai_insights": v2.ai_insights or {},
+        "nearby_pois": v2.nearby_pois or {}, "pois": v2.pois or [],
+        "coordinates": coords, "demographics": v2.demographics or {},
+        "lastUpdated": str(v2.last_updated) if v2.last_updated else None,
+        "populationCagr": None, "typicalMortgageBand": None,
+        "houseMedianPrice": v2.median_price, "houseDaysOnMarket": None,
+    }
+
 def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
     """Build a SuburbData-compatible response from V3-only data when V2 record is missing."""
     return {
@@ -550,134 +574,96 @@ def _compute_growth_score(v3: SuburbUIV3) -> dict:
 
 @app.get("/api/suburbs/{suburb_id}")
 def get_suburb(suburb_id: str):
+    """V3-only endpoint — all data from suburbs_ui_v3 (self-sufficient)."""
     db = SessionLocal()
-    suburb = db.query(SuburbUIModel).filter(SuburbUIModel.id == suburb_id).first()
-    if not suburb:
-        # Fallback: try V3-only suburb and construct response from enriched data
-        v3_fallback = db.query(SuburbUIV3).filter(
-            SuburbUIV3.id.ilike(suburb_id)
-        ).first()
-        if v3_fallback:
-            response = _build_v3_fallback_response(v3_fallback)
-            db.close()
-            return response
+    v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == suburb_id.upper()).first()
+    if not v3:
         db.close()
-        raise HTTPException(status_code=404, detail="Suburb not found in UI schema")
+        raise HTTPException(status_code=404, detail="Suburb not found")
     
-    growth_score = suburb.growth_score
-    if growth_score is None:
-        growth_score = 50  # sensible default
+    growth = _compute_growth_score(v3)
     
-    cbd_distance = suburb.cbd_distance_mins
-    metro_cbd = suburb.metro_cbd
-    if suburb.is_live and not cbd_distance:
-        cbd_distance = 30  # fallback estimate
-    
-    coords = None
-    if suburb.lat is not None and suburb.lon is not None:
-        coords = [suburb.lat, suburb.lon]
-        
     response = {
-        "id": suburb.id,
-        "name": suburb.name,
-        "state": suburb.state,
-        "postcode": suburb.postcode,
-        "isLive": suburb.is_live,
-        "medianPrice": suburb.median_price,
-        "weeklyRent": suburb.weekly_rent,
-        "rentalYield": suburb.rental_yield,
-        "totalProperties": suburb.total_properties,
-        "ownerOccupierRate": suburb.owner_occupier_rate,
-        "population": suburb.population,
-        "areaSqkm": suburb.area_sqkm,
-        "parksCount": suburb.parks_count,
-        "schoolQuality": suburb.school_quality,
-        "transitAccessibility": suburb.transit_accessibility,
-        "cbdDistance": suburb.cbd_distance_mins,
-        "metroCBD": metro_cbd or f"{suburb.state} CBD",
-        "growthScore": growth_score,
-        "population_baseline": suburb.population,
-        "sqkm": suburb.area_sqkm,
-        "metrics": suburb.metrics or {},
-        "safetyScore": suburb.safety_score,
-        "crimeRate": suburb.crime_rate_per_100k,
-        "highlights": suburb.highlights or [],
-        "history": suburb.history or [],
-        "schools": suburb.schools or [],
-        "acara_schools": suburb.schools or [],
-        "ai_insights": suburb.ai_insights or {},
-        "nearby_pois": suburb.nearby_pois or {},
-        "pois": suburb.pois or [],
-        "coordinates": coords,
-        "demographics": suburb.demographics or {},
-        "lastUpdated": str(suburb.last_updated) if suburb.last_updated else None
+        "id": v3.id,
+        "name": v3.name, "state": v3.state, "postcode": v3.postcode,
+        "isLive": bool(v3.is_live) if v3.is_live is not None else True,
+        "v3Enriched": bool(v3.is_enriched),
+        "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
+        "dqScore": _calibrate_dq(v3),
+        "dqIssues": v3.dq_issues,
+        # House
+        "medianPrice": v3.house_median_price,
+        "weeklyRent": v3.house_median_rent,
+        "rentalYield": v3.house_gross_rental_yield,
+        "houseMedianPrice": v3.house_median_price,
+        "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
+        "houseMedianRent": v3.house_median_rent,
+        "houseGrossRentalYield": _cap_yield(v3.house_gross_rental_yield),
+        "houseGrossRentalYieldTrend": v3.house_gross_rental_yield_trend,
+        "houseDaysOnMarket": v3.house_days_on_market,
+        "houseAuctionClearanceRate": v3.house_auction_clearance_rate,
+        "houseStockOnMarket": v3.house_stock_on_market,
+        "houseSold12m": v3.house_sold_12m,
+        # Unit
+        "unitMedianPrice": v3.unit_median_price,
+        "unitMedianPrice12mChangePct": v3.unit_median_price_12m_change_pct,
+        "unitMedianRent": v3.unit_median_rent,
+        "unitGrossRentalYield": _cap_yield(v3.unit_gross_rental_yield),
+        "unitGrossRentalYieldTrend": v3.unit_gross_rental_yield_trend,
+        "unitDaysOnMarket": v3.unit_days_on_market,
+        # Market
+        "vacancyRate": v3.vacancy_rate,
+        "supplyDemandRatio": v3.supply_demand_ratio,
+        "priceToRentRatio": v3.price_to_rent_ratio,
+        "priceToIncomeRatio": v3.price_to_income_ratio,
+        "totalProperties": v3.total_properties,
+        "typicalMortgageBand": v3.typical_mortgage_band,
+        # Demographics
+        "ownerOccupierRate": v3.owner_occupier_rate,
+        "investorRate": v3.investor_rate,
+        "medianAge": v3.median_age,
+        "predominantAgeGroup": v3.predominant_age_group,
+        "predominantOccupation": v3.predominant_occupation,
+        "averageHouseholdSize": v3.average_household_size,
+        "populationCagr": round(_annualize_cagr(v3.population_cagr), 2) if v3.population_cagr else None,
+        "population": v3.population or v3.population_2021,
+        "population_baseline": v3.population or v3.population_2021,
+        # Geo & infrastructure
+        "areaSqkm": v3.area_sqkm, "sqkm": v3.area_sqkm,
+        "parksCount": v3.parks_count, "parksCoveragePct": v3.parks_coverage_pct,
+        # Schools
+        "schoolQuality": v3.school_quality or 5.0,
+        "schools": v3.schools or [],
+        "acara_schools": v3.schools or [],
+        "avgIcsea": v3.avg_icsea, "schoolCount": v3.school_count,
+        "topSchoolName": v3.top_school_name,
+        # Transit & safety
+        "transitAccessibility": v3.transit_accessibility or 5.0,
+        "cbdDistance": v3.cbd_distance_mins or 30,
+        "metroCBD": v3.metro_cbd or (f"{v3.state} CBD" if v3.state else ""),
+        "safetyScore": v3.safety_score or 60.0,
+        "crimeRate": v3.crime_rate or 5000.0,
+        # Content
+        "highlights": v3.highlights or [],
+        "history": v3.history_10yr or [],
+        "historyRent": v3.history_rent_10yr or [],
+        "demographics": v3.demographics_detail or {},
+        "demographicsDetailV3": v3.demographics_detail or {},
+        "salesSummaryV3": v3.sales_summary or [],
+        "nearbySuburbsV3": v3.nearby_suburbs or [],
+        "ai_insights": v3.ai_insights or {},
+        "nearby_pois": v3.nearby_pois or {},
+        "pois": v3.pois or [],
+        "coordinates": v3.coordinates,
+        "metrics": {},
+        # Growth Score
+        "growthScore": growth["score"],
+        "growthFactors": growth["factors"],
+        "confidenceNotes": growth.get("confidence_notes", []),
+        "lastUpdated": str(v3.last_updated) if v3.last_updated else None,
     }
-    
-    # Merge V3 data if available (preferred)
-    v3_data = db.query(SuburbUIV3).filter(SuburbUIV3.id == suburb_id.upper()).first()
-    if v3_data:
-        response.update({
-            "v3Enriched": True,
-            "dqScore": min(95, max(5, v3_data.dq_score or 100)),
-            "dqIssues": v3_data.dq_issues,
-            "houseMedianPrice": v3_data.house_median_price,
-            "houseMedianPrice12mChangePct": v3_data.house_median_price_12m_change_pct,
-            "houseMedianRent": v3_data.house_median_rent,
-            "houseGrossRentalYield": v3_data.house_gross_rental_yield,
-            "houseGrossRentalYieldTrend": v3_data.house_gross_rental_yield_trend,
-            "houseDaysOnMarket": v3_data.house_days_on_market,
-            "houseAuctionClearanceRate": v3_data.house_auction_clearance_rate,
-            "houseStockOnMarket": v3_data.house_stock_on_market,
-            "houseSold12m": v3_data.house_sold_12m,
-            "unitMedianPrice": v3_data.unit_median_price,
-            "unitMedianPrice12mChangePct": v3_data.unit_median_price_12m_change_pct,
-            "unitMedianRent": v3_data.unit_median_rent,
-            "unitGrossRentalYield": v3_data.unit_gross_rental_yield,
-            "unitGrossRentalYieldTrend": v3_data.unit_gross_rental_yield_trend,
-            "unitDaysOnMarket": v3_data.unit_days_on_market,
-            "totalProperties": v3_data.total_properties or response["totalProperties"],
-            "vacancyRate": v3_data.vacancy_rate,
-            "supplyDemandRatio": v3_data.supply_demand_ratio,
-            "priceToRentRatio": v3_data.price_to_rent_ratio,
-            "priceToIncomeRatio": v3_data.price_to_income_ratio,
-            "typicalMortgageBand": v3_data.typical_mortgage_band,
-            "ownerOccupierRate": v3_data.owner_occupier_rate,
-            "investorRate": v3_data.investor_rate,
-            "medianAge": v3_data.median_age,
-            "predominantAgeGroup": v3_data.predominant_age_group,
-            "predominantOccupation": v3_data.predominant_occupation,
-            "averageHouseholdSize": v3_data.average_household_size,
-            "populationCagr": round(_annualize_cagr(v3_data.population_cagr), 2) if v3_data.population_cagr else None,
-            "parksCoveragePct": v3_data.parks_coverage_pct,
-            "avgIcsea": v3_data.avg_icsea,
-            "schoolCount": v3_data.school_count,
-            "topSchoolName": v3_data.top_school_name,
-            "nearbySuburbsV3": v3_data.nearby_suburbs,
-            "salesSummaryV3": v3_data.sales_summary,
-            "demographicsDetailV3": v3_data.demographics_detail,
-            "history": v3_data.history_10yr or response["history"],
-            "historyRent": v3_data.history_rent_10yr,
-            "lastV3Update": str(v3_data.last_updated) if v3_data.last_updated else None,
-        })
-
-        # Override growth score with real V3 metrics
-        v3_growth = _compute_growth_score(v3_data)
-        response["growthScore"] = v3_growth["score"]
-        response["growthFactors"] = v3_growth["factors"]
-        response["confidenceNotes"] = v3_growth.get("confidence_notes", [])
-    else:
-        # Fall back to V2 if V3 not available
-        v2_data = db.query(SuburbUIV2).filter(SuburbUIV2.id == suburb_id.upper()).first()
-        if v2_data:
-            response.update({
-                "houseGrossRentalYield": v2_data.house_rental_yield,
-                "houseGrossRentalYieldTrend": v2_data.house_rental_yield_trend,
-                "unitGrossRentalYield": v2_data.unit_rental_yield,
-                "unitGrossRentalYieldTrend": v2_data.unit_rental_yield_trend,
-                "houseMedianPrice12mChangePct": v2_data.house_median_growth,
-                "history": v2_data.history or response["history"],
-                "demographics": v2_data.demographics or {}
-            })
+    db.close()
+    return response
         
     db.close()
     return response
