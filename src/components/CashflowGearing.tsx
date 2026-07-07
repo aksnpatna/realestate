@@ -20,10 +20,17 @@ interface GearingResult {
   netAfterTax: number;
 }
 
-export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbData[] }) {
-  const [selectedSuburbId, setSelectedSuburbId] = useState<string>('');
-  const [purchasePrice, setPurchasePrice] = useState<number>(700000);
-  const [weeklyRent, setWeeklyRent] = useState<number>(550);
+interface CashflowGearingProps {
+  suburbsData: SuburbData[];
+  defaultSuburbId?: string;
+  defaultPrice?: number;
+  defaultRent?: number;
+}
+
+export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultPrice, defaultRent }: CashflowGearingProps) {
+  const [selectedSuburbId, setSelectedSuburbId] = useState<string>(defaultSuburbId || '');
+  const [purchasePrice, setPurchasePrice] = useState<number>(defaultPrice || 700000);
+  const [weeklyRent, setWeeklyRent] = useState<number>(defaultRent || 550);
   const [purchaseType, setPurchaseType] = useState<'personal' | 'smsf'>('personal');
   const [depositPct, setDepositPct] = useState<number>(20);
   const [interestRate, setInterestRate] = useState<number>(6.2);
