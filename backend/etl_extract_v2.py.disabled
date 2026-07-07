@@ -1,0 +1,151 @@
+import asyncio
+import re
+import json
+import datetime
+from sqlalchemy.orm import sessionmaker
+from playwright.async_api import async_playwright
+from playwright_stealth import Stealth
+from models_v2 import SuburbRawV2, SessionLocal, engine
+from parallel_scraper import SuburbAllModel
+
+TARGET_STATES = ['VIC', 'NSW', 'QLD', 'TAS', 'SA']
+
+def seed_raw_v2_from_original():
+    """ Seeds the new V2 Raw table with all suburbs from the original SuburbAllModel list. """
+    db = SessionLocal()
+    try:
+        existing_v2_count = db.query(SuburbRawV2).count()
+        if existing_v2_count == 0:
+            print("Seeding V2 database from suburbs_all...")
+            original_suburbs = db.query(SuburbAllModel).all()
+            batch = []
+            for s in original_suburbs:
+                v2_id = f"{s.state}_{s.name}_{s.postcode}".replace(" ", "_").upper()
+                raw_record = SuburbRawV2(
+                    id=v2_id,
+                    state=s.state,
+                    name=s.name,
+                    postcode=s.postcode,
+                    status="pending" if s.state in TARGET_STATES else "skipped"
+                )
+                batch.append(raw_record)
+            db.bulk_save_objects(batch)
+            db.commit()
+            print(f"Seeded {len(batch)} suburbs into SuburbRawV2.")
+    finally:
+        db.close()
+
+async def extract_suburb(browser, db_id, state, name, postcode):
+    url_suburb = name.lower().replace(' ', '-')
+    url = f"https://www.onthehouse.com.au/suburb/{state.lower()}/{url_suburb}-{postcode}"
+    
+    # Randomize User Agents if needed, but a standard Chrome one is usually fine with Stealth
+    context = await browser.new_context(
+        viewport={'width': 1920, 'height': 1080},
+        user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    )
+    page = await context.new_page()
+    await Stealth().apply_stealth_async(page)
+    
+    try:
+        response = await page.goto(url, wait_until="domcontentloaded", timeout=45000)
+        
+        if response and response.status == 404:
+            await context.close()
+            return "not_found", None, "404 Not Found"
+            
+        # We don't even need to wait for full JS execution since window.REDUX_DATA is in the raw HTML returned from the server!
+        # Just give it 1 second for basic DOM parsing.
+        await page.wait_for_timeout(1000)
+        
+        html = await page.evaluate("document.documentElement.innerHTML")
+        
+        match = re.search(r'window\.REDUX_DATA\s*=\s*(\{.*?\});\s*window\.oth_device', html, re.DOTALL)
+        if match:
+            json_str = match.group(1)
+            data = json.loads(json_str)
+            await context.close()
+            return "complete", data, None
+        else:
+            await context.close()
+            return "error_no_json", None, "JSON payload not found in DOM"
+            
+    except Exception as e:
+        error_msg = str(e)
+        print(f"Error extracting {url}: {error_msg}")
+        await context.close()
+        return "error", None, error_msg
+
+async def worker(queue, browser):
+    Session = sessionmaker(bind=engine)
+    db = Session()
+    try:
+        while True:
+            suburb = await queue.get()
+            if suburb is None:
+                break
+                
+            db_id, state, name, postcode = suburb
+            print(f"[{queue.qsize()} remaining] Extracting {name}, {state} {postcode}...")
+            
+            status, json_data, error_log = await extract_suburb(browser, db_id, state, name, postcode)
+            
+            # Save to DB
+            record = db.query(SuburbRawV2).filter(SuburbRawV2.id == db_id).first()
+            if record:
+                record.status = status
+                record.error_log = error_log
+                if json_data:
+                    record.raw_json = json_data
+                record.last_scraped = datetime.datetime.utcnow()
+                db.commit()
+            
+            # Anti-blocking: Sleep longer to maintain < 50% load and stay stealthy
+            await asyncio.sleep(4)
+            queue.task_done()
+    finally:
+        db.close()
+
+async def run_extraction():
+    seed_raw_v2_from_original()
+    
+    Session = sessionmaker(bind=engine)
+    db = Session()
+    
+    # We only take the top 50 pending to prevent massive long-running scripts. Can run via chron.
+    pending = db.query(SuburbRawV2).filter(SuburbRawV2.status == 'pending').limit(1000).all()
+    
+    if not pending:
+        print("No pending suburbs to extract.")
+        db.close()
+        return
+        
+    print(f"Found {len(pending)} suburbs to extract in this batch.")
+    
+    queue = asyncio.Queue()
+    for s in pending:
+        queue.put_nowait((s.id, s.state, s.name, s.postcode))
+        
+    db.close()
+    
+    async with async_playwright() as p:
+        # Launch browser once
+        browser = await p.chromium.launch(headless=True)
+        
+        # STRICT CONCURRENCY = 3
+        # This keeps system utilization well under 50% (Playwright uses ~1 core per active page)
+        concurrency = 3
+        workers = [asyncio.create_task(worker(queue, browser)) for _ in range(concurrency)]
+        
+        await queue.join()
+        
+        # Stop workers
+        for _ in range(concurrency):
+            await queue.put(None)
+        await asyncio.gather(*workers)
+        await browser.close()
+        
+    print("Extraction batch complete.")
+
+if __name__ == "__main__":
+    asyncio.run(run_extraction())

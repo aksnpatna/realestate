@@ -1,0 +1,10 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends bash wget postgresql-client osm2pgsql ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY updater.sh /updater.sh
+RUN chmod +x /updater.sh
+
+CMD ["/updater.sh"]

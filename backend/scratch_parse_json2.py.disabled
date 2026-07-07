@@ -1,0 +1,34 @@
+import json
+import re
+
+def parse_initial_state():
+    with open('script_data.txt', 'r') as f:
+        content = f.read()
+        
+    match = re.search(r'window\.INITIAL_STATE\s*=\s*(\{.*?\});\s*window\.oth_device', content, re.DOTALL)
+    if not match:
+        print("Could not find window.INITIAL_STATE")
+        return
+        
+    json_str = match.group(1)
+    print(f"Extracted JSON of length {len(json_str)}")
+    
+    try:
+        data = json.loads(json_str)
+        print("\n--- INITIAL_STATE KEYS ---")
+        for k in data.keys():
+            print(k)
+            
+        print("\n--- suburbProfile (if exists) ---")
+        if 'suburbProfile' in data:
+            print(data['suburbProfile'].keys())
+            
+        if 'marketTrends' in data:
+            print("\n--- marketTrends ---")
+            print(data['marketTrends'].keys())
+            
+    except Exception as e:
+        print("Error parsing JSON:", e)
+
+if __name__ == "__main__":
+    parse_initial_state()

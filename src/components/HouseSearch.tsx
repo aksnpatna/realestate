@@ -22,20 +22,23 @@ export default function HouseSearch({ suburbsData }: { suburbsData: SuburbData[]
     });
   };
 
-  const results = useMemo(() => {
-    return suburbsData.filter(suburb => {
-      if (searchText && !suburb.name.toLowerCase().includes(searchText.toLowerCase()) && !suburb.postcode.includes(searchText)) return false;
-      if (selectedStates.size > 0 && !selectedStates.has(suburb.state)) return false;
-      if (minGrowthScore > 0 && suburb.growthScore < minGrowthScore) return false;
-      if (maxPrice !== null && suburb.metrics.medianPrice > maxPrice) return false;
-      if (minSchoolQuality > 0 && suburb.metrics.schoolQuality < minSchoolQuality) return false;
-      if (minTransit > 0 && suburb.metrics.transitAccessibility < minTransit) return false;
-      if (metroOnly && !suburb.isMetro) return false;
-      if (maxCBDMins !== null && suburb.cbdDistanceMins !== null && suburb.cbdDistanceMins > maxCBDMins) return false;
-      return true;
-    }).sort((a, b) => b.growthScore - a.growthScore);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, selectedStates, minGrowthScore, maxPrice, minSchoolQuality, minTransit, metroOnly, maxCBDMins]);
+const results = useMemo(() => {
+      return suburbsData.filter(suburb => {
+        // Safe text search (ignore case & whitespace)
+        const txt = searchText?.trim().toLowerCase();
+        if (txt && !(suburb.name?.toLowerCase().includes(txt) || suburb.postcode?.includes(txt))) return false;
+        if (selectedStates.size > 0 && !selectedStates.has(suburb.state)) return false;
+        if (minGrowthScore > 0 && (suburb.growthScore ?? 0) < minGrowthScore) return false;
+        // Defensive metric checks – fallback to safe extremes
+        if (maxPrice !== null && (suburb.metrics?.medianPrice ?? Infinity) > maxPrice) return false;
+        if (minSchoolQuality > 0 && (suburb.metrics?.schoolQuality ?? 0) < minSchoolQuality) return false;
+        if (minTransit > 0 && (suburb.metrics?.transitAccessibility ?? 0) < minTransit) return false;
+        if (metroOnly && !suburb.isMetro) return false;
+        if (maxCBDMins !== null && (suburb.cbdDistanceMins ?? Infinity) > maxCBDMins) return false;
+        return true;
+      }).sort((a, b) => (b.growthScore ?? 0) - (a.growthScore ?? 0));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchText, selectedStates, minGrowthScore, maxPrice, minSchoolQuality, minTransit, metroOnly, maxCBDMins]);
 
   return (
     <div className="search-container">
@@ -72,8 +75,17 @@ export default function HouseSearch({ suburbsData }: { suburbsData: SuburbData[]
           <div className="filter-row">
             <div className="control-group">
               <label className="control-label">Min Growth Score</label>
-              <input type="range" className="premium-range" min={0} max={100} step={5} value={minGrowthScore} onChange={(e) => setMinGrowthScore(Number(e.target.value))} />
-              <span className="range-value">{minGrowthScore}</span>
+              <input
+                type="range"
+                className="premium-range"
+                min={0}
+                max={100}
+                step={5}
+                value={minGrowthScore}
+                aria-label="Minimum growth score"
+                onChange={(e) => setMinGrowthScore(Number(e.target.value))}
+              />
+              <output className="range-value" aria-live="polite">{minGrowthScore}</output>
             </div>
             <div className="control-group">
               <label className="control-label">Max Price</label>
@@ -92,13 +104,31 @@ export default function HouseSearch({ suburbsData }: { suburbsData: SuburbData[]
           <div className="filter-row">
             <div className="control-group">
               <label className="control-label">Min School Quality</label>
-              <input type="range" className="premium-range" min={0} max={10} step={0.5} value={minSchoolQuality} onChange={(e) => setMinSchoolQuality(Number(e.target.value))} />
-              <span className="range-value">{minSchoolQuality}/10</span>
+              <input
+                type="range"
+                className="premium-range"
+                min={0}
+                max={10}
+                step={0.5}
+                value={minSchoolQuality}
+                aria-label="Minimum school quality"
+                onChange={(e) => setMinSchoolQuality(Number(e.target.value))}
+              />
+              <output className="range-value" aria-live="polite">{minSchoolQuality}/10</output>
             </div>
             <div className="control-group">
               <label className="control-label">Min Transit Access</label>
-              <input type="range" className="premium-range" min={0} max={10} step={0.5} value={minTransit} onChange={(e) => setMinTransit(Number(e.target.value))} />
-              <span className="range-value">{minTransit}/10</span>
+              <input
+                type="range"
+                className="premium-range"
+                min={0}
+                max={10}
+                step={0.5}
+                value={minTransit}
+                aria-label="Minimum transit accessibility"
+                onChange={(e) => setMinTransit(Number(e.target.value))}
+              />
+              <output className="range-value" aria-live="polite">{minTransit}/10</output>
             </div>
           </div>
 
@@ -161,21 +191,21 @@ function SearchResultCard({ suburb }: { suburb: SuburbData }) {
         </div>
         <div className="result-metrics">
           <div className="rmetric">
-            <span className="rmetric-value">${suburb.metrics.medianPrice.toLocaleString()}</span>
-            <span className="rmetric-label">Median Price</span>
+            <span className="rmetric-value">${suburb.metrics?.medianPrice?.toLocaleString() ?? '—'}</span>
+            <span className="rmetric-label" title="Median price – sourced from local property dataset">Median Price</span>
           </div>
           <div className="rmetric">
-            <span className="rmetric-value">{suburb.metrics.rentalYield}%</span>
-            <span className="rmetric-label">Yield</span>
+            <span className="rmetric-value">{suburb.metrics?.rentalYield ?? '—'}%</span>
+            <span className="rmetric-label" title="Rental yield – annual % of median price">Yield</span>
           </div>
           <div className="rmetric">
-            <span className={`rmetric-value ${suburb.growthScore >= 80 ? 'growth-high' : suburb.growthScore >= 60 ? 'growth-med' : 'growth-low'}`}>{suburb.growthScore}</span>
-            <span className="rmetric-label">Growth</span>
+            <span className={`rmetric-value ${(suburb.growthScore ?? 0) >= 80 ? 'growth-high' : (suburb.growthScore ?? 0) >= 60 ? 'growth-med' : 'growth-low'}`}>{suburb.growthScore ?? '—'}</span>
+            <span className="rmetric-label" title="Growth score – 0‑100 based on internal model">Growth</span>
           </div>
         </div>
         <div className="result-scores">
-          <span title="School Quality">Schools: {suburb.metrics.schoolQuality}/10</span>
-          <span title="Transit Access">Transit: {suburb.metrics.transitAccessibility}/10</span>
+          <span title="School Quality">Schools: {suburb.metrics?.schoolQuality ?? '—'}/10</span>
+          <span title="Transit Access">Transit: {suburb.metrics?.transitAccessibility ?? '—'}/10</span>
         </div>
         {suburb.highlights.length > 0 && (
           <div className="result-highlights">

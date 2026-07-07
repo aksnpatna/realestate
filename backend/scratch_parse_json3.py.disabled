@@ -1,0 +1,37 @@
+import json
+import re
+
+def parse_redux_data():
+    with open('script_data.txt', 'r') as f:
+        content = f.read()
+        
+    match = re.search(r'window\.REDUX_DATA\s*=\s*(\{.*?\});\s*window\.oth_device', content, re.DOTALL)
+    if not match:
+        print("Could not find window.REDUX_DATA")
+        return
+        
+    json_str = match.group(1)
+    print(f"Extracted JSON of length {len(json_str)}")
+    
+    try:
+        data = json.loads(json_str)
+        print("\n--- REDUX_DATA KEYS ---")
+        for k in data.keys():
+            print(k)
+            
+        print("\n--- suburbProfileData (if exists) ---")
+        if 'suburbProfileData' in data:
+            print(data['suburbProfileData'].keys())
+            if 'trends' in data['suburbProfileData']:
+                print("\nTRENDS KEYS:", data['suburbProfileData']['trends'].keys())
+                print(json.dumps(data['suburbProfileData']['trends'], indent=2)[:500])
+                
+        if 'property' in data:
+            print("\n--- property ---")
+            print(data['property'].keys())
+            
+    except Exception as e:
+        print("Error parsing JSON:", e)
+
+if __name__ == "__main__":
+    parse_redux_data()

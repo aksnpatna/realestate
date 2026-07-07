@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 import { calculateStampDuty } from '../data/suburbs';
 import type { SuburbData } from '../data/suburbs';
 
@@ -15,12 +16,15 @@ interface GearingResult {
   cashOnCashReturn: number;
   gearingStatus: 'positive' | 'neutral' | 'negative';
   lvr: number;
+  taxBenefit: number;
+  netAfterTax: number;
 }
 
 export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbData[] }) {
   const [selectedSuburbId, setSelectedSuburbId] = useState<string>('');
   const [purchasePrice, setPurchasePrice] = useState<number>(700000);
   const [weeklyRent, setWeeklyRent] = useState<number>(550);
+  const [purchaseType, setPurchaseType] = useState<'personal' | 'smsf'>('personal');
   const [depositPct, setDepositPct] = useState<number>(20);
   const [interestRate, setInterestRate] = useState<number>(6.2);
   const [loanType, setLoanType] = useState<'io' | 'pi'>('io');
@@ -51,16 +55,28 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
   }, []);
 
   // Auto-fill from suburb selection
-  useMemo(() => {
+  useEffect(() => {
     if (selectedSuburbId) {
       const sub = suburbsData.find(s => s.id === selectedSuburbId);
       if (sub) {
-        setPurchasePrice(sub.metrics.medianPrice);
-        const rent = sub.metrics.weeklyRent ?? Math.round(sub.metrics.medianPrice * sub.metrics.rentalYield / 100 / 52);
-        setWeeklyRent(rent);
+        const price = sub.metrics?.medianPrice ?? 0;
+        setPurchasePrice(price);
+        const rent = sub.metrics?.weeklyRent ?? Math.round(price * (sub.metrics?.rentalYield ?? 0) / 100 / 52);
+        setWeeklyRent(rent || 0);
       }
     }
   }, [selectedSuburbId, suburbsData]);
+
+  // Handle SMSF mode defaults
+  useEffect(() => {
+    if (purchaseType === 'smsf') {
+      if (depositPct < 30) setDepositPct(30);
+      setInterestRate(8.85); // ATO LRBA Safe Harbour Rate 2024-25
+    } else {
+      setDepositPct(20);
+      setInterestRate(6.2); // Typical personal rate
+    }
+  }, [purchaseType]);
 
   const stateOptions = useMemo(() =>
     Array.from(new Set(suburbsData.map(s => s.state))).sort(),
@@ -103,12 +119,26 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
     } else {
       const r = interestRate / 100 / 12;
       const n = loanTerm * 12;
-      const monthlyPI = loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      const monthlyPI = r === 0 ? loanAmount / n : loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
       netAnnualCashflow = annualRent - monthlyPI * 12 - annualExpenses;
     }
 
     const netWeeklyCashflow = netAnnualCashflow / 52;
-    const cashOnCashReturn = (netAnnualCashflow / totalUpfront) * 100;
+    
+    // Tax impact
+    let taxBenefit = 0;
+    let netAfterTax = netAnnualCashflow;
+    
+    if (purchaseType === 'smsf') {
+      // SMSF pays 15% tax on positive income, or carries forward 15% loss
+      taxBenefit = netAnnualCashflow < 0 ? Math.abs(netAnnualCashflow) * 0.15 : -(netAnnualCashflow * 0.15);
+    } else {
+      // Personal assume average 37% marginal tax bracket for negative gearing
+      taxBenefit = netAnnualCashflow < 0 ? Math.abs(netAnnualCashflow) * 0.37 : -(netAnnualCashflow * 0.37);
+    }
+    netAfterTax = netAnnualCashflow + taxBenefit;
+
+    const cashOnCashReturn = (netAfterTax / totalUpfront) * 100;
 
     let gearingStatus: 'positive' | 'neutral' | 'negative' = 'negative';
     if (netWeeklyCashflow > 20) gearingStatus = 'positive';
@@ -127,11 +157,13 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
       cashOnCashReturn: Math.round(cashOnCashReturn * 10) / 10,
       gearingStatus,
       lvr: Math.round(lvr * 10) / 10,
+      taxBenefit: Math.round(taxBenefit),
+      netAfterTax: Math.round(netAfterTax),
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchasePrice, weeklyRent, depositPct, interestRate, loanType, loanTerm,
     customCosts, ratesBill, waterBill, insurance, pmFeePct, maintenancePct,
-    vacancyWeeks, selectedSuburbId]);
+    vacancyWeeks, selectedSuburbId, purchaseType]);
 
   return (
     <div className="gearing-container">
@@ -142,6 +174,30 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
         <div className="gearing-grid">
           {/* LEFT: Inputs */}
           <div className="gearing-inputs">
+            <div className="control-group" style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '4px' }}>
+                <button 
+                  className={`premium-select ${purchaseType === 'personal' ? 'active-type' : ''}`}
+                  style={{ flex: 1, border: 'none', background: purchaseType === 'personal' ? 'var(--accent-purple)' : 'transparent', color: purchaseType === 'personal' ? '#fff' : 'var(--text-secondary)' }}
+                  onClick={() => setPurchaseType('personal')}
+                >
+                  Personal Investment
+                </button>
+                <button 
+                  className={`premium-select ${purchaseType === 'smsf' ? 'active-type' : ''}`}
+                  style={{ flex: 1, border: 'none', background: purchaseType === 'smsf' ? 'var(--accent-cyan)' : 'transparent', color: purchaseType === 'smsf' ? '#000' : 'var(--text-secondary)' }}
+                  onClick={() => setPurchaseType('smsf')}
+                >
+                  SMSF Purchase (LRBA)
+                </button>
+              </div>
+              {purchaseType === 'smsf' && (
+                <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', marginTop: '8px', padding: '8px', background: 'rgba(0, 240, 255, 0.1)', borderRadius: '4px' }}>
+                  <strong>SMSF Rules applied:</strong> 30% min deposit, 15% tax rate, 8.85% ATO Safe Harbour LRBA interest rate default.
+                </div>
+              )}
+            </div>
+
             <div className="control-group">
               <label className="control-label">Select Suburb (auto-fills data)</label>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -150,7 +206,7 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
                 </select>
                 <select className="premium-select" style={{ flex: 2 }} value={selectedSuburbId} onChange={(e) => setSelectedSuburbId(e.target.value)}>
                   <option value="">-- Manual Entry --</option>
-                  {suburbOptions.map(s => <option key={s.id} value={s.id}>{s.name} (${s.metrics.medianPrice.toLocaleString()})</option>)}
+                  {suburbOptions.map(s => <option key={s.id} value={s.id}>{s.name} (${(s.metrics?.medianPrice ?? 0).toLocaleString()})</option>)}
                 </select>
               </div>
             </div>
@@ -296,16 +352,43 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
                   </div>
                 </div>
 
-                <div className="gearing-breakdown">
-                  <div className="breakdown-bar">
-                    <div className="breakdown-segment income-segment" style={{
-                      width: `${Math.min(100, (result.annualRent / Math.max(result.annualInterest + result.annualExpenses, 1)) * 100)}%`
-                    }} title={`Rent: $${result.annualRent.toLocaleString()}`} />
-                  </div>
-                  <div className="breakdown-legend">
-                    <span>Income: ${result.annualRent.toLocaleString()}/yr</span>
-                    <span>Costs: ${(result.annualInterest + result.annualExpenses).toLocaleString()}/yr</span>
-                  </div>
+                <div className="gearing-breakdown" style={{ marginTop: '2rem', height: '250px' }}>
+                  <h4 style={{ color: 'var(--text-secondary)', marginBottom: '1rem', textAlign: 'center' }}>Annual Cashflow Waterfall</h4>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={[
+                        { name: 'Rent Income', value: result.annualRent, fill: 'var(--accent-green, #10b981)' },
+                        { name: 'Interest', value: -result.annualInterest, fill: 'var(--warning, #ef4444)' },
+                        { name: 'Expenses', value: -result.annualExpenses, fill: '#f59e0b' },
+                        { name: 'Pre-Tax Net', value: result.netAnnualCashflow, fill: result.netAnnualCashflow > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' },
+                        { name: 'Tax Impact', value: result.taxBenefit, fill: result.taxBenefit > 0 ? 'var(--accent-cyan)' : 'var(--warning, #ef4444)' },
+                        { name: 'Net After Tax', value: result.netAfterTax, fill: result.netAfterTax > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' }
+                      ]}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} interval={0} tick={{fill: 'var(--text-secondary)'}} />
+                      <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(val) => `$${Math.abs(val / 1000)}k`} />
+                      <Tooltip 
+                        formatter={(value: number) => [`$${Math.abs(value).toLocaleString()}`, value < 0 ? 'Cost' : 'Income']}
+                        contentStyle={{ backgroundColor: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                      />
+                      <ReferenceLine y={0} stroke="rgba(255,255,255,0.2)" />
+                      <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                        {
+                          [
+                            { name: 'Rent Income', value: result.annualRent, fill: 'var(--accent-green, #10b981)' },
+                            { name: 'Interest', value: -result.annualInterest, fill: 'var(--warning, #ef4444)' },
+                            { name: 'Expenses', value: -result.annualExpenses, fill: '#f59e0b' },
+                            { name: 'Pre-Tax Net', value: result.netAnnualCashflow, fill: result.netAnnualCashflow > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' },
+                            { name: 'Tax Impact', value: result.taxBenefit, fill: result.taxBenefit > 0 ? 'var(--accent-cyan)' : 'var(--warning, #ef4444)' },
+                            { name: 'Net After Tax', value: result.netAfterTax, fill: result.netAfterTax > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' }
+                          ].map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                          ))
+                        }
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </>
             ) : (
@@ -353,12 +436,21 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
                 } else {
                   const r = interestRate / 100 / 12;
                   const n = loanTerm * 12;
-                  const mpi = loan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                  const mpi = r === 0 ? loan / n : loan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
                   netAnnual = annualRent - mpi * 12 - expenses;
                 }
-                const netWk = netAnnual / 52;
-                const coc = (netAnnual / upfront) * 100;
-                const status = netWk > 20 ? 'pos' : netWk >= -20 ? 'neut' : 'neg';
+                
+                let tBenefit = 0;
+                if (purchaseType === 'smsf') {
+                  tBenefit = netAnnual < 0 ? Math.abs(netAnnual) * 0.15 : -(netAnnual * 0.15);
+                } else {
+                  tBenefit = netAnnual < 0 ? Math.abs(netAnnual) * 0.37 : -(netAnnual * 0.37);
+                }
+                const netAfterTax = netAnnual + tBenefit;
+                
+                const netWk = netAfterTax / 52;
+                const coc = (netAfterTax / upfront) * 100;
+                const status = netAnnual / 52 > 20 ? 'pos' : netAnnual / 52 >= -20 ? 'neut' : 'neg';
 
                 return (
                   <tr key={suburb.id} className={`gearing-row-${status}`}>
@@ -366,7 +458,7 @@ export default function CashflowGearing({ suburbsData }: { suburbsData: SuburbDa
                     <td>${price.toLocaleString()}</td>
                     <td>${rent}/wk</td>
                     <td>${Math.round(upfront).toLocaleString()}</td>
-                    <td className={netWk > 0 ? 'text-success' : netWk >= -100 ? 'text-warning' : 'highlight-purple'}>
+                    <td className={netWk > 0 ? 'text-success' : netWk >= -100 ? 'text-warning' : 'highlight-purple'} title="Net after tax">
                       {netWk > 0 ? '+' : ''}{Math.round(netWk).toLocaleString()}
                     </td>
                     <td className={coc > 5 ? 'text-success' : coc > 0 ? 'highlight-cyan' : ''}>

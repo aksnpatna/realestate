@@ -1,0 +1,35 @@
+import json
+import re
+
+def parse_redux_data():
+    with open('script_data.txt', 'r') as f:
+        content = f.read()
+        
+    match = re.search(r'window\.REDUX_DATA\s*=\s*(\{.*?\});\s*window\.oth_device', content, re.DOTALL)
+    if not match:
+        print("Could not find window.REDUX_DATA")
+        return
+        
+    json_str = match.group(1)
+    data = json.loads(json_str)
+    
+    print("\n--- marketTrends ---")
+    mt = data.get('marketTrends', {})
+    print("marketTrends keys:", mt.keys())
+    if 'trends' in mt:
+        trends = mt['trends']
+        print("trends keys:", trends.keys())
+        if 'House' in trends:
+            print("House keys:", trends['House'].keys())
+            if '10' in trends['House']:
+                # Print the first item to see its structure
+                print("House 10 first item:", json.dumps(trends['House']['10'][0], indent=2)[:500])
+                
+    print("\n--- census ---")
+    c = data.get('census', {})
+    print("census keys:", c.keys())
+    if 'stats' in c:
+        print("stats keys:", c['stats'].keys())
+
+if __name__ == "__main__":
+    parse_redux_data()

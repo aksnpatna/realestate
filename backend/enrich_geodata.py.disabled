@@ -1,0 +1,96 @@
+import os
+import sys
+import time
+import requests
+import json
+from datetime import datetime
+from sqlalchemy import create_engine, or_
+from sqlalchemy.orm import sessionmaker
+from parallel_scraper import SuburbAllModel, SuburbGeodataModel, Base
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@localhost:5432/realestate")
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def get_geodata(suburb_name, state):
+    headers = {
+        'User-Agent': 'RealEstateAnalyticsApp/1.0 (contact@example.com)'
+    }
+    # 1. Geocode via Nominatim
+    query = f"{suburb_name}, {state}, Australia"
+    url = f"https://nominatim.openstreetmap.org/search?q={requests.utils.quote(query)}&format=json&limit=1"
+    
+    try:
+        resp = requests.get(url, headers=headers, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        
+        if not data:
+            # Fallback query
+            fallback_query = f"{suburb_name} {state} Australia"
+            url = f"https://nominatim.openstreetmap.org/search?q={requests.utils.quote(fallback_query)}&format=json&limit=1"
+            resp = requests.get(url, headers=headers, timeout=10)
+            data = resp.json()
+            
+        if data and len(data) > 0:
+            lat = float(data[0]['lat'])
+            lon = float(data[0]['lon'])
+            
+            # Optional: Overpass API for POIs (skipping for this basic version to avoid rate limits, 
+            # we just need base lat/lon to fix map crashes and we can add POIs later or via another pass)
+            # For now, return empty pois array
+            pois = []
+            
+            return lat, lon, pois
+    except Exception as e:
+        print(f"Error fetching geodata for {query}: {e}")
+        
+    return None, None, None
+
+def run_enrichment(limit=50):
+    db = SessionLocal()
+    
+    # Prioritize live suburbs first, then pending suburbs that haven't been enriched
+    # Use an outer join or just a NOT IN subquery
+    subquery = db.query(SuburbGeodataModel.suburb_id)
+    
+    target_suburbs = db.query(SuburbAllModel).filter(
+        ~SuburbAllModel.id.in_(subquery)
+    ).order_by(SuburbAllModel.is_live.desc()).limit(limit).all()
+    
+    if not target_suburbs:
+        print("All suburbs have geodata.")
+        db.close()
+        return
+
+    print(f"Found {len(target_suburbs)} suburbs missing geodata. Enriching...")
+    
+    for suburb in target_suburbs:
+        print(f"Fetching geodata for {suburb.name}, {suburb.state}...")
+        lat, lon, pois = get_geodata(suburb.name, suburb.state)
+        
+        geo = SuburbGeodataModel(
+            suburb_id=suburb.id,
+            lat=lat,
+            lon=lon,
+            pois=pois if pois is not None else [],
+            last_updated=datetime.now()
+        )
+        db.add(geo)
+        db.commit()
+        
+        # Respect Nominatim's 1 request per second policy
+        time.sleep(1.2)
+        
+    db.close()
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--limit", type=int, default=50, help="Number of suburbs to process")
+    args = parser.parse_args()
+    
+    # Ensure tables exist
+    Base.metadata.create_all(bind=engine)
+    
+    run_enrichment(limit=args.limit)

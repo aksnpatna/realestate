@@ -1,0 +1,59 @@
+import re
+import ast
+from main import SessionLocal, SuburbModel
+from sqlalchemy.orm.attributes import flag_modified
+
+def fast_update():
+    db = SessionLocal()
+    with open('scrape.log', 'r') as f:
+        content = f.read()
+    
+    # We want to match: Scraping Suburb, State Postcode...
+    # Fetching: url
+    #   -> Extracted: {dict}
+    pattern = re.compile(r'Scraping (.*?), ([A-Z]+) ([0-9]+)\.\.\..*?-> Extracted: (\{.*?\})', re.DOTALL)
+    matches = pattern.findall(content)
+    
+    print(f"Found {len(matches)} successfully scraped suburbs in log.")
+    count = 0
+    for suburb, state, postcode, data_str in matches:
+        try:
+            scraped = ast.literal_eval(data_str)
+            suburb_id = f"{suburb.lower().replace(' ', '-')}-{state.lower()}-{postcode}"
+            
+            # Find in DB
+            suburb_model = db.query(SuburbModel).filter_by(id=suburb_id).first()
+            if not suburb_model:
+                # Try fallback matching just by name
+                suburb_model = db.query(SuburbModel).filter(SuburbModel.id.like(f"%{suburb.lower().replace(' ', '-')}%%")).first()
+                
+            if suburb_model:
+                data = suburb_model.data
+                metrics = data.get('metrics', {})
+                for key in ['medianPrice', 'weeklyRent', 'populationGrowth', 'totalProperties', 
+                            'stockOnMarket', 'rentalStock', 'ownerOccupierRate', 
+                            'parksCount', 'parksCoveragePct', 'sampleSold', 'sampleForSale', 'soldStock']:
+                    if key in scraped:
+                        metrics[key] = scraped[key]
+                
+                data['metrics'] = metrics
+                suburb_model.data = data
+                flag_modified(suburb_model, 'data')
+                count += 1
+        except Exception as e:
+            print(f"Error on {suburb}: {e}")
+            
+    db.commit()
+    print(f"Updated {count} suburbs in database.")
+    
+    # Dump back to JSON
+    suburbs = db.query(SuburbModel).all()
+    import json, os
+    all_data = [s.data for s in suburbs]
+    json_path = "suburbs_data.json"
+    with open(json_path, "w") as f:
+        json.dump(all_data, f, indent=2)
+    print("Saved to suburbs_data.json")
+    
+if __name__ == '__main__':
+    fast_update()

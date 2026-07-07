@@ -658,6 +658,10 @@ def get_suburb(suburb_id: str):
         "pois": v3.pois or [],
         "coordinates": v3.coordinates,
         "metrics": {"rentalStock": v3.rental_stock},
+        # Derived indicators
+        "unemploymentRate": v3.unemployment_rate,
+        "buildingApprovals12m": v3.building_approvals_12m,
+        "infrastructureInvestment": v3.infrastructure_investment,
         # Growth Score
         "growthScore": growth["score"],
         "growthFactors": growth["factors"],

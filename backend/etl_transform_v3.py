@@ -592,3 +592,41 @@ if __name__ == "__main__":
         )
     else:
         transform_all(limit=int(sys.argv[1]) if len(sys.argv) > 1 else 200)
+
+
+def compute_derived_indicators():
+    """Run after ETL to refresh estimated columns from scraped data."""
+    from models_v3 import SessionLocal, SuburbUIV3
+    db = SessionLocal()
+    try:
+        rows = db.query(SuburbUIV3.id, SuburbUIV3.demographics_detail,
+                        SuburbUIV3.house_sold_12m, SuburbUIV3.supply_demand_ratio,
+                        SuburbUIV3.parks_coverage_pct).filter(
+            SuburbUIV3.is_enriched == True
+        ).all()
+        updated = 0
+        for uid, demo_json, sold, sdr, parks in rows:
+            try:
+                demo = demo_json if isinstance(demo_json, dict) else {}
+                inc = demo.get('income_distribution', {}) or {}
+                low1 = float(str(inc.get('0-15.6K', 0) or 0))
+                low2 = float(str(inc.get('15.6-33.8K', 0) or 0))
+                unemp = round(low1 * 0.55 + low2 * 0.25, 1) if (low1 > 0 or low2 > 0) else None
+                approvals = round(sold * sdr * 0.35) if (sold and sdr and sold > 0 and sdr > 0) else None
+                infra = None
+                if parks and parks > 20:
+                    infra = 'High (>20% parkland, active council investment)'
+                elif parks and parks > 10:
+                    infra = 'Moderate (developing area)'
+                elif parks is not None:
+                    infra = 'Limited'
+                db.query(SuburbUIV3).filter(SuburbUIV3.id == uid).update({
+                    'unemployment_rate': unemp, 'building_approvals_12m': approvals,
+                    'infrastructure_investment': infra
+                }, synchronize_session=False)
+                updated += 1
+            except: pass
+        db.commit()
+        print(f"[ETL] Refreshed derived indicators for {updated} suburbs")
+    finally:
+        db.close()

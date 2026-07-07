@@ -1,0 +1,49 @@
+import json
+
+def analyze_json():
+    try:
+        with open('script_data.txt', 'r') as f:
+            content = f.read()
+            
+        # The script_data.txt contains: <script...>window.__initialState = ... or similar
+        # Let's find the first { and the last }
+        start = content.find('{')
+        end = content.rfind('}') + 1
+        
+        if start != -1 and end != 0:
+            json_str = content[start:end]
+            data = json.loads(json_str)
+            
+            print("Top level keys:")
+            for k in data.keys():
+                print(f"- {k}")
+                
+            print("\nAnalyzing 'property' or 'suburb' related keys...")
+            
+            # Often data is in apollo state or something similar
+            if 'props' in data:
+                print("Found 'props'")
+                pageProps = data['props'].get('pageProps', {})
+                print("pageProps keys:", pageProps.keys())
+                
+                initialState = pageProps.get('initialState', {})
+                print("initialState keys:", initialState.keys())
+                
+            elif 'urqlState' in data or 'apolloState' in data:
+                print("Found GraphQL state")
+                
+            # print out the first 50 keys of the parsed dict to see structure
+            print("\nFirst level dictionary structure:")
+            for k, v in list(data.items())[:20]:
+                if isinstance(v, dict):
+                    print(f"{k}: dict with keys {list(v.keys())[:10]}")
+                elif isinstance(v, list):
+                    print(f"{k}: list of length {len(v)}")
+                else:
+                    print(f"{k}: {type(v).__name__}")
+                    
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    analyze_json()

@@ -1,0 +1,58 @@
+import json
+import os
+from sqlalchemy import create_engine, text
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
+engine = create_engine(DATABASE_URL)
+
+DATA_FILE = "suburbs_data.json"
+
+def main():
+    if not os.path.exists(DATA_FILE):
+        print(f"ERROR: {DATA_FILE} not found")
+        return
+
+    with open(DATA_FILE, "r") as f:
+        suburbs = json.load(f)
+        
+    updated = 0
+    with engine.connect() as conn:
+        for s in suburbs:
+            state = s['state'].lower()
+            name = s['name'].lower().replace(' ', '_')
+            postcode = str(s['postcode'])
+            db_id = f"{state}_{name}_{postcode}"
+            
+            result = conn.execute(text("SELECT data FROM suburbs_all WHERE id = :id"), {"id": db_id}).fetchone()
+            if result and result[0]:
+                db_data = result[0]
+                if 'metrics' in db_data and db_data['metrics']:
+                    # Merge scraped metrics into JSON metrics
+                    scraped_metrics = db_data['metrics']
+                    
+                    # Compute Derived Metrics
+                    if 'medianPrice' in scraped_metrics and 'weeklyRent' in scraped_metrics and scraped_metrics['weeklyRent'] > 0:
+                        scraped_metrics['priceToRentRatio'] = round(scraped_metrics['medianPrice'] / (scraped_metrics['weeklyRent'] * 52), 1)
+                        
+                    if 'population2021' in scraped_metrics and 'suburbAreaKm2' in scraped_metrics and scraped_metrics['suburbAreaKm2'] > 0:
+                        scraped_metrics['populationDensity'] = round(scraped_metrics['population2021'] / scraped_metrics['suburbAreaKm2'], 1)
+                        
+                    if 'population2021' in scraped_metrics and 'population2016' in scraped_metrics and scraped_metrics['population2016'] > 0:
+                        growth = ((scraped_metrics['population2021'] - scraped_metrics['population2016']) / scraped_metrics['population2016']) * 100
+                        scraped_metrics['truePopulationGrowth'] = round(growth, 2)
+                        
+                    for k, v in scraped_metrics.items():
+                        # Don't overwrite populationGrowth or medianPrice if they are already enriched
+                        # Actually, wait. We want the scraped ones if they exist, or keep the existing?
+                        # The UI shows "No data" because fields like ageDistribution are missing.
+                        # We will overwrite/add fields from scraped_metrics.
+                        s['metrics'][k] = v
+                    updated += 1
+
+    with open(DATA_FILE, "w") as f:
+        json.dump(suburbs, f, indent=2)
+        
+    print(f"Successfully merged scraped metrics for {updated} suburbs.")
+
+if __name__ == "__main__":
+    main()

@@ -1,7 +1,7 @@
 export interface POI {
   name: string;
-  type: 'school' | 'station' | 'shopping';
-  coordinates: [number, number];
+  type: 'school' | 'station' | 'shopping' | 'park';
+  coordinates: [number, number]; // [lat, lng]
 }
 
 export interface School {
@@ -18,10 +18,10 @@ export interface SuburbData {
   postcode: string;
   state: string;
   growthScore: number;
-  coordinates: [number, number];
-  isMetro: boolean;
-  metroCBD: string;
-  cbdDistanceMins: number | null;
+  coordinates?: [number, number];
+  isMetro?: boolean;
+  metroCBD?: string;
+  cbdDistanceMins?: number | null;
   metrics: {
     populationGrowth: string;
     infrastructureInvestment: string;
@@ -32,11 +32,108 @@ export interface SuburbData {
     weeklyRent?: number;
     aiNewsSentiment?: string;
     aiNewsSummary?: string;
-  };
+    aiCommitteeVerdict?: string;
+    aiCommitteePlaybook?: string;
+    aiCommitteeDebate?: {
+      bull: string;
+      bear: string;
+      urban: string;
+      reality_check: string;
+    };
+    
+    // New OnTheHouse Fields
+    totalProperties?: number;
+    stockOnMarket?: number;
+    rentalStock?: number;
+    ownerOccupierRate?: number;
+    parksCount?: number;
+    parksCoveragePct?: number;
+    soldStock?: number;
+    sampleSold?: string;
+    sampleForSale?: string;
+    
+    // Missing Fields for UI
+    daysOnMarket?: number;
+    vacancyRate?: number;
+    propertiesForRent?: number;
+    propertiesSold?: number;
+    supplyDemandRatio?: number;
+    mortgageBand?: string;
+    truePopulationCAGR?: number;
+    truePopulationGrowth?: number;
+    populationDensity?: number;
+    priceToRentRatio?: number;
+    rentalYieldPct?: number;
+    icseaSchoolQuality?: number;
+    icseaAvg?: number;
+    icseaSchoolCount?: number;
+
+    // Phase 1 Enrichment Fields
+    unitMedianPrice?: number;
+    unitWeeklyRent?: number;
+     unitGrowth5yr?: string;
+     suburbAreaKm2?: number;
+     population2016?: number;
+     population2021?: number;
+     predominantAgeGroup?: string;
+     predominantOccupation?: string;
+     ageDistribution?: Record<string, number>;
+     priceToIncomeRatio?: number;
+     auctionClearanceRate?: number;
+   };
   highlights: string[];
-  pois: POI[];
-  schools: School[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  history?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  demographics?: any;
+  pois?: POI[];
+  schools?: School[];
+  acara_schools?: {name: string; type?: string; lat?: number; lon?: number; icsea?: number; icseaPercentile?: number; yearRange?: string}[];
   lastUpdated?: string;
+  safetyScore?: number;
+  crimeRate?: number;
+  houseRentalYield?: number;
+  houseRentalYieldTrend?: number;
+  unitRentalYield?: number;
+  unitRentalYieldTrend?: number;
+  houseMedianGrowth?: number;
+
+  // V3 ETL enriched fields (house/unit split, DQ scoring, supply/demand)
+  v3Enriched?: boolean;
+  dqScore?: number;
+  dqIssues?: { field: string; issue: string; value: string; severity: string }[];
+  lastV3Update?: string;
+  houseMedianPrice?: number;
+  houseMedianPrice12mChangePct?: number;
+  houseMedianRent?: number;
+  houseGrossRentalYield?: number;
+  houseGrossRentalYieldTrend?: number;
+  houseDaysOnMarket?: number;
+  houseAuctionClearanceRate?: number;
+  houseStockOnMarket?: number;
+  houseSold12m?: number;
+  unitMedianPrice?: number;
+  unitMedianPrice12mChangePct?: number;
+  unitMedianRent?: number;
+  unitGrossRentalYield?: number;
+  unitGrossRentalYieldTrend?: number;
+  unitDaysOnMarket?: number;
+  vacancyRate?: number;
+  supplyDemandRatio?: number;
+  priceToRentRatio?: number;
+  priceToIncomeRatio?: number;
+  ownerOccupierRate?: number;
+  investorRate?: number;
+  medianAge?: number;
+  populationCagr?: number;
+  predominantAgeGroup?: string;
+  predominantOccupation?: string;
+  averageHouseholdSize?: number;
+  typicalMortgageBand?: string;
+  avgIcsea?: number;
+  topSchoolName?: string;
+  schoolCount?: number;
+  historyRent?: { date: string; value: number }[];
 }
 
 export interface StampDutyRates {

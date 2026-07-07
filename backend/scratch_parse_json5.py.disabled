@@ -1,0 +1,26 @@
+import json
+import re
+
+def parse_redux_data():
+    with open('script_data.txt', 'r') as f:
+        content = f.read()
+        
+    match = re.search(r'window\.REDUX_DATA\s*=\s*(\{.*?\});\s*window\.oth_device', content, re.DOTALL)
+    json_str = match.group(1)
+    data = json.loads(json_str)
+    
+    mt = data.get('marketTrends', {})
+    metrics = mt.get('metrics', [])
+    print(f"marketTrends.metrics is a {type(metrics)} of length {len(metrics) if isinstance(metrics, list) else 'N/A'}")
+    
+    if isinstance(metrics, dict):
+        print("metrics keys:", metrics.keys())
+    elif isinstance(metrics, list) and len(metrics) > 0:
+        print("First metric keys:", metrics[0].keys())
+        for m in metrics:
+            print(f"- {m.get('propertyType', '')} | {m.get('metricType', '')} | {m.get('metricDisplayType', '')} | List length: {len(m.get('seriesDataList', []))}")
+            if m.get('metricType') == 'Median Value' and m.get('propertyType') == 'Houses':
+                print(json.dumps(m, indent=2)[:500])
+
+if __name__ == "__main__":
+    parse_redux_data()
