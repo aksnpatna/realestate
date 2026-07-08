@@ -67,6 +67,18 @@ services:
       db:
         condition: service_healthy
 
+  tileserv:
+    image: pramsey/pg_tileserv:latest
+    container_name: realestate-tileserv
+    restart: unless-stopped
+    ports:
+      - "7800:7800"
+    environment:
+      - DATABASE_URL=postgres://realestate_user:realestate_pass@db:5432/realestate
+    depends_on:
+      db:
+        condition: service_healthy
+
   redis:
     image: redis:7-alpine
     container_name: realestate-redis

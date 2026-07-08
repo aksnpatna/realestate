@@ -158,7 +158,28 @@ class SuburbUIV3(Base):
     news_sentiment = Column(JSON)  # {score, label, summary, articles, fetched_at}
 
 # =============================================================================
-# LAYER 3 — PROPERTY LISTINGS (Bridging "Where" to "What")
+# LAYER 3 — ANALYTICS / TIME-SERIES (High Performance)
+# =============================================================================
+class SuburbPriceHistory(Base):
+    """
+    Time-series table for 10-year historical price data.
+    Separated from SuburbUIV3 to prevent JSONB extraction overhead during
+    analytical queries. Designed for fast indexed filtering by suburb and date.
+    """
+    __tablename__ = "suburb_price_history"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    suburb_id = Column(String, index=True)
+    property_type = Column(String, index=True)  # "house" or "unit"
+    record_date = Column(DateTime, index=True)  # e.g., "2016-01-01"
+    median_price = Column(Float)
+    median_rent = Column(Float)
+
+    __table_args__ = (
+        Index('idx_suburb_date_type', 'suburb_id', 'property_type', 'record_date'),
+    )
+
+# =============================================================================
+# LAYER 4 — PROPERTY LISTINGS (Bridging "Where" to "What")
 # =============================================================================
 class PropertyListing(Base):
     __tablename__ = "property_listings"
