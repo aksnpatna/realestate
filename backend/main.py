@@ -964,6 +964,7 @@ from pydantic import BaseModel
 class ROICalcRequest(BaseModel):
     purchase_price: float
     weekly_rent: float
+    state: str = "VIC"
     deposit_pct: float = 20.0
     interest_rate: float = 6.2
     loan_type: str = "io"
@@ -975,17 +976,73 @@ class ROICalcRequest(BaseModel):
     vacancy_weeks: float = 2.0
     maintenance_pct: float = 1.0
 
-def calculate_stamp_duty_vic(price: float) -> float:
-    # Basic VIC stamp duty tiers (approx)
-    if price <= 25000: return price * 0.014
-    elif price <= 130000: return 350 + (price - 25000) * 0.024
-    elif price <= 960000: return 2870 + (price - 130000) * 0.06
-    elif price <= 2000000: return price * 0.055
-    else: return price * 0.065
+def calculate_stamp_duty(state: str, price: float) -> float:
+    state = state.upper()
+    if state == "VIC":
+        if price <= 25000: return price * 0.014
+        elif price <= 130000: return 350 + (price - 25000) * 0.024
+        elif price <= 960000: return 2870 + (price - 130000) * 0.06
+        elif price <= 2000000: return price * 0.055
+        else: return price * 0.065
+    elif state == "NSW":
+        if price <= 16000: return price * 0.0125
+        elif price <= 35000: return 200 + (price - 16000) * 0.015
+        elif price <= 93000: return 485 + (price - 35000) * 0.0175
+        elif price <= 351000: return 1500 + (price - 93000) * 0.035
+        elif price <= 1168000: return 10530 + (price - 351000) * 0.045
+        elif price <= 3505000: return 47295 + (price - 1168000) * 0.055
+        else: return 175830 + (price - 3505000) * 0.07
+    elif state == "QLD":
+        if price <= 5000: return 0
+        elif price <= 75000: return (price - 5000) * 0.015
+        elif price <= 540000: return 1050 + (price - 75000) * 0.035
+        elif price <= 1000000: return 17325 + (price - 540000) * 0.045
+        else: return 38025 + (price - 1000000) * 0.0575
+    elif state == "SA":
+        if price <= 12000: return price * 0.01
+        elif price <= 30000: return 120 + (price - 12000) * 0.02
+        elif price <= 50000: return 480 + (price - 30000) * 0.03
+        elif price <= 100000: return 1080 + (price - 50000) * 0.04
+        elif price <= 200000: return 3080 + (price - 100000) * 0.0475
+        elif price <= 250000: return 7830 + (price - 200000) * 0.05
+        elif price <= 300000: return 10330 + (price - 250000) * 0.0525
+        elif price <= 500000: return 12955 + (price - 300000) * 0.055
+        else: return 23955 + (price - 500000) * 0.055
+    elif state == "WA":
+        if price <= 120000: return price * 0.019
+        elif price <= 150000: return 2280 + (price - 120000) * 0.0285
+        elif price <= 360000: return 3135 + (price - 150000) * 0.038
+        elif price <= 725000: return 11115 + (price - 360000) * 0.0475
+        else: return 28453 + (price - 725000) * 0.0515
+    elif state == "TAS":
+        if price <= 3000: return 50
+        elif price <= 25000: return 50 + (price - 3000) * 0.0175
+        elif price <= 75000: return 435 + (price - 25000) * 0.0225
+        elif price <= 200000: return 1560 + (price - 75000) * 0.035
+        elif price <= 375000: return 5935 + (price - 200000) * 0.04
+        elif price <= 725000: return 12935 + (price - 375000) * 0.0425
+        else: return 27810 + (price - 725000) * 0.045
+    elif state == "NT":
+        if price <= 525000:
+            V = price / 1000
+            return (0.06571441 * V**2) + 15 * V
+        elif price < 3000000: return price * 0.0495
+        elif price < 5000000: return price * 0.0575
+        else: return price * 0.0595
+    elif state == "ACT":
+        if price <= 260000: return price * 0.012
+        elif price <= 300000: return 3120 + (price - 260000) * 0.022
+        elif price <= 500000: return 4000 + (price - 300000) * 0.034
+        elif price <= 750000: return 10800 + (price - 500000) * 0.0432
+        elif price <= 1000000: return 21600 + (price - 750000) * 0.059
+        elif price <= 1455000: return 36350 + (price - 1000000) * 0.064
+        else: return price * 0.0454
+    else:
+        return price * 0.05
 
 @app.post("/api/calc/roi")
 def calculate_roi(req: ROICalcRequest):
-    stamp_duty = calculate_stamp_duty_vic(req.purchase_price)
+    stamp_duty = calculate_stamp_duty(req.state, req.purchase_price)
     deposit_amount = req.purchase_price * (req.deposit_pct / 100)
     loan_amount = req.purchase_price - deposit_amount
     total_upfront = deposit_amount + stamp_duty

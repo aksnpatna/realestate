@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 interface QuickRoiCalculatorProps {
   medianPrice: number;
   medianRent: number;
+  state: string;
 }
 
-export default function QuickRoiCalculator({ medianPrice, medianRent }: QuickRoiCalculatorProps) {
+export default function QuickRoiCalculator({ medianPrice, medianRent, state }: QuickRoiCalculatorProps) {
   const [depositPct, setDepositPct] = useState(20);
   const [interestRate, setInterestRate] = useState(6.2);
   const [loanType, setLoanType] = useState('io');
@@ -23,6 +24,7 @@ export default function QuickRoiCalculator({ medianPrice, medianRent }: QuickRoi
           body: JSON.stringify({
             purchase_price: medianPrice,
             weekly_rent: medianRent,
+            state: state,
             deposit_pct: depositPct,
             interest_rate: interestRate,
             loan_type: loanType
