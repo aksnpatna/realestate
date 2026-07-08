@@ -799,7 +799,8 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db)):
                 "urban": ai_cache.get("aiCommitteeDebate", {}).get("urban", ""),
                 "reality_check": ai_cache.get("aiCommitteeDebate", {}).get("reality_check", ""),
                 "verdict": ai_cache["aiCommitteeVerdict"],
-                "playbook": ai_cache["aiCommitteePlaybook"]
+                "playbook": ai_cache["aiCommitteePlaybook"],
+                "catalysts": v3.highlights or []
             }
             
         # Compile rich V3 metrics for the AI to analyze
@@ -840,8 +841,16 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db)):
         }
         
         v3.ai_insights = ai_cache
+        
+        # Save extracted catalysts directly to the highlights column for the UI to consume
+        if ai_result.get("catalysts") and len(ai_result["catalysts"]) > 0:
+            v3.highlights = ai_result["catalysts"]
+            
         from sqlalchemy.orm.attributes import flag_modified
         flag_modified(v3, "ai_insights")
+        if v3.highlights:
+            flag_modified(v3, "highlights")
+            
         db.commit()
             
         return {"status": "success", "result": ai_result}
