@@ -281,11 +281,28 @@ function App() {
                     }
                   }}
                 >
-                  {stateSuburbs.map(suburb => (
-                    <option key={suburb.id} value={suburb.id}>
-                      {suburb.name} ({suburb.postcode})
-                    </option>
-                  ))}
+                  <optgroup label="Live Metro">
+                    {stateSuburbs.filter(s => (s as any).isMetro).map(suburb => {
+                      const dq = (suburb as any).dqScore;
+                      const hasDqIssue = dq == null || dq < 70;
+                      return (
+                        <option key={suburb.id} value={suburb.id}>
+                          {suburb.name} ({suburb.postcode}){hasDqIssue ? ' ⚠️' : ''}
+                        </option>
+                      )
+                    })}
+                  </optgroup>
+                  <optgroup label="National (Cold)">
+                    {stateSuburbs.filter(s => !(s as any).isMetro).map(suburb => {
+                      const dq = (suburb as any).dqScore;
+                      const hasDqIssue = dq == null || dq < 70;
+                      return (
+                        <option key={suburb.id} value={suburb.id}>
+                          {suburb.name} ({suburb.postcode}){hasDqIssue ? ' ⚠️' : ''}
+                        </option>
+                      )
+                    })}
+                  </optgroup>
                 </select>
               </div>
             </div>
@@ -316,10 +333,12 @@ function App() {
                         <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}
                         {(()=>{
                           const dq = (activeSuburb as any).dqScore;
-                          if(dq==null)return null;
+                          if (dq == null) {
+                            return <span title="Data Quality Score Unavailable" style={{marginLeft:'12px',fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:'4px',background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:`1px solid #f59e0b40`}}>⚠️ DQ Unavailable</span>;
+                          }
                           const c=dq>=90?'#10b981':dq>=70?'#f59e0b':'#ef4444';
                           const bg=dq>=90?'rgba(16,185,129,0.15)':dq>=70?'rgba(245,158,11,0.15)':'rgba(239,68,68,0.15)';
-                          return <span title="Data Quality Score" style={{marginLeft:'12px',fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:'4px',background:bg,color:c,border:`1px solid ${c}40`}}>DQ {Math.round(dq)}</span>;
+                          return <span title="Data Quality Score" style={{marginLeft:'12px',fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:'4px',background:bg,color:c,border:`1px solid ${c}40`}}>DQ {Math.round(dq)} {dq<70 && '⚠️'}</span>;
                         })()}
                         {(activeSuburb as any).lastV3Update && (
                           <span style={{ marginLeft: '8px', fontSize: '0.6rem', color: 'var(--text-secondary)' }}>
