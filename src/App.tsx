@@ -508,27 +508,25 @@ function App() {
                           </ResponsiveContainer>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Household Types */}
-                  <div className="highlights-section" style={{ marginTop: '15px' }}>
-                    <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Types</h4>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {(() => {
-                        const hhData = ((activeSuburb as any).demographicsDetailV3?.household_distribution) || {}
-                        const total = Object.values(hhData).reduce((a:number,b:any) => a + Number(b), 0) || 1
-                        return Object.entries(hhData).map(([k,v]) => (
-                          <div key={k} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '10px', borderRadius: '8px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px' }}>
-                              <span style={{ fontWeight: 600 }}>{k}</span><span>{Number(v).toFixed(0)}%</span>
-                            </div>
-                            <div style={{ height: '8px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px' }}>
-                              <div style={{ height: '100%', width: `${(Number(v)/total*100).toFixed(0)}%`, background: 'var(--accent-purple)', borderRadius: '4px' }} />
-                            </div>
-                          </div>
-                        ))
-                      })()}
+                      <div style={{ flex: '1 1 250px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Household Types</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {(() => {
+                            const hhData = ((activeSuburb as any).demographicsDetailV3?.household_distribution) || {}
+                            const total = Object.values(hhData).reduce((a:number,b:any) => a + Number(b), 0) || 1
+                            return Object.entries(hhData).map(([k,v]) => (
+                              <div key={k}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                                  <span>{k}</span><span>{Number(v).toFixed(0)}%</span>
+                                </div>
+                                <div style={{ height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', marginTop: '2px' }}>
+                                  <div style={{ height: '100%', width: `${(Number(v)/total*100).toFixed(0)}%`, background: 'var(--accent-purple)', borderRadius: '3px' }} />
+                                </div>
+                              </div>
+                            ))
+                          })()}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -630,9 +628,106 @@ function App() {
                           bear: Math.round(lastVal * Math.pow(1+bearRate, y+1)),
                         }));
                         return (
-                      <div style={{ flex: '1 1 350px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Median Price: House vs Unit</h4>
-                        <div style={{ height: '150px' }}>
+                          <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                            <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Next 10-Year Projection</h4>
+                            <div style={{ height: '220px' }}>
+                              <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={projData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                                  <XAxis dataKey="year" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
+                                  <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `$${Math.round(val/1000)}k`} />
+                                  <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, '']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                                  <Line type="monotone" dataKey="bull" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Bull" />
+                                  <Line type="monotone" dataKey="base" stroke="var(--accent-cyan)" strokeWidth={3} dot={false} name="Base" />
+                                  <Line type="monotone" dataKey="bear" stroke="#ef4444" strokeWidth={2} strokeDasharray="3 3" dot={false} name="Bear" />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <div style={{ textAlign:'center', marginTop:'10px', fontSize:'0.75rem', color:'var(--text-secondary)', display:'flex', justifyContent:'center', gap:'16px' }}>
+                              <span><span style={{color:'#10b981',fontWeight:600}}>── Bull</span> (+{(bullRate*100).toFixed(1)}%)</span>
+                              <span><span style={{color:'var(--accent-cyan)',fontWeight:600}}>── Base</span> (+{(baseRate*100).toFixed(1)}%)</span>
+                              <span><span style={{color:'#ef4444',fontWeight:600}}>── Bear</span> (+{(bearRate*100).toFixed(1)}%)</span>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* NEW LIVABILITY SECTION */}
+                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h3>Real-Time Livability & Amenities</h3>
+                      {!livabilityData && !loadingLivability && (
+                        <button
+                          onClick={async () => {
+                            setLoadingLivability(true);
+                            try {
+                              const coords = activeSuburb.coordinates || [-37.8, 145.0];
+                              const data = await fetchLivabilityData(coords[0], coords[1]);
+                              setLivabilityData(data);
+                            } catch {
+                              alert("Failed to load livability data");
+                            }
+                            setLoadingLivability(false);
+                          }}
+                          style={{
+                            background: 'var(--accent-purple)', color: '#fff', border: 'none', 
+                            padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold'
+                          }}
+                        >
+                          Scan Area (Live)
+                        </button>
+                      )}
+                    </div>
+                    {loadingLivability && <p style={{ color: 'var(--text-secondary)' }}>Scanning neighborhood via OpenStreetMap...</p>}
+                    {livabilityData && (
+                      <div style={{ marginTop: '15px' }}>
+                        <div className="metrics-grid" style={{ marginBottom: '15px' }}>
+                          <div className="metric-box">
+                            <div className="metric-label">Walkability Score</div>
+                            <div className="metric-value highlight-cyan">{livabilityData.walkabilityScore}/100</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Cafes & Dining</div>
+                            <div className="metric-value">{livabilityData.cafes.length}</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Parks & Leisure</div>
+                            <div className="metric-value">{livabilityData.parks.length}</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Transit Stops</div>
+                            <div className="metric-value">{livabilityData.transit.length}</div>
+                          </div>
+                        </div>
+                        {livabilityData.cafes.length > 0 && (
+                          <div style={{ marginBottom: '10px' }}>
+                            <strong>Popular Spots: </strong>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                              {livabilityData.cafes.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.cafes.length > 5 ? '...' : ''}
+                            </span>
+                          </div>
+                        )}
+                        {livabilityData.schools.length > 0 && (
+                          <div>
+                            <strong>Local Schools (OSM): </strong>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                              {livabilityData.schools.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.schools.length > 5 ? '...' : ''}
+                            </span>
+                          </div>
+                      )}
+                    </div>
+                    )}
+                  </div>
+
+                  {/* PANEL B: Demographics */}
+                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Age Distribution</h4>
+                        <div style={{ height: '200px' }}>
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={(() => {
                               const ageData = ((activeSuburb as any).demographicsDetailV3?.age_distribution) || {}
