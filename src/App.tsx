@@ -35,6 +35,7 @@ function App() {
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
   const [isClustering, setIsClustering] = useState(false)
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
+  const [macroEtf, setMacroEtf] = useState<any>(null)
 
   const loadColdSuburb = async (id: string) => {
     try {
@@ -62,9 +63,13 @@ function App() {
         })
         .catch((err: unknown) => {
           console.error("API error, using full mock data:", err)
-          setSuburbsData(mockSuburbsData)
           setLoadingData(false)
         })
+      
+      fetch('/api/etf/vap')
+        .then(res => res.json())
+        .then(data => setMacroEtf(data))
+        .catch(err => console.error("ETF fetch error:", err))
     }
   }, [isAuthenticated])
 
@@ -483,6 +488,36 @@ function App() {
                             <li key={index}>{highlight}</li>
                           ))}
                       </ul>
+                    </div>
+                  )}
+
+                  {/* MACRO MARKET PULSE */}
+                  {macroEtf && (
+                    <div className="highlights-section" style={{ marginTop: '20px', background: 'linear-gradient(145deg, rgba(30,30,40,0.8) 0%, rgba(20,20,30,0.9) 100%)', border: '1px solid var(--accent-purple)' }}>
+                      <h3 style={{ marginBottom: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        📈 Macro Market Pulse (National Benchmark)
+                      </h3>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
+                        <div>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>{macroEtf.symbol} ETF</div>
+                          <div style={{ fontSize: '1.4rem', color: 'var(--text-primary)', fontWeight: 'bold' }}>${macroEtf.current_price.toFixed(2)}</div>
+                        </div>
+                        <div>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>12M Growth</div>
+                          <div style={{ fontSize: '1.4rem', color: macroEtf.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
+                            {macroEtf.growth_1y_pct >= 0 ? '+' : ''}{macroEtf.growth_1y_pct}%
+                          </div>
+                        </div>
+                        <div>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>Local vs Macro (12M)</div>
+                          <div style={{ fontSize: '1.4rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)', fontWeight: 'bold' }}>
+                            {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'Outperforming' : 'Underperforming'}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '10px' }}>
+                        Baseline: {macroEtf.name}. Use this to determine if local growth is genuine alpha or just riding the national tide.
+                      </div>
                     </div>
                   )}
 
