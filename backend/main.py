@@ -219,7 +219,6 @@ def get_suburbs(state: str = None):
     
     for state_name in TARGET_STATES:
         state_subs = db.query(SuburbUIModel).filter(
-            SuburbUIModel.is_live == True,
             SuburbUIModel.state == state_name,
             SuburbUIModel.median_price.isnot(None),
             SuburbUIModel.median_price > 0
