@@ -102,7 +102,10 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
 
   return (
     <div className="map-wrapper glass-card">
-      <h3 className="map-title">Local Infrastructure & Boundaries</h3>
+      <h3 className="map-title" style={{ marginBottom: '5px' }}>Local Infrastructure & Heatmaps</h3>
+      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>
+        <strong>Interactive Vector Heatmap:</strong> A live nationwide overlay of all 13,000+ suburbs is rendered dynamically via PostGIS. Zoom out to see the national yield distribution, and click on any coloured point to inspect its live data. Use the layer control (top right) to toggle base maps and overlays.
+      </p>
       <div className="map-container-inner" style={{ background: '#e5e5e5' }}>
         <MapContainer center={derivedCenter} zoom={13} style={{ height: '100%', width: '100%', borderRadius: '12px' }}>
           
@@ -146,7 +149,7 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
             </LayersControl.Overlay>
 
             <LayersControl.Overlay name="📊 Yield Heatmap (Vector Tiles)" checked>
-               <VectorGridLayer url="http://localhost:7800/public.suburbs_ui_v3/{z}/{x}/{y}.pbf" />
+               <VectorGridLayer url="/tiles/public.suburbs_ui_v3/{z}/{x}/{y}.pbf" />
             </LayersControl.Overlay>
           </LayersControl>
 

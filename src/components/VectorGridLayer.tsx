@@ -25,12 +25,11 @@ export default function VectorGridLayer({ url, zIndex = 100 }: VectorGridProps) 
           
           return {
             fillColor: color,
-            fillOpacity: 0.5,
+            fillOpacity: 0.8,
             stroke: true,
-            fill: true,
-            color: 'white',
-            weight: 1,
-            radius: zoom > 12 ? 8 : 4
+            color: 'black',
+            weight: 2,
+            radius: zoom > 12 ? 14 : (zoom > 8 ? 8 : 4)
           };
         }
       },
