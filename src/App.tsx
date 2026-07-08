@@ -963,6 +963,7 @@ function App() {
                   <QuickRoiCalculator 
                     medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
                     medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
+                    state={(activeSuburb as any).state || "VIC"}
                   />
 
                   {/* K-Means Clustering: Similar Suburbs */}
