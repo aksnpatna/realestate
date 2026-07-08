@@ -94,28 +94,28 @@ export default function QuickRoiCalculator({ medianPrice, medianRent, state }: Q
           {loading && !results && <div style={{ padding: '20px', textAlign: 'center' }}>Calculating...</div>}
           {results && (
             <>
-              <div style={{ display: 'flex', gap: '15px' }}>
-                <div style={{ flex: 1, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 140px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: '#10b981' }}>Net Yield (After Expenses)</div>
                   <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{results.net_yield_pct}%</div>
                 </div>
-                <div style={{ flex: 1, background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
+                <div style={{ flex: '1 1 140px', background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)' }}>Cash on Cash Return</div>
                   <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{results.cash_on_cash_return_pct}%</div>
                 </div>
-                <div style={{ flex: 1, background: results.gearing_status === 'positive' ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', border: `1px solid ${results.gearing_status === 'positive' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`, padding: '15px', borderRadius: '8px' }}>
+                <div style={{ flex: '1 1 140px', background: results.gearing_status === 'positive' ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', border: `1px solid ${results.gearing_status === 'positive' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`, padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: results.gearing_status === 'positive' ? '#10b981' : '#ef4444' }}>Weekly Cashflow</div>
                   <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${results.net_weekly_cashflow}</div>
                 </div>
               </div>
               
-              <div style={{ display: 'flex', gap: '15px' }}>
-                <div style={{ flex: 1, background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 200px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Total Upfront Required</div>
                   <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>${Math.round(results.total_upfront).toLocaleString()}</div>
                   <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Incl. ${Math.round(results.stamp_duty).toLocaleString()} stamp duty</div>
                 </div>
-                <div style={{ flex: 1, background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                <div style={{ flex: '1 1 200px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Annual Interest Bill</div>
                   <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>${Math.round(results.annual_interest).toLocaleString()}</div>
                 </div>
