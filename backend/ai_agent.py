@@ -256,10 +256,8 @@ committee_graph.add_node("supervisor", supervisor_and_playbook_node)
 
 committee_graph.set_entry_point("fetch_news")
 committee_graph.add_edge("fetch_news", "bull_agent")
-committee_graph.add_edge("fetch_news", "bear_agent")
-committee_graph.add_edge("fetch_news", "urban_planner")
-committee_graph.add_edge("bull_agent", "supervisor")
-committee_graph.add_edge("bear_agent", "supervisor")
+committee_graph.add_edge("bull_agent", "bear_agent")
+committee_graph.add_edge("bear_agent", "urban_planner")
 committee_graph.add_edge("urban_planner", "supervisor")
 committee_graph.add_edge("supervisor", END)
 
