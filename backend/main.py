@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException, Depends, Header, BackgroundTasks, Re
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, String, JSON, func
+from sqlalchemy import create_engine, Column, String, JSON, func, Integer
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from dotenv import load_dotenv
 from parallel_scraper import SuburbAllModel, SuburbUIModel
@@ -109,6 +109,13 @@ class UserModel(Base):
     password_hash = Column(String)
     salt = Column(String)
     created_at = Column(String)
+
+class UserFavorite(Base):
+    __tablename__ = "user_favorites"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, index=True)
+    suburb_id = Column(String, index=True)
+    created_at = Column(String, default=lambda: datetime.now().isoformat())
 
 # Ensure tables are created
 Base.metadata.create_all(bind=engine)
@@ -1186,6 +1193,66 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
     
     cache_key = f"v3_suburbs:{state or 'ALL'}:{limit}"
     return get_cached_or_query(cache_key, _fetch, expire_secs=3600)
+
+from fastapi.responses import StreamingResponse
+import io
+import csv
+
+@app.get("/api/v3/export")
+def export_suburbs_csv(state: Optional[str] = None, limit: int = 1000, db: Session = Depends(get_db)):
+    """Exports the V3 suburbs table to a CSV file."""
+    query = db.query(SuburbUIV3).filter(SuburbUIV3.is_enriched == True)
+    if state:
+        query = query.filter(SuburbUIV3.state == state.upper())
+    query = query.order_by(SuburbUIV3.house_median_price.desc().nulls_last()).limit(limit)
+    results = query.all()
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow([
+        "ID", "State", "Name", "Postcode", "House_Median_Price", "House_Yield", 
+        "House_12m_Growth", "Population", "DQ_Score", "Safety_Score"
+    ])
+    
+    for r in results:
+        writer.writerow([
+            r.id, r.state, r.name, r.postcode, 
+            r.house_median_price, r.house_gross_rental_yield, 
+            r.house_median_price_12m_change_pct, r.population_2021,
+            r.dq_score, r.safety_score
+        ])
+    
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=realestate_export_{state or 'national'}.csv"}
+    )
+
+class FavoriteRequest(BaseModel):
+    suburb_id: str
+
+@app.get("/api/favorites")
+def get_favorites(db: Session = Depends(get_db), user=Depends(get_current_user)):
+    favs = db.query(UserFavorite).filter(UserFavorite.user_id == user.id).all()
+    suburb_ids = [f.suburb_id for f in favs]
+    return {"status": "success", "favorites": suburb_ids}
+
+@app.post("/api/favorites")
+def toggle_favorite(req: FavoriteRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    existing = db.query(UserFavorite).filter(UserFavorite.user_id == user.id, UserFavorite.suburb_id == req.suburb_id).first()
+    if existing:
+        db.delete(existing)
+        db.commit()
+        return {"status": "success", "action": "removed"}
+    else:
+        new_fav = UserFavorite(user_id=user.id, suburb_id=req.suburb_id)
+        db.add(new_fav)
+        db.commit()
+        return {"status": "success", "action": "added"}
+
 @app.get("/api/v3/suburbs/{suburb_id}")
 def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
     """Returns full V3 institutional data for a single suburb."""

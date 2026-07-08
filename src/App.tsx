@@ -346,6 +346,22 @@ function App() {
               </div>
             </div>
 
+            <div className="control-group" style={{ marginTop: '20px' }}>
+              <button 
+                onClick={() => window.open(`/api/v3/export?state=${activeState}`, '_blank')}
+                style={{
+                  width: '100%', padding: '12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)',
+                  color: 'var(--text-primary)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center',
+                  alignItems: 'center', gap: '8px', fontWeight: '500', transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
+              >
+                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                Export {activeState} Data (CSV)
+              </button>
+            </div>
+
             {activeSuburb && (
               <div className="sidebar-preview">
                 <div className="preview-score">
