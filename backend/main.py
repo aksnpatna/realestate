@@ -17,7 +17,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from dotenv import load_dotenv
 from parallel_scraper import SuburbAllModel, SuburbUIModel
 from models_v2 import SuburbUIV2
-from models_v3 import SuburbUIV3, PropertyListing
+from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
 
 Base = declarative_base()
 
@@ -705,6 +705,11 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
     
     growth = _compute_growth_score(v3)
     
+    # Query optimized time-series table for history
+    history_records = db.query(SuburbPriceHistory).filter(SuburbPriceHistory.suburb_id == v3.id).order_by(SuburbPriceHistory.record_date.asc()).all()
+    formatted_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_price} for r in history_records if r.median_price]
+    formatted_rent_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_rent} for r in history_records if r.median_rent]
+    
     response = {
         "id": v3.id.lower(),
         "name": v3.name, "state": v3.state, "postcode": v3.postcode,
@@ -767,8 +772,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "crimeRate": v3.crime_rate or 5000.0,
         # Content
         "highlights": v3.highlights or [],
-        "history": v3.history_10yr or [],
-        "historyRent": v3.history_rent_10yr or [],
+        "history": formatted_history if formatted_history else (v3.history_10yr or []),
+        "historyRent": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
         "demographics": v3.demographics_detail or {},
         "demographicsDetailV3": v3.demographics_detail or {},
         "salesSummaryV3": v3.sales_summary or [],
