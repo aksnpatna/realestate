@@ -20,9 +20,9 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783460733.460361,
-    "ast_hash": "9c2577e21400fabc7f9d8d6a3a4d6082",
-    "semantic_hash": "9c2577e21400fabc7f9d8d6a3a4d6082"
+    "mtime": 1783463900.2595892,
+    "ast_hash": "55b3479b1fd887d7a65c2037c8f93cfc",
+    "semantic_hash": "55b3479b1fd887d7a65c2037c8f93cfc"
   },
   "backend/scheduler.py": {
     "mtime": 1783429541.5881276,
@@ -45,9 +45,9 @@
     "semantic_hash": "2d07c7e0e80dd94675fd9747f01274e2"
   },
   "src/App.tsx": {
-    "mtime": 1783460015.1201396,
-    "ast_hash": "7fa9fc5134628cfde0d706b8c4e07810",
-    "semantic_hash": "7fa9fc5134628cfde0d706b8c4e07810"
+    "mtime": 1783476143.0304217,
+    "ast_hash": "af1171b8e3d098ac39df5bae4ad8bf34",
+    "semantic_hash": "af1171b8e3d098ac39df5bae4ad8bf34"
   },
   "src/components/AffordabilityCalculator.tsx": {
     "mtime": 1783429541.5893016,
@@ -132,7 +132,7 @@
   "README.md": {
     "mtime": 1782529570.482032,
     "ast_hash": "10495bfcc6c568eca4dab6dd5df795d3",
-    "semantic_hash": ""
+    "semantic_hash": "10495bfcc6c568eca4dab6dd5df795d3"
   },
   "australian-suburbs-data.md": {
     "mtime": 1782560349.8921974,
@@ -140,24 +140,24 @@
     "semantic_hash": ""
   },
   "backend/requirements.txt": {
-    "mtime": 1782852247.3289762,
-    "ast_hash": "6bc18cdecfc2d222db8cf46503927f19",
-    "semantic_hash": ""
+    "mtime": 1783429541.5880399,
+    "ast_hash": "9e4b219cee401e5cf4802d49b7ea0216",
+    "semantic_hash": "9e4b219cee401e5cf4802d49b7ea0216"
   },
   "docker-compose.yml": {
-    "mtime": 1783024847.693235,
-    "ast_hash": "61d5546d5673ecd48929ad3d86914952",
-    "semantic_hash": ""
+    "mtime": 1783317627.6500504,
+    "ast_hash": "09fd89500e749fa94aee8dca8a512190",
+    "semantic_hash": "09fd89500e749fa94aee8dca8a512190"
   },
   "graphify-out/converted/vic_sales_time_series_20yr_latest_5350cb9d.md": {
     "mtime": 1782692997.2808726,
     "ast_hash": "5b484283dd2ee6e4058586aad8c06ea1",
-    "semantic_hash": ""
+    "semantic_hash": "5b484283dd2ee6e4058586aad8c06ea1"
   },
   "index.html": {
     "mtime": 1782563394.7114735,
     "ast_hash": "fd6680bbf8b1246edf96f5f93c36ca1d",
-    "semantic_hash": ""
+    "semantic_hash": "fd6680bbf8b1246edf96f5f93c36ca1d"
   },
   "public/favicon.svg": {
     "mtime": 1782529570.4826305,
@@ -232,12 +232,12 @@
   "graphify-out/converted/SchoolLocation2025_d4fcd1a0.md": {
     "mtime": 1782939565.6267333,
     "ast_hash": "17c922e00a01f79640861433783fce4d",
-    "semantic_hash": ""
+    "semantic_hash": "17c922e00a01f79640861433783fce4d"
   },
   "graphify-out/converted/SchoolProfile2025_d9f23a53.md": {
     "mtime": 1782939566.8167396,
     "ast_hash": "2a168df2cc8e187f72d3b92820fae1eb",
-    "semantic_hash": ""
+    "semantic_hash": "2a168df2cc8e187f72d3b92820fae1eb"
   },
   "test_scrape.txt": {
     "mtime": 1782721059.7605104,
