@@ -7,6 +7,7 @@ import HouseSearch from './components/HouseSearch'
 import CashflowGearing from './components/CashflowGearing'
 import InstitutionalV3Panel from './components/InstitutionalV3Panel'
 import MyPurchasePlan from './components/MyPurchasePlan'
+import QuickRoiCalculator from './components/QuickRoiCalculator'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -957,6 +958,12 @@ function App() {
                       </div>
                     )}
                   </div>
+
+                  {/* PANEL E: Quick ROI Calculator */}
+                  <QuickRoiCalculator 
+                    medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
+                    medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
+                  />
 
                   {/* K-Means Clustering: Similar Suburbs */}
                   <div style={{ marginTop: '20px' }}>
