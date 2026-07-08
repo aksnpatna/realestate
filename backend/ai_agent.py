@@ -60,10 +60,22 @@ class CommitteeState(TypedDict):
     final_verdict: str
     playbook: str
     reality_check: str
+    catalysts: list
 
 def fetch_news_node(state: CommitteeState):
-    # Disabled during UAT. Use get_news_sentiment() for on-demand per-suburb queries.
-    return {"news_articles": "News fetching disabled. Use /api/suburbs/{id}/news-sentiment for on-demand analysis."}
+    if not tavily:
+        return {"news_articles": "No API key."}
+    try:
+        query = f"{state['suburb']} {state['state']} new infrastructure projects zoning development council plan"
+        res = tavily.search(query=query, search_depth="basic", max_results=5)
+        articles = res.get("results", []) or res.get("news", [])
+        if not articles:
+            return {"news_articles": "No major infrastructure or zoning news found."}
+        
+        snippets = [f"- {a.get('title')}: {a.get('content') or a.get('snippet')}" for a in articles]
+        return {"news_articles": "\n".join(snippets)}
+    except Exception as e:
+        return {"news_articles": f"Error fetching news: {str(e)}"}
 
 
 def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
@@ -188,6 +200,7 @@ def supervisor_and_playbook_node(state: CommitteeState):
     Task 1: Generate a final VERDICT (Buy, Hold, or Pass).
     Task 2: Generate a 3-point Investment STRATEGY PLAYBOOK (e.g. "Cashflow Strategy", "Blue-Chip School Zone Strategy").
     Task 3: REALITY CHECK (Compare the suburb's actual data to the macro ETF baseline and media sentiment. Is the media over-hyping or under-valuing?)
+    Task 4: Extract 1-3 CATALYSTS from the News (e.g. new train stations, zoning changes). If none found in News, infer 1 demographic/metric catalyst.
     
     VERDICT: [Buy / Hold / Pass]
     STRATEGY:
@@ -195,6 +208,10 @@ def supervisor_and_playbook_node(state: CommitteeState):
     2. [Point 2]
     3. [Point 3]
     REALITY CHECK: [1-2 sentences comparing news to reality]
+    CATALYSTS:
+    - [Catalyst 1]
+    - [Catalyst 2]
+    - [Catalyst 3]
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     
@@ -203,6 +220,7 @@ def supervisor_and_playbook_node(state: CommitteeState):
     verdict = "Hold"
     strategy = "Awaiting full analysis."
     reality_check = "No news available for check."
+    catalysts = []
     
     try:
         verdict_match = re.search(r'VERDICT:\s*(.*?)(?=\nSTRATEGY:)', content, re.IGNORECASE | re.DOTALL)
@@ -211,15 +229,21 @@ def supervisor_and_playbook_node(state: CommitteeState):
         strategy_match = re.search(r'STRATEGY:\s*(.*?)(?=\nREALITY CHECK:)', content, re.IGNORECASE | re.DOTALL)
         if strategy_match: strategy = strategy_match.group(1).strip()
         
-        reality_match = re.search(r'REALITY CHECK:\s*(.*)', content, re.IGNORECASE | re.DOTALL)
+        reality_match = re.search(r'REALITY CHECK:\s*(.*?)(?=\nCATALYSTS:|$)', content, re.IGNORECASE | re.DOTALL)
         if reality_match: reality_check = reality_match.group(1).strip()
+        
+        catalysts_match = re.search(r'CATALYSTS:\s*(.*)', content, re.IGNORECASE | re.DOTALL)
+        if catalysts_match:
+            cat_lines = catalysts_match.group(1).strip().split('\n')
+            catalysts = [line.strip('- ').strip() for line in cat_lines if line.strip()]
     except Exception:
         pass
         
     return {
         "final_verdict": verdict,
         "playbook": strategy,
-        "reality_check": reality_check
+        "reality_check": reality_check,
+        "catalysts": catalysts
     }
 
 # Build LangGraph for the Committee
@@ -267,5 +291,6 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         "urban": result["urban_argument"],
         "verdict": result["final_verdict"],
         "playbook": result["playbook"],
-        "reality_check": result["reality_check"]
+        "reality_check": result["reality_check"],
+        "catalysts": result.get("catalysts", [])
     }
