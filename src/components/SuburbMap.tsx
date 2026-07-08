@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, GeoJSON, LayersControl, WMSTileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import VectorGridLayer from './VectorGridLayer';
 
 // Define custom icons
 const createCustomIcon = (color: string, emoji: string) => {
@@ -142,6 +143,10 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
                 opacity={0.5}
                 attribution="Mock Fire Overlay (Requires State Fire API)"
               />
+            </LayersControl.Overlay>
+
+            <LayersControl.Overlay name="📊 Yield Heatmap (Vector Tiles)" checked>
+               <VectorGridLayer url="http://localhost:7800/public.suburbs_ui_v3/{z}/{x}/{y}.pbf" />
             </LayersControl.Overlay>
           </LayersControl>
 
