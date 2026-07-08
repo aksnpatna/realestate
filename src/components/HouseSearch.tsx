@@ -207,14 +207,14 @@ function SearchResultCard({ suburb }: { suburb: SuburbData }) {
           <span title="School Quality">Schools: {suburb.metrics?.schoolQuality ?? '—'}/10</span>
           <span title="Transit Access">Transit: {suburb.metrics?.transitAccessibility ?? '—'}/10</span>
         </div>
-        {suburb.highlights.length > 0 && (
+        {(suburb.highlights || []).length > 0 && (
           <div className="result-highlights">
-            {suburb.highlights.filter((h: string) => !h.includes('generated') && !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('Pending')).slice(0, 2).map((h: string, i: number) => (
+            {(suburb.highlights || []).filter((h: string) => !h.includes('generated') && !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('Pending')).slice(0, 2).map((h: string, i: number) => (
               <span key={i} className="highlight-chip">{h}</span>
             ))}
           </div>
         )}
-        {suburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) && (
+        {(suburb.highlights || []).length > 0 && (suburb.highlights || []).every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) && (
           <p className="no-data-msg">No data available to forecast</p>
         )}
       </div>
