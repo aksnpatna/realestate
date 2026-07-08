@@ -140,7 +140,7 @@ def bull_agent_node(state: CommitteeState):
     Analyze the following suburb: {state['suburb']}, {state['state']}.
     Metrics: {metrics}
     
-    Focus on positive indicators: Rental Yield, low Vacancy Rates, high Price-to-Rent ratio, low Days on Market.
+    Focus on positive indicators: Rental Yield, low Vacancy Rates, high Price-to-Rent ratio, Demographic CAGR, and if available, compare its 12-month growth against the National Vanguard Property ETF (VAP.AX) macro benchmark provided in the metrics.
     Provide a 2-sentence bullish argument.
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
@@ -154,7 +154,7 @@ def bear_agent_node(state: CommitteeState):
     Analyze the following suburb: {state['suburb']}, {state['state']}.
     Metrics: {metrics}
     
-    Focus on negative indicators: high Days on Market, low yield, macro deflationary drag, high vacancy rates, poor affordability.
+    Focus on negative indicators: high Days on Market, low yield, high vacancy rates, poor affordability, or underperformance compared to the National Vanguard Property ETF (VAP.AX) macro benchmark provided in the metrics.
     Provide a 2-sentence bearish argument pointing out the highest risks.
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
@@ -187,7 +187,7 @@ def supervisor_and_playbook_node(state: CommitteeState):
     
     Task 1: Generate a final VERDICT (Buy, Hold, or Pass).
     Task 2: Generate a 3-point Investment STRATEGY PLAYBOOK (e.g. "Cashflow Strategy", "Blue-Chip School Zone Strategy").
-    Task 3: REALITY CHECK (Compare the News sentiment against the Bear/Bull hard data facts. Is the media over-hyping or under-valuing?)
+    Task 3: REALITY CHECK (Compare the suburb's actual data to the macro ETF baseline and media sentiment. Is the media over-hyping or under-valuing?)
     
     VERDICT: [Buy / Hold / Pass]
     STRATEGY:

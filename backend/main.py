@@ -225,6 +225,43 @@ def health_check(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"DB unavailable: {e}")
 
+_cache_etf_data = None
+_cache_etf_time = 0
+
+@app.get("/api/etf/vap")
+def get_vap_etf():
+    """Fetches Vanguard Australian Property ETF performance (macro benchmark). Cached 24h."""
+    global _cache_etf_data, _cache_etf_time
+    now = time.time()
+    
+    if _cache_etf_data and (now - _cache_etf_time) < 86400:  # 24h
+        return _cache_etf_data
+        
+    try:
+        import yfinance as yf
+        ticker = yf.Ticker("VAP.AX")
+        hist = ticker.history(period="1y")
+        if hist.empty:
+            raise HTTPException(status_code=500, detail="Empty ETF history")
+            
+        current = float(hist['Close'].iloc[-1])
+        year_ago = float(hist['Close'].iloc[0])
+        month_ago = float(hist['Close'].iloc[-21]) if len(hist) >= 21 else year_ago
+        
+        result = {
+            "symbol": "VAP.AX",
+            "name": "Vanguard Australian Property Securities Index ETF",
+            "current_price": current,
+            "growth_1y_pct": round(((current - year_ago) / year_ago) * 100, 2),
+            "growth_1m_pct": round(((current - month_ago) / month_ago) * 100, 2),
+            "last_updated": str(datetime.now())
+        }
+        _cache_etf_data = result
+        _cache_etf_time = now
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 _cache_suburbs_data = {}
 _cache_suburbs_time = {}
 
@@ -711,10 +748,6 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "confidenceNotes": growth.get("confidence_notes", []),
         "lastUpdated": str(v3.last_updated) if v3.last_updated else None,
     }
-    db.close()
-    return response
-        
-    db.close()
     return response
 
 
@@ -752,57 +785,64 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=503, detail="AI sentiment service not available")
     
     try:
-        suburb_record = db.query(SuburbAllModel).filter(SuburbAllModel.id == req.id).first()
-        if not suburb_record:
+        v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == req.id).first()
+        if not v3:
             return {"status": "error", "message": "Suburb not found in database"}
             
-        data = suburb_record.data
-        if "metrics" not in data:
-            data["metrics"] = {}
+        ai_cache = v3.ai_insights or {}
             
         # P0 FIX: Check if already analyzed to prevent LLM API exhaustion
-        if data["metrics"].get("aiCommitteeVerdict"):
+        if ai_cache.get("aiCommitteeVerdict"):
             return {
-                "bull": data["metrics"].get("aiCommitteeDebate", {}).get("bull", ""),
-                "bear": data["metrics"].get("aiCommitteeDebate", {}).get("bear", ""),
-                "urban": data["metrics"].get("aiCommitteeDebate", {}).get("urban", ""),
-                "reality_check": data["metrics"].get("aiCommitteeDebate", {}).get("reality_check", ""),
-                "verdict": data["metrics"]["aiCommitteeVerdict"],
-                "playbook": data["metrics"]["aiCommitteePlaybook"]
+                "bull": ai_cache.get("aiCommitteeDebate", {}).get("bull", ""),
+                "bear": ai_cache.get("aiCommitteeDebate", {}).get("bear", ""),
+                "urban": ai_cache.get("aiCommitteeDebate", {}).get("urban", ""),
+                "reality_check": ai_cache.get("aiCommitteeDebate", {}).get("reality_check", ""),
+                "verdict": ai_cache["aiCommitteeVerdict"],
+                "playbook": ai_cache["aiCommitteePlaybook"]
             }
             
-        # Run the full multi-agent committee (pass metrics in)
-        ai_result = run_investment_committee(req.suburb, req.state, data["metrics"])
+        # Compile rich V3 metrics for the AI to analyze
+        # Fetch ETF for macro benchmark comparison
+        try:
+            etf_data = get_vap_etf()
+        except:
+            etf_data = None
+            
+        metrics = {
+            "houseMedianPrice": v3.house_median_price,
+            "houseMedianRent": v3.house_median_rent,
+            "houseRentalYield": v3.house_gross_rental_yield,
+            "12mGrowthPct": v3.house_median_price_12m_change_pct,
+            "populationCagr": v3.population_cagr,
+            "ownerOccupierRate": v3.owner_occupier_rate,
+            "investorRate": v3.investor_rate,
+            "vacancyRate": v3.vacancy_rate,
+            "supplyDemandRatio": v3.supply_demand_ratio,
+            "typicalMortgageBand": v3.typical_mortgage_band,
+            "averageHouseholdSize": v3.average_household_size,
+            "medianAge": v3.median_age,
+            "predominantOccupation": v3.predominant_occupation,
+            "macro_benchmark_etf": etf_data
+        }
 
-        # Save results back to SuburbAllModel
-        data["metrics"]["aiCommitteeVerdict"] = ai_result["verdict"]
-        data["metrics"]["aiCommitteePlaybook"] = ai_result["playbook"]
-        data["metrics"]["aiCommitteeDebate"] = {
+        # Run the full multi-agent committee (pass rich V3 metrics in)
+        ai_result = run_investment_committee(req.suburb, req.state, metrics)
+
+        # Save results back to SuburbUIV3
+        ai_cache["aiCommitteeVerdict"] = ai_result["verdict"]
+        ai_cache["aiCommitteePlaybook"] = ai_result["playbook"]
+        ai_cache["aiCommitteeDebate"] = {
             "bull": ai_result["bull"],
             "bear": ai_result["bear"],
             "urban": ai_result["urban"],
             "reality_check": ai_result["reality_check"]
         }
-        from sqlalchemy.orm.attributes import flag_modified
-        suburb_record.data = data
-        flag_modified(suburb_record, "data")
-        db.commit()
         
-        # Also update suburbs_ui for immediate UI visibility
-        ui_record = db.query(SuburbUIModel).filter(SuburbUIModel.id == req.id).first()
-        if ui_record:
-            ui_metrics = ui_record.metrics or {}
-            ui_metrics["aiCommitteeVerdict"] = ai_result["verdict"]
-            ui_metrics["aiCommitteePlaybook"] = ai_result["playbook"]
-            ui_metrics["aiCommitteeDebate"] = {
-                "bull": ai_result["bull"],
-                "bear": ai_result["bear"],
-                "urban": ai_result["urban"],
-                "reality_check": ai_result["reality_check"]
-            }
-            ui_record.metrics = ui_metrics
-            flag_modified(ui_record, "metrics")
-            db.commit()
+        v3.ai_insights = ai_cache
+        from sqlalchemy.orm.attributes import flag_modified
+        flag_modified(v3, "ai_insights")
+        db.commit()
             
         return {"status": "success", "result": ai_result}
     except Exception as e:
@@ -848,7 +888,7 @@ def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
             try:
                 from datetime import datetime, timedelta
                 fetched_dt = datetime.fromisoformat(fetched)
-                if datetime.utcnow() - fetched_dt < timedelta(hours=24):
+                if datetime.utcnow() - fetched_dt < timedelta(days=30):
                     return {"cached": True, **cached}
             except (ValueError, TypeError):
                 pass
