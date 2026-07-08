@@ -492,7 +492,7 @@ function App() {
                   )}
 
                   {/* MACRO MARKET PULSE */}
-                  {macroEtf && (
+                  {macroEtf && typeof macroEtf.current_price === 'number' && (
                     <div className="highlights-section" style={{ marginTop: '20px', background: 'linear-gradient(145deg, rgba(30,30,40,0.8) 0%, rgba(20,20,30,0.9) 100%)', border: '1px solid var(--accent-purple)' }}>
                       <h3 style={{ marginBottom: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         📈 Macro Market Pulse (National Benchmark)
