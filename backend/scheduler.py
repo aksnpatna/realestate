@@ -35,6 +35,14 @@ class UpdateScheduler:
         self.quarterly_interval = 90 * 24 * 60 * 60    # 90 days
         self._thread: threading.Thread | None = None
 
+    def _bust_cache(self):
+        """Invalidate the in-memory suburbs cache so next request gets fresh DB data."""
+        try:
+            import main as _main
+            _main.bust_suburbs_cache()
+        except Exception as e:
+            print(f"[scheduler] Cache bust skipped: {e}")
+
     def _run_v3_monthly_metro(self):
         print(f"\n{'='*60}")
         print(f"[{datetime.now()}] SCHEDULER: Monthly Metro Update (~3,953 live suburbs)")
@@ -43,6 +51,7 @@ class UpdateScheduler:
             [sys.executable, os.path.join(BASE_DIR, "v3_scheduler.py"), "--monthly"]
         )
         self.last_monthly = datetime.now()
+        self._bust_cache()
 
     def _run_v3_quarterly_full(self):
         print(f"\n{'='*60}")
@@ -52,6 +61,7 @@ class UpdateScheduler:
             [sys.executable, os.path.join(BASE_DIR, "v3_scheduler.py"), "--quarterly"]
         )
         self.last_quarterly = datetime.now()
+        self._bust_cache()
 
     def _loop(self):
         time.sleep(self.startup_delay)

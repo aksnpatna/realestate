@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Depends, Header, BackgroundTasks, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, String, JSON
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
@@ -54,6 +55,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# GZip all responses >1KB — reduces /api/suburbs payload by ~80%
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 # Rate limiting for auth endpoints (20 req/min per IP)
 _rate_limit_auth = OrderedDict()
@@ -211,8 +215,25 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
 def get_me(user: UserModel = Depends(get_current_user)):
     return {"id": user.id, "email": user.email}
 
+@app.get("/health")
+def health_check(db: Session = Depends(get_db)):
+    """Lightweight health check for Docker healthcheck and monitoring."""
+    try:
+        from sqlalchemy import text
+        db.execute(text("SELECT 1"))
+        return {"status": "ok", "db": "connected"}
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"DB unavailable: {e}")
+
 _cache_suburbs_data = {}
 _cache_suburbs_time = {}
+
+def bust_suburbs_cache():
+    """Invalidate the in-memory suburbs list cache. Call after any pipeline run."""
+    global _cache_suburbs_data, _cache_suburbs_time
+    _cache_suburbs_data.clear()
+    _cache_suburbs_time.clear()
+    logging.getLogger("uvicorn").info("[cache] suburbs cache busted — fresh data will be fetched on next request")
 
 @app.get("/api/suburbs")
 def get_suburbs(state: str = None, db: Session = Depends(get_db)):
