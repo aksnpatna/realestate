@@ -476,20 +476,21 @@ function App() {
                     </div>
                   </div>
 
-                  {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every(h =>
-                    h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')
-                  ) && (
-                    <div className="highlights-section">
-                      <h3>Investment Catalysts</h3>
-                      <ul className="highlights-list">
-                        {activeSuburb.highlights
-                          .filter(h => !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('generated') && !h.includes('Pending'))
-                          .map((highlight, index) => (
+                  {/* INVESTMENT CATALYSTS */}
+                  <div className="highlights-section">
+                    <h3>Investment Catalysts</h3>
+                    <ul className="highlights-list">
+                      {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) ? (
+                        activeSuburb.highlights
+                          .filter((h: string) => !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('generated') && !h.includes('Pending'))
+                          .map((highlight: string, index: number) => (
                             <li key={index}>{highlight}</li>
-                          ))}
-                      </ul>
-                    </div>
-                  )}
+                          ))
+                      ) : (
+                        <li style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Awaiting local infrastructure, zoning, and planning catalyst data...</li>
+                      )}
+                    </ul>
+                  </div>
 
                   {/* MACRO MARKET PULSE */}
                   {macroEtf && typeof macroEtf.current_price === 'number' && (
