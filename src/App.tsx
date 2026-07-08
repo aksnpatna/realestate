@@ -449,9 +449,9 @@ function App() {
                     </h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '20px' }}>
                       {/* House vs Unit bar chart */}
-                      <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                      <div style={{ flex: '1 1 350px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Median Price: House vs Unit</h4>
-                        <div style={{ height: '200px' }}>
+                        <div style={{ height: '150px' }}>
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={[
                               { name: 'House', value: typeof activeSuburb.houseMedianPrice === 'number' ? activeSuburb.houseMedianPrice : (typeof activeSuburb.metrics?.medianPrice === 'number' ? activeSuburb.metrics.medianPrice : 0) },
@@ -533,9 +533,9 @@ function App() {
                   {/* BUYER AGENT SUMMARY */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                      📊 Realta Buyer Agent Scorecard
+                      📊 Agent Scorecard
                     </h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                       {(() => {
                         const s = activeSuburb
                         const demo = ((s as any).demographicsDetailV3) || {}
