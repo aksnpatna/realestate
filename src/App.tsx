@@ -31,6 +31,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabName>('profile')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
+  const [regionMode, setRegionMode] = useState<'metro' | 'national'>('metro')
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
   const [isClustering, setIsClustering] = useState(false)
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
@@ -67,11 +68,21 @@ function App() {
     }
   }, [isAuthenticated])
 
-  const states = useMemo(() => Array.from(new Set(suburbsData.map(s => s.state))).sort(), [suburbsData])
+  const filteredSuburbsData = useMemo(() => {
+    return suburbsData.filter(s => regionMode === 'metro' ? (s as any).isMetro : !(s as any).isMetro);
+  }, [suburbsData, regionMode]);
+
+  const states = useMemo(() => Array.from(new Set(filteredSuburbsData.map(s => s.state))).sort(), [filteredSuburbsData])
   const stateSuburbs = useMemo(() =>
-    suburbsData.filter(s => s.state === activeState).sort((a, b) => a.name.localeCompare(b.name)),
-    [activeState, suburbsData]
+    filteredSuburbsData.filter(s => s.state === activeState).sort((a, b) => a.name.localeCompare(b.name)),
+    [activeState, filteredSuburbsData]
   )
+
+  useEffect(() => {
+    if (states.length > 0 && !states.includes(activeState)) {
+      setActiveState(states[0]);
+    }
+  }, [states, activeState]);
 
   useEffect(() => {
     if (stateSuburbs.length > 0) {
@@ -260,6 +271,33 @@ function App() {
               </div>
             ) : (
               <>
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+                  <button
+                    onClick={() => setRegionMode('metro')}
+                    style={{ flex: 1, padding: '8px 12px', fontSize: '0.85rem', borderRadius: '8px', cursor: 'pointer', border: '1px solid',
+                      background: regionMode === 'metro' ? 'var(--accent-cyan)' : 'var(--bg-card)',
+                      color: regionMode === 'metro' ? '#fff' : 'var(--text-secondary)',
+                      borderColor: regionMode === 'metro' ? 'var(--accent-cyan)' : 'var(--border-glass)',
+                      fontWeight: regionMode === 'metro' ? 'bold' : 'normal',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Live Metro
+                  </button>
+                  <button
+                    onClick={() => setRegionMode('national')}
+                    style={{ flex: 1, padding: '8px 12px', fontSize: '0.85rem', borderRadius: '8px', cursor: 'pointer', border: '1px solid',
+                      background: regionMode === 'national' ? 'var(--accent-purple)' : 'var(--bg-card)',
+                      color: regionMode === 'national' ? '#fff' : 'var(--text-secondary)',
+                      borderColor: regionMode === 'national' ? 'var(--accent-purple)' : 'var(--border-glass)',
+                      fontWeight: regionMode === 'national' ? 'bold' : 'normal',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    National (Cold)
+                  </button>
+                </div>
+
                 <div className="control-group">
                   <label className="control-label">Region / State</label>
                   <div className="custom-select-wrapper">
@@ -281,28 +319,15 @@ function App() {
                     }
                   }}
                 >
-                  <optgroup label="Live Metro">
-                    {stateSuburbs.filter(s => (s as any).isMetro).map(suburb => {
-                      const dq = (suburb as any).dqScore;
-                      const hasDqIssue = dq == null || dq < 70;
-                      return (
-                        <option key={suburb.id} value={suburb.id}>
-                          {suburb.name} ({suburb.postcode}){hasDqIssue ? ' ⚠️' : ''}
-                        </option>
-                      )
-                    })}
-                  </optgroup>
-                  <optgroup label="National (Cold)">
-                    {stateSuburbs.filter(s => !(s as any).isMetro).map(suburb => {
-                      const dq = (suburb as any).dqScore;
-                      const hasDqIssue = dq == null || dq < 70;
-                      return (
-                        <option key={suburb.id} value={suburb.id}>
-                          {suburb.name} ({suburb.postcode}){hasDqIssue ? ' ⚠️' : ''}
-                        </option>
-                      )
-                    })}
-                  </optgroup>
+                  {stateSuburbs.map(suburb => {
+                    const dq = (suburb as any).dqScore;
+                    const hasDqIssue = dq == null || dq < 70;
+                    return (
+                      <option key={suburb.id} value={suburb.id}>
+                        {suburb.name} ({suburb.postcode}){hasDqIssue ? ' ⚠️' : ''}
+                      </option>
+                    )
+                  })}
                 </select>
               </div>
             </div>
