@@ -1,0 +1,1085 @@
+L1: +0 -0 | depth=0 | import { useState, useMemo, useEffect } from 'reac
+L2: +0 -0 | depth=0 | import { mockSuburbsData } from './data/suburbs'
+L3: +0 -0 | depth=0 | import type { SuburbData } from './data/suburbs'
+L4: +0 -0 | depth=0 | import SuburbMap from './components/SuburbMap'
+L5: +0 -0 | depth=0 | import AffordabilityCalculator from './components/
+L6: +0 -0 | depth=0 | import HouseSearch from './components/HouseSearch'
+L7: +0 -0 | depth=0 | import CashflowGearing from './components/Cashflow
+L8: +0 -0 | depth=0 | import InstitutionalV3Panel from './components/Ins
+L9: +0 -0 | depth=0 | import MyPurchasePlan from './components/MyPurchas
+L10: +0 -0 | depth=0 | import { fetchLivabilityData, type LivabilityData 
+L11: +0 -0 | depth=0 | import { PieChart, Pie, Cell, Tooltip as RechartsT
+L12: +0 -0 | depth=0 | import './index.css'
+L13: +0 -0 | depth=0 | 
+L14: +0 -0 | depth=0 | type TabName = 'profile' | 'search' | 'affordabili
+L15: +0 -0 | depth=0 | 
+L16: +0 -0 | depth=0 | function App() {
+L17: +0 -0 | depth=0 |   const [isAuthenticated, setIsAuthenticated] = us
+L18: +0 -0 | depth=0 |   const [email, setEmail] = useState('')
+L19: +0 -0 | depth=0 |   const [password, setPassword] = useState('')
+L20: +0 -0 | depth=0 |   const [loginError, setLoginError] = useState('')
+L21: +0 -0 | depth=0 |   const [isRegistering, setIsRegistering] = useSta
+L22: +0 -0 | depth=0 |   const [confirmPassword, setConfirmPassword] = us
+L23: +0 -0 | depth=0 |   
+L24: +1 -0 | depth=1 |   const [suburbsData, setSuburbsData] = useState<S
+L25: +0 -0 | depth=1 |   const [loadingData, setLoadingData] = useState(t
+L26: +1 -0 | depth=2 |   const [livabilityData, setLivabilityData] = useS
+L27: +0 -0 | depth=2 |   const [loadingLivability, setLoadingLivability] 
+L28: +0 -0 | depth=2 |   const [showPrimarySchools, setShowPrimarySchools
+L29: +0 -0 | depth=2 |   const [showSecondarySchools, setShowSecondarySch
+L30: +0 -0 | depth=2 | 
+L31: +1 -0 | depth=3 |   const [activeTab, setActiveTab] = useState<TabNa
+L32: +1 -0 | depth=4 |   const [activeState, setActiveState] = useState<s
+L33: +1 -0 | depth=5 |   const [activeSuburb, setActiveSuburb] = useState
+L34: +0 -0 | depth=5 |   const [isAnalyzingAI, setIsAnalyzingAI] = useSta
+L35: +0 -0 | depth=5 |   const [isClustering, setIsClustering] = useState
+L36: +1 -0 | depth=6 |   const [clusteringResults, setClusteringResults] 
+L37: +0 -0 | depth=6 | 
+L38: +0 -0 | depth=6 |   const loadColdSuburb = async (id: string) => {
+L39: +0 -0 | depth=6 |     try {
+L40: +0 -0 | depth=6 |       const res = await fetch(`/api/suburbs/${id}`
+L41: +0 -0 | depth=6 |       if (res.ok) {
+L42: +0 -0 | depth=6 |         const data = await res.json()
+L43: +0 -0 | depth=6 |         setActiveSuburb(data)
+L44: +0 -0 | depth=6 |       }
+L45: +0 -0 | depth=6 |     } catch (e) {
+L46: +0 -0 | depth=6 |       console.error('loadColdSuburb error', id, e)
+L47: +0 -0 | depth=6 |     }
+L48: +0 -0 | depth=6 |   }
+L49: +0 -0 | depth=6 | 
+L50: +0 -0 | depth=6 |   useEffect(() => {
+L51: +0 -0 | depth=6 |     if (isAuthenticated) {
+L52: +0 -0 | depth=6 |       fetch('/api/suburbs')
+L53: +0 -0 | depth=6 |         .then(res => res.json())
+L54: +0 -0 | depth=6 |         .then(apiData => {
+L55: +0 -0 | depth=6 |           if (apiData && apiData.length > 0) {
+L56: +0 -0 | depth=6 |             setSuburbsData(apiData)
+L57: +0 -0 | depth=6 |           } else {
+L58: +0 -0 | depth=6 |             setSuburbsData(mockSuburbsData)
+L59: +0 -0 | depth=6 |           }
+L60: +0 -0 | depth=6 |           setLoadingData(false)
+L61: +0 -0 | depth=6 |         })
+L62: +0 -0 | depth=6 |         .catch((err: unknown) => {
+L63: +0 -0 | depth=6 |           console.error("API error, using full moc
+L64: +0 -0 | depth=6 |           setSuburbsData(mockSuburbsData)
+L65: +0 -0 | depth=6 |           setLoadingData(false)
+L66: +0 -0 | depth=6 |         })
+L67: +0 -0 | depth=6 |     }
+L68: +0 -0 | depth=6 |   }, [isAuthenticated])
+L69: +0 -0 | depth=6 | 
+L70: +0 -0 | depth=6 |   const states = useMemo(() => Array.from(new Set(
+L71: +0 -0 | depth=6 |   const stateSuburbs = useMemo(() =>
+L72: +0 -0 | depth=6 |     suburbsData.filter(s => s.state === activeStat
+L73: +0 -0 | depth=6 |     [activeState, suburbsData]
+L74: +0 -0 | depth=6 |   )
+L75: +0 -0 | depth=6 | 
+L76: +0 -0 | depth=6 |   useEffect(() => {
+L77: +0 -0 | depth=6 |     if (stateSuburbs.length > 0) {
+L78: +0 -0 | depth=6 |       if (!activeSuburb || activeSuburb.state !== 
+L79: +0 -0 | depth=6 |         loadColdSuburb(stateSuburbs[0].id)
+L80: +0 -0 | depth=6 |       }
+L81: +0 -0 | depth=6 |     } else {
+L82: +0 -0 | depth=6 |       setActiveSuburb(null)
+L83: +0 -0 | depth=6 |     }
+L84: +0 -0 | depth=6 |   
+L85: +0 -0 | depth=6 |   }, [activeState, stateSuburbs])
+L86: +0 -0 | depth=6 | 
+L87: +0 -0 | depth=6 |   useEffect(() => {
+L88: +0 -0 | depth=6 |     setLivabilityData(null)
+L89: +0 -0 | depth=6 |     setClusteringResults(null)
+L90: +0 -0 | depth=6 |   }, [activeSuburb])
+L91: +0 -0 | depth=6 | 
+L92: +0 -0 | depth=6 |   const handleLogin = async (e: React.FormEvent) =
+L93: +0 -0 | depth=6 |     e.preventDefault()
+L94: +0 -0 | depth=6 |     
+L95: +0 -0 | depth=6 |     const cleanEmail = email.trim()
+L96: +0 -0 | depth=6 |     const cleanPassword = password.trim()
+L97: +0 -0 | depth=6 |     
+L98: +0 -0 | depth=6 |     try {
+L99: +0 -0 | depth=6 |       const res = await fetch('/api/login', {
+L100: +0 -0 | depth=6 |         method: 'POST',
+L101: +0 -0 | depth=6 |         headers: { 'Content-Type': 'application/js
+L102: +0 -0 | depth=6 |         body: JSON.stringify({ email: cleanEmail, 
+L103: +0 -0 | depth=6 |       })
+L104: +0 -0 | depth=6 |       if (res.ok) {
+L105: +0 -0 | depth=6 |         setIsAuthenticated(true)
+L106: +0 -0 | depth=6 |         setLoginError('')
+L107: +0 -0 | depth=6 |       } else {
+L108: +0 -0 | depth=6 |         const msg = await res.text();
+L109: +0 -0 | depth=6 |         setLoginError(msg || `Invalid credentials 
+L110: +0 -0 | depth=6 |       }
+L111: +0 -0 | depth=6 |     } catch {
+L112: +0 -0 | depth=6 |       setLoginError('Network error — check if back
+L113: +0 -0 | depth=6 |     }
+L114: +0 -0 | depth=6 |   }
+L115: +0 -0 | depth=6 | 
+L116: +0 -0 | depth=6 |   const handleRegister = async (e: React.FormEvent
+L117: +0 -0 | depth=6 |     e.preventDefault()
+L118: +0 -0 | depth=6 |     const cleanEmail = email.trim()
+L119: +0 -0 | depth=6 |     const cleanPassword = password.trim()
+L120: +0 -0 | depth=6 |     
+L121: +0 -0 | depth=6 |     if (cleanPassword.length < 8) {
+L122: +0 -0 | depth=6 |       setLoginError('Password must be at least 8 c
+L123: +0 -0 | depth=6 |       return
+L124: +0 -0 | depth=6 |     }
+L125: +0 -0 | depth=6 |     if (cleanPassword !== confirmPassword) {
+L126: +0 -0 | depth=6 |       setLoginError('Passwords do not match')
+L127: +0 -0 | depth=6 |       return
+L128: +0 -0 | depth=6 |     }
+L129: +0 -0 | depth=6 |     
+L130: +0 -0 | depth=6 |     try {
+L131: +0 -0 | depth=6 |       const res = await fetch('/api/register', {
+L132: +0 -0 | depth=6 |         method: 'POST',
+L133: +0 -0 | depth=6 |         headers: { 'Content-Type': 'application/js
+L134: +0 -0 | depth=6 |         body: JSON.stringify({ email: cleanEmail, 
+L135: +0 -0 | depth=6 |       })
+L136: +0 -0 | depth=6 |       if (res.ok) {
+L137: +0 -0 | depth=6 |         const loginRes = await fetch('/api/login',
+L138: +0 -0 | depth=6 |           method: 'POST',
+L139: +0 -0 | depth=6 |           headers: { 'Content-Type': 'application/
+L140: +0 -0 | depth=6 |           body: JSON.stringify({ email: cleanEmail
+L141: +0 -0 | depth=6 |         })
+L142: +0 -0 | depth=6 |         if (loginRes.ok) {
+L143: +0 -0 | depth=6 |           setIsAuthenticated(true)
+L144: +0 -0 | depth=6 |           setLoginError('')
+L145: +0 -0 | depth=6 |         }
+L146: +0 -0 | depth=6 |       } else {
+L147: +0 -0 | depth=6 |         const msg = await res.json().then(d => d.d
+L148: +0 -0 | depth=6 |         setLoginError(msg)
+L149: +0 -0 | depth=6 |       }
+L150: +0 -0 | depth=6 |     } catch {
+L151: +0 -0 | depth=6 |       setLoginError('Network error — check if back
+L152: +0 -0 | depth=6 |     }
+L153: +0 -0 | depth=6 |   }
+L154: +0 -0 | depth=6 | 
+L155: +0 -0 | depth=6 |   if (!isAuthenticated) {
+L156: +0 -0 | depth=6 |     const passwordStrength = password.length >= 12
+L157: +0 -0 | depth=6 |     const strengthColor = passwordStrength === 'St
+L158: +0 -0 | depth=6 |     
+L159: +0 -0 | depth=6 |     return (
+L160: +1 -0 | depth=7 |       <div className="dashboard-container" style={
+L161: +1 -0 | depth=8 |         <div className="glass-card" style={{ paddi
+L162: +1 -0 | depth=9 |           <h1 className="title-glow" style={{ text
+L163: +1 -0 | depth=10 |           <p className="subtitle" style={{ textAli
+L164: +0 -0 | depth=10 |             {isRegistering ? 'Create Account' : 'L
+L165: +0 -1 | depth=9 |           </p>
+L166: +1 -0 | depth=10 |           <form onSubmit={isRegistering ? handleRe
+L167: +1 -0 | depth=11 |             <div className="control-group">
+L168: +1 -1 | depth=11 |               <label className="control-label">Ema
+L169: +1 -0 | depth=12 |               <input type="email" value={email} on
+L170: +0 -1 | depth=11 |             </div>
+L171: +1 -0 | depth=12 |             <div className="control-group">
+L172: +1 -1 | depth=12 |               <label className="control-label">Pas
+L173: +1 -0 | depth=13 |               <input type="password" value={passwo
+L174: +0 -0 | depth=13 |               {isRegistering && password.length > 
+L175: +1 -0 | depth=14 |                 <div style={{ display: 'flex', ali
+L176: +1 -0 | depth=15 |                   <div style={{ flex: 1, height: '
+L177: +0 -0 | depth=15 |                     <div style={{ height: '100%', 
+L178: +0 -1 | depth=14 |                   </div>
+L179: +1 -1 | depth=14 |                   <span style={{ fontSize: '0.7rem
+L180: +0 -1 | depth=13 |                 </div>
+L181: +0 -0 | depth=13 |               )}
+L182: +0 -1 | depth=12 |             </div>
+L183: +0 -0 | depth=12 |             {isRegistering && (
+L184: +1 -0 | depth=13 |               <div className="control-group">
+L185: +1 -1 | depth=13 |                 <label className="control-label">C
+L186: +1 -0 | depth=14 |                 <input type="password" value={conf
+L187: +0 -1 | depth=13 |               </div>
+L188: +0 -0 | depth=13 |             )}
+L189: +0 -0 | depth=13 |             {loginError && (
+L190: +1 -0 | depth=14 |               <div style={{ padding: '10px', backg
+L191: +0 -0 | depth=14 |                 {loginError}
+L192: +0 -1 | depth=13 |               </div>
+L193: +0 -0 | depth=13 |             )}
+L194: +1 -0 | depth=14 |             <button type="submit" className="tab-b
+L195: +0 -0 | depth=14 |               {isRegistering ? 'Create Account' : 
+L196: +0 -1 | depth=13 |             </button>
+L197: +1 -0 | depth=14 |             <div style={{ textAlign: 'center', mar
+L198: +1 -0 | depth=15 |               <button type="button" onClick={() =>
+L199: +0 -0 | depth=15 |                 {isRegistering ? 'Already have an 
+L200: +0 -1 | depth=14 |               </button>
+L201: +0 -1 | depth=13 |             </div>
+L202: +0 -1 | depth=12 |           </form>
+L203: +0 -1 | depth=11 |         </div>
+L204: +0 -1 | depth=10 |       </div>
+L205: +0 -0 | depth=10 |     )
+L206: +0 -0 | depth=10 |   }
+L207: +0 -0 | depth=10 | 
+L208: +0 -0 | depth=10 |   return (
+L209: +1 -0 | depth=11 |     <div className="dashboard-container">
+L210: +1 -0 | depth=12 |       <header>
+L211: +1 -0 | depth=13 |         <h1 className="title-glow">Real Estate Eng
+L212: +1 -1 | depth=13 |         <p className="subtitle">Algorithmic Suburb
+L213: +0 -1 | depth=12 |       </header>
+L214: +0 -0 | depth=12 | 
+L215: +1 -0 | depth=13 |       <nav className="tab-nav">
+L216: +0 -0 | depth=13 |         <button
+L217: +0 -0 | depth=13 |           className={`tab-btn ${activeTab === 'pro
+L218: +0 -0 | depth=13 |           onClick={() => setActiveTab('profile')}
+L219: +0 -0 | depth=13 |         >
+L220: +0 -0 | depth=13 |           Suburb Profile
+L221: +0 -1 | depth=12 |         </button>
+L222: +0 -0 | depth=12 |         <button
+L223: +0 -0 | depth=12 |           className={`tab-btn ${activeTab === 'sea
+L224: +0 -0 | depth=12 |           onClick={() => setActiveTab('search')}
+L225: +0 -0 | depth=12 |         >
+L226: +0 -0 | depth=12 |           House Search
+L227: +0 -1 | depth=11 |         </button>
+L228: +0 -0 | depth=11 |         <button
+L229: +0 -0 | depth=11 |           className={`tab-btn ${activeTab === 'aff
+L230: +0 -0 | depth=11 |           onClick={() => setActiveTab('affordabili
+L231: +0 -0 | depth=11 |         >
+L232: +0 -0 | depth=11 |           Affordability &amp; Buy
+L233: +0 -1 | depth=10 |         </button>
+L234: +0 -0 | depth=10 |         <button
+L235: +0 -0 | depth=10 |           className={`tab-btn ${activeTab === 'gea
+L236: +0 -0 | depth=10 |           onClick={() => setActiveTab('gearing')}
+L237: +0 -0 | depth=10 |         >
+L238: +0 -0 | depth=10 |           Cashflow &amp; Gearing
+L239: +0 -1 | depth=9 |         </button>
+L240: +0 -0 | depth=9 |         <button
+L241: +0 -0 | depth=9 |           className={`tab-btn ${activeTab === 'pur
+L242: +0 -0 | depth=9 |           onClick={() => setActiveTab('purchase-pl
+L243: +0 -0 | depth=9 |         >
+L244: +0 -0 | depth=9 |           My Purchase Plan
+L245: +0 -1 | depth=8 |         </button>
+L246: +0 -0 | depth=8 |         <button
+L247: +0 -0 | depth=8 |           className={`tab-btn ${activeTab === 'ins
+L248: +0 -0 | depth=8 |           onClick={() => setActiveTab('institution
+L249: +0 -0 | depth=8 |         >
+L250: +0 -0 | depth=8 |           Institutional
+L251: +0 -1 | depth=7 |         </button>
+L252: +0 -1 | depth=6 |       </nav>
+L253: +0 -0 | depth=6 | 
+L254: +0 -0 | depth=6 |       {activeTab === 'profile' && (
+L255: +1 -0 | depth=7 |         <div className="main-grid">
+L256: +1 -0 | depth=8 |           <aside className="sidebar glass-card">
+L257: +0 -0 | depth=8 |             {loadingData ? (
+L258: +1 -0 | depth=9 |               <div style={{ padding: '20px', textA
+L259: +0 -0 | depth=9 |                 Loading database...
+L260: +0 -1 | depth=8 |               </div>
+L261: +0 -0 | depth=8 |             ) : (
+L262: +0 -0 | depth=8 |               <>
+L263: +1 -0 | depth=9 |                 <div className="control-group">
+L264: +1 -1 | depth=9 |                   <label className="control-label"
+L265: +1 -0 | depth=10 |                   <div className="custom-select-wr
+L266: +1 -0 | depth=11 |                     <select className="premium-sel
+L267: +1 -1 | depth=11 |                       {states.map(state => <option
+L268: +0 -1 | depth=10 |                     </select>
+L269: +0 -1 | depth=9 |                   </div>
+L270: +0 -1 | depth=8 |                 </div>
+L271: +0 -0 | depth=8 | 
+L272: +1 -0 | depth=9 |             <div className="control-group">
+L273: +1 -1 | depth=9 |               <label className="control-label">Tar
+L274: +1 -0 | depth=10 |               <div className="custom-select-wrappe
+L275: +0 -0 | depth=10 |                 <select
+L276: +0 -0 | depth=10 |                   className="premium-select"
+L277: +0 -0 | depth=10 |                   value={activeSuburb?.id || ''}
+L278: +0 -0 | depth=10 |                   onChange={(e) => {
+L279: +0 -0 | depth=10 |                     if (e.target.value) {
+L280: +0 -0 | depth=10 |                       loadColdSuburb(e.target.valu
+L281: +0 -0 | depth=10 |                     }
+L282: +0 -0 | depth=10 |                   }}
+L283: +0 -0 | depth=10 |                 >
+L284: +0 -0 | depth=10 |                   {stateSuburbs.map(suburb => (
+L285: +1 -0 | depth=11 |                     <option key={suburb.id} value=
+L286: +0 -0 | depth=11 |                       {suburb.name} ({suburb.postc
+L287: +0 -1 | depth=10 |                     </option>
+L288: +0 -0 | depth=10 |                   ))}
+L289: +0 -1 | depth=9 |                 </select>
+L290: +0 -1 | depth=8 |               </div>
+L291: +0 -1 | depth=7 |             </div>
+L292: +0 -0 | depth=7 | 
+L293: +0 -0 | depth=7 |             {activeSuburb && (
+L294: +1 -0 | depth=8 |               <div className="sidebar-preview">
+L295: +1 -0 | depth=9 |                 <div className="preview-score">
+L296: +1 -1 | depth=9 |                   <span className="preview-score-v
+L297: +1 -1 | depth=9 |                   <span className="preview-score-l
+L298: +0 -1 | depth=8 |                 </div>
+L299: +1 -0 | depth=9 |                 <p className="preview-text">
+L300: +0 -0 | depth=9 |                   {(activeSuburb as any).cbdDistan
+L301: +0 -0 | depth=9 |                     ? `${(activeSuburb as any).cbd
+L302: +0 -0 | depth=9 |                     : activeSuburb.metroCBD || 'Re
+L303: +0 -1 | depth=8 |                 </p>
+L304: +0 -1 | depth=7 |               </div>
+L305: +0 -0 | depth=7 |                 )}
+L306: +0 -0 | depth=7 |               </>
+L307: +0 -0 | depth=7 |             )}
+L308: +0 -1 | depth=6 |           </aside>
+L309: +0 -0 | depth=6 | 
+L310: +1 -0 | depth=7 |           <main className="main-content">
+L311: +0 -0 | depth=7 |             {activeSuburb ? (
+L312: +1 -0 | depth=8 |               <div className="content-wrapper anim
+L313: +1 -0 | depth=9 |                 <div className="glass-card">
+L314: +1 -0 | depth=10 |                     <div className="detail-header"
+L315: +1 -0 | depth=11 |                       <div>
+L316: +1 -0 | depth=12 |                         <h2 className="detail-titl
+L317: +0 -0 | depth=12 |                         {(()=>{
+L318: +0 -0 | depth=12 |                           const dq = (activeSuburb
+L319: +0 -0 | depth=12 |                           if(dq==null)return null;
+L320: +0 -0 | depth=12 |                           const c=dq>=90?'#10b981'
+L321: +0 -0 | depth=12 |                           const bg=dq>=90?'rgba(16
+L322: +1 -1 | depth=12 |                           return <span title="Data
+L323: +0 -0 | depth=12 |                         })()}
+L324: +0 -0 | depth=12 |                         {(activeSuburb as any).las
+L325: +1 -0 | depth=13 |                           <span style={{ marginLef
+L326: +0 -0 | depth=13 |                             <span style={{ width: 
+L327: +0 -0 | depth=13 |                             V3 · {new Date((active
+L328: +0 -1 | depth=12 |                           </span>
+L329: +0 -0 | depth=12 |                         )}
+L330: +0 -0 | depth=12 |                       </h2>
+L331: +1 -0 | depth=13 |                       <p className="subtitle">
+L332: +0 -0 | depth=13 |                         {(activeSuburb as any).cbd
+L333: +0 -0 | depth=13 |                           ? `${(activeSuburb as an
+L334: +0 -0 | depth=13 |                           : activeSuburb.metroCBD 
+L335: +0 -1 | depth=12 |                       </p>
+L336: +0 -0 | depth=12 |                       {(activeSuburb as any).lastU
+L337: +1 -0 | depth=13 |                         <p style={{ fontSize: '0.7
+L338: +0 -0 | depth=13 |                           Data Last Updated: {new 
+L339: +0 -1 | depth=12 |                         </p>
+L340: +0 -0 | depth=12 |                       )}
+L341: +0 -1 | depth=11 |                     </div>
+L342: +1 -0 | depth=12 |                     <div className="main-score">
+L343: +1 -0 | depth=13 |                       <div className="main-score-v
+L344: +0 -0 | depth=13 |                         {activeSuburb.growthScore}
+L345: +0 -1 | depth=12 |                       </div>
+L346: +1 -1 | depth=12 |                       <div className="main-score-l
+L347: +0 -0 | depth=12 |                       <button
+L348: +0 -0 | depth=12 |                         onClick={() => setActiveTa
+L349: +0 -0 | depth=12 |                         style={{ marginTop: '10px'
+L350: +0 -0 | depth=12 |                       >
+L351: +0 -0 | depth=12 |                         💰 View Cashflow →
+L352: +0 -1 | depth=11 |                       </button>
+L353: +0 -1 | depth=10 |                     </div>
+L354: +0 -1 | depth=9 |                   </div>
+L355: +0 -0 | depth=9 | 
+L356: +1 -0 | depth=10 |                   <div className="metrics-grid">
+L357: +1 -0 | depth=11 |                     <div className="metric-box">
+L358: +1 -1 | depth=11 |                       <div className="metric-label
+L359: +1 -0 | depth=12 |                       <div className="metric-value
+L360: +0 -0 | depth=12 |                         {(activeSuburb as any).hou
+L361: +0 -1 | depth=11 |                       </div>
+L362: +0 -1 | depth=10 |                     </div>
+L363: +1 -0 | depth=11 |                     <div className="metric-box">
+L364: +1 -1 | depth=11 |                       <div className="metric-label
+L365: +1 -0 | depth=12 |                       <div className="metric-value
+L366: +0 -0 | depth=12 |                         {activeSuburb.populationCa
+L367: +0 -0 | depth=12 |                           ? activeSuburb.metrics.p
+L368: +0 -0 | depth=12 |                           : 'No data')}
+L369: +0 -1 | depth=11 |                       </div>
+L370: +0 -1 | depth=10 |                     </div>
+L371: +1 -0 | depth=11 |                     <div className="metric-box">
+L372: +1 -1 | depth=11 |                       <div className="metric-label
+L373: +1 -0 | depth=12 |                       <div className="metric-value
+L374: +0 -0 | depth=12 |                         {(activeSuburb as any).inf
+L375: +0 -1 | depth=11 |                       </div>
+L376: +0 -1 | depth=10 |                     </div>
+L377: +1 -0 | depth=11 |                     <div className="metric-box">
+L378: +1 -1 | depth=11 |                       <div className="metric-label
+L379: +1 -0 | depth=12 |                       <div className="metric-value
+L380: +0 -0 | depth=12 |                         {(activeSuburb as any).ren
+L381: +0 -1 | depth=11 |                       </div>
+L382: +0 -1 | depth=10 |                     </div>
+L383: +1 -0 | depth=11 |                     <div className="metric-box" st
+L384: +1 -0 | depth=12 |                       <div style={{ display: 'flex
+L385: +1 -1 | depth=12 |                         <div className="metric-lab
+L386: +0 -0 | depth=12 |                         <button 
+L387: +0 -0 | depth=12 |                           onClick={async () => {
+L388: +0 -0 | depth=12 |                             try {
+L389: +0 -0 | depth=12 |                               const res = await fe
+L390: +0 -0 | depth=12 |                                 method: 'POST',
+L391: +0 -0 | depth=12 |                                 headers: {'Content
+L392: +0 -0 | depth=12 |                                 body: JSON.stringi
+L393: +0 -0 | depth=12 |                               });
+L394: +0 -0 | depth=12 |                               if(res.ok) {
+L395: +0 -0 | depth=12 |                                 const data = await
+L396: +0 -0 | depth=12 |                                 setActiveSuburb((p
+L397: +0 -0 | depth=12 |                                   ...prev,
+L398: +0 -0 | depth=12 |                                   metrics: {
+L399: +0 -0 | depth=12 |                                     ...prev.metric
+L400: +0 -0 | depth=12 |                                     aiNewsSentimen
+L401: +0 -0 | depth=12 |                                     aiNewsSummary:
+L402: +0 -0 | depth=12 |                                   }
+L403: +0 -0 | depth=12 |                                 }));
+L404: +0 -0 | depth=12 |                               }
+L405: +0 -0 | depth=12 |                             } catch {
+L406: +0 -0 | depth=12 |                               alert("Analysis fail
+L407: +0 -0 | depth=12 |                             }
+L408: +0 -0 | depth=12 |                           }}
+L409: +0 -0 | depth=12 |                           style={{
+L410: +0 -0 | depth=12 |                             background: 'var(--acc
+L411: +0 -0 | depth=12 |                             padding: '4px 12px', b
+L412: +0 -0 | depth=12 |                           }}
+L413: +0 -0 | depth=12 |                         >
+L414: +0 -0 | depth=12 |                           Analyze Live News
+L415: +0 -1 | depth=11 |                         </button>
+L416: +0 -1 | depth=10 |                       </div>
+L417: +0 -0 | depth=10 |                       <div className={`metric-valu
+L418: +0 -0 | depth=10 |                         activeSuburb.metrics.aiNew
+L419: +0 -0 | depth=10 |                         activeSuburb.metrics.aiNew
+L420: +0 -0 | depth=10 |                       }`}>
+L421: +0 -0 | depth=10 |                         {activeSuburb.metrics.aiNe
+L422: +0 -1 | depth=9 |                       </div>
+L423: +1 -0 | depth=10 |                       <div style={{ fontSize: '0.8
+L424: +0 -0 | depth=10 |                         {activeSuburb.metrics.aiNe
+L425: +1 -1 | depth=10 |                         {activeSuburb.metrics.aiNe
+L426: +0 -1 | depth=9 |                       </div>
+L427: +0 -1 | depth=8 |                     </div>
+L428: +0 -1 | depth=7 |                   </div>
+L429: +0 -0 | depth=7 | 
+L430: +0 -0 | depth=7 |                   {activeSuburb.highlights && acti
+L431: +0 -0 | depth=7 |                     h.includes('N/A') || h.include
+L432: +0 -0 | depth=7 |                   ) && (
+L433: +1 -0 | depth=8 |                     <div className="highlights-sec
+L434: +1 -0 | depth=9 |                       <h3>Investment Catalysts</h3
+L435: +1 -0 | depth=10 |                       <ul className="highlights-li
+L436: +0 -0 | depth=10 |                         {activeSuburb.highlights
+L437: +0 -0 | depth=10 |                           .filter(h => !h.includes
+L438: +0 -0 | depth=10 |                           .map((highlight, index) 
+L439: +1 -1 | depth=10 |                             <li key={index}>{highl
+L440: +0 -0 | depth=10 |                           ))}
+L441: +0 -1 | depth=9 |                       </ul>
+L442: +0 -1 | depth=8 |                     </div>
+L443: +0 -0 | depth=8 |                   )}
+L444: +0 -0 | depth=8 | 
+L445: +0 -0 | depth=8 |                   
+L446: +1 -0 | depth=9 |                   <div className="highlights-secti
+L447: +1 -0 | depth=10 |                     <h3 style={{ marginBottom: '15
+L448: +0 -0 | depth=10 |                       Panel A: Market Snapshot
+L449: +0 -0 | depth=10 |                     </h3>
+L450: +0 -0 | depth=10 |                     
+L451: +1 -0 | depth=11 |                     <div style={{ display: 'grid',
+L452: +1 -0 | depth=12 |                       <div style={{ background: 'v
+L453: +1 -1 | depth=12 |                         <div style={{ color: 'var(
+L454: +1 -0 | depth=13 |                         <div style={{ fontSize: '1
+L455: +0 -0 | depth=13 |                           {activeSuburb.houseDaysO
+L456: +0 -1 | depth=12 |                         </div>
+L457: +0 -1 | depth=11 |                       </div>
+L458: +1 -0 | depth=12 |                       <div style={{ background: 'v
+L459: +1 -1 | depth=12 |                         <div style={{ color: 'var(
+L460: +1 -0 | depth=13 |                         <div style={{ fontSize: '1
+L461: +0 -0 | depth=13 |                           {activeSuburb.vacancyRat
+L462: +0 -1 | depth=12 |                         </div>
+L463: +0 -1 | depth=11 |                       </div>
+L464: +1 -0 | depth=12 |                       <div style={{ background: 'v
+L465: +1 -1 | depth=12 |                         <div style={{ color: 'var(
+L466: +1 -0 | depth=13 |                         <div style={{ fontSize: '1
+L467: +0 -0 | depth=13 |                           {(activeSuburb as any).t
+L468: +0 -1 | depth=12 |                         </div>
+L469: +0 -1 | depth=11 |                       </div>
+L470: +0 -1 | depth=10 |                     </div>
+L471: +0 -0 | depth=10 | 
+L472: +0 -0 | depth=10 |                     
+L473: +1 -0 | depth=11 |                     <div style={{ display: 'grid',
+L474: +0 -0 | depth=11 |                       
+L475: +1 -0 | depth=12 |                       <div style={{ display: 'flex
+L476: +0 -0 | depth=12 |                         
+L477: +1 -0 | depth=13 |                         <div style={{ background: 
+L478: +1 -0 | depth=14 |                           <h4 style={{ textAlign: 
+L479: +1 -0 | depth=15 |                           <div style={{ height: '1
+L480: +1 -0 | depth=16 |                             <ResponsiveContainer w
+L481: +0 -0 | depth=16 |                               <BarChart data={[
+L482: +0 -0 | depth=16 |                                 { name: 'House', v
+L483: +0 -0 | depth=16 |                                 { name: 'Unit', va
+L484: +0 -0 | depth=16 |                               ]} margin={{ top: 10
+L485: +0 -0 | depth=16 |                                 <CartesianGrid str
+L486: +0 -0 | depth=16 |                                 <XAxis dataKey="na
+L487: +1 -0 | depth=17 |                                 <YAxis stroke="var
+L488: +1 -0 | depth=18 |                                 <RechartsTooltip f
+L489: +0 -0 | depth=18 |                                 <Bar dataKey="valu
+L490: +0 -1 | depth=17 |                               </BarChart>
+L491: +0 -1 | depth=16 |                             </ResponsiveContainer>
+L492: +0 -1 | depth=15 |                           </div>
+L493: +1 -0 | depth=16 |                           <div style={{ textAlign:
+L494: +0 -0 | depth=16 |                             House: {activeSuburb.h
+L495: +0 -1 | depth=15 |                           </div>
+L496: +0 -1 | depth=14 |                         </div>
+L497: +0 -0 | depth=14 | 
+L498: +0 -0 | depth=14 |                         
+L499: +1 -0 | depth=15 |                         <div style={{ background: 
+L500: +1 -0 | depth=16 |                           <h4 style={{ textAlign: 
+L501: +1 -0 | depth=17 |                           <div style={{ display: '
+L502: +0 -0 | depth=17 |                             {(() => {
+L503: +0 -0 | depth=17 |                               const hhData = ((act
+L504: +0 -0 | depth=17 |                               const total = Object
+L505: +0 -0 | depth=17 |                               return Object.entrie
+L506: +1 -0 | depth=18 |                                 <div key={k}>
+L507: +1 -0 | depth=19 |                                   <div style={{ di
+L508: +1 -1 | depth=19 |                                     <span style={{
+L509: +1 -1 | depth=19 |                                     <span style={{
+L510: +0 -1 | depth=18 |                                   </div>
+L511: +1 -0 | depth=19 |                                   <div style={{ he
+L512: +0 -0 | depth=19 |                                     <div style={{ 
+L513: +0 -1 | depth=18 |                                   </div>
+L514: +0 -1 | depth=17 |                                 </div>
+L515: +0 -0 | depth=17 |                               ))
+L516: +0 -0 | depth=17 |                             })()}
+L517: +0 -1 | depth=16 |                           </div>
+L518: +0 -1 | depth=15 |                         </div>
+L519: +0 -1 | depth=14 |                       </div>
+L520: +0 -0 | depth=14 | 
+L521: +0 -0 | depth=14 |                       
+L522: +1 -0 | depth=15 |                       <div style={{ display: 'flex
+L523: +0 -0 | depth=15 |                         
+L524: +1 -0 | depth=16 |                         <div style={{ background: 
+L525: +1 -0 | depth=17 |                           <h4 style={{ textAlign: 
+L526: +1 -0 | depth=18 |                           <div style={{ flex: 1, m
+L527: +1 -0 | depth=19 |                             <ResponsiveContainer w
+L528: +1 -0 | depth=20 |                               <BarChart data={(() 
+L529: +0 -0 | depth=20 |                                 const incData = ((
+L530: +0 -0 | depth=20 |                                 return Object.entr
+L531: +0 -0 | depth=20 |                               })()} margin={{ top:
+L532: +0 -0 | depth=20 |                                 <CartesianGrid str
+L533: +1 -0 | depth=21 |                                 <XAxis type="numbe
+L534: +0 -0 | depth=21 |                                 <YAxis type="categ
+L535: +1 -0 | depth=22 |                                 <RechartsTooltip f
+L536: +0 -0 | depth=22 |                                 <Bar dataKey="valu
+L537: +0 -1 | depth=21 |                               </BarChart>
+L538: +0 -1 | depth=20 |                             </ResponsiveContainer>
+L539: +0 -1 | depth=19 |                           </div>
+L540: +0 -1 | depth=18 |                         </div>
+L541: +0 -1 | depth=17 |                       </div>
+L542: +0 -1 | depth=16 |                     </div>
+L543: +0 -1 | depth=15 |                   </div>
+L544: +0 -0 | depth=15 | 
+L545: +0 -0 | depth=15 |                   
+L546: +1 -0 | depth=16 |                   <div className="highlights-secti
+L547: +1 -0 | depth=17 |                     <h3 style={{ marginBottom: '15
+L548: +0 -0 | depth=17 |                       📊 Agent Scorecard
+L549: +0 -0 | depth=17 |                     </h3>
+L550: +1 -0 | depth=18 |                     <div style={{ display: 'grid',
+L551: +0 -0 | depth=18 |                       {(() => {
+L552: +0 -0 | depth=18 |                         const s = activeSuburb
+L553: +0 -0 | depth=18 |                         const demo = ((s as any).d
+L554: +0 -0 | depth=18 |                         const hist = (s as any).hi
+L555: +0 -0 | depth=18 |                         const yr3growth = hist.len
+L556: +0 -0 | depth=18 |                           ? ((Number(hist[hist.len
+L557: +0 -0 | depth=18 |                           : '—'
+L558: +0 -0 | depth=18 |                         const indicators = [
+L559: +0 -0 | depth=18 |                           { label: 'Supply', items
+L560: +0 -0 | depth=18 |                             { label:'Stock on Mark
+L561: +0 -0 | depth=18 |                             { label:'Supply/Demand
+L562: +0 -0 | depth=18 |                             { label:'Building Appr
+L563: +0 -0 | depth=18 |                           ]},
+L564: +0 -0 | depth=18 |                           { label: 'Demand', items
+L565: +0 -0 | depth=18 |                             { label:'Rental Yield'
+L566: +0 -0 | depth=18 |                             { label:'Days on Marke
+L567: +0 -0 | depth=18 |                             { label:'Vacancy Rate'
+L568: +0 -0 | depth=18 |                             { label:'Auction Clear
+L569: +0 -0 | depth=18 |                           ]},
+L570: +0 -0 | depth=18 |                           { label: 'Affordability'
+L571: +0 -0 | depth=18 |                             { label:'Mortgage Band
+L572: +0 -0 | depth=18 |                             { label:'3yr Price Gro
+L573: +0 -0 | depth=18 |                             { label:'CBD Mins', va
+L574: +0 -0 | depth=18 |                             { label:'Prof. Occupat
+L575: +0 -0 | depth=18 |                           ]},
+L576: +0 -0 | depth=18 |                           { label: 'Income & Jobs'
+L577: +0 -0 | depth=18 |                             { label:'Predominant I
+L578: +0 -0 | depth=18 |                             { label:'Population CA
+L579: +0 -0 | depth=18 |                             { label:'Median Age', 
+L580: +0 -0 | depth=18 |                             { label:'Unemployment 
+L581: +0 -0 | depth=18 |                           ]},
+L582: +0 -0 | depth=18 |                         ]
+L583: +0 -0 | depth=18 |                         return indicators.flatMap(
+L584: +0 -0 | depth=18 |                           <div key={section.label}
+L585: +0 -0 | depth=18 |                             background: 'var(--bg-
+L586: +0 -0 | depth=18 |                             padding: '12px', borde
+L587: +0 -0 | depth=18 |                           }}>
+L588: +1 -0 | depth=19 |                             <div style={{ color: '
+L589: +0 -0 | depth=19 |                               {section.label}
+L590: +0 -1 | depth=18 |                             </div>
+L591: +0 -0 | depth=18 |                             {section.items.map((it
+L592: +1 -0 | depth=19 |                               <div key={item.label
+L593: +1 -1 | depth=19 |                                 <span style={{ col
+L594: +1 -0 | depth=20 |                                 <span style={{ col
+L595: +0 -0 | depth=20 |                                   {item.value}
+L596: +0 -1 | depth=19 |                                 </span>
+L597: +0 -1 | depth=18 |                               </div>
+L598: +0 -0 | depth=18 |                             ))}
+L599: +0 -1 | depth=17 |                           </div>
+L600: +0 -0 | depth=17 |                         ])
+L601: +0 -0 | depth=17 |                       })()}
+L602: +0 -1 | depth=16 |                     </div>
+L603: +0 -1 | depth=15 |                   </div>
+L604: +0 -1 | depth=14 |                     </div>
+L605: +0 -0 | depth=14 |                     
+L606: +1 -0 | depth=15 |                     <div style={{ display: 'flex',
+L607: +0 -0 | depth=15 |                       
+L608: +0 -0 | depth=15 |                       {activeSuburb.history && act
+L609: +1 -0 | depth=16 |                         <div style={{ flex: '1 1 4
+L610: +1 -0 | depth=17 |                           <h4 style={{ textAlign: 
+L611: +1 -0 | depth=18 |                           <div style={{ height: '2
+L612: +1 -0 | depth=19 |                             <ResponsiveContainer w
+L613: +1 -0 | depth=20 |                               <LineChart data={(ac
+L614: +0 -0 | depth=20 |                                 year: typeof pt.da
+L615: +0 -0 | depth=20 |                                 price: typeof pt.v
+L616: +0 -0 | depth=20 |                               }))} margin={{ top: 
+L617: +0 -0 | depth=20 |                                 <CartesianGrid str
+L618: +0 -0 | depth=20 |                                 <XAxis dataKey="ye
+L619: +1 -0 | depth=21 |                                 <YAxis stroke="var
+L620: +1 -0 | depth=22 |                                 <RechartsTooltip f
+L621: +0 -0 | depth=22 |                                 <Line type="monoto
+L622: +0 -1 | depth=21 |                               </LineChart>
+L623: +0 -1 | depth=20 |                             </ResponsiveContainer>
+L624: +0 -1 | depth=19 |                           </div>
+L625: +0 -1 | depth=18 |                         </div>
+L626: +0 -0 | depth=18 |                       )}
+L627: +0 -0 | depth=18 |                       
+L628: +0 -0 | depth=18 |                       {activeSuburb.history && act
+L629: +0 -0 | depth=18 |                         const hist = activeSuburb.
+L630: +0 -0 | depth=18 |                         const firstVal = Number(hi
+L631: +0 -0 | depth=18 |                         const lastVal = Number(his
+L632: +0 -0 | depth=18 |                         const years = Math.max(1, 
+L633: +0 -0 | depth=18 |                         const baseRate = firstVal 
+L634: +0 -0 | depth=18 |                         const bullRate = baseRate 
+L635: +0 -0 | depth=18 |                         const bearRate = Math.max(
+L636: +0 -0 | depth=18 |                         const projData = Array.fro
+L637: +0 -0 | depth=18 |                           year: `+${y+1}y`,
+L638: +0 -0 | depth=18 |                           bull: Math.round(lastVal
+L639: +0 -0 | depth=18 |                           base: Math.round(lastVal
+L640: +0 -0 | depth=18 |                           bear: Math.round(lastVal
+L641: +0 -0 | depth=18 |                         }));
+L642: +0 -0 | depth=18 |                         return (
+L643: +1 -0 | depth=19 |                           <div style={{ flex: '1 1
+L644: +1 -0 | depth=20 |                             <h4 style={{ textAlign
+L645: +1 -0 | depth=21 |                             <div style={{ height: 
+L646: +1 -0 | depth=22 |                               <ResponsiveContainer
+L647: +1 -0 | depth=23 |                                 <LineChart data={p
+L648: +0 -0 | depth=23 |                                   <CartesianGrid s
+L649: +0 -0 | depth=23 |                                   <XAxis dataKey="
+L650: +1 -0 | depth=24 |                                   <YAxis stroke="v
+L651: +1 -0 | depth=25 |                                   <RechartsTooltip
+L652: +0 -0 | depth=25 |                                   <Line type="mono
+L653: +0 -0 | depth=25 |                                   <Line type="mono
+L654: +0 -0 | depth=25 |                                   <Line type="mono
+L655: +0 -1 | depth=24 |                                 </LineChart>
+L656: +0 -1 | depth=23 |                               </ResponsiveContaine
+L657: +0 -1 | depth=22 |                             </div>
+L658: +1 -0 | depth=23 |                             <div style={{ textAlig
+L659: +2 -2 | depth=23 |                               <span><span style={{
+L660: +2 -2 | depth=23 |                               <span><span style={{
+L661: +2 -2 | depth=23 |                               <span><span style={{
+L662: +0 -1 | depth=22 |                             </div>
+L663: +0 -1 | depth=21 |                           </div>
+L664: +0 -0 | depth=21 |                         );
+L665: +0 -0 | depth=21 |                       })()}
+L666: +0 -1 | depth=20 |                     </div>
+L667: +0 -1 | depth=19 |                   </div>
+L668: +0 -0 | depth=19 | 
+L669: +0 -0 | depth=19 |                   
+L670: +1 -0 | depth=20 |                   <div className="highlights-secti
+L671: +1 -0 | depth=21 |                     <div style={{ display: 'flex',
+L672: +1 -0 | depth=22 |                       <h3>Real-Time Livability & A
+L673: +0 -0 | depth=22 |                       {!livabilityData && !loading
+L674: +0 -0 | depth=22 |                         <button
+L675: +0 -0 | depth=22 |                           onClick={async () => {
+L676: +0 -0 | depth=22 |                             setLoadingLivability(t
+L677: +0 -0 | depth=22 |                             try {
+L678: +0 -0 | depth=22 |                               const coords = activ
+L679: +0 -0 | depth=22 |                               const data = await f
+L680: +0 -0 | depth=22 |                               setLivabilityData(da
+L681: +0 -0 | depth=22 |                             } catch {
+L682: +0 -0 | depth=22 |                               alert("Failed to loa
+L683: +0 -0 | depth=22 |                             }
+L684: +0 -0 | depth=22 |                             setLoadingLivability(f
+L685: +0 -0 | depth=22 |                           }}
+L686: +0 -0 | depth=22 |                           style={{
+L687: +0 -0 | depth=22 |                             background: 'var(--acc
+L688: +0 -0 | depth=22 |                             padding: '6px 12px', b
+L689: +0 -0 | depth=22 |                           }}
+L690: +0 -0 | depth=22 |                         >
+L691: +0 -0 | depth=22 |                           Scan Area (Live)
+L692: +0 -1 | depth=21 |                         </button>
+L693: +0 -0 | depth=21 |                       )}
+L694: +0 -1 | depth=20 |                     </div>
+L695: +1 -1 | depth=20 |                     {loadingLivability && <p style
+L696: +0 -0 | depth=20 |                     {livabilityData && (
+L697: +1 -0 | depth=21 |                       <div style={{ marginTop: '15
+L698: +1 -0 | depth=22 |                         <div className="metrics-gr
+L699: +1 -0 | depth=23 |                           <div className="metric-b
+L700: +1 -1 | depth=23 |                             <div className="metric
+L701: +1 -1 | depth=23 |                             <div className="metric
+L702: +0 -1 | depth=22 |                           </div>
+L703: +1 -0 | depth=23 |                           <div className="metric-b
+L704: +1 -1 | depth=23 |                             <div className="metric
+L705: +1 -1 | depth=23 |                             <div className="metric
+L706: +0 -1 | depth=22 |                           </div>
+L707: +1 -0 | depth=23 |                           <div className="metric-b
+L708: +1 -1 | depth=23 |                             <div className="metric
+L709: +1 -1 | depth=23 |                             <div className="metric
+L710: +0 -1 | depth=22 |                           </div>
+L711: +1 -0 | depth=23 |                           <div className="metric-b
+L712: +1 -1 | depth=23 |                             <div className="metric
+L713: +1 -1 | depth=23 |                             <div className="metric
+L714: +0 -1 | depth=22 |                           </div>
+L715: +0 -1 | depth=21 |                         </div>
+L716: +0 -0 | depth=21 |                         {livabilityData.cafes.leng
+L717: +1 -0 | depth=22 |                           <div style={{ marginBott
+L718: +1 -1 | depth=22 |                             <strong>Popular Spots:
+L719: +1 -0 | depth=23 |                             <span style={{ color: 
+L720: +0 -0 | depth=23 |                               {livabilityData.cafe
+L721: +0 -1 | depth=22 |                             </span>
+L722: +0 -1 | depth=21 |                           </div>
+L723: +0 -0 | depth=21 |                         )}
+L724: +0 -0 | depth=21 |                         {livabilityData.schools.le
+L725: +1 -0 | depth=22 |                           <div>
+L726: +1 -1 | depth=22 |                             <strong>Local Schools 
+L727: +1 -0 | depth=23 |                             <span style={{ color: 
+L728: +0 -0 | depth=23 |                               {livabilityData.scho
+L729: +0 -1 | depth=22 |                             </span>
+L730: +0 -1 | depth=21 |                           </div>
+L731: +0 -0 | depth=21 |                       )}
+L732: +0 -1 | depth=20 |                     </div>
+L733: +0 -0 | depth=20 |                     )}
+L734: +0 -1 | depth=19 |                   </div>
+L735: +0 -0 | depth=19 | 
+L736: +0 -0 | depth=19 |                   
+L737: +1 -0 | depth=20 |                   <div className="highlights-secti
+L738: +1 -0 | depth=21 |                     <h3 style={{ marginBottom: '15
+L739: +1 -0 | depth=22 |                     <div style={{ display: 'flex',
+L740: +1 -0 | depth=23 |                       <div style={{ flex: '2 1 500
+L741: +1 -0 | depth=24 |                         <h4 style={{ textAlign: 'c
+L742: +1 -0 | depth=25 |                         <div style={{ height: '200
+L743: +1 -0 | depth=26 |                           <ResponsiveContainer wid
+L744: +1 -0 | depth=27 |                             <BarChart data={(() =>
+L745: +0 -0 | depth=27 |                               const ageData = ((ac
+L746: +0 -0 | depth=27 |                               return Object.entrie
+L747: +0 -0 | depth=27 |                                 .filter(([k,_]) =>
+L748: +0 -0 | depth=27 |                                 .map(([k,v]) => ({
+L749: +0 -0 | depth=27 |                             })()} margin={{ top: 1
+L750: +0 -0 | depth=27 |                               <CartesianGrid strok
+L751: +0 -0 | depth=27 |                               <XAxis dataKey="name
+L752: +1 -0 | depth=28 |                               <YAxis stroke="var(-
+L753: +1 -0 | depth=29 |                               <RechartsTooltip for
+L754: +0 -0 | depth=29 |                               <Bar dataKey="value"
+L755: +0 -1 | depth=28 |                             </BarChart>
+L756: +0 -1 | depth=27 |                           </ResponsiveContainer>
+L757: +0 -1 | depth=26 |                         </div>
+L758: +0 -1 | depth=25 |                       </div>
+L759: +1 -0 | depth=26 |                       <div style={{ flex: '1 1 300
+L760: +1 -0 | depth=27 |                         <h4 style={{ textAlign: 'c
+L761: +1 -0 | depth=28 |                         <div style={{ height: '180
+L762: +1 -0 | depth=29 |                           <ResponsiveContainer wid
+L763: +1 -0 | depth=30 |                             <PieChart>
+L764: +0 -0 | depth=30 |                               <Pie data={[
+L765: +0 -0 | depth=30 |                                 { name: 'Owner', v
+L766: +0 -0 | depth=30 |                                 { name: 'Renter', 
+L767: +0 -0 | depth=30 |                               ]} cx="50%" cy="50%"
+L768: +0 -0 | depth=30 |                                 <Cell fill="var(--
+L769: +0 -0 | depth=30 |                                 <Cell fill="var(--
+L770: +0 -1 | depth=29 |                               </Pie>
+L771: +1 -0 | depth=30 |                               <RechartsTooltip for
+L772: +0 -1 | depth=29 |                             </PieChart>
+L773: +0 -1 | depth=28 |                           </ResponsiveContainer>
+L774: +0 -1 | depth=27 |                         </div>
+L775: +1 -0 | depth=28 |                         <div style={{ display: 'fl
+L776: +1 -1 | depth=28 |                           <span style={{ color: 'v
+L777: +1 -1 | depth=28 |                           <span style={{ color: 'v
+L778: +0 -1 | depth=27 |                         </div>
+L779: +0 -1 | depth=26 |                       </div>
+L780: +0 -1 | depth=25 |                     </div>
+L781: +0 -1 | depth=24 |                   </div>
+L782: +0 -0 | depth=24 | 
+L783: +0 -0 | depth=24 |                   
+L784: +1 -0 | depth=25 |                   <div className="highlights-secti
+L785: +1 -0 | depth=26 |                     <h3 style={{ marginBottom: '15
+L786: +1 -0 | depth=27 |                     <div style={{ display: 'flex',
+L787: +1 -0 | depth=28 |                       <div style={{ flex: '1 1 300
+L788: +1 -0 | depth=29 |                         <h4 style={{ color: 'var(-
+L789: +0 -0 | depth=29 |                         {activeSuburb && (activeSu
+L790: +0 -0 | depth=29 |                           ((activeSuburb as any).s
+L791: +1 -0 | depth=30 |                             <div key={i} style={{ 
+L792: +1 -1 | depth=30 |                               <div style={{ fontSi
+L793: +1 -1 | depth=30 |                               <div style={{ color:
+L794: +1 -1 | depth=30 |                               <div style={{ fontSi
+L795: +0 -1 | depth=29 |                             </div>
+L796: +0 -0 | depth=29 |                           ))
+L797: +0 -0 | depth=29 |                         ) : (
+L798: +1 -1 | depth=29 |                           <div style={{ color: 'va
+L799: +0 -0 | depth=29 |                       )}
+L800: +0 -1 | depth=28 |                     </div>
+L801: +1 -0 | depth=29 |                       <div style={{ flex: '1 1 300
+L802: +1 -0 | depth=30 |                         <h4 style={{ color: 'var(-
+L803: +1 -0 | depth=31 |                         <div style={{ fontSize: '0
+L804: +2 -2 | depth=31 |                           <div>For Sale: <strong s
+L805: +2 -2 | depth=31 |                           <div>Sold (12m): <strong
+L806: +2 -2 | depth=31 |                           <div>Rental Stock: <stro
+L807: +2 -2 | depth=31 |                           <div>Supply/Demand: <str
+L808: +0 -1 | depth=30 |                         </div>
+L809: +0 -1 | depth=29 |                       </div>
+L810: +1 -0 | depth=30 |                       <div style={{ flex: '1 1 300
+L811: +1 -0 | depth=31 |                         <div style={{ fontSize: '0
+L812: +0 -0 | depth=31 |                           {(activeSuburb as any).h
+L813: +0 -1 | depth=30 |                         </div>
+L814: +0 -1 | depth=29 |                       </div>
+L815: +0 -1 | depth=28 |                     </div>
+L816: +0 -1 | depth=27 |                   </div>
+L817: +0 -0 | depth=27 | 
+L818: +0 -0 | depth=27 |                   
+L819: +1 -0 | depth=28 |                   <div className="highlights-secti
+L820: +1 -0 | depth=29 |                     <div style={{ display: 'flex',
+L821: +1 -0 | depth=30 |                       <h3>Panel D: AI Investment C
+L822: +0 -0 | depth=30 |                       <button
+L823: +0 -0 | depth=30 |                         disabled={isAnalyzingAI}
+L824: +0 -0 | depth=30 |                         onClick={async () => {
+L825: +0 -0 | depth=30 |                           try {
+L826: +0 -0 | depth=30 |                             setIsAnalyzingAI(true)
+L827: +0 -0 | depth=30 |                             const res = await fetc
+L828: +0 -0 | depth=30 |                               method: 'POST',
+L829: +0 -0 | depth=30 |                               headers: {'Content-T
+L830: +0 -0 | depth=30 |                               body: JSON.stringify
+L831: +0 -0 | depth=30 |                             });
+L832: +0 -0 | depth=30 |                             const data = await res
+L833: +0 -0 | depth=30 |                             if(res.ok && data.verd
+L834: +0 -0 | depth=30 |                               setActiveSuburb((pre
+L835: +0 -0 | depth=30 |                                 ...prev,
+L836: +0 -0 | depth=30 |                                 aiVerdict: data.ve
+L837: +0 -0 | depth=30 |                                 aiConsensus: data.
+L838: +0 -0 | depth=30 |                                 aiRiskLevel: data.
+L839: +0 -0 | depth=30 |                                 aiBullView: data.b
+L840: +0 -0 | depth=30 |                                 aiBearView: data.b
+L841: +0 -0 | depth=30 |                                 aiUrbanView: data.
+L842: +0 -0 | depth=30 |                               }));
+L843: +0 -0 | depth=30 |                             }
+L844: +0 -0 | depth=30 |                           } catch(e){ console.erro
+L845: +0 -0 | depth=30 |                           finally { setIsAnalyzing
+L846: +0 -0 | depth=30 |                         }}
+L847: +0 -0 | depth=30 |                         style={{
+L848: +0 -0 | depth=30 |                           padding: '8px 16px', bac
+L849: +0 -0 | depth=30 |                           border: 'none', borderRa
+L850: +0 -0 | depth=30 |                         }}
+L851: +0 -0 | depth=30 |                       >
+L852: +0 -0 | depth=30 |                         {isAnalyzingAI ? 'Analyzin
+L853: +0 -1 | depth=29 |                       </button>
+L854: +0 -1 | depth=28 |                     </div>
+L855: +0 -0 | depth=28 |                     {(activeSuburb as any).aiVerdi
+L856: +1 -0 | depth=29 |                       <div style={{ display: 'flex
+L857: +1 -0 | depth=30 |                         <div style={{ flex: '1 1 1
+L858: +1 -1 | depth=30 |                           <div style={{ fontSize: 
+L859: +1 -1 | depth=30 |                           <div style={{ fontWeight
+L860: +2 -2 | depth=30 |                           <div style={{ fontSize: 
+L861: +0 -1 | depth=29 |                         </div>
+L862: +1 -0 | depth=30 |                         <div style={{ flex: '1 1 2
+L863: +1 -1 | depth=30 |                           <div style={{ fontSize: 
+L864: +1 -1 | depth=30 |                           <div style={{ fontSize: 
+L865: +0 -1 | depth=29 |                         </div>
+L866: +1 -0 | depth=30 |                         <div style={{ flex: '1 1 2
+L867: +1 -1 | depth=30 |                           <div style={{ fontSize: 
+L868: +1 -1 | depth=30 |                           <div style={{ fontSize: 
+L869: +0 -1 | depth=29 |                         </div>
+L870: +1 -0 | depth=30 |                         <div style={{ flex: '1 1 2
+L871: +1 -1 | depth=30 |                           <div style={{ fontSize: 
+L872: +1 -1 | depth=30 |                           <div style={{ fontSize: 
+L873: +0 -1 | depth=29 |                         </div>
+L874: +0 -0 | depth=29 |                         {(activeSuburb as any).aiC
+L875: +1 -0 | depth=30 |                           <div style={{ flex: '1 1
+L876: +1 -1 | depth=30 |                             <div style={{ fontSize
+L877: +1 -1 | depth=30 |                             <div style={{ fontSize
+L878: +0 -1 | depth=29 |                           </div>
+L879: +0 -0 | depth=29 |                         )}
+L880: +0 -1 | depth=28 |                       </div>
+L881: +0 -0 | depth=28 |                     ) : (
+L882: +1 -0 | depth=29 |                       <div style={{ padding: '20px
+L883: +0 -0 | depth=29 |                         Click "Run AI Committee" t
+L884: +0 -1 | depth=28 |                       </div>
+L885: +0 -0 | depth=28 |                     )}
+L886: +0 -1 | depth=27 |                   </div>
+L887: +0 -0 | depth=27 | 
+L888: +0 -0 | depth=27 |                   
+L889: +1 -0 | depth=28 |                   <div style={{ marginTop: '20px' 
+L890: +1 -0 | depth=29 |                     <div style={{ display: 'flex',
+L891: +1 -0 | depth=30 |                       <h4 style={{ fontSize: '0.95
+L892: +0 -0 | depth=30 |                       <button
+L893: +0 -0 | depth=30 |                         disabled={isClustering}
+L894: +0 -0 | depth=30 |                         onClick={async () => {
+L895: +0 -0 | depth=30 |                           try {
+L896: +0 -0 | depth=30 |                             setIsClustering(true);
+L897: +0 -0 | depth=30 |                             setClusteringResults(n
+L898: +0 -0 | depth=30 |                             const res = await fetc
+L899: +0 -0 | depth=30 |                               method: 'POST',
+L900: +0 -0 | depth=30 |                               headers: {'Content-T
+L901: +0 -0 | depth=30 |                               body: JSON.stringify
+L902: +0 -0 | depth=30 |                             });
+L903: +0 -0 | depth=30 |                             const data = await res
+L904: +0 -0 | depth=30 |                             if (res.ok && data.sim
+L905: +0 -0 | depth=30 |                           } catch(e){ console.erro
+L906: +0 -0 | depth=30 |                           finally { setIsClusterin
+L907: +0 -0 | depth=30 |                         }}
+L908: +0 -0 | depth=30 |                         style={{
+L909: +0 -0 | depth=30 |                           padding: '6px 14px', bac
+L910: +0 -0 | depth=30 |                           border: 'none', borderRa
+L911: +0 -0 | depth=30 |                         }}
+L912: +0 -0 | depth=30 |                       >
+L913: +0 -0 | depth=30 |                         {isClustering ? 'Clusterin
+L914: +0 -1 | depth=29 |                       </button>
+L915: +0 -1 | depth=28 |                     </div>
+L916: +0 -0 | depth=28 |                     {clusteringResults && clusteri
+L917: +1 -0 | depth=29 |                       <div style={{ display: 'flex
+L918: +0 -0 | depth=29 |                         {clusteringResults.map((s:
+L919: +1 -0 | depth=30 |                           <div key={i} style={{ fl
+L920: +1 -1 | depth=30 |                             <div style={{ fontWeig
+L921: +1 -1 | depth=30 |                             <div style={{ fontSize
+L922: +1 -0 | depth=31 |                             <div style={{ display:
+L923: +1 -1 | depth=31 |                               <span>🏷️ ${Math.roun
+L924: +1 -1 | depth=31 |                               <span style={{color:
+L925: +0 -1 | depth=30 |                             </div>
+L926: +1 -0 | depth=31 |                             <div style={{ fontSize
+L927: +0 -0 | depth=31 |                               ICSEA {s.icsea} • Yi
+L928: +0 -1 | depth=30 |                             </div>
+L929: +0 -1 | depth=29 |                           </div>
+L930: +0 -0 | depth=29 |                         ))}
+L931: +0 -1 | depth=28 |                       </div>
+L932: +0 -0 | depth=28 |                     ) : clusteringResults === null
+L933: +1 -0 | depth=29 |                       <div style={{ padding: '10px
+L934: +0 -0 | depth=29 |                         No similar cheaper suburbs
+L935: +0 -1 | depth=28 |                       </div>
+L936: +0 -0 | depth=28 |                     )}
+L937: +0 -1 | depth=27 |                   </div>
+L938: +0 -0 | depth=27 | 
+L939: +0 -0 | depth=27 |                   {(!activeSuburb.schools || activ
+L940: +1 -0 | depth=28 |                     <div className="no-data-banner
+L941: +0 -1 | depth=27 |                       <p>Limited data available fo
+L942: +0 -1 | depth=26 |                     </div>
+L943: +0 -0 | depth=26 |                   )}
+L944: +0 -0 | depth=26 | 
+L945: +0 -0 | depth=26 |                   {activeSuburb.schools && activeS
+L946: +1 -0 | depth=27 |                     <div className="schools-sectio
+L947: +0 -0 | depth=27 |                       {((() => {
+L948: +0 -0 | depth=27 |                         const primaries = activeSu
+L949: +0 -0 | depth=27 |                         const secondaries = active
+L950: +0 -0 | depth=27 |                         return (
+L951: +0 -0 | depth=27 |                           <>
+L952: +0 -0 | depth=27 |                             {primaries.length > 0 
+L953: +1 -0 | depth=28 |                               <div className="scho
+L954: +0 -0 | depth=28 |                                 <h3 
+L955: +0 -0 | depth=28 |                                   onClick={() => s
+L956: +0 -0 | depth=28 |                                   style={{ cursor:
+L957: +0 -0 | depth=28 |                                 >
+L958: +1 -1 | depth=28 |                                   <span>🏫 Primary 
+L959: +1 -1 | depth=28 |                                   <span style={{ f
+L960: +0 -0 | depth=28 |                                 </h3>
+L961: +0 -0 | depth=28 |                                 {showPrimarySchool
+L962: +1 -0 | depth=29 |                                   <div className="
+L963: +1 -0 | depth=30 |                                     <table classNa
+L964: +1 -0 | depth=31 |                                       <thead>
+L965: +1 -0 | depth=32 |                                         <tr>
+L966: +1 -1 | depth=32 |                                           <th>Scho
+L967: +1 -1 | depth=32 |                                           <th>Type
+L968: +1 -1 | depth=32 |                                           <th>Stat
+L969: +1 -1 | depth=32 |                                           <th>Acad
+L970: +0 -1 | depth=31 |                                         </tr>
+L971: +0 -1 | depth=30 |                                       </thead>
+L972: +1 -0 | depth=31 |                                       <tbody>
+L973: +0 -0 | depth=31 |                                         {primaries
+L974: +1 -0 | depth=32 |                                           <tr key=
+L975: +1 -1 | depth=32 |                                             <td cl
+L976: +2 -2 | depth=32 |                                             <td><s
+L977: +1 -1 | depth=32 |                                             <td>#{
+L978: +1 -0 | depth=33 |                                             <td>
+L979: +1 -0 | depth=34 |                                               <div
+L980: +2 -2 | depth=34 |                                                 <d
+L981: +2 -2 | depth=34 |                                                 <s
+L982: +0 -1 | depth=33 |                                               </di
+L983: +0 -1 | depth=32 |                                             </td>
+L984: +0 -1 | depth=31 |                                           </tr>
+L985: +0 -0 | depth=31 |                                         ))}
+L986: +0 -1 | depth=30 |                                       </tbody>
+L987: +0 -1 | depth=29 |                                     </table>
+L988: +0 -1 | depth=28 |                                   </div>
+L989: +0 -0 | depth=28 |                                 )}
+L990: +0 -1 | depth=27 |                               </div>
+L991: +0 -0 | depth=27 |                             )}
+L992: +0 -0 | depth=27 |                             {secondaries.length > 
+L993: +1 -0 | depth=28 |                               <div className="scho
+L994: +0 -0 | depth=28 |                                 <h3 
+L995: +0 -0 | depth=28 |                                   onClick={() => s
+L996: +0 -0 | depth=28 |                                   style={{ cursor:
+L997: +0 -0 | depth=28 |                                 >
+L998: +1 -1 | depth=28 |                                   <span>🎓 Secondar
+L999: +1 -1 | depth=28 |                                   <span style={{ f
+L1000: +0 -0 | depth=28 |                                 </h3>
+L1001: +0 -0 | depth=28 |                                 {showSecondaryScho
+L1002: +1 -0 | depth=29 |                                   <div className="
+L1003: +1 -0 | depth=30 |                                     <table classNa
+L1004: +1 -0 | depth=31 |                                       <thead>
+L1005: +1 -0 | depth=32 |                                         <tr>
+L1006: +1 -1 | depth=32 |                                           <th>Scho
+L1007: +1 -1 | depth=32 |                                           <th>Type
+L1008: +1 -1 | depth=32 |                                           <th>Stat
+L1009: +1 -1 | depth=32 |                                           <th>Acad
+L1010: +0 -1 | depth=31 |                                         </tr>
+L1011: +0 -1 | depth=30 |                                       </thead>
+L1012: +1 -0 | depth=31 |                                       <tbody>
+L1013: +0 -0 | depth=31 |                                         {secondari
+L1014: +1 -0 | depth=32 |                                           <tr key=
+L1015: +1 -1 | depth=32 |                                             <td cl
+L1016: +1 -0 | depth=33 |                                             <td>
+L1017: +1 -0 | depth=34 |                                               <spa
+L1018: +0 -0 | depth=34 |                                                 {s
+L1019: +0 -1 | depth=33 |                                               </sp
+L1020: +0 -1 | depth=32 |                                             </td>
+L1021: +1 -1 | depth=32 |                                             <td>#{
+L1022: +1 -0 | depth=33 |                                             <td>
+L1023: +1 -0 | depth=34 |                                               <div
+L1024: +2 -2 | depth=34 |                                                 <d
+L1025: +2 -2 | depth=34 |                                                 <s
+L1026: +0 -1 | depth=33 |                                               </di
+L1027: +0 -1 | depth=32 |                                             </td>
+L1028: +0 -1 | depth=31 |                                           </tr>
+L1029: +0 -0 | depth=31 |                                         ))}
+L1030: +0 -1 | depth=30 |                                       </tbody>
+L1031: +0 -1 | depth=29 |                                     </table>
+L1032: +0 -1 | depth=28 |                                   </div>
+L1033: +0 -0 | depth=28 |                                 )}
+L1034: +0 -1 | depth=27 |                               </div>
+L1035: +0 -0 | depth=27 |                             )}
+L1036: +0 -0 | depth=27 |                           </>
+L1037: +0 -0 | depth=27 |                         );
+L1038: +0 -0 | depth=27 |                       })())}
+L1039: +0 -1 | depth=26 |                     </div>
+L1040: +0 -0 | depth=26 |                   )}
+L1041: +0 -0 | depth=26 | 
+L1042: +0 -0 | depth=26 |                 <SuburbMap
+L1043: +0 -0 | depth=26 |                   center={activeSuburb.coordinates
+L1044: +0 -0 | depth=26 |                   pois={[
+L1045: +0 -0 | depth=26 |                     ...(activeSuburb.pois || []),
+L1046: +0 -0 | depth=26 |                     ...(livabilityData ? [
+L1047: +0 -0 | depth=26 |                       ...(livabilityData.cafes || 
+L1048: +0 -0 | depth=26 |                       ...(livabilityData.parks || 
+L1049: +0 -0 | depth=26 |                       ...(livabilityData.transit |
+L1050: +0 -0 | depth=26 |                     ] : [])
+L1051: +0 -0 | depth=26 |                   ]}
+L1052: +0 -0 | depth=26 |                   schools={[
+L1053: +0 -0 | depth=26 |                     ...(activeSuburb.schools || []
+L1054: +0 -0 | depth=26 |                     ...(livabilityData?.schools ||
+L1055: +0 -0 | depth=26 |                   ]}
+L1056: +0 -0 | depth=26 |                   suburbName={activeSuburb.name}
+L1057: +0 -0 | depth=26 |                   stateName={activeSuburb.state}
+L1058: +0 -0 | depth=26 |                   postcode={activeSuburb.postcode}
+L1059: +0 -0 | depth=26 |                 />
+L1060: +0 -1 | depth=25 |               </div>
+L1061: +0 -0 | depth=25 |             ) : (
+L1062: +1 -0 | depth=26 |               <div className="glass-card empty-sta
+L1063: +0 -1 | depth=25 |                 <p>Please select a state and subur
+L1064: +0 -1 | depth=24 |               </div>
+L1065: +0 -0 | depth=24 |             )}
+L1066: +0 -1 | depth=23 |           </main>
+L1067: +0 -1 | depth=22 |         </div>
+L1068: +0 -0 | depth=22 |       )}
+L1069: +0 -0 | depth=22 | 
+L1070: +0 -0 | depth=22 |       {activeTab === 'search' && <HouseSearch subu
+L1071: +0 -0 | depth=22 |       {activeTab === 'affordability' && <Affordabi
+L1072: +0 -0 | depth=22 |       {activeTab === 'gearing' && <CashflowGearing
+L1073: +0 -0 | depth=22 |         suburbsData={suburbsData} 
+L1074: +0 -0 | depth=22 |         defaultSuburbId={activeSuburb?.id}
+L1075: +0 -0 | depth=22 |         defaultPrice={(activeSuburb as any)?.house
+L1076: +0 -0 | depth=22 |         defaultRent={(activeSuburb as any)?.houseM
+L1077: +0 -0 | depth=22 |       />}
+L1078: +0 -0 | depth=22 |       {activeTab === 'purchase-plan' && <MyPurchas
+L1079: +0 -0 | depth=22 |       {activeTab === 'institutional' && <Instituti
+L1080: +0 -1 | depth=21 |     </div>
+L1081: +0 -0 | depth=21 |   )
+L1082: +0 -0 | depth=21 | }
+L1083: +0 -0 | depth=21 | 
+L1084: +0 -0 | depth=21 | export default App
+L1085: +0 -0 | depth=21 | 

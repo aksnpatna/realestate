@@ -1,0 +1,13 @@
+
+> realestate@0.0.0 build
+> tsc -b && vite build
+
+src/App.tsx(985,17): error TS17015: Expected corresponding closing tag for JSX fragment.
+src/App.tsx(985,20): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/App.tsx(986,17): error TS1003: Identifier expected.
+src/App.tsx(991,14): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/App.tsx(992,13): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/App.tsx(993,9): error TS1005: ')' expected.
+src/App.tsx(1006,5): error TS1128: Declaration or statement expected.
+src/App.tsx(1007,3): error TS1109: Expression expected.
+src/App.tsx(1008,1): error TS1128: Declaration or statement expected.
