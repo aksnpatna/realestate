@@ -8,7 +8,7 @@ interface VectorGridProps {
   zIndex?: number;
 }
 
-export default function VectorGridLayer({ url, zIndex = 100 }: VectorGridProps) {
+export default function VectorGridLayer({ url, zIndex = 400 }: VectorGridProps) {
   const map = useMap();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function VectorGridLayer({ url, zIndex = 100 }: VectorGridProps) 
         }
       },
       interactive: true,
-      zIndex: zIndex
+      zIndex: 400
     });
 
     // Add interactivity
