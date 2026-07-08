@@ -43,6 +43,14 @@ function App() {
       if (res.ok) {
         const data = await res.json()
         setActiveSuburb(data)
+        // Restore cached AI result if available
+        try {
+          const cached = localStorage.getItem('ai_' + id)
+          if (cached) {
+            const aiResult = JSON.parse(cached)
+            setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }))
+          }
+        } catch {}
       }
     } catch (e) {
       console.error('loadColdSuburb error', id, e)
@@ -474,25 +482,9 @@ function App() {
                         {activeSuburb.metrics.aiNewsSummary && <div style={{marginTop: '4px'}}>*Disclaimer: AI generated sentiment based on live news. Always verify with actual market data before considering.</div>}
                       </div>
                     </div>
-                  </div>
+                   </div>
 
-                  {/* INVESTMENT CATALYSTS */}
-                  <div className="highlights-section">
-                    <h3>Investment Catalysts</h3>
-                    <ul className="highlights-list">
-                      {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) ? (
-                        activeSuburb.highlights
-                          .filter((h: string) => !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('generated') && !h.includes('Pending'))
-                          .map((highlight: string, index: number) => (
-                            <li key={index}>{highlight}</li>
-                          ))
-                      ) : (
-                        <li style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Awaiting local infrastructure, zoning, and planning catalyst data...</li>
-                      )}
-                    </ul>
-                  </div>
-
-                  {/* MACRO MARKET PULSE */}
+                   {/* MACRO MARKET PULSE */}
                   {macroEtf && typeof macroEtf.current_price === 'number' && (
                     <div className="highlights-section" style={{ marginTop: '20px', background: 'linear-gradient(145deg, rgba(30,30,40,0.8) 0%, rgba(20,20,30,0.9) 100%)', border: '1px solid var(--accent-purple)' }}>
                       <h3 style={{ marginBottom: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -909,15 +901,17 @@ function App() {
                             });
                             const data = await res.json();
                             if(res.ok && data.verdict) {
-                              setActiveSuburb((prev: any) => ({
-                                ...prev,
+                              const aiResult = {
                                 aiVerdict: data.verdict,
                                 aiConsensus: data.playbook,
                                 aiRiskLevel: data.reality_check,
                                 aiBullView: data.bull,
                                 aiBearView: data.bear,
                                 aiUrbanView: data.urban
-                              }));
+                              }
+                              setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }))
+                              // Cache in localStorage keyed by suburb id
+                              try { localStorage.setItem('ai_' + activeSuburb.id, JSON.stringify(aiResult)) } catch {}
                             }
                           } catch(e){ console.error(e) }
                           finally { setIsAnalyzingAI(false) }
@@ -1013,6 +1007,22 @@ function App() {
                       </div>
                     )}
                   </div>
+
+                   {/* INVESTMENT CATALYSTS — moved below AI Committee */}
+                   <div className="highlights-section" style={{ marginTop: '20px' }}>
+                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Investment Catalysts</h3>
+                     <ul className="highlights-list">
+                       {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) ? (
+                         activeSuburb.highlights
+                           .filter((h: string) => !h.includes('N/A') && !h.includes('Data Unavailable') && !h.includes('generated') && !h.includes('Pending'))
+                           .map((highlight: string, index: number) => (
+                             <li key={index}>{highlight}</li>
+                           ))
+                       ) : (
+                         <li style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Run AI Committee above to generate investment catalysts for this suburb.</li>
+                       )}
+                     </ul>
+                   </div>
 
                   {(!activeSuburb.schools || activeSuburb.schools.length === 0) && (!activeSuburb.pois || activeSuburb.pois.length === 0) && (
                     <div className="no-data-banner">
