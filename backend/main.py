@@ -211,9 +211,19 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
 def get_me(user: UserModel = Depends(get_current_user)):
     return {"id": user.id, "email": user.email}
 
+_cache_suburbs_data = {}
+_cache_suburbs_time = {}
+
 @app.get("/api/suburbs")
-def get_suburbs(state: str = None):
-    db = SessionLocal()
+def get_suburbs(state: str = None, db: Session = Depends(get_db)):
+    global _cache_suburbs_data, _cache_suburbs_time
+    cache_key = state or "ALL"
+    now = time.time()
+    
+    # 1-hour cache to protect DB and memory
+    if cache_key in _cache_suburbs_data and (now - _cache_suburbs_time.get(cache_key, 0)) < 3600:
+        return _cache_suburbs_data[cache_key]
+
     TARGET_STATES = [state] if state else ['VIC', 'NSW', 'QLD', 'TAS', 'SA']
     result = []
     
@@ -299,19 +309,18 @@ def get_suburbs(state: str = None):
             
             result.append(record)
             
-    db.close()
+    _cache_suburbs_data[cache_key] = result
+    _cache_suburbs_time[cache_key] = now
     return result
 
 @app.get("/api/search")
-def search_suburbs(q: str = ""):
+def search_suburbs(q: str = "", db: Session = Depends(get_db)):
     if not q or len(q) < 3 or len(q) > 50:
         return []
-    db = SessionLocal()
     # Simple ILIKE search on name using the trigram index
     suburbs = db.query(SuburbUIModel.id, SuburbUIModel.name, SuburbUIModel.state, SuburbUIModel.postcode).filter(
         SuburbUIModel.name.ilike(f"%{q}%")
     ).limit(20).all()
-    db.close()
     return [{"id": s.id, "name": s.name, "state": s.state, "postcode": s.postcode} for s in suburbs]
 
 def _build_v2_only_response(v2) -> dict:
@@ -588,12 +597,10 @@ def _compute_growth_score(v3: SuburbUIV3) -> dict:
 
 
 @app.get("/api/suburbs/{suburb_id}")
-def get_suburb(suburb_id: str):
+def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
     """V3-only endpoint — all data from suburbs_ui_v3 (self-sufficient)."""
-    db = SessionLocal()
     v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == suburb_id.upper()).first()
     if not v3:
-        db.close()
         raise HTTPException(status_code=404, detail="Suburb not found")
     
     current_median = v3.current_median_price or v3.house_median_price
@@ -806,46 +813,44 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/suburbs/{suburb_id}/news-sentiment")
-def get_news_sentiment(suburb_id: str):
+def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
     """On-demand news sentiment for a suburb. Cached for 24h. Only calls Tavily if needed."""
-    db = SessionLocal()
-    try:
-        v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id.ilike(suburb_id)).first()
-        if not v3:
-            raise HTTPException(status_code=404, detail="Suburb not found")
+    v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id.ilike(suburb_id)).first()
+    if not v3:
+        raise HTTPException(status_code=404, detail="Suburb not found")
         
-        # Check cache (within 24h)
-        cached = v3.news_sentiment or {}
-        if isinstance(cached, dict):
-            fetched = cached.get("fetched_at")
-            if fetched:
-                try:
-                    from datetime import datetime, timedelta
-                    fetched_dt = datetime.fromisoformat(fetched)
-                    if datetime.utcnow() - fetched_dt < timedelta(hours=24):
-                        return {"cached": True, **cached}
-                except (ValueError, TypeError):
-                    pass
-        
-        # Fetch fresh from Tavily
-        from ai_agent import get_news_sentiment as fetch_sentiment
-        result = fetch_sentiment(v3.name or "", v3.state or "")
-        
-        # Cache in DB
-        v3.news_sentiment = result
-        db.commit()
-        
-        return {"cached": False, **result}
-    finally:
-        db.close()
+    # Check cache (within 24h)
+    cached = v3.news_sentiment or {}
+    if isinstance(cached, dict):
+        fetched = cached.get("fetched_at")
+        if fetched:
+            try:
+                from datetime import datetime, timedelta
+                fetched_dt = datetime.fromisoformat(fetched)
+                if datetime.utcnow() - fetched_dt < timedelta(hours=24):
+                    return {"cached": True, **cached}
+            except (ValueError, TypeError):
+                pass
+    
+    # Fetch fresh from Tavily
+    from ai_agent import get_news_sentiment as fetch_sentiment
+    result = fetch_sentiment(v3.name or "", v3.state or "")
+    
+    # Cache in DB
+    v3.news_sentiment = result
+    db.commit()
+    
+    return {"cached": False, **result}
 def reload_suburbs():
     """Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data)."""
     from enrich_from_unpacked import enrich_all
     enrich_all()
     db = SessionLocal()
-    total = db.query(SuburbUIModel).count()
-    db.close()
-    return {"status": "ok", "suburbs": total, "pipeline": "v3"}
+    try:
+        total = db.query(SuburbUIModel).count()
+        return {"status": "ok", "suburbs": total, "pipeline": "v3"}
+    finally:
+        db.close()
 
 
 @app.get("/api/mortgage-rate")
@@ -869,15 +874,13 @@ def get_mortgage_rate():
 # =============================================================================
 
 @app.get("/api/v3/suburbs")
-def get_suburbs_v3(state: Optional[str] = None, limit: int = 50):
+def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = Depends(get_db)):
     """Returns V3-enriched suburbs for the institutional dashboard view."""
-    db = SessionLocal()
     query = db.query(SuburbUIV3).filter(SuburbUIV3.is_enriched == True)
     if state:
         query = query.filter(SuburbUIV3.state == state.upper())
     query = query.order_by(SuburbUIV3.house_median_price.desc().nulls_last()).limit(limit)
     results = query.all()
-    db.close()
     return [
         {
             "id": r.id,
@@ -941,14 +944,12 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50):
 
 
 @app.get("/api/v3/suburbs/{suburb_id}")
-def get_suburb_v3(suburb_id: str):
+def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
     """Returns full V3 institutional data for a single suburb."""
-    db = SessionLocal()
     r = db.query(SuburbUIV3).filter(SuburbUIV3.id == suburb_id).first()
     if not r:
         # Try case-insensitive
         r = db.query(SuburbUIV3).filter(SuburbUIV3.id.ilike(suburb_id)).first()
-    db.close()
     if not r:
         raise HTTPException(status_code=404, detail="Suburb not found in V3 enriched dataset")
     return {
