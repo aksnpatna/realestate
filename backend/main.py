@@ -39,6 +39,32 @@ except ImportError:
 
 load_dotenv()
 
+import redis
+
+# Redis Cache setup
+REDIS_HOST = os.getenv("REDIS_HOST", "realestate-redis")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+redis_client = None
+try:
+    redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)
+    redis_client.ping()
+    print("[cache] Connected to Redis successfully!")
+except Exception as e:
+    print(f"[cache] Redis not available: {e}. Falling back to DB-only.")
+    redis_client = None
+
+def get_cached_or_query(cache_key: str, query_func, expire_secs: int = 3600):
+    if not redis_client:
+        return query_func()
+    
+    cached = redis_client.get(cache_key)
+    if cached:
+        return json.loads(cached)
+        
+    result = query_func()
+    redis_client.setex(cache_key, expire_secs, json.dumps(result))
+    return result
+
 app = FastAPI()
 
 # CORS: In production, restrict to your actual frontend origin(s)
@@ -1026,14 +1052,16 @@ def get_mortgage_rate():
 @app.get("/api/v3/suburbs")
 def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = Depends(get_db)):
     """Returns V3-enriched suburbs for the institutional dashboard view."""
-    query = db.query(SuburbUIV3).filter(SuburbUIV3.is_enriched == True)
-    if state:
-        query = query.filter(SuburbUIV3.state == state.upper())
-    query = query.order_by(SuburbUIV3.house_median_price.desc().nulls_last()).limit(limit)
-    results = query.all()
-    return [
-        {
-            "id": r.id,
+    
+    def _fetch():
+        query = db.query(SuburbUIV3).filter(SuburbUIV3.is_enriched == True)
+        if state:
+            query = query.filter(SuburbUIV3.state == state.upper())
+        query = query.order_by(SuburbUIV3.house_median_price.desc().nulls_last()).limit(limit)
+        results = query.all()
+        return [
+            {
+                "id": r.id,
             "state": r.state,
             "name": r.name,
             "postcode": r.postcode,
@@ -1091,8 +1119,9 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
         }
         for r in results
     ]
-
-
+    
+    cache_key = f"v3_suburbs:{state or 'ALL'}:{limit}"
+    return get_cached_or_query(cache_key, _fetch, expire_secs=3600)
 @app.get("/api/v3/suburbs/{suburb_id}")
 def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
     """Returns full V3 institutional data for a single suburb."""
