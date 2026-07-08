@@ -926,6 +926,83 @@ def reload_suburbs():
         db.close()
 
 
+from pydantic import BaseModel
+
+class ROICalcRequest(BaseModel):
+    purchase_price: float
+    weekly_rent: float
+    deposit_pct: float = 20.0
+    interest_rate: float = 6.2
+    loan_type: str = "io"
+    strata_fees: float = 0.0
+    council_rates: float = 1800.0
+    water_rates: float = 900.0
+    insurance: float = 1500.0
+    pm_fee_pct: float = 7.5
+    vacancy_weeks: float = 2.0
+    maintenance_pct: float = 1.0
+
+def calculate_stamp_duty_vic(price: float) -> float:
+    # Basic VIC stamp duty tiers (approx)
+    if price <= 25000: return price * 0.014
+    elif price <= 130000: return 350 + (price - 25000) * 0.024
+    elif price <= 960000: return 2870 + (price - 130000) * 0.06
+    elif price <= 2000000: return price * 0.055
+    else: return price * 0.065
+
+@app.post("/api/calc/roi")
+def calculate_roi(req: ROICalcRequest):
+    stamp_duty = calculate_stamp_duty_vic(req.purchase_price)
+    deposit_amount = req.purchase_price * (req.deposit_pct / 100)
+    loan_amount = req.purchase_price - deposit_amount
+    total_upfront = deposit_amount + stamp_duty
+    
+    annual_rent = req.weekly_rent * (52 - req.vacancy_weeks)
+    pm_fees = annual_rent * (req.pm_fee_pct / 100)
+    maintenance = req.purchase_price * (req.maintenance_pct / 100)
+    
+    annual_expenses = req.strata_fees + req.council_rates + req.water_rates + req.insurance + pm_fees + maintenance
+    
+    # Interest-only approximation
+    if req.loan_type == "io":
+        annual_interest = loan_amount * (req.interest_rate / 100)
+    else:
+        # P&I rough approximation
+        r = (req.interest_rate / 100) / 12
+        n = 30 * 12
+        if r > 0 and loan_amount > 0:
+            monthly_payment = loan_amount * (r * (1 + r)**n) / ((1 + r)**n - 1)
+            annual_interest = (monthly_payment * 12) - (loan_amount * 0.02)
+        else:
+            annual_interest = 0
+            
+    net_annual_cashflow = annual_rent - annual_expenses - annual_interest
+    net_weekly_cashflow = net_annual_cashflow / 52
+    
+    cash_on_cash_return = (net_annual_cashflow / total_upfront) * 100 if total_upfront > 0 else 0
+    gross_yield = (req.weekly_rent * 52 / req.purchase_price) * 100 if req.purchase_price > 0 else 0
+    net_yield = ((annual_rent - annual_expenses) / req.purchase_price) * 100 if req.purchase_price > 0 else 0
+    
+    return {
+        "status": "success",
+        "metrics": {
+            "purchase_price": req.purchase_price,
+            "deposit_amount": deposit_amount,
+            "loan_amount": loan_amount,
+            "stamp_duty": stamp_duty,
+            "total_upfront": total_upfront,
+            "gross_yield_pct": round(gross_yield, 2),
+            "net_yield_pct": round(net_yield, 2),
+            "annual_rent": round(annual_rent, 2),
+            "annual_expenses": round(annual_expenses, 2),
+            "annual_interest": round(annual_interest, 2),
+            "net_annual_cashflow": round(net_annual_cashflow, 2),
+            "net_weekly_cashflow": round(net_weekly_cashflow, 2),
+            "cash_on_cash_return_pct": round(cash_on_cash_return, 2),
+            "gearing_status": "positive" if net_annual_cashflow > 0 else ("neutral" if net_annual_cashflow == 0 else "negative")
+        }
+    }
+
 @app.get("/api/mortgage-rate")
 def get_mortgage_rate():
     # In a full production environment, this would call a banking API (e.g. CoreLogic or RBA proxy).
