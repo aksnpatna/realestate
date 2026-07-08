@@ -37,12 +37,13 @@ def get_llm():
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             model_name="gpt-4o-mini"
         )
-    # 4th: Local Ollama
+    # 4th: Local Ollama (Mac Air)
     else:
         return ChatOpenAI(
             openai_api_key="none",
-            openai_api_base="http://host.docker.internal:11434/v1",
-            model_name="qwen2.5:7b"
+            openai_api_base="http://192.168.1.150:11434/v1",
+            model_name="qwen2.5:7b",
+            timeout=120
         )
 
 # Limit Tavily fetch to only 1-2 suburbs (or when explicitly requested) to save API calls
@@ -62,17 +63,50 @@ class CommitteeState(TypedDict):
     reality_check: str
     catalysts: list
 
-def fetch_news_node(state: CommitteeState):
-    if not tavily:
-        return {"news_articles": "No API key."}
+def robust_search(query: str, max_results: int = 5) -> list:
+    """Tries DuckDuckGo (Free) first, falls back to Tavily if it fails or returns 0 results."""
+    articles = []
+    
+    # Try DuckDuckGo first
     try:
-        query = f"{state['suburb']} {state['state']} new infrastructure projects zoning development council plan"
-        res = tavily.search(query=query, search_depth="basic", max_results=5)
-        articles = res.get("results", []) or res.get("news", [])
+        from ddgs import DDGS
+        ddgs = DDGS()
+        res = list(ddgs.text(query, backend="html", max_results=max_results))
+        for item in res:
+            articles.append({
+                "title": item.get("title", ""),
+                "content": item.get("body", "")
+            })
+    except Exception as e:
+        print(f"DuckDuckGo search failed: {e}")
+        
+    if articles:
+        return articles
+        
+    # Fallback to Tavily
+    if tavily:
+        try:
+            res = tavily.search(query=query, search_depth="basic", max_results=max_results)
+            tavily_articles = res.get("results", []) or res.get("news", [])
+            for a in tavily_articles:
+                articles.append({
+                    "title": a.get("title", ""),
+                    "content": a.get("content", "") or a.get("snippet", "")
+                })
+        except Exception as e:
+            print(f"Tavily fallback failed: {e}")
+            
+    return articles
+
+def fetch_news_node(state: CommitteeState):
+    try:
+        query = f"{state['suburb']} {state['state']} Australia new infrastructure projects zoning development council plan"
+        articles = robust_search(query, max_results=5)
+        
         if not articles:
             return {"news_articles": "No major infrastructure or zoning news found."}
         
-        snippets = [f"- {a.get('title')}: {a.get('content') or a.get('snippet')}" for a in articles]
+        snippets = [f"- {a.get('title')}: {a.get('content')}" for a in articles]
         return {"news_articles": "\n".join(snippets)}
     except Exception as e:
         return {"news_articles": f"Error fetching news: {str(e)}"}
@@ -83,15 +117,11 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
     Cached in DB — only fetches if no cached result within 24h.
     Returns: {score, label, summary, articles, fetched_at}
     """
-    if not tavily:
-        return {"score": 5.0, "label": "Neutral", "summary": "Tavily API key not configured.", "articles": 0, "fetched_at": None}
-
     try:
-        query = f"{suburb_name} {state_code} real estate market news prices outlook 2026"
-        result = tavily.search(query=query, search_depth="basic", max_results=8)
+        query = f"{suburb_name} {state_code} Australia real estate market news prices outlook 2026"
+        articles = robust_search(query, max_results=8)
         
-        articles = result.get("results", []) or result.get("news", [])
-        if not isinstance(articles, list):
+        if not articles:
             articles = []
 
         # Simple sentiment scoring from article titles
@@ -107,7 +137,7 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
         
         for art in articles:
             title = (art.get("title") or "").lower()
-            content = (art.get("content") or art.get("snippet") or "").lower()
+            content = (art.get("content") or "").lower()
             text = title + " " + content
             
             pos = sum(1 for w in positive_words if w in text)
