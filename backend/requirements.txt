@@ -27,3 +27,4 @@ pandera
 scipy
 headroom-ai[all]
 ddgs
+redis
