@@ -178,7 +178,14 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         return False
 
 def get_current_user(request: Request, db: Session = Depends(get_db)):
-    token = request.cookies.get("access_token")
+    token = None
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+    
+    if not token:
+        token = request.cookies.get("access_token")
+        
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
@@ -801,7 +808,7 @@ def _check_rate_limit(client_key: str, max_requests: int = 10, window_seconds: i
     return True
 
 @app.post("/api/analyze-suburb")
-def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db)):
+def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
     # Rate limiting: max 10 requests per minute per suburb
     client_key = f"{req.id}:{datetime.now().strftime('%Y%m%d%H%M')}"
     if not _check_rate_limit(client_key, max_requests=10, window_seconds=60):
