@@ -900,14 +900,15 @@ function App() {
                               body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id: activeSuburb.id })
                             });
                             const data = await res.json();
-                            if(res.ok && data.verdict) {
+                            if(res.ok && data.status === "success" && data.result && data.result.verdict) {
                               const aiResult = {
-                                aiVerdict: data.verdict,
-                                aiConsensus: data.playbook,
-                                aiRiskLevel: data.reality_check,
-                                aiBullView: data.bull,
-                                aiBearView: data.bear,
-                                aiUrbanView: data.urban
+                                aiVerdict: data.result.verdict,
+                                aiConsensus: data.result.playbook,
+                                aiRiskLevel: data.result.reality_check,
+                                aiBullView: data.result.bull,
+                                aiBearView: data.result.bear,
+                                aiUrbanView: data.result.urban,
+                                highlights: data.result.catalysts || activeSuburb.highlights
                               }
                               setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }))
                               // Cache in localStorage keyed by suburb id

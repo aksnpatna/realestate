@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException, Depends, Header, BackgroundTasks, Re
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, String, JSON
+from sqlalchemy import create_engine, Column, String, JSON, func
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from dotenv import load_dotenv
 from parallel_scraper import SuburbAllModel, SuburbUIModel
@@ -785,7 +785,7 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=503, detail="AI sentiment service not available")
     
     try:
-        v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == req.id).first()
+        v3 = db.query(SuburbUIV3).filter(func.upper(SuburbUIV3.id) == req.id.upper()).first()
         if not v3:
             return {"status": "error", "message": "Suburb not found in database"}
             
@@ -794,13 +794,16 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db)):
         # P0 FIX: Check if already analyzed to prevent LLM API exhaustion
         if ai_cache.get("aiCommitteeVerdict"):
             return {
-                "bull": ai_cache.get("aiCommitteeDebate", {}).get("bull", ""),
-                "bear": ai_cache.get("aiCommitteeDebate", {}).get("bear", ""),
-                "urban": ai_cache.get("aiCommitteeDebate", {}).get("urban", ""),
-                "reality_check": ai_cache.get("aiCommitteeDebate", {}).get("reality_check", ""),
-                "verdict": ai_cache["aiCommitteeVerdict"],
-                "playbook": ai_cache["aiCommitteePlaybook"],
-                "catalysts": v3.highlights or []
+                "status": "success",
+                "result": {
+                    "bull": ai_cache.get("aiCommitteeDebate", {}).get("bull", ""),
+                    "bear": ai_cache.get("aiCommitteeDebate", {}).get("bear", ""),
+                    "urban": ai_cache.get("aiCommitteeDebate", {}).get("urban", ""),
+                    "reality_check": ai_cache.get("aiCommitteeDebate", {}).get("reality_check", ""),
+                    "verdict": ai_cache["aiCommitteeVerdict"],
+                    "playbook": ai_cache["aiCommitteePlaybook"],
+                    "catalysts": v3.highlights or []
+                }
             }
             
         # Compile rich V3 metrics for the AI to analyze
