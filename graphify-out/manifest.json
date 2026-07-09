@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783497834.5496707,
-    "ast_hash": "8a285d6b21dbcf940d0ef2351d59f7a0",
+    "mtime": 1783572837.045921,
+    "ast_hash": "04e45f39510772d3606623f83c0b6e11",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -40,13 +40,13 @@
     "semantic_hash": "63a67f676c8b493b6b26d90280e3bfb2"
   },
   "package.json": {
-    "mtime": 1783479250.8837903,
-    "ast_hash": "8ce2049952887cd2c98ce1f07f7bad5c",
+    "mtime": 1783570785.5023253,
+    "ast_hash": "dd79773dd6a35613e1f50e8149237464",
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783497605.1345975,
-    "ast_hash": "4acb9367624793259d0fccfd4a9ee9a0",
+    "mtime": 1783574394.303737,
+    "ast_hash": "e2c815b1594cc34cbe4e299e293d6d03",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -60,14 +60,14 @@
     "semantic_hash": "8b8ec6540e009890092740a86c065305"
   },
   "src/components/HouseSearch.tsx": {
-    "mtime": 1783429541.5895686,
-    "ast_hash": "2371e7e983c31b4696aa303a694db6f4",
-    "semantic_hash": "2371e7e983c31b4696aa303a694db6f4"
+    "mtime": 1783510933.8208086,
+    "ast_hash": "79782e1d44877c6f74a6f1898943c18b",
+    "semantic_hash": ""
   },
   "src/components/SuburbMap.tsx": {
-    "mtime": 1783355425.637733,
-    "ast_hash": "9bd974f4630fda112d38c783b86115cb",
-    "semantic_hash": "9bd974f4630fda112d38c783b86115cb"
+    "mtime": 1783574824.8346102,
+    "ast_hash": "bbab7340f838d9e405fd2a21f0207b43",
+    "semantic_hash": ""
   },
   "src/data/enriched_suburbs.json": {
     "mtime": 1782617455.704882,
@@ -120,9 +120,9 @@
     "semantic_hash": "de33de2434fa1cea99c4dbc8ba0076ac"
   },
   "vite.config.ts": {
-    "mtime": 1782529570.484147,
-    "ast_hash": "88439104b3c207f17d33ef3160e3b080",
-    "semantic_hash": "88439104b3c207f17d33ef3160e3b080"
+    "mtime": 1783509837.7028947,
+    "ast_hash": "2bd91ba181be3410b4640f3227295748",
+    "semantic_hash": ""
   },
   "wait_and_build.sh": {
     "mtime": 1782692587.3014212,
@@ -140,13 +140,13 @@
     "semantic_hash": ""
   },
   "backend/requirements.txt": {
-    "mtime": 1783498816.6306927,
-    "ast_hash": "770b04c3dd672d35a2f24cc9a2567392",
+    "mtime": 1783502383.1114893,
+    "ast_hash": "89f08b9e5de167d6cd764dc601da39ae",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1783489770.1158357,
-    "ast_hash": "2ac4508657f7357fe6a48436482bf39f",
+    "mtime": 1783508821.9555228,
+    "ast_hash": "997d4b70f7aed38d6345d1a3076c859a",
     "semantic_hash": ""
   },
   "graphify-out/converted/vic_sales_time_series_20yr_latest_5350cb9d.md": {
@@ -290,9 +290,9 @@
     "semantic_hash": "84390dab89b4799da261cbab3a6216ec"
   },
   "backend/models_v3.py": {
-    "mtime": 1783431024.971738,
-    "ast_hash": "9905c04cb70c93b13b87dd22d5c246a3",
-    "semantic_hash": "9905c04cb70c93b13b87dd22d5c246a3"
+    "mtime": 1783508753.3862522,
+    "ast_hash": "8ff5d4f4488886cac5776c642c86f8d2",
+    "semantic_hash": ""
   },
   "backend/models_v3_unpacked.py": {
     "mtime": 1783051364.7724068,
@@ -477,6 +477,41 @@
   "backend/test_search.py": {
     "mtime": 1783498499.5926478,
     "ast_hash": "b8aff440bce3b824e046304be7958dcd",
+    "semantic_hash": ""
+  },
+  "src/components/QuickRoiCalculator.tsx": {
+    "mtime": 1783507176.2758281,
+    "ast_hash": "bd86dc20db4f39495041e6c2e787ccb9",
+    "semantic_hash": ""
+  },
+  "backend/migrate_history_to_timeseries.py": {
+    "mtime": 1783508772.3852024,
+    "ast_hash": "8650834f9df3828205fa5fac1eb5b282",
+    "semantic_hash": ""
+  },
+  "backend/migrate_postgis_geom.py": {
+    "mtime": 1783508841.526658,
+    "ast_hash": "b57effb2e9215a23965d28187322c6a6",
+    "semantic_hash": ""
+  },
+  "src/components/VectorGridLayer.tsx": {
+    "mtime": 1783574804.5985818,
+    "ast_hash": "e144e890487797fe0fe99f76f2862f8f",
+    "semantic_hash": ""
+  },
+  "App_old.tsx": {
+    "mtime": 1783571006.1078632,
+    "ast_hash": "333c04e584082efec71833f638791d5b",
+    "semantic_hash": ""
+  },
+  "src/components/OnboardingTour.tsx": {
+    "mtime": 1783570798.3838904,
+    "ast_hash": "94548b34fc6300249e79fa18a714797e",
+    "semantic_hash": ""
+  },
+  "diff.txt": {
+    "mtime": 1783571078.1406834,
+    "ast_hash": "a09e574ae24ce65f082362af6bd825fd",
     "semantic_hash": ""
   }
 }

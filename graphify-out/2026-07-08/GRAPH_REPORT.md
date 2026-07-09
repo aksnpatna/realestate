@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-08)
 
 ## Corpus Check
-- 80 files · ~2,196,412 words
+- 85 files · ~2,199,156 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 534 nodes · 686 edges · 76 communities (51 shown, 25 thin omitted)
-- Extraction: 88% EXTRACTED · 12% INFERRED · 0% AMBIGUOUS · INFERRED: 84 edges (avg confidence: 0.62)
+- 561 nodes · 744 edges · 79 communities (53 shown, 26 thin omitted)
+- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 103 edges (avg confidence: 0.6)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `176767f3`
+- Built from commit: `5d1ceefe`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -70,43 +70,44 @@
 - [[_COMMUNITY_Community 65|Community 65]]
 - [[_COMMUNITY_Community 66|Community 66]]
 - [[_COMMUNITY_Community 73|Community 73]]
+- [[_COMMUNITY_Community 76|Community 76]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Session` - 20 edges
+1. `Session` - 23 edges
 2. `compilerOptions` - 17 edges
-3. `compilerOptions` - 15 edges
-4. `SuburbRawV3` - 13 edges
-5. `NSW (New South Wales) — Greater Sydney` - 13 edges
-6. `SuburbUIV2` - 12 edges
-7. `SuburbUIV3` - 12 edges
-8. `SuburbAllModel` - 12 edges
-9. `transform_all()` - 11 edges
-10. `UserModel` - 11 edges
+3. `SuburbRawV3` - 16 edges
+4. `SuburbUIV2` - 15 edges
+5. `SuburbUIV3` - 15 edges
+6. `SuburbAllModel` - 15 edges
+7. `compilerOptions` - 15 edges
+8. `PropertyListing` - 14 edges
+9. `SuburbUIModel` - 14 edges
+10. `NSW (New South Wales) — Greater Sydney` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `analyze_suburb()` --calls--> `run_investment_committee()`  [INFERRED]
   backend/main.py → backend/ai_agent.py
+- `get_similar_suburbs()` --calls--> `find_similar_suburbs()`  [INFERRED]
+  backend/main.py → backend/clustering.py
 - `seed_raw_v3()` --calls--> `SuburbRawV3`  [INFERRED]
   backend/etl_extract_v3.py → backend/models_v3.py
 - `worker()` --calls--> `Session`  [INFERRED]
   backend/etl_extract_v3.py → backend/main.py
-- `get_suburb_properties()` --calls--> `extract_property_listings()`  [INFERRED]
-  backend/main.py → backend/etl_transform_v3.py
 - `update_password()` --calls--> `UserModel`  [INFERRED]
   backend/update_pwd.py → backend/main.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (76 total, 25 thin omitted)
+## Communities (79 total, 26 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06
-Nodes (65): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, _build_v2_only_response(), _build_v3_fallback_response() (+57 more)
+Nodes (74): analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, _build_v2_only_response(), _build_v3_fallback_response(), bust_suburbs_cache(), calculate_roi() (+66 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.09
-Nodes (18): SortKey, CashflowGearingProps, GearingResult, V3SuburbData, BuyerProfile, MyPurchasePlanProps, calculateMaxPurchase(), calculateStampDuty() (+10 more)
+Cohesion: 0.08
+Nodes (19): SortKey, CashflowGearingProps, GearingResult, V3SuburbData, BuyerProfile, MyPurchasePlanProps, QuickRoiCalculatorProps, calculateMaxPurchase() (+11 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.27
@@ -114,15 +115,15 @@ Nodes (9): extract_single_suburb(), etl_extract_v3.py — Layer 1: RAW Extractio
 
 ### Community 3 - "Community 3"
 Cohesion: 0.07
-Nodes (26): dependencies, @babel/parser, @babel/traverse, leaflet, react, react-dom, react-leaflet, recharts (+18 more)
+Nodes (27): dependencies, @babel/parser, @babel/traverse, leaflet, leaflet.vectorgrid, react, react-dom, react-leaflet (+19 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection, moduleResolution (+10 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.20
-Nodes (16): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+8 more)
+Cohesion: 0.17
+Nodes (18): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+10 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.18
@@ -141,8 +142,8 @@ Cohesion: 0.14
 Nodes (17): get_osm_boundary(), get_osm_livability(), Returns local POI data and livability scores from PostGIS OSM tables.     Replac, Returns suburb boundary geojson and center coordinates from local PostGIS., _build_category_query(), compute_scores(), get_boundary(), get_livability() (+9 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.27
-Nodes (12): Any, bear_agent_node(), bull_agent_node(), CommitteeState, fetch_news_node(), get_llm(), get_news_sentiment(), On-demand Tavily news search for a single suburb.     Cached in DB — only fetche (+4 more)
+Cohesion: 0.24
+Nodes (14): Any, bear_agent_node(), bull_agent_node(), CommitteeState, fetch_news_node(), get_llm(), get_news_sentiment(), On-demand Tavily news search for a single suburb.     Cached in DB — only fetche (+6 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.25
@@ -217,28 +218,28 @@ Cohesion: 0.50
 Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
 
 ### Community 73 - "Community 73"
-Cohesion: 0.14
-Nodes (9): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+1 more)
+Cohesion: 0.12
+Nodes (11): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+3 more)
 
 ## Knowledge Gaps
-- **156 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `Any` (+151 more)
+- **159 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `Any` (+154 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **26 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Community 0` to `Community 2`?**
+- **Why does `Session` connect `Community 0` to `Community 2`, `Community 5`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `get_suburb_properties()` connect `Community 0` to `Community 5`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `get_suburb_properties()` connect `Community 5` to `Community 0`?**
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `V3Scheduler` connect `Community 6` to `Community 0`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+  _High betweenness centrality (0.022) - this node is a cross-community bridge._
 - **Are the 7 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
   _`Session` has 7 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 11 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `AnalyzeRequest`) actually correct?**
-  _`SuburbRawV3` has 11 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `$schema`, `plugins`, `react/rules-of-hooks` to the rest of the system?**
-  _230 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.062456140350877196 - nodes in this community are weakly interconnected._
+- **Are the 14 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `AnalyzeRequest`) actually correct?**
+  _`SuburbRawV3` has 14 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 12 inferred relationships involving `SuburbUIV2` (e.g. with `AnalyzeRequest` and `BoundedRateLimitStore`) actually correct?**
+  _`SuburbUIV2` has 12 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 13 inferred relationships involving `SuburbUIV3` (e.g. with `AnalyzeRequest` and `BoundedRateLimitStore`) actually correct?**
+  _`SuburbUIV3` has 13 INFERRED edges - model-reasoned connections that need verification._
