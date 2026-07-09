@@ -1075,6 +1075,8 @@ class ROICalcRequest(BaseModel):
     pm_fee_pct: float = 7.5
     vacancy_weeks: float = 2.0
     maintenance_pct: float = 1.0
+    salary: float = 100000.0
+    depreciation: float = 8000.0
 
 def calculate_stamp_duty(state: str, price: float) -> float:
     state = state.upper()
@@ -1166,10 +1168,32 @@ def calculate_roi(req: ROICalcRequest):
         else:
             annual_interest = 0
             
-    net_annual_cashflow = annual_rent - annual_expenses - annual_interest
-    net_weekly_cashflow = net_annual_cashflow / 52
+    net_annual_cashflow_pre_tax = annual_rent - annual_expenses - annual_interest
+    net_weekly_cashflow_pre_tax = net_annual_cashflow_pre_tax / 52
     
-    cash_on_cash_return = (net_annual_cashflow / total_upfront) * 100 if total_upfront > 0 else 0
+    # Marginal Tax Rate Calculation (including 2% Medicare Levy)
+    tax_rate = 0.0
+    if req.salary > 190000: tax_rate = 0.47
+    elif req.salary > 135000: tax_rate = 0.39
+    elif req.salary > 45000: tax_rate = 0.32
+    elif req.salary > 18200: tax_rate = 0.18
+    
+    # Tax Adjusted Cashflow
+    # On-paper tax loss/gain = Cashflow (excluding P&I principal) - Depreciation
+    # Note: annual_interest is just the interest portion for IO, and rough estimate for P&I.
+    taxable_position = net_annual_cashflow_pre_tax - req.depreciation
+    tax_rebate = 0
+    if taxable_position < 0:
+        # Negative gearing rebate
+        tax_rebate = abs(taxable_position) * tax_rate
+    else:
+        # Positive gearing tax to pay
+        tax_rebate = - (taxable_position * tax_rate)
+        
+    net_annual_cashflow_post_tax = net_annual_cashflow_pre_tax + tax_rebate
+    net_weekly_cashflow_post_tax = net_annual_cashflow_post_tax / 52
+    
+    cash_on_cash_return = (net_annual_cashflow_pre_tax / total_upfront) * 100 if total_upfront > 0 else 0
     gross_yield = (req.weekly_rent * 52 / req.purchase_price) * 100 if req.purchase_price > 0 else 0
     net_yield = ((annual_rent - annual_expenses) / req.purchase_price) * 100 if req.purchase_price > 0 else 0
     
@@ -1186,10 +1210,14 @@ def calculate_roi(req: ROICalcRequest):
             "annual_rent": round(annual_rent, 2),
             "annual_expenses": round(annual_expenses, 2),
             "annual_interest": round(annual_interest, 2),
-            "net_annual_cashflow": round(net_annual_cashflow, 2),
-            "net_weekly_cashflow": round(net_weekly_cashflow, 2),
+            "taxable_position": round(taxable_position, 2),
+            "tax_rebate": round(tax_rebate, 2),
+            "net_annual_cashflow_pre_tax": round(net_annual_cashflow_pre_tax, 2),
+            "net_weekly_cashflow_pre_tax": round(net_weekly_cashflow_pre_tax, 2),
+            "net_annual_cashflow_post_tax": round(net_annual_cashflow_post_tax, 2),
+            "net_weekly_cashflow_post_tax": round(net_weekly_cashflow_post_tax, 2),
             "cash_on_cash_return_pct": round(cash_on_cash_return, 2),
-            "gearing_status": "positive" if net_annual_cashflow > 0 else ("neutral" if net_annual_cashflow == 0 else "negative")
+            "gearing_status": "positive" if net_annual_cashflow_pre_tax > 0 else ("neutral" if net_annual_cashflow_pre_tax == 0 else "negative")
         }
     }
 

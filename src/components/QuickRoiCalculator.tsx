@@ -4,9 +4,10 @@ interface QuickRoiCalculatorProps {
   medianPrice: number;
   medianRent: number;
   state: string;
+  onAdvancedClick?: () => void;
 }
 
-export default function QuickRoiCalculator({ medianPrice, medianRent, state }: QuickRoiCalculatorProps) {
+export default function QuickRoiCalculator({ medianPrice, medianRent, state, onAdvancedClick }: QuickRoiCalculatorProps) {
   const [depositPct, setDepositPct] = useState(20);
   const [interestRate, setInterestRate] = useState(6.2);
   const [loanType, setLoanType] = useState('io');
@@ -51,9 +52,17 @@ export default function QuickRoiCalculator({ medianPrice, medianRent, state }: Q
 
   return (
     <div className="highlights-section" style={{ marginTop: '20px' }}>
-      <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-        Panel E: Quick ROI Calculator (Server-Side)
-      </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
+        <h3>Panel E: Quick ROI Calculator</h3>
+        {onAdvancedClick && (
+          <button 
+            onClick={onAdvancedClick}
+            style={{ padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}
+          >
+            Launch Detailed Tax/Cashflow Calculator ➔
+          </button>
+        )}
+      </div>
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 250px', background: 'var(--bg-card)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
           <h4 style={{ marginBottom: '15px', color: 'var(--accent-purple)' }}>Adjust Assumptions</h4>

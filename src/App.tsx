@@ -1115,6 +1115,7 @@ function App() {
                     medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
                     medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
                     state={(activeSuburb as any).state || "VIC"}
+                    onAdvancedClick={() => setActiveTab('gearing')}
                   />
 
                   {/* K-Means Clustering: Similar Suburbs */}
