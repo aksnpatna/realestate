@@ -22,6 +22,10 @@ function App() {
   const [loginError, setLoginError] = useState('')
   const [isRegistering, setIsRegistering] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [userType, setUserType] = useState('First Home Buyer')
+  const [verificationMessage, setVerificationMessage] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
   
   const [suburbsData, setSuburbsData] = useState<SuburbData[]>([])
@@ -93,6 +97,39 @@ function App() {
     }
   }, [isAuthenticated])
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token) {
+      fetch(`/api/verify?token=${token}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            setVerificationMessage('Email verified successfully! You can now login.');
+          } else {
+            setLoginError(data.detail || 'Verification failed');
+          }
+          window.history.replaceState({}, document.title, window.location.pathname);
+        })
+        .catch(() => setLoginError('Failed to verify token'));
+    }
+  }, []);
+
+  const trackActivity = (action: string, target?: string) => {
+    if (!isAuthenticated) return;
+    fetch('/api/track-activity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action_type: action, target_id: target })
+    }).catch(console.error);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated && activeTab) {
+      trackActivity('CLICK_TAB', activeTab);
+    }
+  }, [isAuthenticated, activeTab]);
+
   const toggleFavorite = async (suburbId: string) => {
     try {
       const res = await fetch('/api/favorites', {
@@ -129,6 +166,7 @@ function App() {
     if (stateSuburbs.length > 0) {
       if (!activeSuburb || activeSuburb.state !== activeState) {
         loadColdSuburb(stateSuburbs[0].id)
+        trackActivity('VIEW_SUBURB', stateSuburbs[0].id)
       }
     } else {
       setActiveSuburb(null)
@@ -157,8 +195,13 @@ function App() {
         setIsAuthenticated(true)
         setLoginError('')
       } else {
-        const msg = await res.text();
-        setLoginError(msg || `Invalid credentials (Status: ${res.status})`)
+        const msg = await res.json().then(d => d.detail).catch(async () => await res.text());
+        if (res.status === 403 && msg.includes('verified')) {
+           setVerificationMessage(msg);
+           setLoginError('');
+        } else {
+           setLoginError(msg || `Invalid credentials (Status: ${res.status})`)
+        }
       }
     } catch {
       setLoginError('Network error — check if backend is running')
@@ -183,7 +226,13 @@ function App() {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, password: cleanPassword })
+        body: JSON.stringify({ 
+          email: cleanEmail, 
+          password: cleanPassword,
+          first_name: firstName,
+          last_name: lastName,
+          user_type: userType
+        })
       })
       if (res.ok) {
         const loginRes = await fetch('/api/login', {
@@ -194,6 +243,9 @@ function App() {
         if (loginRes.ok) {
           setIsAuthenticated(true)
           setLoginError('')
+        } else if (loginRes.status === 403) {
+          setIsRegistering(false)
+          setVerificationMessage('Registration successful! Please check your email to verify your account.')
         }
       } else {
         const msg = await res.json().then(d => d.detail || 'Registration failed').catch(() => 'Registration failed')
@@ -216,6 +268,19 @@ function App() {
             {isRegistering ? 'Create Account' : 'Login to Dashboard'}
           </p>
           <form onSubmit={isRegistering ? handleRegister : handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {isRegistering && (
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <div className="control-group" style={{ flex: 1 }}>
+                  <label className="control-label">First Name</label>
+                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required />
+                </div>
+                <div className="control-group" style={{ flex: 1 }}>
+                  <label className="control-label">Last Name</label>
+                  <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required />
+                </div>
+              </div>
+            )}
+            
             <div className="control-group">
               <label className="control-label">Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required autoComplete="email" />
@@ -233,9 +298,25 @@ function App() {
               )}
             </div>
             {isRegistering && (
-              <div className="control-group">
-                <label className="control-label">Confirm Password</label>
-                <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required autoComplete="new-password" />
+              <>
+                <div className="control-group">
+                  <label className="control-label">Confirm Password</label>
+                  <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required autoComplete="new-password" />
+                </div>
+                <div className="control-group">
+                  <label className="control-label">I am a...</label>
+                  <select value={userType} onChange={e => setUserType(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }}>
+                    <option value="First Home Buyer">First Home Buyer</option>
+                    <option value="Investor">Investor</option>
+                    <option value="Owner Occupier">Owner Occupier Upgrading</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </>
+            )}
+            {verificationMessage && (
+              <div style={{ padding: '10px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '6px', color: 'var(--success)', fontSize: '13px', textAlign: 'center' }}>
+                {verificationMessage}
               </div>
             )}
             {loginError && (
@@ -358,6 +439,7 @@ function App() {
                   onChange={(e) => {
                     if (e.target.value) {
                       loadColdSuburb(e.target.value)
+                      trackActivity('VIEW_SUBURB', e.target.value)
                     }
                   }}
                 >

@@ -12,8 +12,14 @@ from fastapi import FastAPI, HTTPException, Depends, Header, BackgroundTasks, Re
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, String, JSON, func, Integer
+from sqlalchemy import create_engine, Column, String, JSON, func, Integer, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
+import smtplib
+import uuid
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+REQUIRE_EMAIL_VERIFICATION = False
 from dotenv import load_dotenv
 from parallel_scraper import SuburbAllModel, SuburbUIModel
 from models_v2 import SuburbUIV2
@@ -106,6 +112,11 @@ class UserModel(Base):
     __tablename__ = "users"
     id = Column(String, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+    user_type = Column(String, nullable=True)
+    is_verified = Column(Boolean, default=False)
+    verification_token = Column(String, nullable=True)
     password_hash = Column(String)
     salt = Column(String)
     created_at = Column(String)
@@ -116,6 +127,14 @@ class UserFavorite(Base):
     user_id = Column(String, index=True)
     suburb_id = Column(String, index=True)
     created_at = Column(String, default=lambda: datetime.now().isoformat())
+
+class UserActivity(Base):
+    __tablename__ = "user_activities"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, index=True)
+    action_type = Column(String, index=True)
+    target_id = Column(String, nullable=True)
+    timestamp = Column(String, default=lambda: datetime.now().isoformat())
 
 # Ensure tables are created
 Base.metadata.create_all(bind=engine)
@@ -150,6 +169,39 @@ class LoginRequest(BaseModel):
 class RegisterRequest(BaseModel):
     email: str
     password: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    user_type: Optional[str] = None
+
+class ActivityRequest(BaseModel):
+    action_type: str
+    target_id: Optional[str] = None
+
+def send_verification_email(to_email: str, token: str):
+    verification_link = f"http://localhost:5173/verify?token={token}"
+    print(f"\n=== [SMTP MOCK] Sending verification link to {to_email} ===")
+    print(f"LINK: {verification_link}\n")
+    
+    smtp_host = os.environ.get("SMTP_HOST")
+    smtp_port = os.environ.get("SMTP_PORT")
+    smtp_user = os.environ.get("SMTP_USER")
+    smtp_pass = os.environ.get("SMTP_PASS")
+    
+    if smtp_host and smtp_port and smtp_user and smtp_pass:
+        try:
+            msg = MIMEMultipart()
+            msg['From'] = f"Real Estate Engine <{smtp_user}>"
+            msg['To'] = to_email
+            msg['Subject'] = "Verify Your Account"
+            msg.attach(MIMEText(f"Click here to verify your account: {verification_link}", 'plain'))
+            
+            server = smtplib.SMTP(smtp_host, int(smtp_port))
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.send_message(msg)
+            server.quit()
+        except Exception as e:
+            print(f"SMTP Error: {e}")
 
 # In-memory rate limiting store for analyze-suburb endpoint
 class BoundedRateLimitStore:
@@ -214,17 +266,28 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
         raise HTTPException(status_code=400, detail="Email already registered")
     
     hashed = hash_password(request.password)
+    verification_token = str(uuid.uuid4())
     
     new_user = UserModel(
         id=secrets.token_hex(16),
         email=clean_email,
+        first_name=request.first_name,
+        last_name=request.last_name,
+        user_type=request.user_type,
+        is_verified=False,
+        verification_token=verification_token,
         password_hash=hashed,
         salt="",
         created_at=datetime.now().isoformat()
     )
     db.add(new_user)
     db.commit()
-    return {"status": "success", "message": "Registration successful"}
+    
+    # Send verification email asynchronously so it doesn't block
+    import threading
+    threading.Thread(target=send_verification_email, args=(clean_email, verification_token)).start()
+    
+    return {"status": "success", "message": "Registration successful. Please check your email to verify your account."}
 
 @app.post("/api/login")
 def login(request: LoginRequest, response: Response, req: Request, db: Session = Depends(get_db)):
@@ -234,6 +297,9 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
     
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+    if REQUIRE_EMAIL_VERIFICATION and not user.is_verified:
+        raise HTTPException(status_code=403, detail="Email not verified. Please check your inbox.")
         
     if user.salt:
         import hashlib
@@ -253,7 +319,29 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
 
 @app.get("/api/me")
 def get_me(user: UserModel = Depends(get_current_user)):
-    return {"id": user.id, "email": user.email}
+    return {"id": user.id, "email": user.email, "first_name": user.first_name, "last_name": user.last_name, "is_verified": user.is_verified}
+
+@app.get("/api/verify")
+def verify_email(token: str, db: Session = Depends(get_db)):
+    user = db.query(UserModel).filter(UserModel.verification_token == token).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired verification token")
+    
+    user.is_verified = True
+    user.verification_token = None
+    db.commit()
+    return {"status": "success", "message": "Email verified successfully"}
+
+@app.post("/api/track-activity")
+def track_activity(request: ActivityRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    activity = UserActivity(
+        user_id=user.id,
+        action_type=request.action_type,
+        target_id=request.target_id
+    )
+    db.add(activity)
+    db.commit()
+    return {"status": "success"}
 
 @app.get("/health")
 def health_check(db: Session = Depends(get_db)):
