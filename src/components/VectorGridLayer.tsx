@@ -37,14 +37,27 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield' }: V
             else { opacity = 0; stroke = false; } // Filter out poor growth noise
           }
           
-          return {
-            fillColor: color,
-            fillOpacity: opacity,
-            stroke: stroke,
-            color: 'black',
-            weight: 2,
-            radius: radius
-          };
+          return [
+            // Invisible, larger hit area to make clicks much more responsive
+            {
+              fill: true,
+              fillColor: 'transparent',
+              fillOpacity: 0,
+              stroke: true,
+              color: 'transparent',
+              weight: opacity > 0 ? 15 : 0,
+              radius: opacity > 0 ? radius + 10 : 0
+            },
+            // The actual visible circle
+            {
+              fillColor: color,
+              fillOpacity: opacity,
+              stroke: stroke,
+              color: 'black',
+              weight: 2,
+              radius: radius
+            }
+          ];
         }
       },
       interactive: true,
