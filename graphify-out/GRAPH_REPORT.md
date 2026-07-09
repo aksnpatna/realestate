@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-07-08)
+# Graph Report - realestate  (2026-07-09)
 
 ## Corpus Check
-- 81 files · ~2,196,578 words
+- 87 files · ~2,206,607 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 538 nodes · 691 edges · 78 communities (52 shown, 26 thin omitted)
-- Extraction: 88% EXTRACTED · 12% INFERRED · 0% AMBIGUOUS · INFERRED: 84 edges (avg confidence: 0.62)
+- 572 nodes · 792 edges · 79 communities (53 shown, 26 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 129 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c2d9d7e8`
+- Built from commit: `80a288bb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -73,16 +73,16 @@
 - [[_COMMUNITY_Community 76|Community 76]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Session` - 20 edges
-2. `compilerOptions` - 17 edges
-3. `compilerOptions` - 15 edges
-4. `SuburbRawV3` - 13 edges
-5. `NSW (New South Wales) — Greater Sydney` - 13 edges
-6. `SuburbUIV2` - 12 edges
-7. `SuburbUIV3` - 12 edges
-8. `SuburbAllModel` - 12 edges
-9. `transform_all()` - 11 edges
-10. `UserModel` - 11 edges
+1. `Session` - 26 edges
+2. `SuburbRawV3` - 18 edges
+3. `SuburbPriceHistory` - 18 edges
+4. `SuburbUIV2` - 17 edges
+5. `SuburbUIV3` - 17 edges
+6. `SuburbAllModel` - 17 edges
+7. `compilerOptions` - 17 edges
+8. `PropertyListing` - 16 edges
+9. `SuburbUIModel` - 16 edges
+10. `compilerOptions` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `analyze_suburb()` --calls--> `run_investment_committee()`  [INFERRED]
@@ -99,15 +99,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (78 total, 26 thin omitted)
+## Communities (79 total, 26 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.07
-Nodes (61): analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, _build_v2_only_response(), _build_v3_fallback_response(), bust_suburbs_cache(), _calibrate_dq() (+53 more)
+Cohesion: 0.06
+Nodes (79): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, _build_v2_only_response(), _build_v3_fallback_response(), bust_suburbs_cache() (+71 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.09
-Nodes (18): SortKey, CashflowGearingProps, GearingResult, V3SuburbData, BuyerProfile, MyPurchasePlanProps, calculateMaxPurchase(), calculateStampDuty() (+10 more)
+Cohesion: 0.07
+Nodes (21): TabName, SortKey, CashflowGearingProps, GearingResult, V3SuburbData, BuyerProfile, MyPurchasePlanProps, OnboardingTour() (+13 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.27
@@ -115,7 +115,7 @@ Nodes (9): extract_single_suburb(), etl_extract_v3.py — Layer 1: RAW Extractio
 
 ### Community 3 - "Community 3"
 Cohesion: 0.07
-Nodes (26): dependencies, @babel/parser, @babel/traverse, leaflet, react, react-dom, react-leaflet, recharts (+18 more)
+Nodes (28): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+20 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.11
@@ -218,11 +218,11 @@ Cohesion: 0.50
 Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
 
 ### Community 73 - "Community 73"
-Cohesion: 0.14
-Nodes (9): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+1 more)
+Cohesion: 0.12
+Nodes (11): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+3 more)
 
 ## Knowledge Gaps
-- **156 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `Any` (+151 more)
+- **161 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+156 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **26 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -232,14 +232,14 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `Session` connect `Community 0` to `Community 2`, `Community 5`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `get_suburb_properties()` connect `Community 5` to `Community 0`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `V3Scheduler` connect `Community 6` to `Community 0`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
-- **Are the 7 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
-  _`Session` has 7 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 11 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `AnalyzeRequest`) actually correct?**
-  _`SuburbRawV3` has 11 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `$schema`, `plugins`, `react/rules-of-hooks` to the rest of the system?**
-  _231 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.06921529175050302 - nodes in this community are weakly interconnected._
+  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+- **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
+  _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 16 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**
+  _`SuburbRawV3` has 16 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 15 inferred relationships involving `SuburbPriceHistory` (e.g. with `ActivityRequest` and `AnalyzeRequest`) actually correct?**
+  _`SuburbPriceHistory` has 15 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 14 inferred relationships involving `SuburbUIV2` (e.g. with `ActivityRequest` and `AnalyzeRequest`) actually correct?**
+  _`SuburbUIV2` has 14 INFERRED edges - model-reasoned connections that need verification._

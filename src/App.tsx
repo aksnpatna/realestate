@@ -131,18 +131,28 @@ function App() {
   }, [isAuthenticated, activeTab]);
 
   const toggleFavorite = async (suburbId: string) => {
+    // Optimistic update
+    setFavorites(prev => 
+      prev.includes(suburbId) ? prev.filter(id => id !== suburbId) : [...prev, suburbId]
+    );
     try {
       const res = await fetch('/api/favorites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ suburb_id: suburbId })
       });
-      if (res.ok) {
-        const data = await res.json();
-        setFavorites(data.favorites);
+      if (!res.ok) {
+        // Revert on failure
+        setFavorites(prev => 
+          prev.includes(suburbId) ? prev.filter(id => id !== suburbId) : [...prev, suburbId]
+        );
       }
     } catch (err) {
       console.error("Failed to toggle favorite", err);
+      // Revert on failure
+      setFavorites(prev => 
+        prev.includes(suburbId) ? prev.filter(id => id !== suburbId) : [...prev, suburbId]
+      );
     }
   };
 
