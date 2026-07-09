@@ -8,6 +8,7 @@ import CashflowGearing from './components/CashflowGearing'
 import InstitutionalV3Panel from './components/InstitutionalV3Panel'
 import MyPurchasePlan from './components/MyPurchasePlan'
 import QuickRoiCalculator from './components/QuickRoiCalculator'
+import OnboardingTour from './components/OnboardingTour'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -21,6 +22,7 @@ function App() {
   const [loginError, setLoginError] = useState('')
   const [isRegistering, setIsRegistering] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [favorites, setFavorites] = useState<string[]>([])
   
   const [suburbsData, setSuburbsData] = useState<SuburbData[]>([])
   const [loadingData, setLoadingData] = useState(true)
@@ -79,8 +81,33 @@ function App() {
         .then(res => res.json())
         .then(data => setMacroEtf(data))
         .catch(err => console.error("ETF fetch error:", err))
+
+      fetch('/api/favorites')
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            setFavorites(data.favorites)
+          }
+        })
+        .catch(err => console.error("Favorites fetch error:", err))
     }
   }, [isAuthenticated])
+
+  const toggleFavorite = async (suburbId: string) => {
+    try {
+      const res = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ suburb_id: suburbId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setFavorites(data.favorites);
+      }
+    } catch (err) {
+      console.error("Failed to toggle favorite", err);
+    }
+  };
 
   const filteredSuburbsData = useMemo(() => {
     return suburbsData.filter(s => regionMode === 'metro' ? (s as any).isMetro : !(s as any).isMetro);
@@ -232,6 +259,7 @@ function App() {
 
   return (
     <div className="dashboard-container">
+      <OnboardingTour />
       <header>
         <h1 className="title-glow">Real Estate Engine</h1>
         <p className="subtitle">Algorithmic Suburb Profiling & Growth Potential</p>
@@ -383,9 +411,24 @@ function App() {
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card">
-                    <div className="detail-header">
+                    <div className="detail-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div>
-                        <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                          <h2 className="detail-title" style={{ margin: 0 }}>{activeSuburb.name}, {activeSuburb.state}</h2>
+                          <button
+                            className="favorite-btn"
+                            onClick={() => toggleFavorite(activeSuburb.id)}
+                            style={{
+                              background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.8rem',
+                              color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-secondary)',
+                              transition: 'all 0.2s', padding: 0, lineHeight: 1
+                            }}
+                            title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
+                          >
+                            {favorites.includes(activeSuburb.id) ? '♥' : '♡'}
+                          </button>
+                        </div>
+                        <div>
                         {(()=>{
                           const dq = (activeSuburb as any).dqScore;
                           if (dq == null) {
@@ -401,7 +444,7 @@ function App() {
                             V3 · {new Date((activeSuburb as any).lastV3Update).toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'})}
                           </span>
                         )}
-                      </h2>
+                        </div>
                       <p className="subtitle">
                         {(activeSuburb as any).cbdDistance
                           ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
