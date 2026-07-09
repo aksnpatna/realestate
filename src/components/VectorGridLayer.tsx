@@ -6,9 +6,10 @@ import 'leaflet.vectorgrid';
 interface VectorGridProps {
   url: string;
   zIndex?: number;
+  mode?: 'yield' | 'growth';
 }
 
-export default function VectorGridLayer({ url, zIndex = 400 }: VectorGridProps) {
+export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield' }: VectorGridProps) {
   const map = useMap();
 
   useEffect(() => {
@@ -17,19 +18,32 @@ export default function VectorGridLayer({ url, zIndex = 400 }: VectorGridProps) 
       vectorTileLayerStyles: {
         // Name of the layer served by pg_tileserv is 'public.suburbs_ui_v3'
         'public.suburbs_ui_v3': function(properties: any, zoom: number) {
-          // Heatmap styling logic based on gross rental yield
           const yieldPct = properties.house_gross_rental_yield || 0;
-          let color = '#ef4444'; // Red (Poor)
-          if (yieldPct >= 6) color = '#10b981'; // Green (Excellent)
-          else if (yieldPct >= 4) color = '#f59e0b'; // Amber (Moderate)
+          const growth = properties.growth_score || 0;
+          
+          let color = '#ef4444'; // Default Red
+          let radius = 0;
+          let opacity = 0;
+          let stroke = false;
+          
+          if (mode === 'yield') {
+            if (yieldPct >= 6) { color = '#10b981'; opacity = 0.9; stroke = true; radius = zoom > 12 ? 32 : (zoom > 8 ? 16 : 8); }
+            else if (yieldPct >= 4) { color = '#f59e0b'; opacity = 0.6; stroke = true; radius = zoom > 12 ? 16 : (zoom > 8 ? 8 : 4); }
+            else { opacity = 0; stroke = false; } // Filter out poor yield noise
+          } else {
+            // Growth Mode
+            if (growth >= 70) { color = '#06b6d4'; opacity = 0.9; stroke = true; radius = zoom > 12 ? 32 : (zoom > 8 ? 16 : 8); }
+            else if (growth >= 50) { color = '#3b82f6'; opacity = 0.6; stroke = true; radius = zoom > 12 ? 16 : (zoom > 8 ? 8 : 4); }
+            else { opacity = 0; stroke = false; } // Filter out poor growth noise
+          }
           
           return {
             fillColor: color,
-            fillOpacity: 0.9,
-            stroke: true,
+            fillOpacity: opacity,
+            stroke: stroke,
             color: 'black',
             weight: 2,
-            radius: zoom > 12 ? 24 : (zoom > 8 ? 12 : 6)
+            radius: radius
           };
         }
       },
@@ -46,6 +60,7 @@ export default function VectorGridLayer({ url, zIndex = 400 }: VectorGridProps) 
             <h4 style="margin: 0 0 5px 0; color: #1e293b;">${props.name}</h4>
             <div style="font-size: 0.9em; color: #475569;">
               Yield: <strong>${props.house_gross_rental_yield || 'N/A'}%</strong><br/>
+              Growth Score: <strong>${Math.round(props.growth_score || 0)}/100</strong><br/>
               Median: <strong>$${(props.house_median_price || 0).toLocaleString()}</strong>
             </div>
           </div>
@@ -59,7 +74,7 @@ export default function VectorGridLayer({ url, zIndex = 400 }: VectorGridProps) 
     return () => {
       map.removeLayer(vectorGrid);
     };
-  }, [map, url, zIndex]);
+  }, [map, url, zIndex, mode]);
 
   return null;
 }
