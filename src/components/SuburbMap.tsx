@@ -57,6 +57,7 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [geoData, setGeoData] = useState<any>(null);
   const [derivedCenter, setDerivedCenter] = useState<[number, number]>(center || AUSTRALIA_CENTER);
+  const [heatmapMode, setHeatmapMode] = useState<'yield' | 'growth'>('yield');
 
   useEffect(() => {
     setGeoData(null);
@@ -106,6 +107,22 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
       <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>
         <strong>Interactive Vector Heatmap:</strong> A live nationwide overlay of all 13,000+ suburbs is rendered dynamically via PostGIS. Zoom out to see the national yield distribution, and click on any coloured point to inspect its live data. Use the layer control (top right) to toggle base maps and overlays.
       </p>
+      
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+        <button 
+          onClick={() => setHeatmapMode('yield')}
+          style={{ padding: '6px 12px', background: heatmapMode === 'yield' ? 'var(--accent-purple)' : 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+        >
+          💰 Rental Yield Hotspots
+        </button>
+        <button 
+          onClick={() => setHeatmapMode('growth')}
+          style={{ padding: '6px 12px', background: heatmapMode === 'growth' ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, color: heatmapMode === 'growth' ? '#000' : '#fff' }}
+        >
+          📈 Capital Growth Outliers
+        </button>
+      </div>
+
       <div className="map-container-inner" style={{ background: '#e5e5e5' }}>
         <MapContainer center={derivedCenter} zoom={13} style={{ height: '100%', width: '100%', borderRadius: '12px' }}>
           
@@ -148,8 +165,8 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
               />
             </LayersControl.Overlay>
 
-            <LayersControl.Overlay name="📊 Yield Heatmap (Vector Tiles)" checked>
-               <VectorGridLayer url="/tiles/public.suburbs_ui_v3/{z}/{x}/{y}.pbf" />
+            <LayersControl.Overlay name="📊 Vector Analytics Heatmap" checked>
+               <VectorGridLayer url="/tiles/public.suburbs_ui_v3/{z}/{x}/{y}.pbf" mode={heatmapMode} />
             </LayersControl.Overlay>
           </LayersControl>
 
