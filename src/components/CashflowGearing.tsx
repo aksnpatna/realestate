@@ -44,6 +44,8 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
   const maintenancePct = 1.0;
   const [vacancyWeeks, setVacancyWeeks] = useState<number>(2);
   const [vacancyFromAPI, setVacancyFromAPI] = useState<number | null>(null);
+  const [salary, setSalary] = useState<number>(100000);
+  const [depreciation, setDepreciation] = useState<number>(8000);
   const [rateLoading, setRateLoading] = useState<boolean>(true);
 
   // Fetch dynamic interest rate
@@ -142,16 +144,20 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
     
     // Tax impact
     let taxBenefit = 0;
-    let netAfterTax = netAnnualCashflow;
+    const taxablePosition = netAnnualCashflow - depreciation;
     
     if (purchaseType === 'smsf') {
-      // SMSF pays 15% tax on positive income, or carries forward 15% loss
-      taxBenefit = netAnnualCashflow < 0 ? Math.abs(netAnnualCashflow) * 0.15 : -(netAnnualCashflow * 0.15);
+      taxBenefit = taxablePosition < 0 ? Math.abs(taxablePosition) * 0.15 : -(taxablePosition * 0.15);
     } else {
-      // Personal assume average 37% marginal tax bracket for negative gearing
-      taxBenefit = netAnnualCashflow < 0 ? Math.abs(netAnnualCashflow) * 0.37 : -(netAnnualCashflow * 0.37);
+      let marginalRate = 0.0;
+      if (salary > 190000) marginalRate = 0.47;
+      else if (salary > 135000) marginalRate = 0.39;
+      else if (salary > 45000) marginalRate = 0.32;
+      else if (salary > 18200) marginalRate = 0.18;
+      
+      taxBenefit = taxablePosition < 0 ? Math.abs(taxablePosition) * marginalRate : -(taxablePosition * marginalRate);
     }
-    netAfterTax = netAnnualCashflow + taxBenefit;
+    const netAfterTax = netAnnualCashflow + taxBenefit;
 
     const cashOnCashReturn = (netAfterTax / totalUpfront) * 100;
 
@@ -178,7 +184,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchasePrice, weeklyRent, depositPct, interestRate, loanType, loanTerm,
     customCosts, ratesBill, waterBill, insurance, pmFeePct, maintenancePct,
-    vacancyWeeks, selectedSuburbId, purchaseType]);
+    vacancyWeeks, selectedSuburbId, purchaseType, salary, depreciation]);
 
   return (
     <div className="gearing-container">
@@ -206,9 +212,20 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
                   SMSF Purchase (LRBA)
                 </button>
               </div>
-              {purchaseType === 'smsf' && (
-                <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', marginTop: '8px', padding: '8px', background: 'rgba(0, 240, 255, 0.1)', borderRadius: '4px' }}>
+              {purchaseType === 'smsf' ? (
+                <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', marginTop: '8px', padding: '8px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '4px' }}>
                   <strong>SMSF Rules applied:</strong> 30% min deposit, 15% tax rate, 8.85% ATO Safe Harbour LRBA interest rate default.
+                </div>
+              ) : (
+                <div className="input-row" style={{ marginTop: '0.5rem' }}>
+                  <div className="control-group">
+                    <label className="control-label">Gross Income $/yr (Tax Bracket)</label>
+                    <input type="number" className="premium-input small" value={salary} onChange={(e) => setSalary(Number(e.target.value) || 0)} step={10000} />
+                  </div>
+                  <div className="control-group">
+                    <label className="control-label">Est. Depreciation $/yr</label>
+                    <input type="number" className="premium-input small" value={depreciation} onChange={(e) => setDepreciation(Number(e.target.value) || 0)} step={1000} />
+                  </div>
                 </div>
               )}
             </div>
@@ -380,7 +397,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
                         { name: 'Expenses', value: -result.annualExpenses, fill: '#f59e0b' },
                         { name: 'Pre-Tax Net', value: result.netAnnualCashflow, fill: result.netAnnualCashflow > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' },
                         { name: 'Tax Impact', value: result.taxBenefit, fill: result.taxBenefit > 0 ? 'var(--accent-cyan)' : 'var(--warning, #ef4444)' },
-                        { name: 'Net After Tax', value: result.netAfterTax, fill: result.netAfterTax > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' }
+                        { name: 'Tax-Adjusted', value: result.netAfterTax, fill: result.netAfterTax > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' }
                       ]}
                       margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                     >
@@ -399,7 +416,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
                             { name: 'Expenses', value: -result.annualExpenses, fill: '#f59e0b' },
                             { name: 'Pre-Tax Net', value: result.netAnnualCashflow, fill: result.netAnnualCashflow > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' },
                             { name: 'Tax Impact', value: result.taxBenefit, fill: result.taxBenefit > 0 ? 'var(--accent-cyan)' : 'var(--warning, #ef4444)' },
-                            { name: 'Net After Tax', value: result.netAfterTax, fill: result.netAfterTax > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' }
+                            { name: 'Tax-Adjusted', value: result.netAfterTax, fill: result.netAfterTax > 0 ? 'var(--accent-green, #10b981)' : 'var(--warning, #ef4444)' }
                           ].map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.fill} />
                           ))
@@ -431,7 +448,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
                 <th>Med. Price</th>
                 <th>Rent/wk</th>
                 <th>Upfront</th>
-                <th>Net/wk</th>
+                <th>Net/wk (Tax-Adj.)</th>
                 <th>CoC Return</th>
                 <th>Status</th>
               </tr>
