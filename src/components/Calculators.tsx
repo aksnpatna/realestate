@@ -1,6 +1,7 @@
 import { useState } from 'react';
+
+import { calculateComprehensiveStampDuty } from '../data/suburbs';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { calculateStampDuty } from '../data/suburbs';
 
 type CalcType = 'repayment' | 'borrowing' | 'stamp_duty';
 
@@ -8,120 +9,10 @@ const STATE_OPTIONS = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 
 type PropertyType = 'established' | 'new_home' | 'vacant_land';
 
-const FHOG: Record<string, { established: number; new_home: number; vacant_land: number; cap_new: number; cap_established: number }> = {
-  NSW: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
-  VIC: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
-  QLD: { established: 0, new_home: 30000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
-  WA: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
-  SA: { established: 0, new_home: 15000, vacant_land: 0, cap_new: 650000, cap_established: 0 },
-  TAS: { established: 0, new_home: 30000, vacant_land: 0, cap_new: 0, cap_established: 0 },
-  ACT: { established: 0, new_home: 0, vacant_land: 0, cap_new: 0, cap_established: 0 },
-  NT: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
-};
-
-const FIRST_HOME_CONCESSION: Record<string, { fullExemption: number; concessionalRange: [number, number]; concessionalDutyReduction: number }> = {
-  NSW: { fullExemption: 1000000, concessionalRange: [1000000, 1200000], concessionalDutyReduction: 0.5 },
-  VIC: { fullExemption: 600000, concessionalRange: [600000, 750000], concessionalDutyReduction: 0.5 },
-  QLD: { fullExemption: 700000, concessionalRange: [700000, 800000], concessionalDutyReduction: 0.5 },
-  WA: { fullExemption: 430000, concessionalRange: [430000, 530000], concessionalDutyReduction: 0.5 },
-  SA: { fullExemption: 650000, concessionalRange: [650000, 700000], concessionalDutyReduction: 0.5 },
-  TAS: { fullExemption: 0, concessionalRange: [0, 600000], concessionalDutyReduction: 0.5 },
-  ACT: { fullExemption: 0, concessionalRange: [0, 1000000], concessionalDutyReduction: 0 },
-  NT: { fullExemption: 0, concessionalRange: [0, 650000], concessionalDutyReduction: 0.5 },
-};
-
-const GOVT_FEES: Record<string, { mortgageReg: number; transferFee: number }> = {
-  NSW: { mortgageReg: 164.90, transferFee: 151.60 },
-  VIC: { mortgageReg: 121.40, transferFee: 96.30 },
-  QLD: { mortgageReg: 196.00, transferFee: 192.70 },
-  WA: { mortgageReg: 181.10, transferFee: 211.50 },
-  SA: { mortgageReg: 176.00, transferFee: 195.00 },
-  TAS: { mortgageReg: 141.00, transferFee: 192.70 },
-  ACT: { mortgageReg: 174.00, transferFee: 410.00 },
-  NT: { mortgageReg: 168.00, transferFee: 147.00 },
-};
-
 const CHART_COLORS = ['#3b82f6', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
 
 function formatCurrency(v: number) {
   return '$' + Math.max(0, Math.round(v)).toLocaleString();
-}
-
-function calcTransferFee(price: number, state: string): number {
-  const base = GOVT_FEES[state]?.transferFee ?? 200;
-  if (state === 'NSW') {
-    if (price <= 100000) return 100;
-    if (price <= 200000) return 200;
-    if (price <= 300000) return 300;
-    if (price <= 500000) return 400;
-    if (price <= 1000000) return 500;
-    if (price <= 2000000) return 600;
-    if (price <= 3000000) return 700;
-    return 800;
-  }
-  if (state === 'VIC') {
-    if (price <= 10000) return 0;
-    if (price <= 50000) return 10;
-    if (price <= 100000) return 100;
-    if (price <= 250000) return 250;
-    if (price <= 500000) return 500;
-    if (price <= 1000000) return 1000;
-    if (price <= 2000000) return 2000;
-    return 3000;
-  }
-  if (state === 'QLD') {
-    if (price <= 180000) return 192.70;
-    if (price <= 350000) return 384.50;
-    if (price <= 550000) return 577.00;
-    if (price <= 1000000) return 770.00;
-    return 962.50;
-  }
-  if (state === 'WA') {
-    if (price <= 100000) return 100;
-    if (price <= 200000) return 200;
-    if (price <= 300000) return 300;
-    if (price <= 500000) return 400;
-    if (price <= 1000000) return 500;
-    return 600;
-  }
-  if (state === 'SA') {
-    if (price <= 100000) return 150;
-    if (price <= 200000) return 200;
-    if (price <= 300000) return 300;
-    if (price <= 500000) return 500;
-    return 700;
-  }
-  if (state === 'TAS') {
-    if (price <= 100000) return 100;
-    if (price <= 200000) return 200;
-    if (price <= 350000) return 350;
-    return 500;
-  }
-  return base;
-}
-
-function calcMortgageRegFee(price: number, state: string): number {
-  const base = GOVT_FEES[state]?.mortgageReg ?? 180;
-  if (state === 'NSW') return 164.90;
-  if (state === 'VIC') return 121.40;
-  if (state === 'QLD') return 196.00;
-  if (state === 'WA') {
-    if (price <= 100000) return 181;
-    return 181 + (price - 100000) * 0.002;
-  }
-  if (state === 'SA') {
-    if (price <= 100000) return 176;
-    return 176 + (price - 100000) * 0.002;
-  }
-  if (state === 'TAS') {
-    if (price <= 10000) return 141;
-    return 141 + (price - 10000) * 0.004;
-  }
-  if (state === 'NT') {
-    if (price <= 525000) return 168;
-    return 168 + (price - 525000) * 0.002;
-  }
-  return base;
 }
 
 export default function Calculators() {
@@ -154,31 +45,7 @@ export default function Calculators() {
     return (maxPayment * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n));
   };
 
-  const stampDutyResult = (() => {
-    const rawDuty = calculateStampDuty(propertyValue, state);
-    let duty = rawDuty;
-    const fhcs = FIRST_HOME_CONCESSION[state];
-    if (isFirstHome && fhcs) {
-      if (propertyValue <= fhcs.fullExemption) {
-        duty = 0;
-      } else if (propertyValue > fhcs.concessionalRange[0] && propertyValue <= fhcs.concessionalRange[1]) {
-        duty = rawDuty * fhcs.concessionalDutyReduction;
-      }
-    }
-    let fhog = 0;
-    if (isFirstHome) {
-      const scheme = FHOG[state];
-      if (scheme) {
-        if (propertyType === 'new_home' && propertyValue <= scheme.cap_new) fhog = scheme.new_home;
-        else if (propertyType === 'established' && propertyValue <= scheme.cap_established) fhog = scheme.established;
-        else if (propertyType === 'vacant_land' && propertyValue <= scheme.cap_new) fhog = scheme.vacant_land;
-      }
-    }
-    const mortgageReg = calcMortgageRegFee(propertyValue, state);
-    const transferFee = calcTransferFee(propertyValue, state);
-    const totalGovtFees = duty + mortgageReg + transferFee;
-    return { duty, mortgageReg, transferFee, totalGovtFees, fhog, rawDuty };
-  })();
+  const stampDutyResult = calculateComprehensiveStampDuty(propertyValue, state, isFirstHome, propertyType);
 
   const chartData = activeCalc === 'stamp_duty' ? [
     { name: 'Stamp Duty', value: Math.round(Math.max(0, stampDutyResult.duty)) },

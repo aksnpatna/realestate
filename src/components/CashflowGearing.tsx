@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
-import { calculateStampDuty } from '../data/suburbs';
+import { calculateComprehensiveStampDuty } from '../data/suburbs';
 import type { SuburbData } from '../data/suburbs';
 
 interface GearingResult {
@@ -116,7 +116,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
       ? suburbsData.find(s => s.id === selectedSuburbId)?.state ?? 'VIC'
       : 'VIC';
 
-    const sd = calculateStampDuty(purchasePrice, state);
+    const { totalGovtFees: sd } = calculateComprehensiveStampDuty(purchasePrice, state, false, 'established');
     const deposit = purchasePrice * (depositPct / 100);
     const loanAmount = purchasePrice - deposit;
     const totalUpfront = deposit + sd + 2000; // + conveyancing/legal ~$2K
@@ -486,7 +486,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
                 const price = suburb.metrics.medianPrice;
                 const rent = suburb.metrics.weeklyRent ?? Math.round(price * suburb.metrics.rentalYield / 100 / 52);
                 const state = suburb.state;
-                const sd = calculateStampDuty(price, state);
+                const { totalGovtFees: sd } = calculateComprehensiveStampDuty(price, state, false, 'established');
                 const deposit = price * (depositPct / 100);
                 const loan = price - deposit;
                 const upfront = deposit + sd + 2000;
