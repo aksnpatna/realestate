@@ -43,6 +43,7 @@ function App() {
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
   const [isAnalyzingNews, setIsAnalyzingNews] = useState(false)
   const [isClustering, setIsClustering] = useState(false)
+  const [showAmenitiesOnMap, setShowAmenitiesOnMap] = useState(false)
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
   const [macroEtf, setMacroEtf] = useState<any>(null)
 
@@ -189,6 +190,16 @@ function App() {
   useEffect(() => {
     setLivabilityData(null)
     setClusteringResults(null)
+    setShowAmenitiesOnMap(false)
+    
+    if (activeSuburb) {
+      setLoadingLivability(true);
+      const coords = activeSuburb.coordinates || [-37.8, 145.0];
+      fetchLivabilityData(coords[0], coords[1])
+        .then(data => setLivabilityData(data))
+        .catch(() => console.error("Failed to load livability data"))
+        .finally(() => setLoadingLivability(false));
+    }
   }, [activeSuburb])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -909,28 +920,18 @@ function App() {
                   {/* NEW LIVABILITY SECTION */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3>Real-Time Livability & Amenities</h3>
-                      {!livabilityData && !loadingLivability && (
-                        <button
-                          onClick={async () => {
-                            setLoadingLivability(true);
-                            try {
-                              const coords = activeSuburb.coordinates || [-37.8, 145.0];
-                              const data = await fetchLivabilityData(coords[0], coords[1]);
-                              setLivabilityData(data);
-                            } catch {
-                              alert("Failed to load livability data");
-                            }
-                            setLoadingLivability(false);
-                          }}
-                          style={{
-                            background: 'var(--accent-purple)', color: '#fff', border: 'none', 
-                            padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold'
-                          }}
-                        >
-                          Scan Area (Live)
-                        </button>
-                      )}
+                      <h3>Livability & Amenities</h3>
+                      <button
+                        onClick={() => setShowAmenitiesOnMap(!showAmenitiesOnMap)}
+                        style={{
+                          background: showAmenitiesOnMap ? 'var(--accent-cyan)' : 'var(--bg-glass)', 
+                          color: showAmenitiesOnMap ? '#000' : 'var(--text-primary)', 
+                          border: '1px solid var(--border-glass)', 
+                          padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold'
+                        }}
+                      >
+                        {showAmenitiesOnMap ? 'Hide Amenities from Map' : 'Click to overlay on map below'}
+                      </button>
                     </div>
                     {loadingLivability && <p style={{ color: 'var(--text-secondary)' }}>Scanning neighborhood via OpenStreetMap...</p>}
                     {livabilityData && (
@@ -1332,7 +1333,7 @@ function App() {
                   center={activeSuburb.coordinates || [-25.2744, 133.7751]}
                   pois={[
                     ...(activeSuburb.pois || []),
-                    ...(livabilityData ? [
+                    ...(livabilityData && showAmenitiesOnMap ? [
                       ...(livabilityData.cafes || []).map((c:any) => ({...c, type: 'cafe', coordinates: c.coordinates || c.latlon})),
                       ...(livabilityData.parks || []).map((p:any) => ({...p, type: 'park', coordinates: p.coordinates || p.latlon})),
                       ...(livabilityData.transit || []).map((t:any) => ({...t, type: 'transit', coordinates: t.coordinates || t.latlon})),
