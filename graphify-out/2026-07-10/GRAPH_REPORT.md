@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-10)
 
 ## Corpus Check
-- 87 files · ~2,207,365 words
+- 88 files · ~2,207,591 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 572 nodes · 794 edges · 78 communities (53 shown, 25 thin omitted)
+- 573 nodes · 794 edges · 79 communities (54 shown, 25 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 129 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e51eba1b`
+- Built from commit: `e7fdcb88`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -99,7 +99,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (78 total, 25 thin omitted)
+## Communities (79 total, 25 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.16

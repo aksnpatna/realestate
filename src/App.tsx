@@ -40,6 +40,7 @@ function App() {
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
   const [regionMode, setRegionMode] = useState<'metro' | 'national'>('metro')
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
+  const [isAnalyzingNews, setIsAnalyzingNews] = useState(false)
   const [isClustering, setIsClustering] = useState(false)
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
   const [macroEtf, setMacroEtf] = useState<any>(null)
@@ -596,7 +597,10 @@ function App() {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                         <div className="metric-label" style={{ marginBottom: 0 }}>AI News Sentiment</div>
                         <button 
+                          disabled={isAnalyzingNews}
                           onClick={async () => {
+                            if (isAnalyzingNews) return;
+                            setIsAnalyzingNews(true);
                             try {
                               const res = await fetch('/api/analyze-suburb', {
                                 method: 'POST',
@@ -616,14 +620,18 @@ function App() {
                               }
                             } catch {
                               alert("Analysis failed.");
+                            } finally {
+                              setIsAnalyzingNews(false);
                             }
                           }}
                           style={{
-                            background: 'var(--accent-cyan)', color: '#000', border: 'none', 
-                            padding: '4px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold'
+                            background: isAnalyzingNews ? 'var(--bg-glass)' : 'var(--accent-cyan)', 
+                            color: isAnalyzingNews ? 'var(--text-secondary)' : '#000', 
+                            border: 'none', 
+                            padding: '4px 12px', borderRadius: '4px', cursor: isAnalyzingNews ? 'not-allowed' : 'pointer', fontSize: '0.8rem', fontWeight: 'bold'
                           }}
                         >
-                          Analyze Live News
+                          {isAnalyzingNews ? 'Analyzing...' : 'Analyze Live News'}
                         </button>
                       </div>
                       <div className={`metric-value ${
@@ -1321,7 +1329,7 @@ function App() {
                       ...(livabilityData.cafes || []).map((c:any) => ({...c, type: 'cafe', coordinates: c.coordinates || c.latlon})),
                       ...(livabilityData.parks || []).map((p:any) => ({...p, type: 'park', coordinates: p.coordinates || p.latlon})),
                       ...(livabilityData.transit || []).map((t:any) => ({...t, type: 'transit', coordinates: t.coordinates || t.latlon})),
-                      ...(livabilityData.train_stations || []).map((t:any) => ({...t, type: 'station', coordinates: t.coordinates || t.latlon})),
+                      ...(livabilityData.train_stations || []).map((t:any) => ({...t, type: 'train_station', coordinates: t.coordinates || t.latlon})),
                     ] : [])
                   ]}
                   schools={[
