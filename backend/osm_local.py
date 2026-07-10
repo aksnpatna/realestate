@@ -17,6 +17,7 @@ CATEGORIES = {
     "cafe":       ("amenity", ("cafe", "restaurant", "fast_food", "pub", "bar", "ice_cream", "food_court")),
     "park":       ("leisure", ("park", "nature_reserve", "recreation_ground", "playground", "garden")),
     "transit":    (None,      None),  # handled separately below
+    "train_station": ("railway", ("station",)), # Specific category for train stations
     "school":     ("amenity", ("school", "college", "university", "kindergarten", "childcare")),
     "shopping":   ("shop",    ("mall", "supermarket", "department_store", "convenience", "bakery", "butcher")),
     "hospital":   ("amenity", ("hospital", "clinic", "pharmacy", "doctors", "dentist")),
@@ -26,7 +27,7 @@ CATEGORIES = {
 # Transit: needs special handling — multiple key/value combos
 TRANSIT_KEY_VAL = [
     ("public_transport", ("station", "stop_position")),
-    ("railway", ("station", "tram_stop", "halt")),
+    ("railway", ("tram_stop", "halt")), # 'station' moved to train_station
     ("highway", ("bus_stop",)),
     ("amenity", ("bus_station", "ferry_terminal")),
 ]

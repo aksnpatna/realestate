@@ -1074,7 +1074,7 @@ class ROICalcRequest(BaseModel):
     insurance: float = 1500.0
     pm_fee_pct: float = 7.5
     vacancy_weeks: float = 2.0
-    maintenance_pct: float = 1.0
+    maintenance_pct: float = 0.35
     salary: float = 100000.0
     depreciation: float = 8000.0
 
@@ -1466,6 +1466,7 @@ def get_osm_livability(lat: float, lng: float, radius: int = 2500):
         "cafes": _format_pois("cafe"),
         "parks": _format_pois("park"),
         "transit": _format_pois("transit"),
+        "train_stations": _format_pois("train_station"),
         "schools": _format_pois("school"),
         "walkabilityScore": data["walkScore"],
         "transitScoreStandalone": data["transitScore"],

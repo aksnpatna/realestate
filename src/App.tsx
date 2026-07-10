@@ -553,6 +553,9 @@ function App() {
                         {activeSuburb.growthScore}
                       </div>
                       <div className="main-score-label">Growth Probability</div>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
+                        Based on yield, population<br/>& infrastructure trends
+                      </div>
                       <button
                         onClick={() => setActiveTab('gearing')}
                         style={{ marginTop: '10px', padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', width: '100%' }}
@@ -951,6 +954,19 @@ function App() {
                             </span>
                           </div>
                       )}
+                      {/* School Catchment Links */}
+                      <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
+                        <h4 style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: 'var(--text-primary)' }}>🎓 Official School Catchment Zones</h4>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0 0 8px 0' }}>Verify local public school enrolment eligibility directly via state government maps:</p>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          {activeSuburb.state === 'VIC' && <a href="https://www.findmyschool.vic.gov.au/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>VIC: FindMySchool →</a>}
+                          {activeSuburb.state === 'NSW' && <a href="https://schoolfinder.education.nsw.gov.au/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>NSW: School Finder →</a>}
+                          {activeSuburb.state === 'QLD' && <a href="https://www.qgso.qld.gov.au/maps/edmap/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>QLD: EdMap →</a>}
+                          {activeSuburb.state === 'SA' && <a href="https://www.education.sa.gov.au/parents-and-families/enrol-school-or-preschool/find-a-school-zone-or-preschool-catchment-area" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>SA: Location SA →</a>}
+                          {activeSuburb.state === 'TAS' && <a href="https://www.decyp.tas.gov.au/learning/enrolment/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>TAS: DECYP Directory →</a>}
+                          {['WA', 'NT', 'ACT'].includes(activeSuburb.state) && <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Check local education department for {activeSuburb.state} catchments.</span>}
+                        </div>
+                      </div>
                     </div>
                     )}
                   </div>
@@ -1297,6 +1313,7 @@ function App() {
                       ...(livabilityData.cafes || []).map((c:any) => ({...c, type: 'cafe', coordinates: c.coordinates || c.latlon})),
                       ...(livabilityData.parks || []).map((p:any) => ({...p, type: 'park', coordinates: p.coordinates || p.latlon})),
                       ...(livabilityData.transit || []).map((t:any) => ({...t, type: 'transit', coordinates: t.coordinates || t.latlon})),
+                      ...(livabilityData.train_stations || []).map((t:any) => ({...t, type: 'station', coordinates: t.coordinates || t.latlon})),
                     ] : [])
                   ]}
                   schools={[
