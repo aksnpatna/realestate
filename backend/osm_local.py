@@ -239,6 +239,23 @@ def get_boundary(suburb_name: str, state: str = ""):
         rows = conn.execute(text(sql), params).all()
     
     if not rows:
+        # Fallback to Nominatim API if local DB is empty/importing
+        import requests
+        try:
+            q = f"{suburb_name}, {state}, Australia" if state else f"{suburb_name}, Australia"
+            url = f"https://nominatim.openstreetmap.org/search?q={q}&format=json&polygon_geojson=1&limit=1"
+            headers = {"User-Agent": "RealEstateApp/1.0"}
+            resp = requests.get(url, headers=headers, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                if data and len(data) > 0:
+                    item = data[0]
+                    return {
+                        "geojson": item.get("geojson"),
+                        "center": [float(item.get("lat")), float(item.get("lon"))]
+                    }
+        except Exception as e:
+            print(f"Nominatim fallback failed: {e}")
         return None
     
     # If state provided, pick the polygon whose centroid is closest to the state center
