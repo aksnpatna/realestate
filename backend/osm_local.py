@@ -138,6 +138,47 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
             print(f"  OSM query error for {cat}: {e}")
             result[cat] = []
 
+    total_items = sum(len(v) for v in result.values())
+    if total_items == 0:
+        import requests
+        print("Local DB empty, falling back to Overpass API...")
+        overpass_url = "http://overpass-api.de/api/interpreter"
+        overpass_query = f"""
+        [out:json][timeout:10];
+        (
+          node["amenity"~"cafe|restaurant|fast_food|pub"](around:{radius_m},{lat},{lng});
+          node["leisure"~"park|playground"](around:{radius_m},{lat},{lng});
+          node["public_transport"="station"](around:{radius_m},{lat},{lng});
+          node["highway"="bus_stop"](around:{radius_m},{lat},{lng});
+          node["railway"="station"](around:{radius_m},{lat},{lng});
+          node["amenity"~"school|college|kindergarten"](around:{radius_m},{lat},{lng});
+        );
+        out body;
+        """
+        try:
+            headers = {"User-Agent": "RealEstateApp/1.0"}
+            resp = requests.post(overpass_url, data={'data': overpass_query}, headers=headers, timeout=10)
+            if resp.status_code == 200:
+                data = resp.json()
+                elements = data.get('elements', [])
+                for el in elements:
+                    tags = el.get('tags', {})
+                    lat_val = el.get('lat')
+                    lon_val = el.get('lon')
+                    name = tags.get('name', 'Unnamed')
+                    if 'amenity' in tags and tags['amenity'] in ['cafe', 'restaurant', 'fast_food', 'pub']:
+                        result.setdefault('cafe', []).append({"name": name, "distance": 0, "lat": lat_val, "lng": lon_val})
+                    elif 'leisure' in tags and tags['leisure'] in ['park', 'playground']:
+                        result.setdefault('park', []).append({"name": name, "distance": 0, "lat": lat_val, "lng": lon_val})
+                    elif 'railway' in tags and tags['railway'] == 'station':
+                        result.setdefault('train_station', []).append({"name": name, "distance": 0, "lat": lat_val, "lng": lon_val})
+                    elif 'public_transport' in tags or 'highway' in tags:
+                        result.setdefault('transit', []).append({"name": name, "distance": 0, "lat": lat_val, "lng": lon_val})
+                    elif 'amenity' in tags and tags['amenity'] in ['school', 'college', 'kindergarten']:
+                        result.setdefault('school', []).append({"name": name, "distance": 0, "lat": lat_val, "lng": lon_val})
+        except Exception as e:
+            print(f"Overpass fallback failed: {e}")
+
     return result
 
 

@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783651425.7247174,
-    "ast_hash": "6c1aecf75ef818750ce339fff11d7bc2",
+    "mtime": 1783597494.975249,
+    "ast_hash": "b7d798e481e15a55e28df02822fe3ce8",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783651450.8721106,
-    "ast_hash": "9a3616b65c8ab105b2da35679dc9ef0d",
+    "mtime": 1783596543.8510282,
+    "ast_hash": "d1740fb673e57378535c9c34e024051c",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -90,9 +90,9 @@
     "semantic_hash": "2af7e1f214119d02a913305d55682cad"
   },
   "src/services/osmApi.ts": {
-    "mtime": 1783651472.3946013,
-    "ast_hash": "7b925eaa43fc58db791a2ca392977658",
-    "semantic_hash": ""
+    "mtime": 1783053939.7770536,
+    "ast_hash": "11d87b56a6beade6b1b41882b9dd38f1",
+    "semantic_hash": "11d87b56a6beade6b1b41882b9dd38f1"
   },
   "suburbs-melbourne-data.json": {
     "mtime": 1782562773.7848988,
@@ -300,9 +300,9 @@
     "semantic_hash": "34e4979ef97f6ab6a98e1bc9a8aad942"
   },
   "backend/osm_local.py": {
-    "mtime": 1783652187.9631016,
-    "ast_hash": "c68b12d206601fbf9b88d76dedf75fed",
-    "semantic_hash": ""
+    "mtime": 1783355644.2467618,
+    "ast_hash": "22339f7cc041e2ad282326f97bb0726d",
+    "semantic_hash": "22339f7cc041e2ad282326f97bb0726d"
   },
   "backend/predictive_ai_engine.py": {
     "mtime": 1783291827.3835573,
@@ -330,9 +330,9 @@
     "semantic_hash": "42192e4abbe72c5e5aacce5ca738ff0e"
   },
   "backend/updater.sh": {
-    "mtime": 1783652167.9294224,
-    "ast_hash": "fee92917b677e41f98a118295938fb69",
-    "semantic_hash": ""
+    "mtime": 1783024832.1663375,
+    "ast_hash": "a3c7e53e0fb2241804fe736c62d3eaae",
+    "semantic_hash": "a3c7e53e0fb2241804fe736c62d3eaae"
   },
   "backend/v3_scheduler.py": {
     "mtime": 1783055032.108759,
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "test_db.py": {
-    "mtime": 1783652075.2669342,
-    "ast_hash": "256b19044aede740800f6827471ec7ef",
+    "mtime": 1783496347.7604353,
+    "ast_hash": "de65a3de0deb5c2fc74e15c21e06e1b7",
     "semantic_hash": ""
   },
   "test_llm.py": {
