@@ -1,0 +1,758 @@
+{
+  "communities": {
+    "0": [
+      "backend_main",
+      "backend_main_analyze_suburb",
+      "backend_main_analyzerequest",
+      "backend_main_annualize_cagr",
+      "backend_main_boundedratelimitstore",
+      "backend_main_boundedratelimitstore_contains",
+      "backend_main_boundedratelimitstore_getitem",
+      "backend_main_boundedratelimitstore_init",
+      "backend_main_boundedratelimitstore_setitem",
+      "backend_main_build_v2_only_response",
+      "backend_main_build_v3_fallback_response",
+      "backend_main_calibrate_dq",
+      "backend_main_cap_yield",
+      "backend_main_check_auth_rate",
+      "backend_main_check_rate_limit",
+      "backend_main_compute_growth_score",
+      "backend_main_get_current_user",
+      "backend_main_get_db",
+      "backend_main_get_me",
+      "backend_main_get_mortgage_rate",
+      "backend_main_get_news_sentiment",
+      "backend_main_get_osm_boundary",
+      "backend_main_get_osm_livability",
+      "backend_main_get_similar_suburbs",
+      "backend_main_get_suburb",
+      "backend_main_get_suburb_properties",
+      "backend_main_get_suburb_v3",
+      "backend_main_get_suburbs",
+      "backend_main_get_suburbs_v3",
+      "backend_main_hash_password",
+      "backend_main_login",
+      "backend_main_loginrequest",
+      "backend_main_rationale_1018",
+      "backend_main_rationale_1046",
+      "backend_main_rationale_1055",
+      "backend_main_rationale_319",
+      "backend_main_rationale_343",
+      "backend_main_rationale_433",
+      "backend_main_rationale_441",
+      "backend_main_rationale_447",
+      "backend_main_rationale_468",
+      "backend_main_rationale_593",
+      "backend_main_rationale_811",
+      "backend_main_rationale_843",
+      "backend_main_rationale_874",
+      "backend_main_rationale_946",
+      "backend_main_register",
+      "backend_main_registerrequest",
+      "backend_main_reload_suburbs",
+      "backend_main_search_suburbs",
+      "backend_main_startup_event",
+      "backend_main_usermodel",
+      "backend_main_verify_password",
+      "backend_update_pwd",
+      "backend_update_pwd_get_hash",
+      "backend_update_pwd_update_password",
+      "basemodel",
+      "request",
+      "response",
+      "session",
+      "suburbuiv3"
+    ],
+    "1": [
+      "components_affordabilitycalculator",
+      "components_affordabilitycalculator_affordabilitycalculator",
+      "components_affordabilitycalculator_sortkey",
+      "components_cashflowgearing",
+      "components_cashflowgearing_cashflowgearing",
+      "components_cashflowgearing_cashflowgearingprops",
+      "components_cashflowgearing_gearingresult",
+      "components_housesearch",
+      "components_housesearch_housesearch",
+      "components_housesearch_searchresultcard",
+      "components_mypurchaseplan",
+      "components_mypurchaseplan_buyerprofile",
+      "components_mypurchaseplan_mypurchaseplan",
+      "components_mypurchaseplan_mypurchaseplanprops",
+      "data_suburbs",
+      "data_suburbs_calculatemaxpurchase",
+      "data_suburbs_calculatestampduty",
+      "data_suburbs_mocksuburbsdata",
+      "data_suburbs_poi",
+      "data_suburbs_school",
+      "data_suburbs_stamp_duty_rates",
+      "data_suburbs_stampdutyrates",
+      "data_suburbs_suburbdata",
+      "services_osmapi",
+      "services_osmapi_fetchlivabilitydata",
+      "services_osmapi_livabilitydata",
+      "services_osmapi_osmpoi",
+      "src_app",
+      "src_app_app",
+      "src_app_tabname"
+    ],
+    "2": [
+      "backend_etl_extract_v3",
+      "backend_etl_extract_v3_extract_single_suburb",
+      "backend_etl_extract_v3_rationale_1",
+      "backend_etl_extract_v3_rationale_134",
+      "backend_etl_extract_v3_rationale_180",
+      "backend_etl_extract_v3_rationale_26",
+      "backend_etl_extract_v3_rationale_73",
+      "backend_etl_extract_v3_run_extraction",
+      "backend_etl_extract_v3_seed_raw_v3",
+      "backend_etl_extract_v3_worker",
+      "backend_models_v2",
+      "backend_models_v2_rationale_11",
+      "backend_models_v2_rationale_26",
+      "backend_models_v2_suburbrawv2",
+      "backend_models_v2_suburbuiv2",
+      "backend_models_v3",
+      "backend_models_v3_propertylisting",
+      "backend_models_v3_rationale_1",
+      "backend_models_v3_suburbrawv3",
+      "backend_models_v3_suburbuiv3",
+      "backend_parallel_scraper",
+      "backend_parallel_scraper_crimestatmodel",
+      "backend_parallel_scraper_suburballmodel",
+      "backend_parallel_scraper_suburbgeodatamodel",
+      "backend_parallel_scraper_suburbuimodel",
+      "base"
+    ],
+    "3": [
+      "package",
+      "package_dependencies",
+      "package_dependencies_leaflet",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_dependencies_react_leaflet",
+      "package_dependencies_recharts",
+      "package_devdependencies",
+      "package_devdependencies_oxlint",
+      "package_devdependencies_types_leaflet",
+      "package_devdependencies_types_node",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitejs_plugin_react",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_lint",
+      "package_scripts_preview",
+      "package_type",
+      "package_version"
+    ],
+    "4": [
+      "tsconfig_app",
+      "tsconfig_app_compileroptions",
+      "tsconfig_app_compileroptions_allowimportingtsextensions",
+      "tsconfig_app_compileroptions_erasablesyntaxonly",
+      "tsconfig_app_compileroptions_jsx",
+      "tsconfig_app_compileroptions_lib",
+      "tsconfig_app_compileroptions_module",
+      "tsconfig_app_compileroptions_moduledetection",
+      "tsconfig_app_compileroptions_moduleresolution",
+      "tsconfig_app_compileroptions_noemit",
+      "tsconfig_app_compileroptions_nofallthroughcasesinswitch",
+      "tsconfig_app_compileroptions_nounusedlocals",
+      "tsconfig_app_compileroptions_nounusedparameters",
+      "tsconfig_app_compileroptions_skiplibcheck",
+      "tsconfig_app_compileroptions_target",
+      "tsconfig_app_compileroptions_tsbuildinfofile",
+      "tsconfig_app_compileroptions_types",
+      "tsconfig_app_compileroptions_verbatimmodulesyntax",
+      "tsconfig_app_include"
+    ],
+    "5": [
+      "backend_etl_transform_v3",
+      "backend_etl_transform_v3_batch_loop",
+      "backend_etl_transform_v3_compute_derived_indicators",
+      "backend_etl_transform_v3_extract_demographics",
+      "backend_etl_transform_v3_extract_nearby_suburbs",
+      "backend_etl_transform_v3_extract_property_listings",
+      "backend_etl_transform_v3_extract_sales_summary",
+      "backend_etl_transform_v3_find_metric",
+      "backend_etl_transform_v3_get_metrics_section",
+      "backend_etl_transform_v3_parse_description",
+      "backend_etl_transform_v3_parse_income_midpoint",
+      "backend_etl_transform_v3_r0",
+      "backend_etl_transform_v3_r2",
+      "backend_etl_transform_v3_rationale_1",
+      "backend_etl_transform_v3_rationale_231",
+      "backend_etl_transform_v3_rationale_52",
+      "backend_etl_transform_v3_rationale_598",
+      "backend_etl_transform_v3_transform_all"
+    ],
+    "6": [
+      "backend_v3_scheduler",
+      "backend_v3_scheduler_mark_changed_for_enrich",
+      "backend_v3_scheduler_mark_changed_for_unpack",
+      "backend_v3_scheduler_python",
+      "backend_v3_scheduler_rationale_1",
+      "backend_v3_scheduler_rationale_115",
+      "backend_v3_scheduler_rationale_141",
+      "backend_v3_scheduler_rationale_36",
+      "backend_v3_scheduler_rationale_47",
+      "backend_v3_scheduler_rationale_84",
+      "backend_v3_scheduler_seed_pending_raw",
+      "backend_v3_scheduler_v3scheduler",
+      "backend_v3_scheduler_v3scheduler_init",
+      "backend_v3_scheduler_v3scheduler_loop",
+      "backend_v3_scheduler_v3scheduler_run_monthly_metro",
+      "backend_v3_scheduler_v3scheduler_run_quarterly_full",
+      "backend_v3_scheduler_v3scheduler_start",
+      "backend_v3_scheduler_v3scheduler_stop"
+    ],
+    "7": [
+      "tsconfig_node",
+      "tsconfig_node_compileroptions",
+      "tsconfig_node_compileroptions_allowimportingtsextensions",
+      "tsconfig_node_compileroptions_erasablesyntaxonly",
+      "tsconfig_node_compileroptions_lib",
+      "tsconfig_node_compileroptions_module",
+      "tsconfig_node_compileroptions_moduledetection",
+      "tsconfig_node_compileroptions_noemit",
+      "tsconfig_node_compileroptions_nofallthroughcasesinswitch",
+      "tsconfig_node_compileroptions_nounusedlocals",
+      "tsconfig_node_compileroptions_nounusedparameters",
+      "tsconfig_node_compileroptions_skiplibcheck",
+      "tsconfig_node_compileroptions_target",
+      "tsconfig_node_compileroptions_tsbuildinfofile",
+      "tsconfig_node_compileroptions_types",
+      "tsconfig_node_compileroptions_verbatimmodulesyntax",
+      "tsconfig_node_include"
+    ],
+    "8": [
+      "backend_models_v3_unpacked",
+      "backend_models_v3_unpacked_rationale_1",
+      "backend_models_v3_unpacked_suburbunpackedv3",
+      "backend_unpack_json_to_table",
+      "backend_unpack_json_to_table_extract_census",
+      "backend_unpack_json_to_table_extract_metrics",
+      "backend_unpack_json_to_table_extract_nearby",
+      "backend_unpack_json_to_table_extract_sales",
+      "backend_unpack_json_to_table_parse_description",
+      "backend_unpack_json_to_table_r0",
+      "backend_unpack_json_to_table_r2",
+      "backend_unpack_json_to_table_rationale_1",
+      "backend_unpack_json_to_table_rationale_56",
+      "backend_unpack_json_to_table_unpack_all",
+      "backend_unpack_json_to_table_unpack_loop"
+    ],
+    "9": [
+      "backend_osm_local",
+      "backend_osm_local_build_category_query",
+      "backend_osm_local_compute_scores",
+      "backend_osm_local_get_boundary",
+      "backend_osm_local_get_livability",
+      "backend_osm_local_get_pois",
+      "backend_osm_local_rationale_1",
+      "backend_osm_local_rationale_111",
+      "backend_osm_local_rationale_144",
+      "backend_osm_local_rationale_186",
+      "backend_osm_local_rationale_201",
+      "backend_osm_local_rationale_212",
+      "backend_osm_local_rationale_36",
+      "backend_osm_local_top_unique_names"
+    ],
+    "10": [
+      "components_suburbmap",
+      "components_suburbmap_australia_center",
+      "components_suburbmap_boundarycache",
+      "components_suburbmap_cafeicon",
+      "components_suburbmap_changeview",
+      "components_suburbmap_createcustomicon",
+      "components_suburbmap_geticonfortype",
+      "components_suburbmap_mapprops",
+      "components_suburbmap_parkicon",
+      "components_suburbmap_primaryschoolicon",
+      "components_suburbmap_secondaryschoolicon",
+      "components_suburbmap_shoppingicon",
+      "components_suburbmap_stationicon",
+      "components_suburbmap_suburbmap"
+    ],
+    "11": [
+      "any",
+      "backend_ai_agent",
+      "backend_ai_agent_bear_agent_node",
+      "backend_ai_agent_bull_agent_node",
+      "backend_ai_agent_committeestate",
+      "backend_ai_agent_fetch_news_node",
+      "backend_ai_agent_get_llm",
+      "backend_ai_agent_get_news_sentiment",
+      "backend_ai_agent_rationale_70",
+      "backend_ai_agent_run_investment_committee",
+      "backend_ai_agent_supervisor_and_playbook_node",
+      "backend_ai_agent_urban_planner_node",
+      "typeddict"
+    ],
+    "12": [
+      "backend_import_acara",
+      "backend_import_acara_compute_school_quality_score",
+      "backend_import_acara_load_location_data",
+      "backend_import_acara_load_profile_data",
+      "backend_import_acara_main",
+      "backend_import_acara_rationale_1",
+      "backend_import_acara_rationale_114",
+      "backend_import_acara_rationale_26",
+      "backend_import_acara_rationale_52",
+      "backend_import_acara_rationale_97",
+      "backend_import_acara_update_db_and_json"
+    ],
+    "13": [
+      "backend_predictive_ai_engine",
+      "backend_predictive_ai_engine_asxpredictor",
+      "backend_predictive_ai_engine_asxpredictor_fetch_macro_data",
+      "backend_predictive_ai_engine_asxpredictor_init",
+      "backend_predictive_ai_engine_calculate_predictive_score",
+      "backend_predictive_ai_engine_fetch_environmental_risks",
+      "backend_predictive_ai_engine_fetch_infrastructure_zoning_data",
+      "backend_predictive_ai_engine_rationale_59",
+      "backend_predictive_ai_engine_rationale_75",
+      "backend_predictive_ai_engine_rationale_91",
+      "backend_predictive_ai_engine_run_predictive_engine"
+    ],
+    "14": [
+      "backend_scheduler",
+      "backend_scheduler_rationale_23",
+      "backend_scheduler_start_scheduler",
+      "backend_scheduler_stop_scheduler",
+      "backend_scheduler_updatescheduler",
+      "backend_scheduler_updatescheduler_init",
+      "backend_scheduler_updatescheduler_loop",
+      "backend_scheduler_updatescheduler_run_v3_monthly_metro",
+      "backend_scheduler_updatescheduler_run_v3_quarterly_full",
+      "backend_scheduler_updatescheduler_start",
+      "backend_scheduler_updatescheduler_stop"
+    ],
+    "15": [
+      "etl_runbook_compute_derived_indicators",
+      "etl_runbook_enrich_from_unpacked_py",
+      "etl_runbook_etl_extract_v3_py",
+      "etl_runbook_etl_transform_v3_py",
+      "etl_runbook_run_unpack_py",
+      "etl_runbook_run_v3_extract_py",
+      "etl_runbook_scheduler_py",
+      "etl_runbook_unpack_json_to_table_py",
+      "etl_runbook_v3_scheduler_py"
+    ],
+    "16": [
+      "backend_etl_infra_zoning",
+      "backend_etl_infra_zoning_fetch_major_infrastructure_projects",
+      "backend_etl_infra_zoning_fetch_zoning_changes",
+      "backend_etl_infra_zoning_map_projects_to_suburbs",
+      "backend_etl_infra_zoning_rationale_23",
+      "backend_etl_infra_zoning_rationale_69",
+      "backend_etl_infra_zoning_rationale_86",
+      "backend_etl_infra_zoning_run_infra_zoning_pipeline"
+    ],
+    "17": [
+      "components_errorboundary",
+      "components_errorboundary_errorboundary",
+      "components_errorboundary_errorboundary_constructor",
+      "components_errorboundary_errorboundary_getderivedstatefromerror",
+      "components_errorboundary_errorboundary_render",
+      "components_errorboundary_props",
+      "components_errorboundary_state",
+      "src_main"
+    ],
+    "18": [
+      "australian_suburbs_data_bankstown_nsw_2200",
+      "australian_suburbs_data_bondi_junction_nsw_2022",
+      "australian_suburbs_data_castle_hill_nsw_2154",
+      "australian_suburbs_data_chatswood_nsw_2067",
+      "australian_suburbs_data_hurstville_nsw_2220",
+      "australian_suburbs_data_ryde_nsw_2112",
+      "australian_suburbs_data_strathfield_nsw_2135"
+    ],
+    "19": [
+      "backend_etl_abs_building",
+      "backend_etl_abs_building_estimate_approvals_from_surrounding",
+      "backend_etl_abs_building_fetch_abs_building_approvals",
+      "backend_etl_abs_building_rationale_1",
+      "backend_etl_abs_building_rationale_40",
+      "backend_etl_abs_building_rationale_94",
+      "backend_etl_abs_building_run_abs_building_pipeline"
+    ],
+    "20": [
+      "backend_etl_dq_report_v3",
+      "backend_etl_dq_report_v3_detail_report",
+      "backend_etl_dq_report_v3_dq_summary",
+      "backend_etl_dq_report_v3_rationale_1",
+      "backend_etl_dq_report_v3_rationale_13",
+      "backend_etl_dq_report_v3_rationale_52"
+    ],
+    "21": [
+      "backend_micro_scraper_v4",
+      "backend_micro_scraper_v4_get_shortlisted_suburbs",
+      "backend_micro_scraper_v4_rationale_13",
+      "backend_micro_scraper_v4_rationale_20",
+      "backend_micro_scraper_v4_run_micro_scraper",
+      "backend_micro_scraper_v4_scrape_volatile_metrics"
+    ],
+    "22": [
+      "oxlintrc",
+      "oxlintrc_plugins",
+      "oxlintrc_rules",
+      "oxlintrc_rules_react_only_export_components",
+      "oxlintrc_rules_react_rules_of_hooks",
+      "oxlintrc_schema"
+    ],
+    "23": [
+      "australian_suburbs_data_belconnen_act_2617",
+      "australian_suburbs_data_gungahlin_act_2912",
+      "australian_suburbs_data_queanbeyan_nsw_2620",
+      "australian_suburbs_data_tuggeranong_act_2900",
+      "australian_suburbs_data_woden_act_2606"
+    ],
+    "24": [
+      "australian_suburbs_data_blacktown_nsw_2148",
+      "australian_suburbs_data_campbelltown_nsw_2560",
+      "australian_suburbs_data_liverpool_nsw_2170",
+      "australian_suburbs_data_narellan_nsw_2567",
+      "australian_suburbs_data_penrith_nsw_2750"
+    ],
+    "25": [
+      "backend_enrich_from_unpacked",
+      "backend_enrich_from_unpacked_enrich_all",
+      "backend_enrich_from_unpacked_enrich_changed",
+      "backend_enrich_from_unpacked_rationale_1",
+      "backend_enrich_from_unpacked_rationale_222"
+    ],
+    "26": [
+      "components_institutionalv3panel",
+      "components_institutionalv3panel_dqbadge",
+      "components_institutionalv3panel_institutionalv3panel",
+      "components_institutionalv3panel_metriccard",
+      "components_institutionalv3panel_v3suburbdata"
+    ],
+    "27": [
+      "backend_downloader",
+      "backend_downloader_download_file_playwright",
+      "backend_downloader_fetch_latest_from_ckan",
+      "backend_downloader_run_downloader"
+    ],
+    "28": [
+      "backend_etl_abs_census",
+      "backend_etl_abs_census_fetch_abs_demographics",
+      "backend_etl_abs_census_rationale_11",
+      "backend_etl_abs_census_run_abs_integration"
+    ],
+    "29": [
+      "australian_suburbs_data_craigieburn_vic_3064",
+      "australian_suburbs_data_frankston_vic_3199",
+      "australian_suburbs_data_werribee_vic_3030"
+    ],
+    "30": [
+      "backend_clustering",
+      "backend_clustering_find_similar_suburbs",
+      "backend_clustering_rationale_10"
+    ],
+    "31": [
+      "backend_maintenance",
+      "backend_maintenance_rationale_6",
+      "backend_maintenance_run_vacuum_maintenance"
+    ],
+    "32": [
+      "tsconfig",
+      "tsconfig_files",
+      "tsconfig_references"
+    ],
+    "33": [
+      "verify_all_data",
+      "verify_all_data_distance",
+      "verify_all_data_geocode"
+    ],
+    "34": [
+      "add_sentiment",
+      "add_sentiment_update_json"
+    ],
+    "35": [
+      "backend_rank_suburbs",
+      "backend_rank_suburbs_rank_and_flag_live_suburbs"
+    ],
+    "36": [
+      "backend_requirements_txt",
+      "dockercompose_docker_compose"
+    ],
+    "37": [
+      "backend_run_v3_extract",
+      "backend_run_v3_extract_rationale_1"
+    ],
+    "38": [
+      "backend_run_v3_pilot",
+      "backend_run_v3_pilot_rationale_1"
+    ],
+    "39": [
+      "backend_updater",
+      "home_aksai_projects_realestate_backend_updater_sh__entry"
+    ],
+    "40": [
+      "get_schools",
+      "get_schools_get_coords"
+    ],
+    "41": [
+      "home_aksai_projects_realestate_wait_and_build_sh__entry",
+      "wait_and_build"
+    ],
+    "42": [
+      "rules_graphify",
+      "rules_graphify_graphify"
+    ],
+    "43": [
+      "workflows_graphify",
+      "workflows_graphify_workflow_graphify"
+    ],
+    "44": [
+      "backend_add_column"
+    ],
+    "45": [
+      "backend_run_unpack"
+    ],
+    "46": [
+      "etl_runbook_etl_abs_building_py"
+    ],
+    "47": [
+      "etl_runbook_etl_abs_census_py"
+    ],
+    "48": [
+      "etl_runbook_etl_dq_report_v3_py"
+    ],
+    "49": [
+      "etl_runbook_etl_infra_zoning_py"
+    ],
+    "50": [
+      "etl_runbook_import_acara_py"
+    ],
+    "51": [
+      "etl_runbook_maintenance_py"
+    ],
+    "52": [
+      "graphifyout_schoollocation2025_md"
+    ],
+    "53": [
+      "graphifyout_schoolprofile2025_md"
+    ],
+    "54": [
+      "graphifyout_vicsalestimeseries_md"
+    ],
+    "55": [
+      "index_index_html"
+    ],
+    "56": [
+      "readme_react_typescript_vite"
+    ],
+    "57": [
+      "scratch_chart"
+    ],
+    "58": [
+      "scratch_css_vars"
+    ],
+    "59": [
+      "scratch_fix"
+    ],
+    "60": [
+      "scratch_recent"
+    ],
+    "61": [
+      "scratch_restructure"
+    ],
+    "62": [
+      "scratch_ts_fix"
+    ],
+    "63": [
+      "src_assets_hero_png"
+    ],
+    "64": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.05245901639344262,
+    "1": 0.09195402298850575,
+    "2": 0.10461538461538461,
+    "3": 0.08,
+    "4": 0.10526315789473684,
+    "5": 0.19607843137254902,
+    "6": 0.17647058823529413,
+    "7": 0.11764705882352941,
+    "8": 0.22857142857142856,
+    "9": 0.18681318681318682,
+    "10": 0.14285714285714285,
+    "11": 0.2692307692307692,
+    "12": 0.2545454545454545,
+    "13": 0.2727272727272727,
+    "14": 0.2545454545454545,
+    "15": 0.2222222222222222,
+    "16": 0.35714285714285715,
+    "17": 0.25,
+    "18": 0.2857142857142857,
+    "19": 0.38095238095238093,
+    "20": 0.3333333333333333,
+    "21": 0.4666666666666667,
+    "22": 0.3333333333333333,
+    "23": 0.4,
+    "24": 0.4,
+    "25": 0.4,
+    "26": 0.4,
+    "27": 0.8333333333333334,
+    "28": 0.6666666666666666,
+    "29": 0.6666666666666666,
+    "30": 0.6666666666666666,
+    "31": 0.6666666666666666,
+    "32": 0.6666666666666666,
+    "33": 0.6666666666666666,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0
+  },
+  "gods": [
+    {
+      "id": "tsconfig_app_compileroptions",
+      "label": "compilerOptions",
+      "degree": 17
+    },
+    {
+      "id": "tsconfig_node_compileroptions",
+      "label": "compilerOptions",
+      "degree": 15
+    },
+    {
+      "id": "backend_etl_transform_v3_transform_all",
+      "label": "transform_all()",
+      "degree": 11
+    },
+    {
+      "id": "backend_v3_scheduler_v3scheduler",
+      "label": "V3Scheduler",
+      "degree": 10
+    },
+    {
+      "id": "backend_scheduler_updatescheduler",
+      "label": "UpdateScheduler",
+      "degree": 8
+    },
+    {
+      "id": "backend_unpack_json_to_table_unpack_all",
+      "label": "unpack_all()",
+      "degree": 8
+    },
+    {
+      "id": "data_suburbs_suburbdata",
+      "label": "SuburbData",
+      "degree": 8
+    },
+    {
+      "id": "backend_main_login",
+      "label": "login()",
+      "degree": 8
+    },
+    {
+      "id": "backend_ai_agent_committeestate",
+      "label": "CommitteeState",
+      "degree": 7
+    },
+    {
+      "id": "session",
+      "label": "Session",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "worker()",
+      "target": "Session",
+      "source_files": [
+        "backend/etl_extract_v3.py",
+        "backend/main.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "V3Scheduler",
+      "target": "SuburbRawV3",
+      "source_files": [
+        "backend/v3_scheduler.py",
+        "backend/models_v3.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "ASXPredictor",
+      "target": "SuburbUIV3",
+      "source_files": [
+        "backend/predictive_ai_engine.py",
+        "backend/models_v3.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "V3Scheduler",
+      "target": "SuburbAllModel",
+      "source_files": [
+        "backend/v3_scheduler.py",
+        "backend/parallel_scraper.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "Docker Compose Configuration",
+      "target": "Backend Requirements",
+      "source_files": [
+        "docker-compose.yml",
+        "backend/requirements.txt"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    }
+  ],
+  "tokens": {
+    "input": 28776,
+    "output": 2610
+  }
+}
