@@ -5,25 +5,27 @@ import 'leaflet/dist/leaflet.css';
 import VectorGridLayer from './VectorGridLayer';
 
 // Define custom icons
-const createCustomIcon = (color: string, emoji: string) => {
+const createCustomIcon = (color: string, emoji: string, size: number = 30) => {
   return L.divIcon({
     className: 'custom-leaflet-icon',
-    html: `<div style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-size: 16px; border: 2px solid white;">${emoji}</div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
-    popupAnchor: [0, -15]
+    html: `<div style="background-color: ${color}; width: ${size}px; height: ${size}px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: ${size > 30 ? 24 : 16}px; border: 2px solid white; z-index: ${size > 30 ? 1000 : 1}; position: relative;">${emoji}</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2]
   });
 };
 
 const primarySchoolIcon = createCustomIcon('#eab308', '🎒'); // Yellow backpack for Primary
 const secondarySchoolIcon = createCustomIcon('#8b5cf6', '🎓'); // Purple grad cap for High School/Combined
-const stationIcon = createCustomIcon('#00f0ff', '🚉'); // Cyan
+const stationIcon = createCustomIcon('#00f0ff', '🚏'); // Cyan for general transit
+const trainStationIcon = createCustomIcon('#00f0ff', '🚉', 45); // Cyan and large for Train Stations
 const shoppingIcon = createCustomIcon('#10b981', '🛒'); // Green
 const parkIcon = createCustomIcon('#22c55e', '🌲'); // Darker Green for Parks
 const cafeIcon = createCustomIcon('#f97316', '☕'); // Orange for Cafe
 
 const getIconForType = (type: string) => {
-  if (type === 'station' || type === 'transit') return stationIcon;
+  if (type === 'train_station') return trainStationIcon;
+  if (type === 'transit') return stationIcon;
   if (type === 'shopping') return shoppingIcon;
   if (type === 'park') return parkIcon;
   if (type === 'cafe') return cafeIcon;

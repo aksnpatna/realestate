@@ -300,8 +300,8 @@
     "semantic_hash": "34e4979ef97f6ab6a98e1bc9a8aad942"
   },
   "backend/osm_local.py": {
-    "mtime": 1783652187.9631016,
-    "ast_hash": "c68b12d206601fbf9b88d76dedf75fed",
+    "mtime": 1783653068.6967816,
+    "ast_hash": "d9a89400b5882522b84de9930b262665",
     "semantic_hash": ""
   },
   "backend/predictive_ai_engine.py": {
@@ -512,6 +512,11 @@
   "diff.txt": {
     "mtime": 1783571078.1406834,
     "ast_hash": "a09e574ae24ce65f082362af6bd825fd",
+    "semantic_hash": ""
+  },
+  "test_overpass.py": {
+    "mtime": 1783653048.2175598,
+    "ast_hash": "dff6d0419bb8e8d3c5c1da0af720c094",
     "semantic_hash": ""
   }
 }

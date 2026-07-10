@@ -2177,7 +2177,7 @@
       "label": "compute_scores()",
       "file_type": "code",
       "source_file": "backend/osm_local.py",
-      "source_location": "L144",
+      "source_location": "L185",
       "_origin": "ast",
       "id": "backend_osm_local_compute_scores",
       "community": 9,
@@ -2187,7 +2187,7 @@
       "label": "_top_unique_names()",
       "file_type": "code",
       "source_file": "backend/osm_local.py",
-      "source_location": "L186",
+      "source_location": "L227",
       "_origin": "ast",
       "id": "backend_osm_local_top_unique_names",
       "community": 9,
@@ -2197,7 +2197,7 @@
       "label": "get_livability()",
       "file_type": "code",
       "source_file": "backend/osm_local.py",
-      "source_location": "L201",
+      "source_location": "L242",
       "_origin": "ast",
       "id": "backend_osm_local_get_livability",
       "community": 9,
@@ -2207,7 +2207,7 @@
       "label": "get_boundary()",
       "file_type": "code",
       "source_file": "backend/osm_local.py",
-      "source_location": "L212",
+      "source_location": "L253",
       "_origin": "ast",
       "id": "backend_osm_local_get_boundary",
       "community": 9,
@@ -2247,9 +2247,9 @@
       "label": "Compute walkability, transit, and liveability scores from POI counts.      Same",
       "file_type": "rationale",
       "source_file": "backend/osm_local.py",
-      "source_location": "L145",
+      "source_location": "L186",
       "_origin": "ast",
-      "id": "backend_osm_local_rationale_145",
+      "id": "backend_osm_local_rationale_186",
       "community": 9,
       "norm_label": "compute walkability, transit, and liveability scores from poi counts.      same"
     },
@@ -2257,9 +2257,9 @@
       "label": "Return top-N unique names from all POI categories.",
       "file_type": "rationale",
       "source_file": "backend/osm_local.py",
-      "source_location": "L187",
+      "source_location": "L228",
       "_origin": "ast",
-      "id": "backend_osm_local_rationale_187",
+      "id": "backend_osm_local_rationale_228",
       "community": 9,
       "norm_label": "return top-n unique names from all poi categories."
     },
@@ -2267,9 +2267,9 @@
       "label": "Full livability analysis: POIs + scores for a single location.",
       "file_type": "rationale",
       "source_file": "backend/osm_local.py",
-      "source_location": "L202",
+      "source_location": "L243",
       "_origin": "ast",
-      "id": "backend_osm_local_rationale_202",
+      "id": "backend_osm_local_rationale_243",
       "community": 9,
       "norm_label": "full livability analysis: pois + scores for a single location."
     },
@@ -2277,9 +2277,9 @@
       "label": "Fetch geojson boundary and center coordinates from local PostGIS.     When state",
       "file_type": "rationale",
       "source_file": "backend/osm_local.py",
-      "source_location": "L213",
+      "source_location": "L254",
       "_origin": "ast",
-      "id": "backend_osm_local_rationale_213",
+      "id": "backend_osm_local_rationale_254",
       "community": 9,
       "norm_label": "fetch geojson boundary and center coordinates from local postgis.     when state"
     },
@@ -4130,6 +4130,16 @@
       "id": "test_llm",
       "community": 75,
       "norm_label": "test_llm.py"
+    },
+    {
+      "label": "test_overpass.py",
+      "file_type": "code",
+      "source_file": "test_overpass.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "test_overpass",
+      "community": 74,
+      "norm_label": "test_overpass.py"
     },
     {
       "label": "tsconfig.app.json",
@@ -9815,9 +9825,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1478",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1478",
-      "target": "backend_main_get_osm_boundary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_boundary"
     },
     {
       "relation": "rationale_for",
@@ -9825,9 +9835,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1487",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1487",
-      "target": "backend_main_get_suburb_properties",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_properties"
     },
     {
       "relation": "contains",
@@ -10049,9 +10059,9 @@
       "source_file": "test_db.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "test_db",
-      "target": "backend_models_v3",
-      "confidence_score": 1.0
+      "target": "backend_models_v3"
     },
     {
       "relation": "uses",
@@ -10201,9 +10211,9 @@
       "source_file": "backend/osm_local.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_osm_local_rationale_37",
-      "target": "backend_osm_local_build_category_query",
-      "confidence_score": 1.0
+      "target": "backend_osm_local_build_category_query"
     },
     {
       "relation": "calls",
@@ -10222,9 +10232,9 @@
       "source_file": "backend/osm_local.py",
       "source_location": "L112",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_osm_local_rationale_112",
-      "target": "backend_osm_local_get_pois",
-      "confidence_score": 1.0
+      "target": "backend_osm_local_get_pois"
     },
     {
       "relation": "calls",
@@ -10252,9 +10262,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/osm_local.py",
-      "source_location": "L145",
+      "source_location": "L186",
       "weight": 1.0,
-      "source": "backend_osm_local_rationale_145",
+      "source": "backend_osm_local_rationale_186",
       "target": "backend_osm_local_compute_scores",
       "confidence_score": 1.0
     },
@@ -10262,9 +10272,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/osm_local.py",
-      "source_location": "L187",
+      "source_location": "L228",
       "weight": 1.0,
-      "source": "backend_osm_local_rationale_187",
+      "source": "backend_osm_local_rationale_228",
       "target": "backend_osm_local_top_unique_names",
       "confidence_score": 1.0
     },
@@ -10272,9 +10282,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/osm_local.py",
-      "source_location": "L202",
+      "source_location": "L243",
       "weight": 1.0,
-      "source": "backend_osm_local_rationale_202",
+      "source": "backend_osm_local_rationale_243",
       "target": "backend_osm_local_get_livability",
       "confidence_score": 1.0
     },
@@ -10282,9 +10292,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/osm_local.py",
-      "source_location": "L213",
+      "source_location": "L254",
       "weight": 1.0,
-      "source": "backend_osm_local_rationale_213",
+      "source": "backend_osm_local_rationale_254",
       "target": "backend_osm_local_get_boundary",
       "confidence_score": 1.0
     },
@@ -13934,5 +13944,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e51eba1bd870cd09efe486d172aa0a9112e3ac5c"
+  "built_at_commit": "e7fdcb888395136eb46f835bb6c8917198ff0f34"
 }

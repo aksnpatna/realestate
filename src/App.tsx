@@ -947,13 +947,21 @@ function App() {
                           </div>
                         )}
                         {livabilityData.schools.length > 0 && (
-                          <div>
+                          <div style={{ marginBottom: '10px' }}>
                             <strong>Local Schools (OSM): </strong>
                             <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                               {livabilityData.schools.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.schools.length > 5 ? '...' : ''}
                             </span>
                           </div>
-                      )}
+                        )}
+                        {livabilityData.train_stations.length > 0 && (
+                          <div>
+                            <strong>Local Train Stations: </strong>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                              {livabilityData.train_stations.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.train_stations.length > 5 ? '...' : ''}
+                            </span>
+                          </div>
+                        )}
                       {/* School Catchment Links */}
                       <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
                         <h4 style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: 'var(--text-primary)' }}>🎓 Official School Catchment Zones</h4>
