@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { mockSuburbsData } from './data/suburbs'
 import type { SuburbData } from './data/suburbs'
 import SuburbMap from './components/SuburbMap'
+import Calculators from './components/Calculators'
 import AffordabilityCalculator from './components/AffordabilityCalculator'
 import HouseSearch from './components/HouseSearch'
 import CashflowGearing from './components/CashflowGearing'
@@ -13,7 +14,7 @@ import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
 
-type TabName = 'profile' | 'search' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional';
+type TabName = 'profile' | 'search' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -393,6 +394,12 @@ function App() {
           onClick={() => setActiveTab('institutional')}
         >
           Institutional
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'calculators' ? 'tab-active' : ''}`}
+          onClick={() => setActiveTab('calculators')}
+        >
+          Calculators
         </button>
       </nav>
 
@@ -1360,6 +1367,7 @@ function App() {
       />}
       {activeTab === 'purchase-plan' && <MyPurchasePlan suburbsData={suburbsData} />}
       {activeTab === 'institutional' && <InstitutionalV3Panel />}
+      {activeTab === 'calculators' && <Calculators />}
     </div>
   )
 }
