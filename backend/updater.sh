@@ -15,8 +15,8 @@ while true; do
   if [ -f "/tmp/australia.osm.pbf" ]; then
     echo "[$(date)] Download complete. Importing into PostGIS..."
     export PGPASSWORD=realestate_pass
-    # Use --slim and --cache 1000 to keep memory usage low (1GB RAM)
-    osm2pgsql --create --database realestate --host db --username realestate_user --port 5432 --slim --cache 1000 /tmp/australia.osm.pbf
+    # Use --slim and --cache 200 to keep memory usage low to prevent OOM killed
+    osm2pgsql --create --database realestate --host db --username realestate_user --port 5432 --slim --cache 200 /tmp/australia.osm.pbf
     
     echo "[$(date)] Import successful."
     rm /tmp/australia.osm.pbf

@@ -3545,7 +3545,7 @@
       "label": "CashflowGearingProps",
       "file_type": "code",
       "source_file": "src/components/CashflowGearing.tsx",
-      "source_location": "L26",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "components_cashflowgearing_cashflowgearingprops",
       "community": 1,
@@ -3555,7 +3555,7 @@
       "label": "CashflowGearing()",
       "file_type": "code",
       "source_file": "src/components/CashflowGearing.tsx",
-      "source_location": "L33",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "components_cashflowgearing_cashflowgearing",
       "community": 1,
@@ -9662,9 +9662,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1246",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1246",
-      "target": "backend_main_get_suburbs_v3"
+      "target": "backend_main_get_suburbs_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -9672,9 +9672,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1324",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1324",
-      "target": "backend_main_export_suburbs_csv"
+      "target": "backend_main_export_suburbs_csv",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -9763,9 +9763,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1379",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1379",
-      "target": "backend_main_get_suburb_v3"
+      "target": "backend_main_get_suburb_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -9784,9 +9784,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1449",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1449",
-      "target": "backend_main_get_osm_livability"
+      "target": "backend_main_get_osm_livability",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -9815,9 +9815,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1477",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1477",
-      "target": "backend_main_get_osm_boundary"
+      "target": "backend_main_get_osm_boundary",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -9825,9 +9825,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1486",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1486",
-      "target": "backend_main_get_suburb_properties"
+      "target": "backend_main_get_suburb_properties",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",

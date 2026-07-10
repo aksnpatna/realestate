@@ -1,0 +1,108 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index f541800..7c91de1 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -8,6 +8,7 @@ import CashflowGearing from './components/CashflowGearing'
+ import InstitutionalV3Panel from './components/InstitutionalV3Panel'
+ import MyPurchasePlan from './components/MyPurchasePlan'
+ import QuickRoiCalculator from './components/QuickRoiCalculator'
++import OnboardingTour from './components/OnboardingTour'
+ import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
+ import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
+ import './index.css'
+@@ -21,6 +22,7 @@ function App() {
+   const [loginError, setLoginError] = useState('')
+   const [isRegistering, setIsRegistering] = useState(false)
+   const [confirmPassword, setConfirmPassword] = useState('')
++  const [favorites, setFavorites] = useState<string[]>([])
+   
+   const [suburbsData, setSuburbsData] = useState<SuburbData[]>([])
+   const [loadingData, setLoadingData] = useState(true)
+@@ -79,9 +81,34 @@ function App() {
+         .then(res => res.json())
+         .then(data => setMacroEtf(data))
+         .catch(err => console.error("ETF fetch error:", err))
++
++      fetch('/api/favorites')
++        .then(res => res.json())
++        .then(data => {
++          if (data.status === 'success') {
++            setFavorites(data.favorites)
++          }
++        })
++        .catch(err => console.error("Favorites fetch error:", err))
+     }
+   }, [isAuthenticated])
+ 
++  const toggleFavorite = async (suburbId: string) => {
++    try {
++      const res = await fetch('/api/favorites', {
++        method: 'POST',
++        headers: { 'Content-Type': 'application/json' },
++        body: JSON.stringify({ suburb_id: suburbId })
++      });
++      if (res.ok) {
++        const data = await res.json();
++        setFavorites(data.favorites);
++      }
++    } catch (err) {
++      console.error("Failed to toggle favorite", err);
++    }
++  };
++
+   const filteredSuburbsData = useMemo(() => {
+     return suburbsData.filter(s => regionMode === 'metro' ? (s as any).isMetro : !(s as any).isMetro);
+   }, [suburbsData, regionMode]);
+@@ -232,6 +259,7 @@ function App() {
+ 
+   return (
+     <div className="dashboard-container">
++      <OnboardingTour />
+       <header>
+         <h1 className="title-glow">Real Estate Engine</h1>
+         <p className="subtitle">Algorithmic Suburb Profiling & Growth Potential</p>
+@@ -383,7 +411,7 @@ function App() {
+             {activeSuburb ? (
+               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
+                 <div className="glass-card">
+-                    <div className="detail-header">
++                    <div className="detail-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                       <div>
+                         <h2 className="detail-title">{activeSuburb.name}, {activeSuburb.state}
+                         {(()=>{
+@@ -398,10 +426,25 @@ function App() {
+                         {(activeSuburb as any).lastV3Update && (
+                           <span style={{ marginLeft: '8px', fontSize: '0.6rem', color: 'var(--text-secondary)' }}>
+                             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', display: 'inline-block', marginRight: '4px' }} />
+-                            V3 · {new Date((activeSuburb as any).lastV3Update).toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'})}
++                            V3 · {new Date((activeSuburb as any).lastV3Update).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                           </span>
+                         )}
+-                      </h2>
++                        </h2>
++                      </div>
++                      <button
++                        className="favorite-btn"
++                        onClick={() => toggleFavorite(activeSuburb.id)}
++                        style={{
++                          background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.8rem',
++                          color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-secondary)',
++                          transition: 'all 0.2s', padding: '8px', lineHeight: 1
++                        }}
++                        title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
++                      >
++                        {favorites.includes(activeSuburb.id) ? '♥' : '♡'}
++                      </button>
++                    </div>
++
+                       <p className="subtitle">
+                         {(activeSuburb as any).cbdDistance
+                           ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
+@@ -412,7 +455,6 @@ function App() {
+                           Data Last Updated: {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
+                         </p>
+                       )}
+-                    </div>
+                     <div className="main-score">
+                       <div className="main-score-value" title="Formula: (Pop% * 10) + (Infra$B * 3) + (School * 3) + (Transit * 2) + (Yield * 2) - Distance Penalty">
+                         {activeSuburb.growthScore}
