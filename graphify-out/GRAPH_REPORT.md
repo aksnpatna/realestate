@@ -1,20 +1,21 @@
 # Graph Report - realestate  (2026-07-10)
 
 ## Corpus Check
-- 88 files · ~2,207,670 words
+- 89 files · ~2,208,756 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 574 nodes · 795 edges · 78 communities (53 shown, 25 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 129 edges (avg confidence: 0.58)
+- 576 nodes · 798 edges · 79 communities (54 shown, 25 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 130 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `89bfa56d`
+- Built from commit: `b94055c3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
+- [[_COMMUNITY_Community 0|Community 0]]
 - [[_COMMUNITY_Community 1|Community 1]]
 - [[_COMMUNITY_Community 2|Community 2]]
 - [[_COMMUNITY_Community 3|Community 3]]
@@ -98,11 +99,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (78 total, 25 thin omitted)
+## Communities (79 total, 25 thin omitted)
+
+### Community 0 - "Community 0"
+Cohesion: 0.14
+Nodes (18): _annualize_cagr(), _build_v3_fallback_response(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), get_cached_or_query(), get_suburb(), get_suburb_v3() (+10 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.07
-Nodes (21): TabName, SortKey, CashflowGearingProps, GearingResult, V3SuburbData, BuyerProfile, MyPurchasePlanProps, OnboardingTour() (+13 more)
+Nodes (22): TabName, SortKey, Calculators(), CashflowGearingProps, GearingResult, V3SuburbData, BuyerProfile, MyPurchasePlanProps (+14 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.27
@@ -217,8 +222,8 @@ Cohesion: 0.12
 Nodes (12): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+4 more)
 
 ### Community 76 - "Community 76"
-Cohesion: 0.06
-Nodes (81): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, _build_v2_only_response() (+73 more)
+Cohesion: 0.08
+Nodes (63): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, ActivityRequest, analyze_suburb(), AnalyzeRequest, BoundedRateLimitStore, _build_v2_only_response(), bust_suburbs_cache() (+55 more)
 
 ## Knowledge Gaps
 - **162 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+157 more)
@@ -228,7 +233,7 @@ Nodes (81): find_similar_suburbs(), Finds cheaper suburbs that share similar ins
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Community 76` to `Community 2`, `Community 5`?**
+- **Why does `Session` connect `Community 76` to `Community 0`, `Community 2`, `Community 5`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `get_suburb_properties()` connect `Community 5` to `Community 76`?**
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
