@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-07-09)
+# Graph Report - realestate  (2026-07-10)
 
 ## Corpus Check
-- 87 files · ~2,207,041 words
+- 87 files · ~2,207,365 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 572 nodes · 793 edges · 79 communities (54 shown, 25 thin omitted)
+- 572 nodes · 794 edges · 78 communities (53 shown, 25 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 129 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9077efd4`
+- Built from commit: `e51eba1b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -91,19 +91,19 @@
   backend/etl_extract_v3.py → backend/models_v3.py
 - `worker()` --calls--> `Session`  [INFERRED]
   backend/etl_extract_v3.py → backend/main.py
+- `get_suburb_properties()` --calls--> `extract_property_listings()`  [INFERRED]
+  backend/main.py → backend/etl_transform_v3.py
 - `update_password()` --calls--> `UserModel`  [INFERRED]
   backend/update_pwd.py → backend/main.py
-- `migrate()` --calls--> `SuburbPriceHistory`  [INFERRED]
-  backend/migrate_history_to_timeseries.py → backend/models_v3.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (79 total, 25 thin omitted)
+## Communities (78 total, 25 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.08
-Nodes (63): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, ActivityRequest, analyze_suburb(), AnalyzeRequest, BoundedRateLimitStore, _build_v2_only_response(), bust_suburbs_cache() (+55 more)
+Cohesion: 0.16
+Nodes (32): ActivityRequest, AnalyzeRequest, BoundedRateLimitStore, FavoriteRequest, LoginRequest, RegisterRequest, ROICalcRequest, toggle_favorite() (+24 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.07
@@ -122,8 +122,8 @@ Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection, moduleResolution (+10 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.17
-Nodes (18): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+10 more)
+Cohesion: 0.20
+Nodes (16): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+8 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.18
@@ -222,8 +222,8 @@ Cohesion: 0.12
 Nodes (11): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+3 more)
 
 ### Community 76 - "Community 76"
-Cohesion: 0.14
-Nodes (18): _annualize_cagr(), _build_v3_fallback_response(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), get_cached_or_query(), get_suburb(), get_suburb_v3() (+10 more)
+Cohesion: 0.06
+Nodes (51): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, analyze_suburb(), _annualize_cagr(), _build_v2_only_response(), _build_v3_fallback_response(), bust_suburbs_cache(), calculate_roi() (+43 more)
 
 ## Knowledge Gaps
 - **161 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+156 more)
@@ -233,9 +233,9 @@ Nodes (18): _annualize_cagr(), _build_v3_fallback_response(), _calibrate_dq(), _
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Community 0` to `Community 2`, `Community 76`, `Community 5`?**
+- **Why does `Session` connect `Community 76` to `Community 0`, `Community 2`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `get_suburb_properties()` connect `Community 5` to `Community 0`?**
+- **Why does `get_suburb_properties()` connect `Community 76` to `Community 5`?**
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `V3Scheduler` connect `Community 6` to `Community 0`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
