@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783651450.8721106,
-    "ast_hash": "9a3616b65c8ab105b2da35679dc9ef0d",
+    "mtime": 1783654739.6836112,
+    "ast_hash": "df6cf236094c66d339d0acc77ce93150",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/components/SuburbMap.tsx": {
-    "mtime": 1783574824.8346102,
-    "ast_hash": "bbab7340f838d9e405fd2a21f0207b43",
+    "mtime": 1783653489.4294891,
+    "ast_hash": "cbcc984592f17402c5bac9354a00c03c",
     "semantic_hash": ""
   },
   "src/data/enriched_suburbs.json": {

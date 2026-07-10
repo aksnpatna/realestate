@@ -1080,7 +1080,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "backend_main_get_cached_or_query",
-      "community": 76,
+      "community": 0,
       "norm_label": "get_cached_or_query()"
     },
     {
@@ -1400,7 +1400,7 @@
       "source_location": "L404",
       "_origin": "ast",
       "id": "backend_main_get_suburbs",
-      "community": 76,
+      "community": 0,
       "norm_label": "get_suburbs()"
     },
     {
@@ -1430,7 +1430,7 @@
       "source_location": "L536",
       "_origin": "ast",
       "id": "backend_main_build_v3_fallback_response",
-      "community": 76,
+      "community": 0,
       "norm_label": "_build_v3_fallback_response()"
     },
     {
@@ -1450,7 +1450,7 @@
       "source_location": "L626",
       "_origin": "ast",
       "id": "backend_main_annualize_cagr",
-      "community": 76,
+      "community": 0,
       "norm_label": "_annualize_cagr()"
     },
     {
@@ -1460,7 +1460,7 @@
       "source_location": "L634",
       "_origin": "ast",
       "id": "backend_main_cap_yield",
-      "community": 76,
+      "community": 0,
       "norm_label": "_cap_yield()"
     },
     {
@@ -1470,7 +1470,7 @@
       "source_location": "L640",
       "_origin": "ast",
       "id": "backend_main_calibrate_dq",
-      "community": 76,
+      "community": 0,
       "norm_label": "_calibrate_dq()"
     },
     {
@@ -1480,7 +1480,7 @@
       "source_location": "L661",
       "_origin": "ast",
       "id": "backend_main_compute_growth_score",
-      "community": 76,
+      "community": 0,
       "norm_label": "_compute_growth_score()"
     },
     {
@@ -1490,7 +1490,7 @@
       "source_location": "L786",
       "_origin": "ast",
       "id": "backend_main_get_suburb",
-      "community": 76,
+      "community": 0,
       "norm_label": "get_suburb()"
     },
     {
@@ -1600,7 +1600,7 @@
       "source_location": "L1245",
       "_origin": "ast",
       "id": "backend_main_get_suburbs_v3",
-      "community": 76,
+      "community": 0,
       "norm_label": "get_suburbs_v3()"
     },
     {
@@ -1650,7 +1650,7 @@
       "source_location": "L1378",
       "_origin": "ast",
       "id": "backend_main_get_suburb_v3",
-      "community": 76,
+      "community": 0,
       "norm_label": "get_suburb_v3()"
     },
     {
@@ -1730,7 +1730,7 @@
       "source_location": "L537",
       "_origin": "ast",
       "id": "backend_main_rationale_537",
-      "community": 76,
+      "community": 0,
       "norm_label": "build a suburbdata-compatible response from v3-only data when v2 record is missi"
     },
     {
@@ -1740,7 +1740,7 @@
       "source_location": "L627",
       "_origin": "ast",
       "id": "backend_main_rationale_627",
-      "community": 76,
+      "community": 0,
       "norm_label": "convert 5yr total growth % to annual cagr %. values >10% treated as total growth"
     },
     {
@@ -1750,7 +1750,7 @@
       "source_location": "L635",
       "_origin": "ast",
       "id": "backend_main_rationale_635",
-      "community": 76,
+      "community": 0,
       "norm_label": "clamp rental yields to prevent absurd outliers from low-price suburbs."
     },
     {
@@ -1760,7 +1760,7 @@
       "source_location": "L641",
       "_origin": "ast",
       "id": "backend_main_rationale_641",
-      "community": 76,
+      "community": 0,
       "norm_label": "recalibrate dq score: subtract points for null critical fields."
     },
     {
@@ -1770,7 +1770,7 @@
       "source_location": "L662",
       "_origin": "ast",
       "id": "backend_main_rationale_662",
-      "community": 76,
+      "community": 0,
       "norm_label": "compute a 0-92 growth score from real v3 metrics.     version: 1.2.0 \u2014 probabili"
     },
     {
@@ -1780,7 +1780,7 @@
       "source_location": "L787",
       "_origin": "ast",
       "id": "backend_main_rationale_787",
-      "community": 76,
+      "community": 0,
       "norm_label": "v3-only endpoint \u2014 all data from suburbs_ui_v3 (self-sufficient)."
     },
     {
@@ -1810,7 +1810,7 @@
       "source_location": "L1246",
       "_origin": "ast",
       "id": "backend_main_rationale_1246",
-      "community": 76,
+      "community": 0,
       "norm_label": "returns v3-enriched suburbs for the institutional dashboard view."
     },
     {
@@ -1830,7 +1830,7 @@
       "source_location": "L1379",
       "_origin": "ast",
       "id": "backend_main_rationale_1379",
-      "community": 76,
+      "community": 0,
       "norm_label": "returns full v3 institutional data for a single suburb."
     },
     {
@@ -3475,7 +3475,7 @@
       "label": "TabName",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "_origin": "ast",
       "id": "src_app_tabname",
       "community": 1,
@@ -3485,7 +3485,7 @@
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 1,
@@ -3520,6 +3520,26 @@
       "id": "components_affordabilitycalculator_affordabilitycalculator",
       "community": 1,
       "norm_label": "affordabilitycalculator()"
+    },
+    {
+      "label": "Calculators.tsx",
+      "file_type": "code",
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_calculators",
+      "community": 1,
+      "norm_label": "calculators.tsx"
+    },
+    {
+      "label": "Calculators()",
+      "file_type": "code",
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "components_calculators_calculators",
+      "community": 1,
+      "norm_label": "calculators()"
     },
     {
       "label": "CashflowGearing.tsx",
@@ -11616,6 +11636,17 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "components_calculators",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
       "source_location": "L7",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -11848,6 +11879,27 @@
       "confidence_score": 1.0,
       "source": "components_affordabilitycalculator",
       "target": "data_suburbs_suburbdata"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "components_calculators",
+      "target": "components_calculators_calculators",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L156",
+      "weight": 1.0,
+      "source": "components_calculators_calculators",
+      "target": "data_suburbs_calculatestampduty"
     },
     {
       "relation": "contains",
@@ -12305,9 +12357,9 @@
       "source_file": "src/components/SuburbMap.tsx",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_suburbmap",
-      "target": "components_suburbmap_trainstationicon",
-      "confidence_score": 1.0
+      "target": "components_suburbmap_trainstationicon"
     },
     {
       "relation": "imports_from",
@@ -13964,5 +14016,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "89bfa56dcb815c603c298ff61f8726463ca1ef22"
+  "built_at_commit": "b94055c334d69bd48fe06ea8290fb7aa95405400"
 }

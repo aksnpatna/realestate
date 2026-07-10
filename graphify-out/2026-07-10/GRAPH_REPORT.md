@@ -1,21 +1,20 @@
 # Graph Report - realestate  (2026-07-10)
 
 ## Corpus Check
-- 88 files · ~2,207,591 words
+- 88 files · ~2,207,670 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 573 nodes · 794 edges · 79 communities (54 shown, 25 thin omitted)
+- 574 nodes · 795 edges · 78 communities (53 shown, 25 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 129 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e7fdcb88`
+- Built from commit: `89bfa56d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Community 0|Community 0]]
 - [[_COMMUNITY_Community 1|Community 1]]
 - [[_COMMUNITY_Community 2|Community 2]]
 - [[_COMMUNITY_Community 3|Community 3]]
@@ -91,19 +90,15 @@
   backend/etl_extract_v3.py → backend/models_v3.py
 - `worker()` --calls--> `Session`  [INFERRED]
   backend/etl_extract_v3.py → backend/main.py
-- `get_suburb_properties()` --calls--> `extract_property_listings()`  [INFERRED]
-  backend/main.py → backend/etl_transform_v3.py
 - `update_password()` --calls--> `UserModel`  [INFERRED]
   backend/update_pwd.py → backend/main.py
+- `migrate()` --calls--> `SuburbPriceHistory`  [INFERRED]
+  backend/migrate_history_to_timeseries.py → backend/models_v3.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (79 total, 25 thin omitted)
-
-### Community 0 - "Community 0"
-Cohesion: 0.16
-Nodes (32): ActivityRequest, AnalyzeRequest, BoundedRateLimitStore, FavoriteRequest, LoginRequest, RegisterRequest, ROICalcRequest, toggle_favorite() (+24 more)
+## Communities (78 total, 25 thin omitted)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.07
@@ -122,8 +117,8 @@ Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection, moduleResolution (+10 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.20
-Nodes (16): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+8 more)
+Cohesion: 0.17
+Nodes (18): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+10 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.18
@@ -219,25 +214,25 @@ Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScrip
 
 ### Community 73 - "Community 73"
 Cohesion: 0.12
-Nodes (11): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+3 more)
+Nodes (12): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+4 more)
 
 ### Community 76 - "Community 76"
 Cohesion: 0.06
-Nodes (51): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, analyze_suburb(), _annualize_cagr(), _build_v2_only_response(), _build_v3_fallback_response(), bust_suburbs_cache(), calculate_roi() (+43 more)
+Nodes (81): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, _build_v2_only_response() (+73 more)
 
 ## Knowledge Gaps
-- **161 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+156 more)
+- **162 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+157 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Community 76` to `Community 0`, `Community 2`?**
+- **Why does `Session` connect `Community 76` to `Community 2`, `Community 5`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `get_suburb_properties()` connect `Community 76` to `Community 5`?**
+- **Why does `get_suburb_properties()` connect `Community 5` to `Community 76`?**
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
-- **Why does `V3Scheduler` connect `Community 6` to `Community 0`?**
+- **Why does `V3Scheduler` connect `Community 6` to `Community 76`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
   _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
