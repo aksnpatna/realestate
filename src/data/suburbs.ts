@@ -241,6 +241,142 @@ export function calculateMaxPurchase(deposit: number, state: string, lvr: number
   return { maxPrice, maxBorrow, stampDutyForMax };
 }
 
+export const FHOG: Record<string, { established: number; new_home: number; vacant_land: number; cap_new: number; cap_established: number }> = {
+  NSW: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
+  VIC: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
+  QLD: { established: 0, new_home: 30000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
+  WA: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
+  SA: { established: 0, new_home: 15000, vacant_land: 0, cap_new: 650000, cap_established: 0 },
+  TAS: { established: 0, new_home: 30000, vacant_land: 0, cap_new: 0, cap_established: 0 },
+  ACT: { established: 0, new_home: 0, vacant_land: 0, cap_new: 0, cap_established: 0 },
+  NT: { established: 0, new_home: 10000, vacant_land: 0, cap_new: 750000, cap_established: 0 },
+};
+
+export const FIRST_HOME_CONCESSION: Record<string, { fullExemption: number; concessionalRange: [number, number]; concessionalDutyReduction: number }> = {
+  NSW: { fullExemption: 1000000, concessionalRange: [1000000, 1200000], concessionalDutyReduction: 0.5 },
+  VIC: { fullExemption: 600000, concessionalRange: [600000, 750000], concessionalDutyReduction: 0.5 },
+  QLD: { fullExemption: 700000, concessionalRange: [700000, 800000], concessionalDutyReduction: 0.5 },
+  WA: { fullExemption: 430000, concessionalRange: [430000, 530000], concessionalDutyReduction: 0.5 },
+  SA: { fullExemption: 650000, concessionalRange: [650000, 700000], concessionalDutyReduction: 0.5 },
+  TAS: { fullExemption: 0, concessionalRange: [0, 600000], concessionalDutyReduction: 0.5 },
+  ACT: { fullExemption: 0, concessionalRange: [0, 1000000], concessionalDutyReduction: 0 },
+  NT: { fullExemption: 0, concessionalRange: [0, 650000], concessionalDutyReduction: 0.5 },
+};
+
+export const GOVT_FEES: Record<string, { mortgageReg: number; transferFee: number }> = {
+  NSW: { mortgageReg: 164.90, transferFee: 151.60 },
+  VIC: { mortgageReg: 121.40, transferFee: 96.30 },
+  QLD: { mortgageReg: 196.00, transferFee: 192.70 },
+  WA: { mortgageReg: 181.10, transferFee: 211.50 },
+  SA: { mortgageReg: 176.00, transferFee: 195.00 },
+  TAS: { mortgageReg: 141.00, transferFee: 192.70 },
+  ACT: { mortgageReg: 174.00, transferFee: 410.00 },
+  NT: { mortgageReg: 168.00, transferFee: 147.00 },
+};
+
+export function calcTransferFee(price: number, state: string): number {
+  const base = GOVT_FEES[state]?.transferFee ?? 200;
+  if (state === 'NSW') {
+    if (price <= 100000) return 100;
+    if (price <= 200000) return 200;
+    if (price <= 300000) return 300;
+    if (price <= 500000) return 400;
+    if (price <= 1000000) return 500;
+    if (price <= 2000000) return 600;
+    if (price <= 3000000) return 700;
+    return 800;
+  }
+  if (state === 'VIC') {
+    if (price <= 10000) return 0;
+    if (price <= 50000) return 10;
+    if (price <= 100000) return 100;
+    if (price <= 250000) return 250;
+    if (price <= 500000) return 500;
+    if (price <= 1000000) return 1000;
+    if (price <= 2000000) return 2000;
+    return 3000;
+  }
+  if (state === 'QLD') {
+    if (price <= 180000) return 192.70;
+    if (price <= 350000) return 384.50;
+    if (price <= 550000) return 577.00;
+    if (price <= 1000000) return 770.00;
+    return 962.50;
+  }
+  if (state === 'WA') {
+    if (price <= 100000) return 100;
+    if (price <= 200000) return 200;
+    if (price <= 300000) return 300;
+    if (price <= 500000) return 400;
+    if (price <= 1000000) return 500;
+    return 600;
+  }
+  if (state === 'SA') {
+    if (price <= 100000) return 150;
+    if (price <= 200000) return 200;
+    if (price <= 300000) return 300;
+    if (price <= 500000) return 500;
+    return 700;
+  }
+  if (state === 'TAS') {
+    if (price <= 100000) return 100;
+    if (price <= 200000) return 200;
+    if (price <= 350000) return 350;
+    return 500;
+  }
+  return base;
+}
+
+export function calcMortgageRegFee(price: number, state: string): number {
+  const base = GOVT_FEES[state]?.mortgageReg ?? 180;
+  if (state === 'NSW') return 164.90;
+  if (state === 'VIC') return 121.40;
+  if (state === 'QLD') return 196.00;
+  if (state === 'WA') {
+    if (price <= 100000) return 181;
+    return 181 + (price - 100000) * 0.002;
+  }
+  if (state === 'SA') {
+    if (price <= 100000) return 176;
+    return 176 + (price - 100000) * 0.002;
+  }
+  if (state === 'TAS') {
+    if (price <= 10000) return 141;
+    return 141 + (price - 10000) * 0.004;
+  }
+  if (state === 'NT') {
+    if (price <= 525000) return 168;
+    return 168 + (price - 525000) * 0.002;
+  }
+  return base;
+}
+
+export function calculateComprehensiveStampDuty(propertyValue: number, state: string, isFirstHome: boolean, propertyType: 'established' | 'new_home' | 'vacant_land') {
+  const rawDuty = calculateStampDuty(propertyValue, state);
+  let duty = rawDuty;
+  const fhcs = FIRST_HOME_CONCESSION[state];
+  if (isFirstHome && fhcs) {
+    if (propertyValue <= fhcs.fullExemption) {
+      duty = 0;
+    } else if (propertyValue > fhcs.concessionalRange[0] && propertyValue <= fhcs.concessionalRange[1]) {
+      duty = rawDuty * fhcs.concessionalDutyReduction;
+    }
+  }
+  let fhog = 0;
+  if (isFirstHome) {
+    const scheme = FHOG[state];
+    if (scheme) {
+      if (propertyType === 'new_home' && propertyValue <= scheme.cap_new) fhog = scheme.new_home;
+      else if (propertyType === 'established' && propertyValue <= scheme.cap_established) fhog = scheme.established;
+      else if (propertyType === 'vacant_land' && propertyValue <= scheme.cap_new) fhog = scheme.vacant_land;
+    }
+  }
+  const mortgageReg = calcMortgageRegFee(propertyValue, state);
+  const transferFee = calcTransferFee(propertyValue, state);
+  const totalGovtFees = duty + mortgageReg + transferFee;
+  return { duty, mortgageReg, transferFee, totalGovtFees, fhog, rawDuty };
+}
+
 export const mockSuburbsData: SuburbData[] = [
   // ==================== ACT ====================
   { id: "belconnen-act-2617", name: "Belconnen", postcode: "2617", state: "ACT", growthScore: 72, coordinates: [-35.2375, 149.0670], isMetro: true, metroCBD: "Canberra CBD", cbdDistanceMins: 15, metrics: { populationGrowth: "+2.1% YoY", infrastructureInvestment: "$420M+", schoolQuality: 7.8, transitAccessibility: 8.0, medianPrice: 950000, rentalYield: 4.5 }, highlights: ["7.3% YoY price growth to Feb 2026", "Light Rail Stage 2B to Belconnen planned", "University of Canberra expansion", "Strong student rental demand near UC"], pois: [{ name: "Belconnen Bus Interchange", type: "station", coordinates: [-35.238, 149.067] }, { name: "Westfield Belconnen", type: "shopping", coordinates: [-35.239, 149.065] }], schools: [{ name: "Lake Ginninderra College", type: "Secondary", stateRank: 85, score: 89, coordinates: [-35.236, 149.069] }, { name: "Radford College", type: "Combined", stateRank: 30, score: 97, coordinates: [-35.240, 149.062] }, { name: "Evatt Primary School", type: "Primary", stateRank: 180, score: 83, coordinates: [-35.234, 149.071] }] },
