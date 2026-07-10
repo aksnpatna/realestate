@@ -10,6 +10,7 @@ export interface LivabilityData {
   cafes: OSMPoi[];
   parks: OSMPoi[];
   transit: OSMPoi[];
+  train_stations: OSMPoi[];
   schools: OSMPoi[];
   walkabilityScore: number;
   transitScoreStandalone: number;
@@ -28,6 +29,6 @@ export async function fetchLivabilityData(lat: number, lon: number, radius: numb
     return data;
   } catch (err) {
     console.error("Error fetching local OSM data:", err);
-    return { cafes: [], parks: [], transit: [], schools: [], walkabilityScore: 0, transitScoreStandalone: 0, liveabilityScore: 0 };
+    return { cafes: [], parks: [], transit: [], train_stations: [], schools: [], walkabilityScore: 0, transitScoreStandalone: 0, liveabilityScore: 0 };
   }
 }

@@ -18,6 +18,9 @@ interface GearingResult {
   lvr: number;
   taxBenefit: number;
   netAfterTax: number;
+  pmFee: number;
+  maintenance: number;
+  fixedCosts: number;
 }
 
 interface CashflowGearingProps {
@@ -41,7 +44,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
   const [waterBill, setWaterBill] = useState<number>(900);
   const [insurance, setInsurance] = useState<number>(1500);
   const [pmFeePct, setPmFeePct] = useState<number>(7.5);
-  const maintenancePct = 1.0;
+  const [maintenancePct, setMaintenancePct] = useState<number>(0.35);
   const [vacancyWeeks, setVacancyWeeks] = useState<number>(2);
   const [vacancyFromAPI, setVacancyFromAPI] = useState<number | null>(null);
   const [salary, setSalary] = useState<number>(100000);
@@ -125,10 +128,8 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
 
     const pmFee = annualRent * (pmFeePct / 100);
     const maintenance = purchasePrice * (maintenancePct / 100);
-    const annualExpenses = (customCosts
-      ? ratesBill + waterBill + insurance
-      : purchasePrice * 0.0065 // default: ~0.65% of property value
-    ) + pmFee + maintenance;
+    const fixedCosts = customCosts ? ratesBill + waterBill + insurance : purchasePrice * 0.0065; // default: ~0.65% of property value
+    const annualExpenses = fixedCosts + pmFee + maintenance;
 
     let netAnnualCashflow: number;
     if (loanType === 'io') {
@@ -180,6 +181,9 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
       lvr: Math.round(lvr * 10) / 10,
       taxBenefit: Math.round(taxBenefit),
       netAfterTax: Math.round(netAfterTax),
+      pmFee: Math.round(pmFee),
+      maintenance: Math.round(maintenance),
+      fixedCosts: Math.round(fixedCosts),
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchasePrice, weeklyRent, depositPct, interestRate, loanType, loanTerm,
@@ -303,6 +307,13 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
               </div>
             </div>
 
+            <div className="input-row" style={{ marginTop: '0.5rem' }}>
+              <div className="control-group" style={{ flex: '0 0 50%' }}>
+                <label className="control-label">Maintenance % /yr</label>
+                <input type="number" className="premium-input small" value={maintenancePct} onChange={(e) => setMaintenancePct(Number(e.target.value) || 0)} min={0} max={5} step={0.05} />
+              </div>
+            </div>
+
             <label className="toggle-label" style={{ marginTop: '0.5rem' }}>
               <input type="checkbox" checked={customCosts} onChange={(e) => setCustomCosts(e.target.checked)} />
               <span>Custom holding costs</span>
@@ -340,7 +351,7 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
                         : 'NEGATIVE GEARING'}
                     </div>
                     <div className="gearing-status-sub">
-                      {result.netWeeklyCashflow > 0 ? '+' : ''}{result.netWeeklyCashflow.toLocaleString()} / week
+                      Pre-tax: {result.netWeeklyCashflow > 0 ? '+' : ''}{result.netWeeklyCashflow.toLocaleString()} / wk | Tax-Adjusted: {result.netAfterTax > 0 ? '+' : ''}{Math.round(result.netAfterTax / 52).toLocaleString()} / wk
                     </div>
                   </div>
                 </div>
@@ -369,14 +380,31 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
                   <div className="gmetric">
                     <div className="gmetric-label">Annual Expenses</div>
                     <div className="gmetric-value">${result.annualExpenses.toLocaleString()}</div>
-                    <div className="gmetric-detail">Incl. PM, maintenance, rates, insurance</div>
+                    <div className="gmetric-detail" style={{ marginTop: '0.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                        <span>Property Mgmt:</span><span>${result.pmFee.toLocaleString()}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                        <span>Maintenance:</span><span>${result.maintenance.toLocaleString()}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                        <span>Fixed (Rates/Ins):</span><span>${result.fixedCosts.toLocaleString()}</span>
+                      </div>
+                    </div>
                   </div>
                   <div className="gmetric">
-                    <div className="gmetric-label">Net Annual Cashflow</div>
+                    <div className="gmetric-label">Pre-Tax Annual Net</div>
                     <div className={`gmetric-value ${result.netAnnualCashflow > 0 ? 'text-success' : result.netAnnualCashflow >= -2000 ? 'text-warning' : 'highlight-purple'}`}>
                       {result.netAnnualCashflow > 0 ? '+' : ''}{result.netAnnualCashflow.toLocaleString()}
                     </div>
-                    <div className="gmetric-detail">Tax deduction potential on losses</div>
+                    <div className="gmetric-detail">Before tax deductions</div>
+                  </div>
+                  <div className="gmetric gmetric-wide">
+                    <div className="gmetric-label">Tax-Adjusted Position</div>
+                    <div className={`gmetric-value ${result.netAfterTax > 0 ? 'text-success' : 'highlight-purple'}`}>
+                      {result.netAfterTax > 0 ? '+' : ''}{result.netAfterTax.toLocaleString()}
+                    </div>
+                    <div className="gmetric-detail">Net annual after tax rebate/liability</div>
                   </div>
                   <div className="gmetric gmetric-wide">
                     <div className="gmetric-label">Cash-on-Cash Return</div>
