@@ -63,13 +63,17 @@ def get_cached_or_query(cache_key: str, query_func, expire_secs: int = 3600):
     if not redis_client:
         return query_func()
     
-    cached = redis_client.get(cache_key)
-    if cached:
-        return json.loads(cached)
-        
-    result = query_func()
-    redis_client.setex(cache_key, expire_secs, json.dumps(result))
-    return result
+    try:
+        cached = redis_client.get(cache_key)
+        if cached:
+            return json.loads(cached)
+            
+        result = query_func()
+        redis_client.setex(cache_key, expire_secs, json.dumps(result))
+        return result
+    except Exception as e:
+        print(f"[cache] Redis error on {cache_key}: {e}. Falling back to DB.")
+        return query_func()
 
 app = FastAPI()
 
@@ -134,6 +138,16 @@ class UserActivity(Base):
     user_id = Column(String, index=True)
     action_type = Column(String, index=True)
     target_id = Column(String, nullable=True)
+    timestamp = Column(String, default=lambda: datetime.now().isoformat())
+
+class UserConsent(Base):
+    """Stores legally binding Click-Wrap agreements with timestamps and IP records."""
+    __tablename__ = "user_consents"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, index=True, nullable=True)
+    ip_address = Column(String, nullable=True)
+    user_agent = Column(String, nullable=True)
+    consent_type = Column(String)
     timestamp = Column(String, default=lambda: datetime.now().isoformat())
 
 # Ensure tables are created
@@ -315,6 +329,34 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
             
     token = jwt.encode({"sub": user.id, "exp": datetime.utcnow().timestamp() + 86400}, JWT_SECRET, algorithm=JWT_ALGORITHM)
     response.set_cookie(key="access_token", value=token, httponly=True, samesite="strict", max_age=86400)
+    return {"status": "success"}
+
+class ConsentRequest(BaseModel):
+    consent_type: str
+
+@app.post("/api/consent")
+def record_consent(req: ConsentRequest, request: Request, db: Session = Depends(get_db)):
+    """Records a legally binding Click-Wrap agreement to the database with IP tracing."""
+    user_id = None
+    try:
+        token = request.cookies.get("access_token")
+        if token:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            user_id = payload.get("sub")
+    except Exception:
+        pass
+        
+    client_ip = request.client.host if request.client else "unknown"
+    user_agent = request.headers.get("User-Agent", "unknown")
+    
+    consent = UserConsent(
+        user_id=user_id,
+        ip_address=client_ip,
+        user_agent=user_agent,
+        consent_type=req.consent_type
+    )
+    db.add(consent)
+    db.commit()
     return {"status": "success"}
 
 @app.get("/api/me")
@@ -626,10 +668,13 @@ def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
 def _annualize_cagr(val) -> float:
     """Convert 5yr total growth % to annual CAGR %. Values >10% treated as total growth."""
     if val is None: return 0
-    val = float(val)
-    if val > 10:
-        return ((1 + val/100) ** (1./5) - 1) * 100
-    return val
+    try:
+        val = float(val)
+        if val > 10:
+            return ((1 + val/100) ** (1./5) - 1) * 100
+        return val
+    except (ValueError, TypeError):
+        return 0
 
 def _cap_yield(val, max_yield=25.0) -> float | None:
     """Clamp rental yields to prevent absurd outliers from low-price suburbs."""

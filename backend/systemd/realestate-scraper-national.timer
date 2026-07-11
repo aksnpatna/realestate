@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer for National Scraper
+
+[Timer]
+# Run at 2am on the 1st of Jan, Apr, Jul, Oct
+OnCalendar=*-01,04,07,10-01 02:00:00
+RandomizedDelaySec=604800
+Persistent=true
+
+[Install]
+WantedBy=timers.target

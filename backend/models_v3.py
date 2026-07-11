@@ -145,6 +145,11 @@ class SuburbUIV3(Base):
     building_approvals_12m = Column(Integer)
     infrastructure_investment = Column(String)
 
+    # ---- DATA PROVENANCE (legal defensibility) ----
+    abs_demographics_sourced = Column(Boolean, default=False)  # True = ABS Census 2021 is the source for demographics fields
+    abs_sourced_fields = Column(JSON)                          # List of field names confirmed from ABS e.g. ["population_2021", "median_age"]
+    abs_etl_run_date = Column(DateTime)                        # When ABS data was last applied
+
     # ---- DQ METADATA & LINEAGE ----
     dq_issues = Column(JSON)                                   # [{field: "house_yield", issue: "negative", severity: "warning"}, ...]
     dq_score = Column(Float, default=100.0)                    # 0-100 quality score

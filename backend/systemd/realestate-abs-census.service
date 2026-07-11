@@ -1,0 +1,12 @@
+[Unit]
+Description=ABS Census 2021 Demographics Override
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/aksai/projects/realestate/backend
+# Downloads ABS DataPack (~102MB, cached after first run) and overwrites
+# demographic fields in suburbs_ui_v3 with authoritative ABS data.
+# This runs AFTER the national scrape to ensure maximum legal defensibility.
+ExecStart=/usr/bin/python3 etl_abs_census.py
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

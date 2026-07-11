@@ -1,0 +1,13 @@
+[Unit]
+Description=Timer for Metro Scraper
+
+[Timer]
+# Run at 2am on the 1st of Feb, Mar, May, Jun, Aug, Sep, Nov, Dec
+OnCalendar=*-02,03,05,06,08,09,11,12-01 02:00:00
+# Randomize execution between 0 to 7 days
+RandomizedDelaySec=604800
+# If the machine is off during the window, run immediately when it boots
+Persistent=true
+
+[Install]
+WantedBy=timers.target

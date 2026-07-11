@@ -10,6 +10,8 @@ import InstitutionalV3Panel from './components/InstitutionalV3Panel'
 import MyPurchasePlan from './components/MyPurchasePlan'
 import QuickRoiCalculator from './components/QuickRoiCalculator'
 import OnboardingTour from './components/OnboardingTour'
+import TermsOfUseModal from './components/TermsOfUseModal'
+import UserFavoritesTab from './components/UserFavoritesTab'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -363,6 +365,7 @@ function App() {
 
   return (
     <div className="dashboard-container">
+      <TermsOfUseModal />
       <OnboardingTour />
       <header>
         <h1 className="title-glow">Real Estate Engine</h1>
@@ -411,6 +414,12 @@ function App() {
           onClick={() => setActiveTab('calculators')}
         >
           Calculators
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'favorites' ? 'tab-active' : ''}`}
+          onClick={() => setActiveTab('favorites')}
+        >
+          ❤️ My Favorites
         </button>
       </nav>
 
@@ -1369,6 +1378,24 @@ function App() {
       {activeTab === 'purchase-plan' && <MyPurchasePlan suburbsData={suburbsData} />}
       {activeTab === 'institutional' && <InstitutionalV3Panel />}
       {activeTab === 'calculators' && <Calculators />}
+      {activeTab === 'favorites' && (
+        <UserFavoritesTab 
+          suburbsData={suburbsData} 
+          onSelectSuburb={(suburb) => {
+            setActiveSuburb(suburb);
+            setActiveTab('profile');
+          }} 
+        />
+      )}
+
+      <footer style={{ marginTop: '40px', padding: '20px', fontSize: '0.75rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border)', textAlign: 'center', lineHeight: '1.5' }}>
+        <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational purposes only and does not constitute financial, investment, or real estate advice. Forecasts are statistical models based on historical data and do not guarantee future performance.</p>
+        <p style={{ marginTop: '10px' }}><strong>State Data Attributions:</strong> 
+          (NSW) Contains property sales information provided under licence from the Valuer General NSW. 
+          (VIC) The State of Victoria owns the copyright in the Property Sales Data and reproduction without consent will constitute a breach of the Copyright Act 1968 (Cth). 
+          (QLD) Based on or contains data provided by the State of Queensland (Department of Resources).
+        </p>
+      </footer>
     </div>
   )
 }
