@@ -3816,7 +3816,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_affordabilitycalculator",
-      "community": 96,
+      "community": 86,
       "norm_label": "affordabilitycalculator.tsx"
     },
     {
@@ -3826,7 +3826,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_affordabilitycalculator_sortkey",
-      "community": 96,
+      "community": 86,
       "norm_label": "sortkey"
     },
     {
@@ -3836,7 +3836,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_affordabilitycalculator_affordabilitycalculator",
-      "community": 96,
+      "community": 86,
       "norm_label": "affordabilitycalculator()"
     },
     {
@@ -3916,7 +3916,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_cashflowgearing",
-      "community": 87,
+      "community": 88,
       "norm_label": "cashflowgearing.tsx"
     },
     {
@@ -3926,7 +3926,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_cashflowgearing_gearingresult",
-      "community": 87,
+      "community": 88,
       "norm_label": "gearingresult"
     },
     {
@@ -3936,7 +3936,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_cashflowgearing_cashflowgearingprops",
-      "community": 87,
+      "community": 88,
       "norm_label": "cashflowgearingprops"
     },
     {
@@ -3946,7 +3946,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_cashflowgearing_cashflowgearing",
-      "community": 87,
+      "community": 88,
       "norm_label": "cashflowgearing()"
     },
     {
@@ -4026,7 +4026,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_housesearch",
-      "community": 97,
+      "community": 87,
       "norm_label": "housesearch.tsx"
     },
     {
@@ -4036,7 +4036,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_housesearch_housesearch",
-      "community": 97,
+      "community": 87,
       "norm_label": "housesearch()"
     },
     {
@@ -4046,7 +4046,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "components_housesearch_searchresultcard",
-      "community": 97,
+      "community": 87,
       "norm_label": "searchresultcard()"
     },
     {
@@ -4366,7 +4366,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_userfavoritestab",
-      "community": 99,
+      "community": 87,
       "norm_label": "userfavoritestab.tsx"
     },
     {
@@ -4376,7 +4376,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_userfavoritestab_userfavoritestabprops",
-      "community": 99,
+      "community": 87,
       "norm_label": "userfavoritestabprops"
     },
     {
@@ -4386,7 +4386,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_userfavoritestab_userfavoritestab",
-      "community": 99,
+      "community": 87,
       "norm_label": "userfavoritestab()"
     },
     {
@@ -5374,7 +5374,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "australian_suburbs_data",
-      "community": 91,
+      "community": 19,
       "norm_label": "australian-suburbs-data.md"
     },
     {
@@ -5384,7 +5384,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "australian_suburbs_data_australian_suburbs_comprehensive_data_2025_2026",
-      "community": 91,
+      "community": 19,
       "norm_label": "australian suburbs comprehensive data (2025-2026)"
     },
     {
@@ -5394,7 +5394,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "australian_suburbs_data_act_australian_capital_territory",
-      "community": 92,
+      "community": 19,
       "norm_label": "act (australian capital territory)"
     },
     {
@@ -5404,7 +5404,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "australian_suburbs_data_belconnen_act_2617",
-      "community": 92,
+      "community": 19,
       "norm_label": "belconnen act 2617"
     },
     {
@@ -5414,7 +5414,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "australian_suburbs_data_gungahlin_act_2912",
-      "community": 92,
+      "community": 19,
       "norm_label": "gungahlin act 2912"
     },
     {
@@ -5424,7 +5424,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "australian_suburbs_data_tuggeranong_act_2900",
-      "community": 92,
+      "community": 19,
       "norm_label": "tuggeranong act 2900"
     },
     {
@@ -5434,7 +5434,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "australian_suburbs_data_woden_act_2606",
-      "community": 92,
+      "community": 19,
       "norm_label": "woden act 2606"
     },
     {
@@ -5444,7 +5444,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "australian_suburbs_data_queanbeyan_nsw_2620",
-      "community": 92,
+      "community": 19,
       "norm_label": "queanbeyan nsw 2620"
     },
     {
@@ -5684,7 +5684,7 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "australian_suburbs_data_qld_queensland",
-      "community": 88,
+      "community": 19,
       "norm_label": "qld (queensland)"
     },
     {
@@ -5694,7 +5694,7 @@
       "source_location": "L431",
       "_origin": "ast",
       "id": "australian_suburbs_data_coomera_qld_4209",
-      "community": 88,
+      "community": 19,
       "norm_label": "coomera qld 4209"
     },
     {
@@ -5704,7 +5704,7 @@
       "source_location": "L447",
       "_origin": "ast",
       "id": "australian_suburbs_data_logan_central_qld_4114",
-      "community": 88,
+      "community": 19,
       "norm_label": "logan central qld 4114"
     },
     {
@@ -5714,7 +5714,7 @@
       "source_location": "L463",
       "_origin": "ast",
       "id": "australian_suburbs_data_caboolture_qld_4510",
-      "community": 88,
+      "community": 19,
       "norm_label": "caboolture qld 4510"
     },
     {
@@ -5724,7 +5724,7 @@
       "source_location": "L479",
       "_origin": "ast",
       "id": "australian_suburbs_data_ipswich_qld_4305",
-      "community": 88,
+      "community": 19,
       "norm_label": "ipswich qld 4305"
     },
     {
@@ -5734,7 +5734,7 @@
       "source_location": "L495",
       "_origin": "ast",
       "id": "australian_suburbs_data_chermside_qld_4032",
-      "community": 88,
+      "community": 19,
       "norm_label": "chermside qld 4032"
     },
     {
@@ -5744,7 +5744,7 @@
       "source_location": "L511",
       "_origin": "ast",
       "id": "australian_suburbs_data_springfield_qld_4300",
-      "community": 88,
+      "community": 19,
       "norm_label": "springfield qld 4300"
     },
     {
@@ -5754,7 +5754,7 @@
       "source_location": "L527",
       "_origin": "ast",
       "id": "australian_suburbs_data_surfers_paradise_qld_4217",
-      "community": 88,
+      "community": 19,
       "norm_label": "surfers paradise qld 4217"
     },
     {
@@ -5764,7 +5764,7 @@
       "source_location": "L543",
       "_origin": "ast",
       "id": "australian_suburbs_data_wa_western_australia",
-      "community": 89,
+      "community": 19,
       "norm_label": "wa (western australia)"
     },
     {
@@ -5774,7 +5774,7 @@
       "source_location": "L547",
       "_origin": "ast",
       "id": "australian_suburbs_data_joondalup_wa_6027",
-      "community": 89,
+      "community": 19,
       "norm_label": "joondalup wa 6027"
     },
     {
@@ -5784,7 +5784,7 @@
       "source_location": "L563",
       "_origin": "ast",
       "id": "australian_suburbs_data_fremantle_wa_6160",
-      "community": 89,
+      "community": 19,
       "norm_label": "fremantle wa 6160"
     },
     {
@@ -5794,7 +5794,7 @@
       "source_location": "L579",
       "_origin": "ast",
       "id": "australian_suburbs_data_mandurah_wa_6210",
-      "community": 89,
+      "community": 19,
       "norm_label": "mandurah wa 6210"
     },
     {
@@ -5804,7 +5804,7 @@
       "source_location": "L595",
       "_origin": "ast",
       "id": "australian_suburbs_data_armadale_wa_6112",
-      "community": 89,
+      "community": 19,
       "norm_label": "armadale wa 6112"
     },
     {
@@ -5814,7 +5814,7 @@
       "source_location": "L611",
       "_origin": "ast",
       "id": "australian_suburbs_data_midland_wa_6056",
-      "community": 89,
+      "community": 19,
       "norm_label": "midland wa 6056"
     },
     {
@@ -5824,7 +5824,7 @@
       "source_location": "L627",
       "_origin": "ast",
       "id": "australian_suburbs_data_rockingham_wa_6168",
-      "community": 89,
+      "community": 19,
       "norm_label": "rockingham wa 6168"
     },
     {
@@ -5834,7 +5834,7 @@
       "source_location": "L643",
       "_origin": "ast",
       "id": "australian_suburbs_data_sa_south_australia",
-      "community": 93,
+      "community": 19,
       "norm_label": "sa (south australia)"
     },
     {
@@ -5844,7 +5844,7 @@
       "source_location": "L647",
       "_origin": "ast",
       "id": "australian_suburbs_data_elizabeth_sa_5112",
-      "community": 93,
+      "community": 19,
       "norm_label": "elizabeth sa 5112"
     },
     {
@@ -5854,7 +5854,7 @@
       "source_location": "L663",
       "_origin": "ast",
       "id": "australian_suburbs_data_salisbury_sa_5108",
-      "community": 93,
+      "community": 19,
       "norm_label": "salisbury sa 5108"
     },
     {
@@ -5864,7 +5864,7 @@
       "source_location": "L679",
       "_origin": "ast",
       "id": "australian_suburbs_data_noarlunga_sa_5168",
-      "community": 93,
+      "community": 19,
       "norm_label": "noarlunga sa 5168"
     },
     {
@@ -5874,7 +5874,7 @@
       "source_location": "L695",
       "_origin": "ast",
       "id": "australian_suburbs_data_prospect_sa_5082",
-      "community": 93,
+      "community": 19,
       "norm_label": "prospect sa 5082"
     },
     {
@@ -5884,7 +5884,7 @@
       "source_location": "L710",
       "_origin": "ast",
       "id": "australian_suburbs_data_tas_tasmania",
-      "community": 95,
+      "community": 19,
       "norm_label": "tas (tasmania)"
     },
     {
@@ -5894,7 +5894,7 @@
       "source_location": "L714",
       "_origin": "ast",
       "id": "australian_suburbs_data_hobart_tas_7000",
-      "community": 95,
+      "community": 19,
       "norm_label": "hobart tas 7000"
     },
     {
@@ -5904,7 +5904,7 @@
       "source_location": "L731",
       "_origin": "ast",
       "id": "australian_suburbs_data_launceston_tas_7250",
-      "community": 95,
+      "community": 19,
       "norm_label": "launceston tas 7250"
     },
     {
@@ -5914,7 +5914,7 @@
       "source_location": "L747",
       "_origin": "ast",
       "id": "australian_suburbs_data_devonport_tas_7310",
-      "community": 95,
+      "community": 19,
       "norm_label": "devonport tas 7310"
     },
     {
@@ -5924,7 +5924,7 @@
       "source_location": "L763",
       "_origin": "ast",
       "id": "australian_suburbs_data_nt_northern_territory",
-      "community": 91,
+      "community": 19,
       "norm_label": "nt (northern territory)"
     },
     {
@@ -5934,7 +5934,7 @@
       "source_location": "L767",
       "_origin": "ast",
       "id": "australian_suburbs_data_darwin_nt_0800",
-      "community": 91,
+      "community": 19,
       "norm_label": "darwin nt 0800"
     },
     {
@@ -5944,7 +5944,7 @@
       "source_location": "L784",
       "_origin": "ast",
       "id": "australian_suburbs_data_palmerston_nt_0830",
-      "community": 91,
+      "community": 19,
       "norm_label": "palmerston nt 0830"
     },
     {
@@ -5954,7 +5954,7 @@
       "source_location": "L800",
       "_origin": "ast",
       "id": "australian_suburbs_data_data_sources",
-      "community": 91,
+      "community": 19,
       "norm_label": "data sources"
     },
     {
@@ -7022,9 +7022,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census",
-      "target": "backend_etl_abs_census_build_sal_postcode_map",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_build_sal_postcode_map"
     },
     {
       "relation": "contains",
@@ -7032,9 +7032,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census",
-      "target": "backend_etl_abs_census_download",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_download"
     },
     {
       "relation": "contains",
@@ -7042,9 +7042,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L113",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census",
-      "target": "backend_etl_abs_census_parse_census_tables",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_parse_census_tables"
     },
     {
       "relation": "contains",
@@ -7062,9 +7062,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L256",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census",
-      "target": "backend_etl_abs_census_safe_float",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_safe_float"
     },
     {
       "relation": "contains",
@@ -7072,9 +7072,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L263",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census",
-      "target": "backend_etl_abs_census_safe_int",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_safe_int"
     },
     {
       "relation": "rationale_for",
@@ -7082,9 +7082,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_rationale_1",
-      "target": "backend_etl_abs_census",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census"
     },
     {
       "relation": "calls",
@@ -7093,9 +7093,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_build_sal_postcode_map",
-      "target": "backend_etl_abs_census_download",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_download"
     },
     {
       "relation": "references",
@@ -7104,9 +7104,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_download",
-      "target": "path",
-      "confidence_score": 1.0
+      "target": "path"
     },
     {
       "relation": "calls",
@@ -7115,9 +7115,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_parse_census_tables",
-      "target": "backend_etl_abs_census_download",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_download"
     },
     {
       "relation": "rationale_for",
@@ -7125,9 +7125,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_rationale_57",
-      "target": "backend_etl_abs_census_download",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_download"
     },
     {
       "relation": "uses",
@@ -7135,9 +7135,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "path",
-      "target": "backend_models_v3_suburbuiv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbuiv3"
     },
     {
       "relation": "rationale_for",
@@ -7145,9 +7145,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_rationale_82",
-      "target": "backend_etl_abs_census_build_sal_postcode_map",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_build_sal_postcode_map"
     },
     {
       "relation": "calls",
@@ -7156,9 +7156,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L285",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_run_abs_integration",
-      "target": "backend_etl_abs_census_build_sal_postcode_map",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_build_sal_postcode_map"
     },
     {
       "relation": "calls",
@@ -7167,9 +7167,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L173",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_parse_census_tables",
-      "target": "backend_etl_abs_census_safe_float",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_safe_float"
     },
     {
       "relation": "calls",
@@ -7178,9 +7178,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_parse_census_tables",
-      "target": "backend_etl_abs_census_safe_int",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_safe_int"
     },
     {
       "relation": "rationale_for",
@@ -7188,9 +7188,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_rationale_114",
-      "target": "backend_etl_abs_census_parse_census_tables",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_parse_census_tables"
     },
     {
       "relation": "calls",
@@ -7199,9 +7199,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L329",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_run_abs_integration",
-      "target": "backend_etl_abs_census_parse_census_tables",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_parse_census_tables"
     },
     {
       "relation": "rationale_for",
@@ -7209,9 +7209,9 @@
       "source_file": "backend/etl_abs_census.py",
       "source_location": "L274",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_abs_census_rationale_274",
-      "target": "backend_etl_abs_census_run_abs_integration",
-      "confidence_score": 1.0
+      "target": "backend_etl_abs_census_run_abs_integration"
     },
     {
       "relation": "contains",
@@ -7319,9 +7319,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_44",
-      "target": "backend_etl_extract_v3_seed_raw_v3",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_seed_raw_v3"
     },
     {
       "relation": "calls",
@@ -7351,9 +7351,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_91",
-      "target": "backend_etl_extract_v3_extract_single_suburb",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_extract_single_suburb"
     },
     {
       "relation": "calls",
@@ -7372,9 +7372,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L157",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_157",
-      "target": "backend_etl_extract_v3_worker",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_worker"
     },
     {
       "relation": "calls",
@@ -7404,9 +7404,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L204",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_204",
-      "target": "backend_etl_extract_v3_run_extraction",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_run_extraction"
     },
     {
       "relation": "contains",
@@ -7841,9 +7841,9 @@
       "source_file": "backend/fetch_pricing.py",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_fetch_pricing",
-      "target": "backend_fetch_pricing_fetch_page",
-      "confidence_score": 1.0
+      "target": "backend_fetch_pricing_fetch_page"
     },
     {
       "relation": "contains",
@@ -8145,9 +8145,9 @@
       "source_file": "backend/main.py",
       "source_location": "L334",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_consentrequest",
-      "confidence_score": 1.0
+      "target": "backend_main_consentrequest"
     },
     {
       "relation": "contains",
@@ -8375,9 +8375,9 @@
       "source_file": "backend/main.py",
       "source_location": "L338",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_record_consent",
-      "confidence_score": 1.0
+      "target": "backend_main_record_consent"
     },
     {
       "relation": "contains",
@@ -8485,9 +8485,9 @@
       "source_file": "backend/main.py",
       "source_location": "L143",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_userconsent",
-      "confidence_score": 1.0
+      "target": "backend_main_userconsent"
     },
     {
       "relation": "contains",
@@ -8691,9 +8691,9 @@
       "source_file": "backend/main.py",
       "source_location": "L143",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_userconsent",
-      "target": "base",
-      "confidence_score": 1.0
+      "target": "base"
     },
     {
       "relation": "inherits",
@@ -8983,9 +8983,9 @@
       "source_file": "backend/main.py",
       "source_location": "L144",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_144",
-      "target": "backend_main_userconsent",
-      "confidence_score": 1.0
+      "target": "backend_main_userconsent"
     },
     {
       "relation": "calls",
@@ -8994,9 +8994,9 @@
       "source_file": "backend/main.py",
       "source_location": "L352",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_record_consent",
-      "target": "backend_main_userconsent",
-      "confidence_score": 1.0
+      "target": "backend_main_userconsent"
     },
     {
       "relation": "uses",
@@ -9004,9 +9004,9 @@
       "source_file": "backend/main.py",
       "source_location": "L25",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_userconsent",
-      "target": "backend_models_v2_suburbuiv2",
-      "confidence_score": 0.5
+      "target": "backend_models_v2_suburbuiv2"
     },
     {
       "relation": "uses",
@@ -9014,9 +9014,9 @@
       "source_file": "backend/main.py",
       "source_location": "L26",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_userconsent",
-      "target": "backend_models_v3_propertylisting",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_propertylisting"
     },
     {
       "relation": "uses",
@@ -9024,9 +9024,9 @@
       "source_file": "backend/main.py",
       "source_location": "L26",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_userconsent",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "uses",
@@ -9034,9 +9034,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1540",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_userconsent",
-      "target": "backend_models_v3_suburbrawv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbrawv3"
     },
     {
       "relation": "uses",
@@ -9044,9 +9044,9 @@
       "source_file": "backend/main.py",
       "source_location": "L26",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_userconsent",
-      "target": "backend_models_v3_suburbuiv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbuiv3"
     },
     {
       "relation": "uses",
@@ -9054,9 +9054,9 @@
       "source_file": "backend/main.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_userconsent",
-      "target": "backend_parallel_scraper_suburballmodel",
-      "confidence_score": 0.5
+      "target": "backend_parallel_scraper_suburballmodel"
     },
     {
       "relation": "uses",
@@ -9064,9 +9064,9 @@
       "source_file": "backend/main.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_userconsent",
-      "target": "backend_parallel_scraper_suburbuimodel",
-      "confidence_score": 0.5
+      "target": "backend_parallel_scraper_suburbuimodel"
     },
     {
       "relation": "calls",
@@ -9196,9 +9196,9 @@
       "source_file": "backend/main.py",
       "source_location": "L334",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_consentrequest",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -9586,9 +9586,9 @@
       "source_file": "backend/main.py",
       "source_location": "L338",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_record_consent",
-      "target": "request",
-      "confidence_score": 1.0
+      "target": "request"
     },
     {
       "relation": "references",
@@ -9810,9 +9810,9 @@
       "source_file": "backend/main.py",
       "source_location": "L338",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_record_consent",
-      "target": "session",
-      "confidence_score": 1.0
+      "target": "session"
     },
     {
       "relation": "references",
@@ -10026,9 +10026,9 @@
       "source_file": "backend/main.py",
       "source_location": "L25",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_consentrequest",
-      "target": "backend_models_v2_suburbuiv2",
-      "confidence_score": 0.5
+      "target": "backend_models_v2_suburbuiv2"
     },
     {
       "relation": "uses",
@@ -10036,9 +10036,9 @@
       "source_file": "backend/main.py",
       "source_location": "L26",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_consentrequest",
-      "target": "backend_models_v3_propertylisting",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_propertylisting"
     },
     {
       "relation": "uses",
@@ -10046,9 +10046,9 @@
       "source_file": "backend/main.py",
       "source_location": "L26",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_consentrequest",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "uses",
@@ -10056,9 +10056,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1540",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_consentrequest",
-      "target": "backend_models_v3_suburbrawv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbrawv3"
     },
     {
       "relation": "uses",
@@ -10066,9 +10066,9 @@
       "source_file": "backend/main.py",
       "source_location": "L26",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_consentrequest",
-      "target": "backend_models_v3_suburbuiv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbuiv3"
     },
     {
       "relation": "uses",
@@ -10076,9 +10076,9 @@
       "source_file": "backend/main.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_consentrequest",
-      "target": "backend_parallel_scraper_suburballmodel",
-      "confidence_score": 0.5
+      "target": "backend_parallel_scraper_suburballmodel"
     },
     {
       "relation": "uses",
@@ -10086,9 +10086,9 @@
       "source_file": "backend/main.py",
       "source_location": "L24",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_consentrequest",
-      "target": "backend_parallel_scraper_suburbuimodel",
-      "confidence_score": 0.5
+      "target": "backend_parallel_scraper_suburbuimodel"
     },
     {
       "relation": "references",
@@ -10097,9 +10097,9 @@
       "source_file": "backend/main.py",
       "source_location": "L338",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_record_consent",
-      "target": "backend_main_consentrequest",
-      "confidence_score": 1.0
+      "target": "backend_main_consentrequest"
     },
     {
       "relation": "rationale_for",
@@ -10107,9 +10107,9 @@
       "source_file": "backend/main.py",
       "source_location": "L339",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_339",
-      "target": "backend_main_record_consent",
-      "confidence_score": 1.0
+      "target": "backend_main_record_consent"
     },
     {
       "relation": "rationale_for",
@@ -10117,9 +10117,9 @@
       "source_file": "backend/main.py",
       "source_location": "L390",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_390",
-      "target": "backend_main_health_check",
-      "confidence_score": 1.0
+      "target": "backend_main_health_check"
     },
     {
       "relation": "calls",
@@ -10138,9 +10138,9 @@
       "source_file": "backend/main.py",
       "source_location": "L403",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_403",
-      "target": "backend_main_get_vap_etf",
-      "confidence_score": 1.0
+      "target": "backend_main_get_vap_etf"
     },
     {
       "relation": "rationale_for",
@@ -10148,9 +10148,9 @@
       "source_file": "backend/main.py",
       "source_location": "L439",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_439",
-      "target": "backend_main_bust_suburbs_cache",
-      "confidence_score": 1.0
+      "target": "backend_main_bust_suburbs_cache"
     },
     {
       "relation": "calls",
@@ -10169,9 +10169,9 @@
       "source_file": "backend/main.py",
       "source_location": "L555",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_555",
-      "target": "backend_main_build_v2_only_response",
-      "confidence_score": 1.0
+      "target": "backend_main_build_v2_only_response"
     },
     {
       "relation": "calls",
@@ -10234,9 +10234,9 @@
       "source_file": "backend/main.py",
       "source_location": "L579",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_579",
-      "target": "backend_main_build_v3_fallback_response",
-      "confidence_score": 1.0
+      "target": "backend_main_build_v3_fallback_response"
     },
     {
       "relation": "references",
@@ -10347,9 +10347,9 @@
       "source_file": "backend/main.py",
       "source_location": "L669",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_669",
-      "target": "backend_main_annualize_cagr",
-      "confidence_score": 1.0
+      "target": "backend_main_annualize_cagr"
     },
     {
       "relation": "calls",
@@ -10368,9 +10368,9 @@
       "source_file": "backend/main.py",
       "source_location": "L680",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_680",
-      "target": "backend_main_cap_yield",
-      "confidence_score": 1.0
+      "target": "backend_main_cap_yield"
     },
     {
       "relation": "calls",
@@ -10400,9 +10400,9 @@
       "source_file": "backend/main.py",
       "source_location": "L686",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_686",
-      "target": "backend_main_calibrate_dq",
-      "confidence_score": 1.0
+      "target": "backend_main_calibrate_dq"
     },
     {
       "relation": "calls",
@@ -10421,9 +10421,9 @@
       "source_file": "backend/main.py",
       "source_location": "L707",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_707",
-      "target": "backend_main_compute_growth_score",
-      "confidence_score": 1.0
+      "target": "backend_main_compute_growth_score"
     },
     {
       "relation": "rationale_for",
@@ -10431,9 +10431,9 @@
       "source_file": "backend/main.py",
       "source_location": "L832",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_832",
-      "target": "backend_main_get_suburb",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb"
     },
     {
       "relation": "references",
@@ -10544,9 +10544,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1068",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1068",
-      "target": "backend_main_get_news_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_main_get_news_sentiment"
     },
     {
       "relation": "rationale_for",
@@ -10554,9 +10554,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1096",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1096",
-      "target": "backend_main_reload_suburbs",
-      "confidence_score": 1.0
+      "target": "backend_main_reload_suburbs"
     },
     {
       "relation": "references",
@@ -10656,9 +10656,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1291",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1291",
-      "target": "backend_main_get_suburbs_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburbs_v3"
     },
     {
       "relation": "rationale_for",
@@ -10666,9 +10666,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1369",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1369",
-      "target": "backend_main_export_suburbs_csv",
-      "confidence_score": 1.0
+      "target": "backend_main_export_suburbs_csv"
     },
     {
       "relation": "uses",
@@ -10757,9 +10757,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1424",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1424",
-      "target": "backend_main_get_suburb_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_v3"
     },
     {
       "relation": "calls",
@@ -10778,9 +10778,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1494",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1494",
-      "target": "backend_main_get_osm_livability",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_livability"
     },
     {
       "relation": "calls",
@@ -10799,9 +10799,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1523",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1523",
-      "target": "backend_main_get_osm_boundary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_boundary"
     },
     {
       "relation": "rationale_for",
@@ -10809,9 +10809,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1532",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1532",
-      "target": "backend_main_get_suburb_properties",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_properties"
     },
     {
       "relation": "contains",
@@ -11063,9 +11063,9 @@
       "source_file": "backend/models_v3.py",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_models_v3_rationale_169",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 1.0
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "contains",
@@ -12250,9 +12250,9 @@
       "source_file": "fetch_pricing.py",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "fetch_pricing",
-      "target": "fetch_pricing_fetch_page",
-      "confidence_score": 1.0
+      "target": "fetch_pricing_fetch_page"
     },
     {
       "relation": "contains",
@@ -12691,9 +12691,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "components_termsofusemodal",
-      "confidence_score": 1.0
+      "target": "components_termsofusemodal"
     },
     {
       "relation": "imports_from",
@@ -12702,9 +12702,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "components_userfavoritestab",
-      "confidence_score": 1.0
+      "target": "components_userfavoritestab"
     },
     {
       "relation": "imports_from",
@@ -13448,9 +13448,9 @@
       "source_file": "src/components/TermsOfUseModal.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_termsofusemodal",
-      "target": "components_termsofusemodal_termsofusemodal",
-      "confidence_score": 1.0
+      "target": "components_termsofusemodal_termsofusemodal"
     },
     {
       "relation": "contains",
@@ -13458,9 +13458,9 @@
       "source_file": "src/components/UserFavoritesTab.tsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_userfavoritestab",
-      "target": "components_userfavoritestab_userfavoritestab",
-      "confidence_score": 1.0
+      "target": "components_userfavoritestab_userfavoritestab"
     },
     {
       "relation": "contains",
@@ -13468,8 +13468,41 @@
       "source_file": "src/components/UserFavoritesTab.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_userfavoritestab",
-      "target": "components_userfavoritestab_userfavoritestabprops",
+      "target": "components_userfavoritestab_userfavoritestabprops"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/UserFavoritesTab.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "components_userfavoritestab",
+      "target": "data_suburbs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/UserFavoritesTab.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "components_userfavoritestab",
+      "target": "data_suburbs_suburbdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/UserFavoritesTab.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "components_userfavoritestab_userfavoritestabprops",
+      "target": "data_suburbs_suburbdata",
       "confidence_score": 1.0
     },
     {
@@ -15164,5 +15197,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "dfaa90cfb89e2c6a90f96b3c5b21af800bd1a5ad"
+  "built_at_commit": "9488a274aa24ccd325c1c0f78b6c4d763c978529"
 }

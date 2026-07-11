@@ -480,13 +480,24 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
         v2_map = {r.id: r for r in v2_records}
         
         for s in state_subs:
+            v3_data = v3_map.get(s.id.upper())
+            v2_data = v2_map.get(s.id.upper())
+            
+            # Use V3 or V2 is_live flag if available, fallback to V1
+            if v3_data and v3_data.is_live is not None:
+                is_metro = v3_data.is_live
+            elif v2_data and getattr(v2_data, 'is_live', None) is not None:
+                is_metro = v2_data.is_live
+            else:
+                is_metro = getattr(s, 'is_live', False) or False
+                
             record = {
                 "id": s.id,
                 "name": s.name,
                 "state": s.state,
                 "postcode": s.postcode,
                 "growthScore": s.growth_score if s.growth_score is not None else 50,
-                "isMetro": s.is_live,
+                "isMetro": is_metro,
                 "cbdDistanceMins": s.cbd_distance_mins,
                 "metroCBD": s.metro_cbd,
                 # Omitted highlights and schools array from list endpoint to prevent memory bloat (P1-1)
@@ -500,8 +511,6 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
                     "crimeRate": s.crime_rate_per_100k,
                 }
             }
-            
-            v3_data = v3_map.get(s.id.upper())
             if v3_data:
                 record.update({
                     "v3Enriched": True,
@@ -531,7 +540,6 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
                     "lastV3Update": str(v3_data.last_updated) if v3_data.last_updated else None,
                 })
             else:
-                v2_data = v2_map.get(s.id.upper())
                 if v2_data:
                     record.update({
                         "houseGrossRentalYield": _cap_yield(v2_data.house_rental_yield),
