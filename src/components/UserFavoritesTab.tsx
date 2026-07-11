@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import type { SuburbData } from '../types';
+import { useState, useEffect } from 'react';
+import type { SuburbData } from '../data/suburbs';
 
 interface UserFavoritesTabProps {
   suburbsData: SuburbData[];
@@ -65,7 +65,7 @@ export default function UserFavoritesTab({ suburbsData, onSelectSuburb }: UserFa
                 <div><strong>State:</strong> {suburb.state}</div>
                 <div><strong>Median Price:</strong> ${suburb.metrics?.medianPrice?.toLocaleString() || 'N/A'}</div>
                 <div><strong>Rental Yield:</strong> {suburb.metrics?.rentalYield}%</div>
-                <div><strong>DQ Score:</strong> {suburb.dq_score}/100</div>
+                <div><strong>DQ Score:</strong> {suburb.dqScore}/100</div>
               </div>
             </div>
           ))}

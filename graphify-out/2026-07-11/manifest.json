@@ -10,9 +10,9 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1783762729.3021986,
-    "ast_hash": "42cb1ea574450be11747145ad76ea684",
-    "semantic_hash": ""
+    "mtime": 1783498808.1938443,
+    "ast_hash": "900941f7a18650c62dd8162789ac4447",
+    "semantic_hash": "900941f7a18650c62dd8162789ac4447"
   },
   "backend/downloader.py": {
     "mtime": 1782555660.8120723,
@@ -20,9 +20,9 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783762660.957289,
-    "ast_hash": "0b21f75d0f0687a28025293fa91e8be1",
-    "semantic_hash": ""
+    "mtime": 1783651425.7247174,
+    "ast_hash": "6c1aecf75ef818750ce339fff11d7bc2",
+    "semantic_hash": "6c1aecf75ef818750ce339fff11d7bc2"
   },
   "backend/scheduler.py": {
     "mtime": 1783489527.1127183,
@@ -45,8 +45,8 @@
     "semantic_hash": "dd79773dd6a35613e1f50e8149237464"
   },
   "src/App.tsx": {
-    "mtime": 1783762708.1725357,
-    "ast_hash": "6941f1fdc601dd99faf6ef2d404bbaf7",
+    "mtime": 1783663289.6406045,
+    "ast_hash": "d3594475ebedd7744f583a7e9f5c1c11",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -250,9 +250,9 @@
     "semantic_hash": "3d71e945b4f4986c6350a1ef36e5ec23"
   },
   "backend/etl_abs_census.py": {
-    "mtime": 1783750502.5683436,
-    "ast_hash": "579b0a16bcbddb38ba66eafe13aba33f",
-    "semantic_hash": ""
+    "mtime": 1783250178.246718,
+    "ast_hash": "63614ce7551b2c1d8e3cf667f8322e27",
+    "semantic_hash": "63614ce7551b2c1d8e3cf667f8322e27"
   },
   "backend/etl_dq_report_v3.py": {
     "mtime": 1782990243.152184,
@@ -260,9 +260,9 @@
     "semantic_hash": "8cb1b1c5d591473fbb970aea17e3293a"
   },
   "backend/etl_extract_v3.py": {
-    "mtime": 1783688844.9918098,
-    "ast_hash": "651e357bbe8c3e545d093a1ff303fc0f",
-    "semantic_hash": ""
+    "mtime": 1782993587.2447498,
+    "ast_hash": "c15ec76b7b9da0c8a038ce7c6d1de197",
+    "semantic_hash": "c15ec76b7b9da0c8a038ce7c6d1de197"
   },
   "backend/etl_infra_zoning.py": {
     "mtime": 1783251075.785069,
@@ -290,9 +290,9 @@
     "semantic_hash": "84390dab89b4799da261cbab3a6216ec"
   },
   "backend/models_v3.py": {
-    "mtime": 1783750428.4354382,
-    "ast_hash": "950ba64759d281282095c9a4983e5efc",
-    "semantic_hash": ""
+    "mtime": 1783508753.3862522,
+    "ast_hash": "8ff5d4f4488886cac5776c642c86f8d2",
+    "semantic_hash": "8ff5d4f4488886cac5776c642c86f8d2"
   },
   "backend/models_v3_unpacked.py": {
     "mtime": 1783051364.7724068,
@@ -522,26 +522,6 @@
   "src/components/Calculators.tsx": {
     "mtime": 1783659331.9745247,
     "ast_hash": "4c2bfd36ca7681ed156b3f7182e64bad",
-    "semantic_hash": ""
-  },
-  "backend/fetch_pricing.py": {
-    "mtime": 1783685876.1380837,
-    "ast_hash": "396ca1fe225ec38750988947d79911f9",
-    "semantic_hash": ""
-  },
-  "fetch_pricing.py": {
-    "mtime": 1783685869.2131395,
-    "ast_hash": "396ca1fe225ec38750988947d79911f9",
-    "semantic_hash": ""
-  },
-  "src/components/TermsOfUseModal.tsx": {
-    "mtime": 1783762669.227157,
-    "ast_hash": "dd7286351addc680befe01aa02b87ae7",
-    "semantic_hash": ""
-  },
-  "src/components/UserFavoritesTab.tsx": {
-    "mtime": 1783762690.0758245,
-    "ast_hash": "d9f2514cc157873a161727e49afd3c9f",
     "semantic_hash": ""
   }
 }
