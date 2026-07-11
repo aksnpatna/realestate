@@ -16,7 +16,7 @@ import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
 
-type TabName = 'profile' | 'search' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators';
+type TabName = 'profile' | 'search' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
