@@ -45,8 +45,8 @@
     "semantic_hash": "dd79773dd6a35613e1f50e8149237464"
   },
   "src/App.tsx": {
-    "mtime": 1783762708.1725357,
-    "ast_hash": "6941f1fdc601dd99faf6ef2d404bbaf7",
+    "mtime": 1783763054.0350227,
+    "ast_hash": "0ab2e8ff7d1d309ac1d9e498b2dd42b3",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -535,13 +535,13 @@
     "semantic_hash": ""
   },
   "src/components/TermsOfUseModal.tsx": {
-    "mtime": 1783762669.227157,
-    "ast_hash": "dd7286351addc680befe01aa02b87ae7",
+    "mtime": 1783763061.8518982,
+    "ast_hash": "329bac6cdaee85e81a8bcf3d6e06f843",
     "semantic_hash": ""
   },
   "src/components/UserFavoritesTab.tsx": {
-    "mtime": 1783762690.0758245,
-    "ast_hash": "d9f2514cc157873a161727e49afd3c9f",
+    "mtime": 1783763092.1004164,
+    "ast_hash": "f848adf6ab30f4f7353f1c7233b45fed",
     "semantic_hash": ""
   }
 }
