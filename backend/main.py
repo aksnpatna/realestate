@@ -467,10 +467,16 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
         if not suburb_ids:
             continue
             
-        v3_records = db.query(SuburbUIV3).filter(SuburbUIV3.id.in_(suburb_ids)).all()
+        # Chunk queries to prevent SQLAlchemy/PostgreSQL parameter limit errors (f405)
+        v3_records = []
+        v2_records = []
+        chunk_size = 500
+        for i in range(0, len(suburb_ids), chunk_size):
+            chunk = suburb_ids[i:i + chunk_size]
+            v3_records.extend(db.query(SuburbUIV3).filter(SuburbUIV3.id.in_(chunk)).all())
+            v2_records.extend(db.query(SuburbUIV2).filter(SuburbUIV2.id.in_(chunk)).all())
+            
         v3_map = {r.id: r for r in v3_records}
-        
-        v2_records = db.query(SuburbUIV2).filter(SuburbUIV2.id.in_(suburb_ids)).all()
         v2_map = {r.id: r for r in v2_records}
         
         for s in state_subs:

@@ -5,12 +5,12 @@
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 616 nodes · 842 edges · 102 communities (65 shown, 37 thin omitted)
+- 616 nodes · 845 edges · 94 communities (58 shown, 36 thin omitted)
 - Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 128 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dfaa90cf`
+- Built from commit: `9488a274`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -81,16 +81,9 @@
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
-- [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
-- [[_COMMUNITY_Community 91|Community 91]]
-- [[_COMMUNITY_Community 92|Community 92]]
-- [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 94|Community 94]]
-- [[_COMMUNITY_Community 95|Community 95]]
-- [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 98|Community 98]]
-- [[_COMMUNITY_Community 99|Community 99]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Session` - 27 edges
@@ -130,7 +123,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (102 total, 37 thin omitted)
+## Communities (94 total, 36 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -209,8 +202,8 @@ Cohesion: 0.29
 Nodes (6): enrich_all(), enrich_changed(), enrich_from_unpacked.py — SQL-level enrichment from unpacked table -> suburbs_ui, Only enrich records where unpacked data is newer than UI data., Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data, reload_suburbs()
 
 ### Community 19 - "Institutional V3 Panel"
-Cohesion: 0.20
-Nodes (10): Box Hill VIC 3128, Craigieburn VIC 3064, Dandenong VIC 3175, Epping VIC 3076, Frankston VIC 3199, Glen Waverley VIC 3150, Preston VIC 3072, Sunshine VIC 3020 (+2 more)
+Cohesion: 0.04
+Nodes (45): ACT (Australian Capital Territory), Armadale WA 6112, Australian Suburbs Comprehensive Data (2025-2026), Belconnen ACT 2617, Box Hill VIC 3128, Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209 (+37 more)
 
 ### Community 20 - "Data Downloader"
 Cohesion: 0.83
@@ -253,45 +246,21 @@ Cohesion: 0.15
 Nodes (13): Bankstown NSW 2200, Blacktown NSW 2148, Bondi Junction NSW 2022, Campbelltown NSW 2560, Castle Hill NSW 2154, Chatswood NSW 2067, Hurstville NSW 2220, Liverpool NSW 2170 (+5 more)
 
 ### Community 86 - "Community 86"
-Cohesion: 0.21
-Nodes (12): calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase(), calculateStampDuty(), FHOG, FIRST_HOME_CONCESSION, GOVT_FEES (+4 more)
+Cohesion: 0.17
+Nodes (13): SortKey, calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase(), calculateStampDuty(), FHOG, FIRST_HOME_CONCESSION (+5 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.28
-Nodes (5): CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, SuburbData
-
-### Community 88 - "Community 88"
-Cohesion: 0.25
-Nodes (8): Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209, Ipswich QLD 4305, Logan Central QLD 4114, QLD (Queensland), Springfield QLD 4300, Surfers Paradise QLD 4217
-
-### Community 89 - "Community 89"
-Cohesion: 0.29
-Nodes (7): Armadale WA 6112, Fremantle WA 6160, Joondalup WA 6027, Mandurah WA 6210, Midland WA 6056, Rockingham WA 6168, WA (Western Australia)
+Cohesion: 0.22
+Nodes (4): BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps, SuburbData
 
 ### Community 90 - "Community 90"
 Cohesion: 0.33
 Nodes (6): CalcType, Calculators(), CHART_COLORS, formatCurrency(), PropertyType, STATE_OPTIONS
 
-### Community 91 - "Community 91"
-Cohesion: 0.33
-Nodes (5): Australian Suburbs Comprehensive Data (2025-2026), Darwin NT 0800, Data Sources, NT (Northern Territory), Palmerston NT 0830
-
-### Community 92 - "Community 92"
-Cohesion: 0.33
-Nodes (6): ACT (Australian Capital Territory), Belconnen ACT 2617, Gungahlin ACT 2912, Queanbeyan NSW 2620, Tuggeranong ACT 2900, Woden ACT 2606
-
-### Community 93 - "Community 93"
-Cohesion: 0.40
-Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Australia), Salisbury SA 5108
-
-### Community 95 - "Community 95"
-Cohesion: 0.50
-Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasmania)
-
 ## Knowledge Gaps
-- **188 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+183 more)
+- **187 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+182 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **37 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

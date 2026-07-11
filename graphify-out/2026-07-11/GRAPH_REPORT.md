@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-07-10)
+# Graph Report - realestate  (2026-07-11)
 
 ## Corpus Check
-- 89 files · ~2,209,873 words
+- 93 files · ~2,212,456 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 593 nodes · 795 edges · 86 communities (53 shown, 33 thin omitted)
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 113 edges (avg confidence: 0.53)
+- 616 nodes · 842 edges · 102 communities (65 shown, 37 thin omitted)
+- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 128 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `738793a8`
+- Built from commit: `dfaa90cf`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -78,20 +78,35 @@
 - [[_COMMUNITY_Community 74|Community 74]]
 - [[_COMMUNITY_Community 75|Community 75]]
 - [[_COMMUNITY_Community 76|Community 76]]
+- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 88|Community 88]]
+- [[_COMMUNITY_Community 89|Community 89]]
+- [[_COMMUNITY_Community 90|Community 90]]
+- [[_COMMUNITY_Community 91|Community 91]]
+- [[_COMMUNITY_Community 92|Community 92]]
+- [[_COMMUNITY_Community 93|Community 93]]
+- [[_COMMUNITY_Community 94|Community 94]]
+- [[_COMMUNITY_Community 95|Community 95]]
+- [[_COMMUNITY_Community 96|Community 96]]
+- [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 99|Community 99]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Session` - 26 edges
-2. `SuburbRawV3` - 18 edges
-3. `SuburbPriceHistory` - 18 edges
-4. `SuburbUIV2` - 17 edges
-5. `SuburbUIV3` - 17 edges
-6. `SuburbAllModel` - 17 edges
-7. `compilerOptions` - 17 edges
-8. `PropertyListing` - 16 edges
-9. `SuburbUIModel` - 16 edges
+1. `Session` - 27 edges
+2. `SuburbRawV3` - 20 edges
+3. `SuburbUIV3` - 20 edges
+4. `SuburbPriceHistory` - 20 edges
+5. `SuburbUIV2` - 19 edges
+6. `SuburbAllModel` - 19 edges
+7. `PropertyListing` - 18 edges
+8. `SuburbUIModel` - 18 edges
+9. `compilerOptions` - 17 edges
 10. `compilerOptions` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Path` --uses--> `SuburbUIV3`  [INFERRED]
+  backend/etl_abs_census.py → backend/models_v3.py
 - `analyze_suburb()` --calls--> `run_investment_committee()`  [INFERRED]
   backend/main.py → backend/ai_agent.py
 - `get_similar_suburbs()` --calls--> `find_similar_suburbs()`  [INFERRED]
@@ -100,8 +115,6 @@
   backend/etl_extract_v3.py → backend/models_v3.py
 - `worker()` --calls--> `Session`  [INFERRED]
   backend/etl_extract_v3.py → backend/main.py
-- `update_password()` --calls--> `UserModel`  [INFERRED]
-  backend/update_pwd.py → backend/main.py
 
 ## Import Cycles
 - None detected.
@@ -117,7 +130,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (86 total, 33 thin omitted)
+## Communities (102 total, 37 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -140,12 +153,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 5 - "Frontend Property Calculators"
-Cohesion: 0.05
-Nodes (33): TabName, SortKey, CalcType, Calculators(), CHART_COLORS, formatCurrency(), PropertyType, STATE_OPTIONS (+25 more)
+Cohesion: 0.18
+Nodes (7): TabName, OnboardingTour(), mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi, TabName
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.08
-Nodes (64): ActivityRequest, analyze_suburb(), AnalyzeRequest, BoundedRateLimitStore, _build_v2_only_response(), bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+56 more)
+Nodes (69): ActivityRequest, analyze_suburb(), AnalyzeRequest, BoundedRateLimitStore, _build_v2_only_response(), bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+61 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -196,16 +209,16 @@ Cohesion: 0.29
 Nodes (6): enrich_all(), enrich_changed(), enrich_from_unpacked.py — SQL-level enrichment from unpacked table -> suburbs_ui, Only enrich records where unpacked data is newer than UI data., Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data, reload_suburbs()
 
 ### Community 19 - "Institutional V3 Panel"
-Cohesion: 0.04
-Nodes (45): ACT (Australian Capital Territory), Armadale WA 6112, Australian Suburbs Comprehensive Data (2025-2026), Belconnen ACT 2617, Box Hill VIC 3128, Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209 (+37 more)
+Cohesion: 0.20
+Nodes (10): Box Hill VIC 3128, Craigieburn VIC 3064, Dandenong VIC 3175, Epping VIC 3076, Frankston VIC 3199, Glen Waverley VIC 3150, Preston VIC 3072, Sunshine VIC 3020 (+2 more)
 
 ### Community 20 - "Data Downloader"
 Cohesion: 0.83
 Nodes (3): download_file_playwright(), fetch_latest_from_ckan(), run_downloader()
 
 ### Community 21 - "ABS Census Integration"
-Cohesion: 0.67
-Nodes (3): fetch_abs_demographics(), Mock function representing an API call or flat-file lookup to ABS Datasets (e.g., run_abs_integration()
+Cohesion: 0.23
+Nodes (12): build_sal_postcode_map(), _download(), parse_census_tables(), etl_abs_census.py — ABS Census 2021 Demographics Pipeline ======================, Opens the ABS DataPack ZIP in-memory and parses:       - G01: Total persons, age, Main entry point.     Downloads ABS data, matches to suburbs_ui_v3 by postcode+n, Download a file with progress logging. Skips if already cached., Reads ABS SAL→POA concordance.     Returns dict: sal_code (str) → postcode (str) (+4 more)
 
 ### Community 22 - "README Documentation"
 Cohesion: 0.50
@@ -239,25 +252,61 @@ Nodes (6): startup_event(), V3 Tiered Update Scheduler.     Monthly metro (~3,95
 Cohesion: 0.15
 Nodes (13): Bankstown NSW 2200, Blacktown NSW 2148, Bondi Junction NSW 2022, Campbelltown NSW 2560, Castle Hill NSW 2154, Chatswood NSW 2067, Hurstville NSW 2220, Liverpool NSW 2170 (+5 more)
 
+### Community 86 - "Community 86"
+Cohesion: 0.21
+Nodes (12): calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase(), calculateStampDuty(), FHOG, FIRST_HOME_CONCESSION, GOVT_FEES (+4 more)
+
+### Community 87 - "Community 87"
+Cohesion: 0.28
+Nodes (5): CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, SuburbData
+
+### Community 88 - "Community 88"
+Cohesion: 0.25
+Nodes (8): Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209, Ipswich QLD 4305, Logan Central QLD 4114, QLD (Queensland), Springfield QLD 4300, Surfers Paradise QLD 4217
+
+### Community 89 - "Community 89"
+Cohesion: 0.29
+Nodes (7): Armadale WA 6112, Fremantle WA 6160, Joondalup WA 6027, Mandurah WA 6210, Midland WA 6056, Rockingham WA 6168, WA (Western Australia)
+
+### Community 90 - "Community 90"
+Cohesion: 0.33
+Nodes (6): CalcType, Calculators(), CHART_COLORS, formatCurrency(), PropertyType, STATE_OPTIONS
+
+### Community 91 - "Community 91"
+Cohesion: 0.33
+Nodes (5): Australian Suburbs Comprehensive Data (2025-2026), Darwin NT 0800, Data Sources, NT (Northern Territory), Palmerston NT 0830
+
+### Community 92 - "Community 92"
+Cohesion: 0.33
+Nodes (6): ACT (Australian Capital Territory), Belconnen ACT 2617, Gungahlin ACT 2912, Queanbeyan NSW 2620, Tuggeranong ACT 2900, Woden ACT 2606
+
+### Community 93 - "Community 93"
+Cohesion: 0.40
+Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Australia), Salisbury SA 5108
+
+### Community 95 - "Community 95"
+Cohesion: 0.50
+Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasmania)
+
 ## Knowledge Gaps
-- **187 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+182 more)
+- **188 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+183 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **33 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **37 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Session` connect `Database Models & Scrapers` to `ETL Transform V3 Pipeline`, `ETL Extract V3 Pipeline`, `Community 68`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+- **Why does `SuburbUIV3` connect `Database Models & Scrapers` to `Predictive AI Engine`, `ABS Census Integration`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Why does `get_suburb_properties()` connect `ETL Transform V3 Pipeline` to `Database Models & Scrapers`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `V3Scheduler` connect `V3 Scheduler Orchestration` to `Database Models & Scrapers`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
   _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 16 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**
-  _`SuburbRawV3` has 16 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 15 inferred relationships involving `SuburbPriceHistory` (e.g. with `ActivityRequest` and `AnalyzeRequest`) actually correct?**
-  _`SuburbPriceHistory` has 15 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 14 inferred relationships involving `SuburbUIV2` (e.g. with `ActivityRequest` and `AnalyzeRequest`) actually correct?**
-  _`SuburbUIV2` has 14 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**
+  _`SuburbRawV3` has 18 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 18 inferred relationships involving `SuburbUIV3` (e.g. with `ActivityRequest` and `AnalyzeRequest`) actually correct?**
+  _`SuburbUIV3` has 18 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 17 inferred relationships involving `SuburbPriceHistory` (e.g. with `ActivityRequest` and `AnalyzeRequest`) actually correct?**
+  _`SuburbPriceHistory` has 17 INFERRED edges - model-reasoned connections that need verification._
