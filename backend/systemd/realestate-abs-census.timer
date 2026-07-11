@@ -1,0 +1,16 @@
+[Unit]
+Description=Timer for ABS Census Demographics Override
+# Chain: run 3 days after the national scraper quarter run completes.
+# Census data only changes once every 5 years (next release: 2026)
+# so running quarterly is more than sufficient.
+
+[Timer]
+# Run 3 days after the quarterly national scrape (1st of Jan, Apr, Jul, Oct + 3 days = 4th)
+OnCalendar=*-01,04,07,10-04 04:00:00
+# Same randomized delay for stealth (max 1 day — ABS is not rate-limited but good practice)
+RandomizedDelaySec=86400
+# If system is off, catch up on boot
+Persistent=true
+
+[Install]
+WantedBy=timers.target

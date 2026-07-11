@@ -12,10 +12,28 @@ import json
 import datetime
 import os
 import sys
+import random
+from dotenv import load_dotenv
 from sqlalchemy.orm import sessionmaker
 from playwright.async_api import async_playwright
 from playwright_stealth import Stealth
 from models_v3 import SuburbRawV3, SessionLocal, engine
+
+load_dotenv()
+PROXY_URL = os.environ.get("PROXY_URL")
+
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/121.0',
+]
+VIEWPORTS = [
+    {'width': 1920, 'height': 1080},
+    {'width': 1440, 'height': 900},
+    {'width': 1366, 'height': 768},
+    {'width': 1536, 'height': 864},
+]
 
 TARGET_STATES = ['VIC', 'NSW', 'QLD', 'SA', 'TAS', 'WA']
 EXCLUDED_STATES = ['NT']
@@ -74,16 +92,24 @@ async def extract_single_suburb(browser, db_id, state, name, postcode):
     url_suburb = name.lower().replace(' ', '-')
     url = f"https://www.onthehouse.com.au/suburb/{state.lower()}/{url_suburb}-{postcode}"
 
-    context = await browser.new_context(
-        viewport={'width': 1920, 'height': 1080},
-        user_agent=(
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-            'AppleWebKit/537.36 (KHTML, like Gecko) '
-            'Chrome/120.0.0.0 Safari/537.36'
-        )
-    )
+    context_args = {
+        'viewport': random.choice(VIEWPORTS),
+        'user_agent': random.choice(USER_AGENTS)
+    }
+    if PROXY_URL:
+        context_args['proxy'] = {'server': PROXY_URL}
+
+    context = await browser.new_context(**context_args)
     page = await context.new_page()
     await Stealth().apply_stealth_async(page)
+
+    async def block_assets(route):
+        if route.request.resource_type in ["image", "stylesheet", "font", "media", "script", "other"]:
+            await route.abort()
+        else:
+            await route.continue_()
+
+    await page.route("**/*", block_assets)
 
     try:
         response = await page.goto(url, wait_until="domcontentloaded", timeout=45000)
@@ -92,9 +118,6 @@ async def extract_single_suburb(browser, db_id, state, name, postcode):
             err = f"HTTP {response.status}"
             await context.close()
             return "error", None, err
-
-        # Allow DOM to settle — REDUX_DATA is server-rendered so minimal wait
-        await page.wait_for_timeout(1500)
 
         html_content = await page.evaluate("document.documentElement.innerHTML")
 
@@ -169,26 +192,36 @@ async def worker(queue, browser, stats):
                 f"Remaining: {remaining}"
             )
 
-            # Anti-blocking delay: 3s between each worker's requests
-            await asyncio.sleep(3)
+            # Anti-blocking delay: Randomized jitter
+            jitter = random.uniform(2.5, 6.0)
+            await asyncio.sleep(jitter)
             queue.task_done()
     finally:
         db.close()
 
 
-async def run_extraction(limit=BATCH_LIMIT):
+async def run_extraction(limit=BATCH_LIMIT, scope="national"):
     """Main extraction runner."""
     seed_raw_v3()
 
     db = SessionLocal()
     try:
-        pending = (
+        pending_query = (
             db.query(SuburbRawV3)
             .filter(SuburbRawV3.status == "pending")
             .order_by(SuburbRawV3.state, SuburbRawV3.name)
-            .limit(limit)
-            .all()
         )
+        
+        if scope == "metro":
+            from parallel_scraper import SuburbAllModel
+            live_suburbs = db.query(SuburbAllModel).filter(SuburbAllModel.is_live == True).all()
+            live_ids = []
+            for s in live_suburbs:
+                safe_name = re.sub(r'[^A-Za-z0-9 ]', '', s.name).strip().upper().replace(' ', '_')
+                live_ids.append(f"{s.state.upper()}_{safe_name}_{s.postcode}")
+            pending_query = pending_query.filter(SuburbRawV3.id.in_(live_ids))
+
+        pending = pending_query.limit(limit).all()
     finally:
         db.close()
 
@@ -242,5 +275,10 @@ async def run_extraction(limit=BATCH_LIMIT):
 
 
 if __name__ == "__main__":
-    limit = int(sys.argv[1]) if len(sys.argv) > 1 else 100
-    asyncio.run(run_extraction(limit=limit))
+    import argparse
+    parser = argparse.ArgumentParser(description="Run V3 Extraction")
+    parser.add_argument("--limit", type=int, default=100, help="Number of suburbs to process")
+    parser.add_argument("--scope", type=str, choices=["metro", "national"], default="national", help="Scope of extraction: metro or national")
+    args = parser.parse_args()
+    
+    asyncio.run(run_extraction(limit=args.limit, scope=args.scope))

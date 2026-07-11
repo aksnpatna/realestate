@@ -118,11 +118,16 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
     Returns: {score, label, summary, articles, fetched_at}
     """
     try:
-        query = f"{suburb_name} {state_code} Australia real estate market news prices outlook 2026"
-        articles = robust_search(query, max_results=8)
+        query_suburb = f"{suburb_name} {state_code} Australia real estate market news prices outlook 2026"
+        query_macro = "Australia housing market RBA interest rates inflation macro outlook 2026"
+        
+        articles = robust_search(query_suburb, max_results=5)
+        macro_articles = robust_search(query_macro, max_results=3)
         
         if not articles:
             articles = []
+        if macro_articles:
+            articles.extend(macro_articles)
 
         # Simple sentiment scoring from article titles
         positive_words = ["surge", "boom", "growth", "rising", "up", "strong", "record",

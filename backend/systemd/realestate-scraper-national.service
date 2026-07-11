@@ -1,0 +1,9 @@
+[Unit]
+Description=Real Estate Scraper - National Scope
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/aksai/projects/realestate/backend
+ExecStart=/usr/bin/python3 etl_extract_v3.py --scope national --limit 15000
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
