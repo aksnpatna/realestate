@@ -21,8 +21,6 @@ from email.mime.multipart import MIMEMultipart
 
 REQUIRE_EMAIL_VERIFICATION = False
 from dotenv import load_dotenv
-from parallel_scraper import SuburbAllModel, SuburbUIModel
-from models_v2 import SuburbUIV2
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
 
 Base = declarative_base()
@@ -448,7 +446,6 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
     cache_key = state or "ALL"
     now = time.time()
     
-    # 1-hour cache to protect DB and memory
     if cache_key in _cache_suburbs_data and (now - _cache_suburbs_time.get(cache_key, 0)) < 3600:
         return _cache_suburbs_data[cache_key]
 
@@ -456,99 +453,56 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
     result = []
     
     for state_name in TARGET_STATES:
-        state_subs = db.query(SuburbUIModel).filter(
-            SuburbUIModel.state == state_name,
-            SuburbUIModel.median_price.isnot(None),
-            SuburbUIModel.median_price > 0
-        ).order_by(SuburbUIModel.growth_score.desc().nulls_last()).all()
+        v3_records = db.query(SuburbUIV3).filter(
+            SuburbUIV3.state == state_name,
+            SuburbUIV3.is_enriched == True
+        ).order_by(SuburbUIV3.house_median_price.desc().nulls_last()).all()
         
-        # Pre-fetch all V3 and V2 data to prevent N+1 queries
-        suburb_ids = [s.id.upper() for s in state_subs]
-        if not suburb_ids:
-            continue
-            
-        # Chunk queries to prevent SQLAlchemy/PostgreSQL parameter limit errors (f405)
-        v3_records = []
-        v2_records = []
-        chunk_size = 500
-        for i in range(0, len(suburb_ids), chunk_size):
-            chunk = suburb_ids[i:i + chunk_size]
-            v3_records.extend(db.query(SuburbUIV3).filter(SuburbUIV3.id.in_(chunk)).all())
-            v2_records.extend(db.query(SuburbUIV2).filter(SuburbUIV2.id.in_(chunk)).all())
-            
-        v3_map = {r.id: r for r in v3_records}
-        v2_map = {r.id: r for r in v2_records}
-        
-        for s in state_subs:
-            v3_data = v3_map.get(s.id.upper())
-            v2_data = v2_map.get(s.id.upper())
-            
-            # Use V3 or V2 is_live flag if available, fallback to V1
-            if v3_data and v3_data.is_live is not None:
-                is_metro = v3_data.is_live
-            elif v2_data and getattr(v2_data, 'is_live', None) is not None:
-                is_metro = v2_data.is_live
-            else:
-                is_metro = getattr(s, 'is_live', False) or False
-                
+        for v3 in v3_records:
             record = {
-                "id": s.id,
-                "name": s.name,
-                "state": s.state,
-                "postcode": s.postcode,
-                "growthScore": s.growth_score if s.growth_score is not None else 50,
-                "isMetro": is_metro,
-                "cbdDistanceMins": s.cbd_distance_mins,
-                "metroCBD": s.metro_cbd,
-                # Omitted highlights and schools array from list endpoint to prevent memory bloat (P1-1)
+                "id": v3.id.upper(),
+                "name": v3.name,
+                "state": v3.state,
+                "postcode": v3.postcode,
+                "growthScore": _compute_growth_score(v3)["score"],
+                "isMetro": v3.is_live if v3.is_live is not None else False,
+                "cbdDistanceMins": v3.cbd_distance_mins,
+                "metroCBD": v3.metro_cbd,
                 "metrics": {
-                    "medianPrice": s.median_price if s.median_price is not None else 0,
-                    "weeklyRent": s.weekly_rent if s.weekly_rent is not None else 0,
-                    "rentalYield": s.rental_yield if s.rental_yield is not None else 0,
-                    "schoolQuality": s.school_quality if s.school_quality is not None else 0,
-                    "transitAccessibility": s.transit_accessibility if s.transit_accessibility is not None else 5,
-                    "safetyScore": s.safety_score,
-                    "crimeRate": s.crime_rate_per_100k,
-                }
+                    "medianPrice": v3.house_median_price or 0,
+                    "weeklyRent": v3.house_median_rent or 0,
+                    "rentalYield": v3.house_gross_rental_yield or 0,
+                    "schoolQuality": v3.school_quality or 0,
+                    "transitAccessibility": v3.transit_accessibility or 5,
+                    "safetyScore": v3.safety_score,
+                    "crimeRate": v3.crime_rate,
+                },
+                "v3Enriched": True,
+                "dqScore": min(95, max(5, v3.dq_score or 100)) if hasattr(v3, 'dq_score') else 100,
+                "houseMedianPrice": v3.house_median_price,
+                "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
+                "houseMedianRent": v3.house_median_rent,
+                "houseGrossRentalYield": _cap_yield(v3.house_gross_rental_yield),
+                "houseGrossRentalYieldTrend": v3.house_gross_rental_yield_trend,
+                "houseDaysOnMarket": v3.house_days_on_market,
+                "houseAuctionClearanceRate": v3.house_auction_clearance_rate,
+                "houseStockOnMarket": v3.house_stock_on_market,
+                "houseSold12m": v3.house_sold_12m,
+                "unitMedianPrice": v3.unit_median_price,
+                "unitMedianPrice12mChangePct": v3.unit_median_price_12m_change_pct,
+                "unitMedianRent": v3.unit_median_rent,
+                "unitGrossRentalYield": _cap_yield(v3.unit_gross_rental_yield),
+                "unitGrossRentalYieldTrend": v3.unit_gross_rental_yield_trend,
+                "unitDaysOnMarket": v3.unit_days_on_market,
+                "totalProperties": v3.total_properties,
+                "vacancyRate": v3.vacancy_rate,
+                "supplyDemandRatio": v3.supply_demand_ratio,
+                "priceToRentRatio": v3.price_to_rent_ratio,
+                "ownerOccupierRate": v3.owner_occupier_rate,
+                "investorRate": v3.investor_rate,
+                "medianAge": v3.median_age,
+                "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
             }
-            if v3_data:
-                record.update({
-                    "v3Enriched": True,
-                    "dqScore": min(95, max(5, v3_data.dq_score or 100)),
-                    "houseMedianPrice": v3_data.house_median_price,
-                    "houseMedianPrice12mChangePct": v3_data.house_median_price_12m_change_pct,
-                    "houseMedianRent": v3_data.house_median_rent,
-                    "houseGrossRentalYield": _cap_yield(v3_data.house_gross_rental_yield),
-                    "houseGrossRentalYieldTrend": v3_data.house_gross_rental_yield_trend,
-                    "houseDaysOnMarket": v3_data.house_days_on_market,
-                    "houseAuctionClearanceRate": v3_data.house_auction_clearance_rate,
-                    "houseStockOnMarket": v3_data.house_stock_on_market,
-                    "houseSold12m": v3_data.house_sold_12m,
-                    "unitMedianPrice": v3_data.unit_median_price,
-                    "unitMedianPrice12mChangePct": v3_data.unit_median_price_12m_change_pct,
-                    "unitMedianRent": v3_data.unit_median_rent,
-                    "unitGrossRentalYield": _cap_yield(v3_data.unit_gross_rental_yield),
-                    "unitGrossRentalYieldTrend": v3_data.unit_gross_rental_yield_trend,
-                    "unitDaysOnMarket": v3_data.unit_days_on_market,
-                    "totalProperties": v3_data.total_properties or record.get("totalProperties"),
-                    "vacancyRate": v3_data.vacancy_rate,
-                    "supplyDemandRatio": v3_data.supply_demand_ratio,
-                    "priceToRentRatio": v3_data.price_to_rent_ratio,
-                    "ownerOccupierRate": v3_data.owner_occupier_rate,
-                    "investorRate": v3_data.investor_rate,
-                    "medianAge": v3_data.median_age,
-                    "lastV3Update": str(v3_data.last_updated) if v3_data.last_updated else None,
-                })
-            else:
-                if v2_data:
-                    record.update({
-                        "houseGrossRentalYield": _cap_yield(v2_data.house_rental_yield),
-                        "houseGrossRentalYieldTrend": v2_data.house_rental_yield_trend,
-                        "unitGrossRentalYield": _cap_yield(v2_data.unit_rental_yield),
-                        "unitGrossRentalYieldTrend": v2_data.unit_rental_yield_trend,
-                        "houseMedianPrice12mChangePct": v2_data.house_median_growth
-                    })
-            
             result.append(record)
             
     _cache_suburbs_data[cache_key] = result
@@ -560,124 +514,10 @@ def search_suburbs(q: str = "", db: Session = Depends(get_db)):
     if not q or len(q) < 3 or len(q) > 50:
         return []
     # Simple ILIKE search on name using the trigram index
-    suburbs = db.query(SuburbUIModel.id, SuburbUIModel.name, SuburbUIModel.state, SuburbUIModel.postcode).filter(
-        SuburbUIModel.name.ilike(f"%{q}%")
+    suburbs = db.query(SuburbUIV3.id, SuburbUIV3.name, SuburbUIV3.state, SuburbUIV3.postcode).filter(
+        SuburbUIV3.name.ilike(f"%{q}%")
     ).limit(20).all()
     return [{"id": s.id, "name": s.name, "state": s.state, "postcode": s.postcode} for s in suburbs]
-
-def _build_v2_only_response(v2) -> dict:
-    """Pure V2 fallback when no V3 data exists."""
-    coords = [v2.lat, v2.lon] if (v2.lat and v2.lon) else None
-    return {
-        "id": v2.id, "name": v2.name, "state": v2.state, "postcode": v2.postcode,
-        "isLive": v2.is_live, "v3Enriched": False,
-        "medianPrice": v2.median_price, "weeklyRent": v2.weekly_rent,
-        "rentalYield": v2.rental_yield, "totalProperties": v2.total_properties,
-        "ownerOccupierRate": v2.owner_occupier_rate, "population": v2.population,
-        "areaSqkm": v2.area_sqkm, "parksCount": v2.parks_count,
-        "schoolQuality": v2.school_quality, "transitAccessibility": v2.transit_accessibility,
-        "cbdDistance": v2.cbd_distance_mins, "metroCBD": v2.metro_cbd or f"{v2.state} CBD",
-        "growthScore": v2.growth_score or 50,
-        "metrics": v2.metrics or {}, "safetyScore": v2.safety_score,
-        "crimeRate": v2.crime_rate_per_100k, "highlights": v2.highlights or [],
-        "history": v2.history or [], "schools": v2.schools or [],
-        "acara_schools": v2.schools or [], "ai_insights": v2.ai_insights or {},
-        "nearby_pois": v2.nearby_pois or {}, "pois": v2.pois or [],
-        "coordinates": coords, "demographics": v2.demographics or {},
-        "lastUpdated": str(v2.last_updated) if v2.last_updated else None,
-        "populationCagr": None, "typicalMortgageBand": None,
-        "houseMedianPrice": v2.median_price, "houseDaysOnMarket": None,
-    }
-
-def _build_v3_fallback_response(v3: SuburbUIV3) -> dict:
-    """Build a SuburbData-compatible response from V3-only data when V2 record is missing."""
-    return {
-        "id": v3.id.lower(),
-        "name": v3.name,
-        "state": v3.state,
-        "postcode": v3.postcode,
-        "isMetro": False,
-        "growthScore": 50,
-        "v3Enriched": True,
-        "dqScore": _calibrate_dq(v3),
-        "dqIssues": v3.dq_issues,
-        "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
-        "growthScore": _compute_growth_score(v3)["score"],
-        "growthFactors": _compute_growth_score(v3)["factors"],
-        "history": v3.history_10yr or [],
-        "historyRent": v3.history_rent_10yr or [],
-        "demographicsDetail": v3.demographics_detail or {},
-        "salesSummary": v3.sales_summary or [],
-        "nearbySuburbs": v3.nearby_suburbs or [],
-        # House
-        "houseMedianPrice": v3.house_median_price,
-        "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
-        "houseMedianRent": v3.house_median_rent,
-        "houseGrossRentalYield": _cap_yield(v3.house_gross_rental_yield),
-        "houseStockOnMarket": v3.house_stock_on_market,
-        "houseSold12m": v3.house_sold_12m,
-        # Unit
-        "unitMedianPrice": v3.unit_median_price,
-        "unitMedianPrice12mChangePct": v3.unit_median_price_12m_change_pct,
-        "unitMedianRent": v3.unit_median_rent,
-        "unitGrossRentalYield": _cap_yield(v3.unit_gross_rental_yield),
-        # Market
-        "vacancyRate": v3.vacancy_rate,
-        "supplyDemandRatio": v3.supply_demand_ratio,
-        "priceToRentRatio": v3.price_to_rent_ratio,
-        "priceToIncomeRatio": v3.price_to_income_ratio,
-        "totalProperties": v3.total_properties,
-        # Demographics
-        "population2021": v3.population_2021,
-        "populationCagr": round(_annualize_cagr(v3.population_cagr), 2) if v3.population_cagr else None,
-        "ownerOccupierRate": v3.owner_occupier_rate,
-        "investorRate": v3.investor_rate,
-        "medianAge": v3.median_age,
-        "predominantAgeGroup": v3.predominant_age_group,
-        "predominantOccupation": v3.predominant_occupation,
-        "typicalMortgageBand": v3.typical_mortgage_band,
-        # Environment
-        "parksCount": v3.parks_count,
-        "parksCoveragePct": v3.parks_coverage_pct,
-        "areaSqkm": v3.area_sqkm,
-        # Metrics (for backward compat)
-        "metrics": {
-            "medianPrice": v3.house_median_price or 0,
-            "weeklyRent": v3.house_median_rent or 0,
-            "rentalYield": v3.house_gross_rental_yield or 0,
-            "populationGrowth": f"+{_annualize_cagr(v3.population_cagr):.1f}% CAGR" if v3.population_cagr else "N/A",
-            "ownerOccupierRate": v3.owner_occupier_rate or 0,
-            "investorRate": v3.investor_rate or 0,
-            "medianAge": v3.median_age or 0,
-            "predominantAgeGroup": v3.predominant_age_group or "",
-            "predominantOccupation": v3.predominant_occupation or "",
-            "typicalMortgageBand": v3.typical_mortgage_band or "",
-            "priceToRentRatio": v3.price_to_rent_ratio or 0,
-            "priceToIncomeRatio": v3.price_to_income_ratio or 0,
-            "vacancyRate": v3.vacancy_rate or 0,
-            "supplyDemandRatio": v3.supply_demand_ratio or 0,
-            "stockOnMarket": v3.house_stock_on_market or 0,
-            "soldStock": v3.house_sold_12m or 0,
-            "population2016": v3.population_2016 or 0,
-            "population2021": v3.population_2021 or 0,
-            "truePopulationGrowth": v3.population_cagr or 0,
-            "parksCount": v3.parks_count or 0,
-            "parksCoveragePct": v3.parks_coverage_pct or 0,
-            "suburbAreaKm2": v3.area_sqkm or 0,
-            "unitMedianPrice": v3.unit_median_price,
-            "auctionClearanceRate": 0,
-            "daysOnMarket": 0,
-        },
-        "highlights": [
-            f"V3 Enriched | DQ Score: {_calibrate_dq(v3):.0f}%",
-            f"{v3.house_sold_12m or 0} sales in 12 months",
-            f"Population: {v3.population_2021 or 'N/A'} ({_annualize_cagr(v3.population_cagr):.1f}% CAGR)",
-        ],
-        "schools": [],
-        "demographics": v3.demographics_detail or {},
-        "salesSummaryV3": v3.sales_summary or [],
-    }
-
 
 def _annualize_cagr(val) -> float:
     """Convert 5yr total growth % to annual CAGR %. Values >10% treated as total growth."""
@@ -1058,18 +898,33 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=503, detail="Clustering service not available")
         
     try:
-        target_suburb = db.query(SuburbAllModel).filter(SuburbAllModel.id == req.id).first()
+        target_suburb = db.query(SuburbUIV3).filter(SuburbUIV3.id == req.id).first()
         if not target_suburb:
             return {"status": "error", "message": "Suburb not found in database"}
             
-        # Fix P0-2 Unbounded Memory: Only load live suburbs in the same state
-        all_suburbs = db.query(SuburbAllModel).filter(
-            SuburbAllModel.is_live == True,
-            SuburbAllModel.state == target_suburb.state
+        all_suburbs = db.query(SuburbUIV3).filter(
+            SuburbUIV3.is_live == True,
+            SuburbUIV3.state == target_suburb.state
         ).all()
+        
+        def _build_cluster_data(v3):
+            return {
+                "id": v3.id.upper(),
+                "name": v3.name,
+                "state": v3.state,
+                "postcode": v3.postcode,
+                "metrics": {
+                    "medianPrice": v3.house_median_price or 0,
+                    "schoolQuality": v3.school_quality or 0,
+                    "rentalYield": v3.house_gross_rental_yield or 0,
+                    "populationDensity": v3.population_density or 1000,
+                    "growthScore": _compute_growth_score(v3)["score"],
+                }
+            }
+
         print(f"[cluster] Loaded {len(all_suburbs)} live suburbs in {target_suburb.state}")
-        all_data = [{**s.data, "id": s.id, "name": s.name, "state": s.state, "postcode": s.postcode} for s in all_suburbs]
-        target_data = {**target_suburb.data, "id": target_suburb.id, "name": target_suburb.name, "state": target_suburb.state, "postcode": target_suburb.postcode}
+        all_data = [_build_cluster_data(s) for s in all_suburbs]
+        target_data = _build_cluster_data(target_suburb)
         
         similar = find_similar_suburbs(target_data, all_data, limit=5)
         print(f"[cluster] Found {len(similar)} similar suburbs for {req.suburb}")
