@@ -1805,7 +1805,7 @@
       "label": "reload_suburbs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L964",
+      "source_location": "L979",
       "_origin": "ast",
       "id": "backend_main_reload_suburbs",
       "community": 18,
@@ -1815,7 +1815,7 @@
       "label": "ROICalcRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L978",
+      "source_location": "L993",
       "_origin": "ast",
       "id": "backend_main_roicalcrequest",
       "community": 6,
@@ -1825,7 +1825,7 @@
       "label": "calculate_stamp_duty()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L995",
+      "source_location": "L1010",
       "_origin": "ast",
       "id": "backend_main_calculate_stamp_duty",
       "community": 6,
@@ -1835,7 +1835,7 @@
       "label": "calculate_roi()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1060",
+      "source_location": "L1075",
       "_origin": "ast",
       "id": "backend_main_calculate_roi",
       "community": 6,
@@ -1845,7 +1845,7 @@
       "label": "get_mortgage_rate()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1139",
+      "source_location": "L1154",
       "_origin": "ast",
       "id": "backend_main_get_mortgage_rate",
       "community": 6,
@@ -1855,7 +1855,7 @@
       "label": "get_suburbs_v3()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1159",
+      "source_location": "L1174",
       "_origin": "ast",
       "id": "backend_main_get_suburbs_v3",
       "community": 6,
@@ -1865,7 +1865,7 @@
       "label": "export_suburbs_csv()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1237",
+      "source_location": "L1252",
       "_origin": "ast",
       "id": "backend_main_export_suburbs_csv",
       "community": 6,
@@ -1875,7 +1875,7 @@
       "label": "FavoriteRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1269",
+      "source_location": "L1284",
       "_origin": "ast",
       "id": "backend_main_favoriterequest",
       "community": 6,
@@ -1885,7 +1885,7 @@
       "label": "get_favorites()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1273",
+      "source_location": "L1288",
       "_origin": "ast",
       "id": "backend_main_get_favorites",
       "community": 6,
@@ -1895,7 +1895,7 @@
       "label": "toggle_favorite()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1279",
+      "source_location": "L1294",
       "_origin": "ast",
       "id": "backend_main_toggle_favorite",
       "community": 6,
@@ -1905,7 +1905,7 @@
       "label": "get_suburb_v3()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1292",
+      "source_location": "L1307",
       "_origin": "ast",
       "id": "backend_main_get_suburb_v3",
       "community": 68,
@@ -1915,7 +1915,7 @@
       "label": "get_osm_livability()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1362",
+      "source_location": "L1377",
       "_origin": "ast",
       "id": "backend_main_get_osm_livability",
       "community": 66,
@@ -1925,7 +1925,7 @@
       "label": "get_osm_boundary()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1391",
+      "source_location": "L1406",
       "_origin": "ast",
       "id": "backend_main_get_osm_boundary",
       "community": 66,
@@ -1935,7 +1935,7 @@
       "label": "get_suburb_properties()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1400",
+      "source_location": "L1415",
       "_origin": "ast",
       "id": "backend_main_get_suburb_properties",
       "community": 1,
@@ -2055,9 +2055,9 @@
       "label": "Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L965",
+      "source_location": "L980",
       "_origin": "ast",
-      "id": "backend_main_rationale_965",
+      "id": "backend_main_rationale_980",
       "community": 18,
       "norm_label": "triggers v3 pipeline enrichment from unpacked table (replaces old transform_data"
     },
@@ -2065,9 +2065,9 @@
       "label": "Returns V3-enriched suburbs for the institutional dashboard view.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1160",
+      "source_location": "L1175",
       "_origin": "ast",
-      "id": "backend_main_rationale_1160",
+      "id": "backend_main_rationale_1175",
       "community": 6,
       "norm_label": "returns v3-enriched suburbs for the institutional dashboard view."
     },
@@ -2075,9 +2075,9 @@
       "label": "Exports the V3 suburbs table to a CSV file.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1238",
+      "source_location": "L1253",
       "_origin": "ast",
-      "id": "backend_main_rationale_1238",
+      "id": "backend_main_rationale_1253",
       "community": 6,
       "norm_label": "exports the v3 suburbs table to a csv file."
     },
@@ -2085,9 +2085,9 @@
       "label": "Returns full V3 institutional data for a single suburb.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1293",
+      "source_location": "L1308",
       "_origin": "ast",
-      "id": "backend_main_rationale_1293",
+      "id": "backend_main_rationale_1308",
       "community": 68,
       "norm_label": "returns full v3 institutional data for a single suburb."
     },
@@ -2095,9 +2095,9 @@
       "label": "Returns local POI data and livability scores from PostGIS OSM tables.     Replac",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1363",
+      "source_location": "L1378",
       "_origin": "ast",
-      "id": "backend_main_rationale_1363",
+      "id": "backend_main_rationale_1378",
       "community": 66,
       "norm_label": "returns local poi data and livability scores from postgis osm tables.     replac"
     },
@@ -2105,9 +2105,9 @@
       "label": "Returns suburb boundary geojson and center coordinates from local PostGIS.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1392",
+      "source_location": "L1407",
       "_origin": "ast",
-      "id": "backend_main_rationale_1392",
+      "id": "backend_main_rationale_1407",
       "community": 66,
       "norm_label": "returns suburb boundary geojson and center coordinates from local postgis."
     },
@@ -2115,9 +2115,9 @@
       "label": "Returns authentic property listings scraped from onthehouse.com.au     Only retu",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1401",
+      "source_location": "L1416",
       "_origin": "ast",
-      "id": "backend_main_rationale_1401",
+      "id": "backend_main_rationale_1416",
       "community": 1,
       "norm_label": "returns authentic property listings scraped from onthehouse.com.au     only retu"
     },
@@ -7309,9 +7309,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_62",
-      "target": "backend_etl_extract_v3_seed_raw_v3",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_seed_raw_v3"
     },
     {
       "relation": "calls",
@@ -7341,9 +7341,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_109",
-      "target": "backend_etl_extract_v3_extract_single_suburb",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_extract_single_suburb"
     },
     {
       "relation": "calls",
@@ -7362,9 +7362,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L216",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_216",
-      "target": "backend_etl_extract_v3_worker",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_worker"
     },
     {
       "relation": "calls",
@@ -7394,9 +7394,9 @@
       "source_file": "backend/etl_extract_v3.py",
       "source_location": "L275",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_extract_v3_rationale_275",
-      "target": "backend_etl_extract_v3_run_extraction",
-      "confidence_score": 1.0
+      "target": "backend_etl_extract_v3_run_extraction"
     },
     {
       "relation": "contains",
@@ -10458,11 +10458,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L965",
+      "source_location": "L980",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_965",
-      "target": "backend_main_reload_suburbs"
+      "source": "backend_main_rationale_980",
+      "target": "backend_main_reload_suburbs",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -10560,21 +10560,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1160",
+      "source_location": "L1175",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1160",
-      "target": "backend_main_get_suburbs_v3"
+      "source": "backend_main_rationale_1175",
+      "target": "backend_main_get_suburbs_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1238",
+      "source_location": "L1253",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1238",
-      "target": "backend_main_export_suburbs_csv"
+      "source": "backend_main_rationale_1253",
+      "target": "backend_main_export_suburbs_csv",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -10661,11 +10661,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1293",
+      "source_location": "L1308",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1293",
-      "target": "backend_main_get_suburb_v3"
+      "source": "backend_main_rationale_1308",
+      "target": "backend_main_get_suburb_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10682,11 +10682,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1363",
+      "source_location": "L1378",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1363",
-      "target": "backend_main_get_osm_livability"
+      "source": "backend_main_rationale_1378",
+      "target": "backend_main_get_osm_livability",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10703,21 +10703,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1392",
+      "source_location": "L1407",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1392",
-      "target": "backend_main_get_osm_boundary"
+      "source": "backend_main_rationale_1407",
+      "target": "backend_main_get_osm_boundary",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1401",
+      "source_location": "L1416",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1401",
-      "target": "backend_main_get_suburb_properties"
+      "source": "backend_main_rationale_1416",
+      "target": "backend_main_get_suburb_properties",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11876,9 +11876,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_acquire_lock"
     },
     {
       "relation": "contains",
@@ -11916,9 +11916,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_release_lock"
     },
     {
       "relation": "contains",
@@ -11956,9 +11956,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_rationale_38",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_acquire_lock"
     },
     {
       "relation": "calls",
@@ -11967,9 +11967,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L184",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_v3scheduler_run_monthly_metro",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_acquire_lock"
     },
     {
       "relation": "calls",
@@ -11978,9 +11978,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L217",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_v3scheduler_run_quarterly_full",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_acquire_lock"
     },
     {
       "relation": "rationale_for",
@@ -11988,9 +11988,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_rationale_52",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_release_lock"
     },
     {
       "relation": "calls",
@@ -11999,9 +11999,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L211",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_v3scheduler_run_monthly_metro",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_release_lock"
     },
     {
       "relation": "calls",
@@ -12010,9 +12010,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L244",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_v3scheduler_run_quarterly_full",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_release_lock"
     },
     {
       "relation": "rationale_for",
@@ -12020,9 +12020,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_rationale_66",
-      "target": "backend_v3_scheduler_python",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_python"
     },
     {
       "relation": "calls",
@@ -12052,9 +12052,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_rationale_77",
-      "target": "backend_v3_scheduler_seed_pending_raw",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_seed_pending_raw"
     },
     {
       "relation": "calls",
@@ -12084,9 +12084,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_rationale_114",
-      "target": "backend_v3_scheduler_mark_changed_for_unpack",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_mark_changed_for_unpack"
     },
     {
       "relation": "calls",
@@ -12116,9 +12116,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L145",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_rationale_145",
-      "target": "backend_v3_scheduler_mark_changed_for_enrich",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_mark_changed_for_enrich"
     },
     {
       "relation": "calls",
@@ -12148,9 +12148,9 @@
       "source_file": "backend/v3_scheduler.py",
       "source_location": "L171",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_v3_scheduler_rationale_171",
-      "target": "backend_v3_scheduler_v3scheduler",
-      "confidence_score": 1.0
+      "target": "backend_v3_scheduler_v3scheduler"
     },
     {
       "relation": "method",
@@ -12768,9 +12768,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_affordabilitycalculator",
-      "confidence_score": 1.0
+      "target": "src_app_affordabilitycalculator"
     },
     {
       "relation": "contains",
@@ -12788,9 +12788,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_calculators",
-      "confidence_score": 1.0
+      "target": "src_app_calculators"
     },
     {
       "relation": "contains",
@@ -12798,9 +12798,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_cashflowgearing",
-      "confidence_score": 1.0
+      "target": "src_app_cashflowgearing"
     },
     {
       "relation": "contains",
@@ -12808,9 +12808,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_housesearch",
-      "confidence_score": 1.0
+      "target": "src_app_housesearch"
     },
     {
       "relation": "contains",
@@ -12818,9 +12818,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_institutionalv3panel",
-      "confidence_score": 1.0
+      "target": "src_app_institutionalv3panel"
     },
     {
       "relation": "contains",
@@ -12828,9 +12828,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_mypurchaseplan",
-      "confidence_score": 1.0
+      "target": "src_app_mypurchaseplan"
     },
     {
       "relation": "contains",
@@ -12838,9 +12838,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_quickroicalculator",
-      "confidence_score": 1.0
+      "target": "src_app_quickroicalculator"
     },
     {
       "relation": "contains",
@@ -15155,5 +15155,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "26b16d740336426e61179fdafc6845d3d7a8a2ca"
+  "built_at_commit": "4e51161234d6481a953f428300c0a37c7ec178e6"
 }

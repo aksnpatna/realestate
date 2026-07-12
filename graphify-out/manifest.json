@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783763971.4557126,
-    "ast_hash": "6989e7dc7a65d5c3ea180f870e4aacba",
+    "mtime": 1783840200.6516204,
+    "ast_hash": "d27513a5f2cc8d8fe8f0ecd22a416a01",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": "dd79773dd6a35613e1f50e8149237464"
   },
   "src/App.tsx": {
-    "mtime": 1783837234.09995,
-    "ast_hash": "b875ea25f30c98aa55eb4520e212a576",
+    "mtime": 1783840125.3441682,
+    "ast_hash": "4ac5a3356bcc94ed76354fc3b89e89d9",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
