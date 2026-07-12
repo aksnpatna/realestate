@@ -19,17 +19,47 @@ import sys
 import time
 import threading
 import subprocess
+import fcntl
 from datetime import datetime, timedelta
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE_DIR)
 
+LOCK_FILE = os.path.join(BASE_DIR, ".v3_scheduler.lock")
 MONTHLY_INTERVAL = 30 * 24 * 60 * 60
 QUARTERLY_INTERVAL = 90 * 24 * 60 * 60
 METRO_REFRESH_AGE_DAYS = 25
 COUNTRY_REFRESH_AGE_DAYS = 80
 METRO_BATCH = 500
 COUNTRY_BATCH = 2000
+
+
+def _acquire_lock() -> bool:
+    """Try to acquire exclusive lock to prevent concurrent scheduler runs."""
+    global _lock_fd
+    _lock_fd = open(LOCK_FILE, 'w')
+    try:
+        fcntl.flock(_lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        _lock_fd.write(str(os.getpid()))
+        _lock_fd.flush()
+        return True
+    except (IOError, OSError):
+        _lock_fd.close()
+        return False
+
+
+def _release_lock():
+    """Release the scheduler lock."""
+    global _lock_fd
+    try:
+        fcntl.flock(_lock_fd, fcntl.LOCK_UN)
+        _lock_fd.close()
+    except Exception:
+        pass
+    try:
+        os.unlink(LOCK_FILE)
+    except OSError:
+        pass
 
 
 def _python(script, *args):
@@ -142,57 +172,76 @@ class V3Scheduler:
 
     def __init__(self):
         self.running = True
+        self._job_in_progress = False
         self.last_monthly: datetime | None = None
         self.last_quarterly: datetime | None = None
         self.startup_delay = 120  # 2 minutes
 
     def _run_monthly_metro(self):
-        print(f"\n{'='*60}")
-        print(f"[{datetime.now()}] MONTHLY: Metro Suburb Update (~3,953 suburbs)")
-        print(f"{'='*60}")
+        if self._job_in_progress:
+            print(f"[{datetime.now()}] SKIPPED monthly — another job is already running")
+            return
+        if not _acquire_lock():
+            print(f"[{datetime.now()}] SKIPPED monthly — lock already held by another process")
+            return
+        self._job_in_progress = True
+        try:
+            print(f"\n{'='*60}")
+            print(f"[{datetime.now()}] MONTHLY: Metro Suburb Update (~3,953 suburbs)")
+            print(f"{'='*60}")
 
-        # Step 0: Seed pending raw for stale metro records
-        print("\n  [Step 1/4] Seeding pending raw (metro, >{METRO_REFRESH_AGE_DAYS}d old)...")
-        seed_pending_raw(METRO_REFRESH_AGE_DAYS, live_only=True)
+            print("\n  [Step 1/4] Seeding pending raw (metro, >{METRO_REFRESH_AGE_DAYS}d old)...")
+            seed_pending_raw(METRO_REFRESH_AGE_DAYS, live_only=True)
 
-        # Step 1: Extract
-        print(f"\n  [Step 2/4] Extracting (live-only, max {METRO_BATCH})...")
-        _python("run_v3_extract.py", "--live-only", f"--limit={METRO_BATCH}")
+            print(f"\n  [Step 2/4] Extracting (live-only, max {METRO_BATCH})...")
+            _python("run_v3_extract.py", "--live-only", f"--limit={METRO_BATCH}")
 
-        # Step 2: Unpack changed
-        print("\n  [Step 3/4] Unpacking changed raw → columnar...")
-        mark_changed_for_unpack(live_only=True)
-        _python("run_unpack.py")
+            print("\n  [Step 3/4] Unpacking changed raw → columnar...")
+            mark_changed_for_unpack(live_only=True)
+            _python("run_unpack.py")
 
-        # Step 3: Enrich changed
-        print("\n  [Step 4/4] Enriching changed unpacked → target...")
-        mark_changed_for_enrich(live_only=True)
-        _python("enrich_from_unpacked.py")
+            print("\n  [Step 4/4] Enriching changed unpacked → target...")
+            mark_changed_for_enrich(live_only=True)
+            _python("enrich_from_unpacked.py")
 
-        self.last_monthly = datetime.now()
-        print(f"\n  ✓ Monthly metro update complete")
+            self.last_monthly = datetime.now()
+            print(f"\n  ✓ Monthly metro update complete")
+        finally:
+            self._job_in_progress = False
+            _release_lock()
 
     def _run_quarterly_full(self):
-        print(f"\n{'='*60}")
-        print(f"[{datetime.now()}] QUARTERLY: Full National Refresh (13,150 suburbs)")
-        print(f"{'='*60}")
+        if self._job_in_progress:
+            print(f"[{datetime.now()}] SKIPPED quarterly — another job is already running")
+            return
+        if not _acquire_lock():
+            print(f"[{datetime.now()}] SKIPPED quarterly — lock already held by another process")
+            return
+        self._job_in_progress = True
+        try:
+            print(f"\n{'='*60}")
+            print(f"[{datetime.now()}] QUARTERLY: Full National Refresh (13,150 suburbs)")
+            print(f"{'='*60}")
 
-        print("\n  [Step 1/4] Seeding pending raw (all suburbs, >{COUNTRY_REFRESH_AGE_DAYS}d old)...")
-        seed_pending_raw(COUNTRY_REFRESH_AGE_DAYS, live_only=False)
+            print("\n  [Step 1/4] Seeding pending raw (all suburbs, >{COUNTRY_REFRESH_AGE_DAYS}d old)...")
+            seed_pending_raw(COUNTRY_REFRESH_AGE_DAYS, live_only=False)
 
-        print(f"\n  [Step 2/4] Extracting (full, max {COUNTRY_BATCH}/run)...")
-        _python("run_v3_extract.py", f"--limit={COUNTRY_BATCH}")
+            print(f"\n  [Step 2/4] Extracting (full, max {COUNTRY_BATCH}/run)...")
+            _python("run_v3_extract.py", f"--limit={COUNTRY_BATCH}")
 
-        print("\n  [Step 3/4] Unpacking changed raw → columnar...")
-        mark_changed_for_unpack(live_only=False)
-        _python("run_unpack.py")
+            print("\n  [Step 3/4] Unpacking changed raw → columnar...")
+            mark_changed_for_unpack(live_only=False)
+            _python("run_unpack.py")
 
-        print("\n  [Step 4/4] Enriching changed unpacked → target...")
-        mark_changed_for_enrich(live_only=False)
-        _python("enrich_from_unpacked.py")
+            print("\n  [Step 4/4] Enriching changed unpacked → target...")
+            mark_changed_for_enrich(live_only=False)
+            _python("enrich_from_unpacked.py")
 
-        self.last_quarterly = datetime.now()
-        print(f"\n  ✓ Quarterly full refresh complete")
+            self.last_quarterly = datetime.now()
+            print(f"\n  ✓ Quarterly full refresh complete")
+        finally:
+            self._job_in_progress = False
+            _release_lock()
 
     def _loop(self):
         time.sleep(self.startup_delay)

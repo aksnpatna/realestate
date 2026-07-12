@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { calculateMaxPurchase } from '../data/suburbs';
 import type { SuburbData } from '../data/suburbs';
 
 type SortKey = 'name' | 'medianPrice' | 'growthScore' | 'rentalYield' | 'schoolQuality' | 'transitAccessibility' | 'cbdDistanceMins' | 'state';
 
-export default function AffordabilityCalculator({ suburbsData }: { suburbsData: SuburbData[] }) {
+export default memo(function AffordabilityCalculator({ suburbsData }: { suburbsData: SuburbData[] }) {
   const [deposit, setDeposit] = useState<number>(150000);
   const [lvrPct, setLvrPct] = useState<number>(80);
   const [stateFilter, setStateFilter] = useState<string>('ALL');
@@ -197,4 +197,4 @@ export default function AffordabilityCalculator({ suburbsData }: { suburbsData: 
       )}
     </div>
   );
-}
+});

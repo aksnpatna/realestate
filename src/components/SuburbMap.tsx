@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, GeoJSON, LayersControl, WMSTileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -55,7 +55,7 @@ const AUSTRALIA_CENTER: [number, number] = [-25.2744, 133.7751];
 
 const boundaryCache = new Map<string, any>();
 
-export default function SuburbMap({ center, pois, schools, suburbName, stateName, postcode }: MapProps) {
+export default memo(function SuburbMap({ center, pois, schools, suburbName, stateName, postcode }: MapProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [geoData, setGeoData] = useState<any>(null);
   const [derivedCenter, setDerivedCenter] = useState<[number, number]>(center || AUSTRALIA_CENTER);
@@ -235,4 +235,4 @@ export default function SuburbMap({ center, pois, schools, suburbName, stateName
       </div>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 
 interface QuickRoiCalculatorProps {
   medianPrice: number;
@@ -7,45 +7,51 @@ interface QuickRoiCalculatorProps {
   onAdvancedClick?: () => void;
 }
 
-export default function QuickRoiCalculator({ medianPrice, medianRent, state, onAdvancedClick }: QuickRoiCalculatorProps) {
+export default memo(function QuickRoiCalculator({ medianPrice, medianRent, state, onAdvancedClick }: QuickRoiCalculatorProps) {
   const [depositPct, setDepositPct] = useState(20);
   const [interestRate, setInterestRate] = useState(6.2);
   const [loanType, setLoanType] = useState('io');
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     let active = true;
-    const fetchRoi = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/calc/roi', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            purchase_price: medianPrice,
-            weekly_rent: medianRent,
-            state: state,
-            deposit_pct: depositPct,
-            interest_rate: interestRate,
-            loan_type: loanType
-          })
-        });
-        const data = await res.json();
-        if (active && data.status === 'success') {
-          setResults(data.metrics);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     
-    if (medianPrice > 0 && medianRent > 0) {
-      fetchRoi();
-    }
-    return () => { active = false; };
+    debounceRef.current = setTimeout(() => {
+      const fetchRoi = async () => {
+        setLoading(true);
+        try {
+          const res = await fetch('/api/calc/roi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              purchase_price: medianPrice,
+              weekly_rent: medianRent,
+              state: state,
+              deposit_pct: depositPct,
+              interest_rate: interestRate,
+              loan_type: loanType
+            })
+          });
+          const data = await res.json();
+          if (active && data.status === 'success') {
+            setResults(data.metrics);
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          if (active) setLoading(false);
+        }
+      };
+      
+      if (medianPrice > 0 && medianRent > 0) {
+        fetchRoi();
+      }
+    }, 400);
+
+    return () => { active = false; if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [medianPrice, medianRent, depositPct, interestRate, loanType]);
 
   if (medianPrice === 0) return null;
@@ -135,4 +141,4 @@ export default function QuickRoiCalculator({ medianPrice, medianRent, state, onA
       </div>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, memo } from 'react';
 import type { SuburbData } from '../data/suburbs';
 
 interface MyPurchasePlanProps {
@@ -7,7 +7,7 @@ interface MyPurchasePlanProps {
 
 type BuyerProfile = 'First Home Buyer' | 'Upgrader' | 'Investor' | 'SMSF Investor';
 
-export default function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps) {
+export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps) {
   const [step, setStep] = useState(1);
   const [profile, setProfile] = useState<BuyerProfile | ''>(() => (localStorage.getItem('mpp_profile') as BuyerProfile || ''));
   
@@ -384,4 +384,4 @@ export default function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps) {
       </div>
     </div>
   );
-}
+});
