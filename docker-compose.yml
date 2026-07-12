@@ -27,6 +27,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - model-cache:/model-cache
     logging:
       driver: json-file
       options:
@@ -37,7 +39,11 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 768M
     deploy:
       resources:
         limits:
@@ -131,3 +137,4 @@ services:
 
 volumes:
   postgres_data:
+  model-cache:
