@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 100 files · ~2,216,462 words
+- 101 files · ~2,216,631 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 694 nodes · 944 edges · 102 communities (67 shown, 35 thin omitted)
+- 696 nodes · 945 edges · 103 communities (67 shown, 36 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 147 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7a94d338`
+- Built from commit: `669b1d0b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -92,6 +92,7 @@
 - [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 99|Community 99]]
+- [[_COMMUNITY_Community 102|Community 102]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Session` - 28 edges
@@ -131,7 +132,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (102 total, 35 thin omitted)
+## Communities (103 total, 36 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -159,7 +160,7 @@ Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMP
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.06
-Nodes (86): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+78 more)
+Nodes (84): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+76 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -298,13 +299,13 @@ Cohesion: 0.13
 Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, Calculators, CashflowGearing, HouseSearch, InstitutionalV3Panel, MyPurchasePlan (+2 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.28
-Nodes (5): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Test the suburb ID normalizer., TestIDNormalization
+Cohesion: 0.22
+Nodes (7): _normalize_suburb_id(), Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21, normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Test the suburb ID normalizer., TestIDNormalization
 
 ## Knowledge Gaps
 - **219 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+214 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -312,9 +313,9 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `Session` connect `Database Models & Scrapers` to `ETL Extract V3 Pipeline`?**
   _High betweenness centrality (0.034) - this node is a cross-community bridge._
 - **Why does `analyze_suburb()` connect `Database Models & Scrapers` to `Community 65`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **Why does `run_investment_committee()` connect `Community 65` to `Database Models & Scrapers`?**
   _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `run_investment_committee()` connect `Community 65` to `Database Models & Scrapers`?**
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
   _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**
