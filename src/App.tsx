@@ -68,6 +68,15 @@ function App() {
         const data = await res.json()
         data.id = id  // Preserve frontend ID format for dropdown match
         setActiveSuburb(data)
+        // Re-fetch livability with real coordinates if they changed from null
+        if (data.coordinates?.[0] && data.coordinates?.[1]) {
+          setLoadingLivability(true)
+          setLivabilityData(null)
+          fetchLivabilityData(data.coordinates[0], data.coordinates[1])
+            .then(d => setLivabilityData(d))
+            .catch(() => {})
+            .finally(() => setLoadingLivability(false))
+        }
         try {
           const cached = localStorage.getItem('ai_' + id)
           if (cached) {
@@ -218,9 +227,10 @@ function App() {
     setShowAmenitiesOnMap(false)
     
     if (activeSuburb) {
+      const lat = activeSuburb.coordinates?.[0];
+      const lng = activeSuburb.coordinates?.[1];
+      if (!lat || !lng) return; // Wait for cold-load to provide real coordinates
       setLoadingLivability(true);
-      const lat = activeSuburb.coordinates?.[0] || -33.8688;
-      const lng = activeSuburb.coordinates?.[1] || 151.2093;
       fetchLivabilityData(lat, lng)
         .then(data => {
           setLivabilityData(data);
