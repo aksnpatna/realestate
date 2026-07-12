@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 97 files · ~2,214,896 words
+- 100 files · ~2,216,462 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 643 nodes · 873 edges · 101 communities (66 shown, 35 thin omitted)
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 129 edges (avg confidence: 0.53)
+- 694 nodes · 944 edges · 102 communities (67 shown, 35 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 147 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0a2ffcc0`
+- Built from commit: `7a94d338`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -91,9 +91,10 @@
 - [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 99|Community 99]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Session` - 27 edges
+1. `Session` - 28 edges
 2. `SuburbRawV3` - 20 edges
 3. `SuburbUIV3` - 20 edges
 4. `SuburbPriceHistory` - 20 edges
@@ -107,14 +108,14 @@
 ## Surprising Connections (you probably didn't know these)
 - `Path` --uses--> `SuburbUIV3`  [INFERRED]
   backend/etl_abs_census.py → backend/models_v3.py
+- `get_news_sentiment()` --calls--> `analyze_sentiment()`  [INFERRED]
+  backend/ai_agent.py → backend/ai_sentiment.py
 - `analyze_suburb()` --calls--> `run_investment_committee()`  [INFERRED]
   backend/main.py → backend/ai_agent.py
 - `get_similar_suburbs()` --calls--> `find_similar_suburbs()`  [INFERRED]
   backend/main.py → backend/clustering.py
 - `seed_raw_v3()` --calls--> `SuburbRawV3`  [INFERRED]
   backend/etl_extract_v3.py → backend/models_v3.py
-- `worker()` --calls--> `Session`  [INFERRED]
-  backend/etl_extract_v3.py → backend/main.py
 
 ## Import Cycles
 - None detected.
@@ -130,7 +131,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (101 total, 35 thin omitted)
+## Communities (102 total, 35 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -158,7 +159,7 @@ Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMP
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.06
-Nodes (82): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+74 more)
+Nodes (86): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+78 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -185,8 +186,8 @@ Cohesion: 0.36
 Nodes (7): fetch_major_infrastructure_projects(), fetch_zoning_changes(), map_projects_to_suburbs(), Queries data.vic.gov.au CKAN API for major infrastructure projects.     Returns, Mock function representing an integration with State Planning APIs      (e.g., N, Matches the extracted government data to our suburbs_ui_v3 table., run_infra_zoning_pipeline()
 
 ### Community 13 - "Frontend Core Infrastructure"
-Cohesion: 0.25
-Nodes (3): ErrorBoundary, Props, State
+Cohesion: 0.15
+Nodes (7): baseSuburb, mockFetch, mockSetActiveSuburb, renderPanel(), ErrorBoundary, Props, State
 
 ### Community 14 - "ABS Building Approvals"
 Cohesion: 0.38
@@ -221,16 +222,16 @@ Cohesion: 0.23
 Nodes (12): build_sal_postcode_map(), _download(), parse_census_tables(), etl_abs_census.py — ABS Census 2021 Demographics Pipeline ======================, Opens the ABS DataPack ZIP in-memory and parses:       - G01: Total persons, age, Main entry point.     Downloads ABS data, matches to suburbs_ui_v3 by postcode+n, Download a file with progress logging. Skips if already cached., Reads ABS SAL→POA concordance.     Returns dict: sal_code (str) → postcode (str) (+4 more)
 
 ### Community 22 - "README Documentation"
-Cohesion: 0.50
-Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
+Cohesion: 0.18
+Nodes (10): AI Insights Panel, AI Usage, Architecture, Caching Behaviour, Data Sources, Deployment, Disclaimer, Quick Start (+2 more)
 
 ### Community 39 - "Base Model Pattern"
-Cohesion: 0.07
-Nodes (28): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+20 more)
+Cohesion: 0.06
+Nodes (33): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+25 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.14
-Nodes (21): Any, bear_agent_node(), bull_agent_node(), CommitteeState, fetch_news_node(), get_llm(), get_news_sentiment(), On-demand news sentiment for a single suburb.     Uses HuggingFace transformer f (+13 more)
+Cohesion: 0.24
+Nodes (14): Any, bear_agent_node(), bull_agent_node(), CommitteeState, fetch_news_node(), get_llm(), get_news_sentiment(), On-demand news sentiment for a single suburb.     Uses HuggingFace transformer f (+6 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
@@ -261,8 +262,8 @@ Cohesion: 0.17
 Nodes (9): AIInsightPanelProps, AnalysisStep, AnalysisTab, CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps (+1 more)
 
 ### Community 88 - "Community 88"
-Cohesion: 0.50
-Nodes (3): cached_ai(), cache_utils.py — Redis-primary + DB-fallback caching layer for AI features. Prov, Decorator that caches function results using Redis (primary) with DB fallback.
+Cohesion: 0.09
+Nodes (17): analyze_sentiment(), _keyword_sentiment(), _load_transformer(), ai_sentiment.py — Transformer-based sentiment analysis for real-estate news. Use, Lazy-load the HuggingFace sentiment pipeline., Keyword-based sentiment scoring as fallback. Returns 1-10 score., Analyze sentiment of text and return a 1-10 score with label and provider info., cached_ai() (+9 more)
 
 ### Community 89 - "Community 89"
 Cohesion: 0.25
@@ -296,8 +297,12 @@ Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasman
 Cohesion: 0.13
 Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, Calculators, CashflowGearing, HouseSearch, InstitutionalV3Panel, MyPurchasePlan (+2 more)
 
+### Community 99 - "Community 99"
+Cohesion: 0.28
+Nodes (5): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Test the suburb ID normalizer., TestIDNormalization
+
 ## Knowledge Gaps
-- **205 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+200 more)
+- **219 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+214 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -305,11 +310,11 @@ Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, 
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Session` connect `Database Models & Scrapers` to `ETL Extract V3 Pipeline`?**
-  _High betweenness centrality (0.033) - this node is a cross-community bridge._
-- **Why does `SuburbUIV3` connect `Database Models & Scrapers` to `Predictive AI Engine`, `ABS Census Integration`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
 - **Why does `analyze_suburb()` connect `Database Models & Scrapers` to `Community 65`?**
-  _High betweenness centrality (0.026) - this node is a cross-community bridge._
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+- **Why does `run_investment_committee()` connect `Community 65` to `Database Models & Scrapers`?**
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
   _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**

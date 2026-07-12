@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783842376.118769,
-    "ast_hash": "f1769b6acb958adf151881e6726b4cb4",
+    "mtime": 1783846087.5836358,
+    "ast_hash": "9cbc94bfcdf918a6d58b102ee6513c52",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -40,9 +40,9 @@
     "semantic_hash": "63a67f676c8b493b6b26d90280e3bfb2"
   },
   "package.json": {
-    "mtime": 1783570785.5023253,
-    "ast_hash": "dd79773dd6a35613e1f50e8149237464",
-    "semantic_hash": "dd79773dd6a35613e1f50e8149237464"
+    "mtime": 1783845885.173593,
+    "ast_hash": "59063acc9499ea262eddc679c0ed22df",
+    "semantic_hash": ""
   },
   "src/App.tsx": {
     "mtime": 1783842617.9977837,
@@ -120,9 +120,9 @@
     "semantic_hash": "de33de2434fa1cea99c4dbc8ba0076ac"
   },
   "vite.config.ts": {
-    "mtime": 1783509837.7028947,
-    "ast_hash": "2bd91ba181be3410b4640f3227295748",
-    "semantic_hash": "2bd91ba181be3410b4640f3227295748"
+    "mtime": 1783846021.1165524,
+    "ast_hash": "661c17e128362b4b1715a76164f7981f",
+    "semantic_hash": ""
   },
   "wait_and_build.sh": {
     "mtime": 1782692587.3014212,
@@ -130,9 +130,9 @@
     "semantic_hash": "c9959136d7f914db6938b5861aef2ae2"
   },
   "README.md": {
-    "mtime": 1782529570.482032,
-    "ast_hash": "10495bfcc6c568eca4dab6dd5df795d3",
-    "semantic_hash": "10495bfcc6c568eca4dab6dd5df795d3"
+    "mtime": 1783845780.5093498,
+    "ast_hash": "c8694547474348e9f8da767c8ca61deb",
+    "semantic_hash": ""
   },
   "australian-suburbs-data.md": {
     "mtime": 1782560349.8921974,
@@ -562,6 +562,21 @@
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
     "mtime": 1783842107.7512612,
     "ast_hash": "7cd7e60f6f6173b949a6506df4a8ff58",
+    "semantic_hash": ""
+  },
+  "backend/suburb_utils.py": {
+    "mtime": 1783846199.0991955,
+    "ast_hash": "23a56d5d5c35def721ca69a2a44cc2c8",
+    "semantic_hash": ""
+  },
+  "backend/test_ai_sentiment.py": {
+    "mtime": 1783846097.3645048,
+    "ast_hash": "05e99d9feb2cae354a89237685990cb3",
+    "semantic_hash": ""
+  },
+  "src/components/AIInsightPanel.test.tsx": {
+    "mtime": 1783845911.897933,
+    "ast_hash": "e111e6f0b140a11370199ee9babf8b69",
     "semantic_hash": ""
   }
 }

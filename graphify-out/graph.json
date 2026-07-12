@@ -1918,7 +1918,7 @@
       "source_location": "L952",
       "_origin": "ast",
       "id": "backend_main_normalize_suburb_id",
-      "community": 6,
+      "community": 99,
       "norm_label": "_normalize_suburb_id()"
     },
     {
@@ -2188,7 +2188,7 @@
       "source_location": "L953",
       "_origin": "ast",
       "id": "backend_main_rationale_953",
-      "community": 6,
+      "community": 99,
       "norm_label": "convert frontend id format (parramatta-nsw-2150) to db format (nsw_parramatta_21"
     },
     {
@@ -2860,6 +2860,26 @@
       "id": "backend_predictive_ai_engine_rationale_91",
       "community": 9,
       "norm_label": "algorithm combining leading indicators for capital growth:     - falling days on"
+    },
+    {
+      "label": "preload.py",
+      "file_type": "code",
+      "source_file": "backend/preload.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_preload",
+      "community": 102,
+      "norm_label": "preload.py"
+    },
+    {
+      "label": "Pre\u2011load HuggingFace transformer at container start. Fails fast if model downloa",
+      "file_type": "rationale",
+      "source_file": "backend/preload.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_preload_rationale_1",
+      "community": 102,
+      "norm_label": "pre\u2010load huggingface transformer at container start. fails fast if model downloa"
     },
     {
       "label": "rank_suburbs.py",
@@ -9321,9 +9341,9 @@
       "source_file": "backend/main.py",
       "source_location": "L958",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_get_suburb_or_404",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_or_404"
     },
     {
       "relation": "contains",
@@ -9421,9 +9441,9 @@
       "source_file": "backend/main.py",
       "source_location": "L952",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_main_normalize_suburb_id"
     },
     {
       "relation": "contains",
@@ -9592,9 +9612,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1007",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_news_sentiment",
-      "target": "backend_main_get_cached_or_query",
-      "confidence_score": 1.0
+      "target": "backend_main_get_cached_or_query"
     },
     {
       "relation": "calls",
@@ -10811,9 +10831,9 @@
       "source_file": "backend/main.py",
       "source_location": "L958",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb_or_404",
-      "target": "session",
-      "confidence_score": 1.0
+      "target": "session"
     },
     {
       "relation": "references",
@@ -11559,9 +11579,9 @@
       "source_file": "backend/main.py",
       "source_location": "L960",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb_or_404",
-      "target": "backend_main_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_main_normalize_suburb_id"
     },
     {
       "relation": "calls",
@@ -11580,9 +11600,9 @@
       "source_file": "backend/main.py",
       "source_location": "L953",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_953",
-      "target": "backend_main_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_main_normalize_suburb_id"
     },
     {
       "relation": "calls",
@@ -11591,9 +11611,9 @@
       "source_file": "backend/main.py",
       "source_location": "L980",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_news_sentiment",
-      "target": "backend_main_get_suburb_or_404",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_or_404"
     },
     {
       "relation": "rationale_for",
@@ -11601,9 +11621,9 @@
       "source_file": "backend/main.py",
       "source_location": "L959",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_959",
-      "target": "backend_main_get_suburb_or_404",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_or_404"
     },
     {
       "relation": "rationale_for",
@@ -11611,9 +11631,9 @@
       "source_file": "backend/main.py",
       "source_location": "L974",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_974",
-      "target": "backend_main_get_news_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_main_get_news_sentiment"
     },
     {
       "relation": "rationale_for",
@@ -11621,9 +11641,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1019",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1019",
-      "target": "backend_main_reload_suburbs",
-      "confidence_score": 1.0
+      "target": "backend_main_reload_suburbs"
     },
     {
       "relation": "references",
@@ -11723,9 +11743,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1214",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1214",
-      "target": "backend_main_get_suburbs_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburbs_v3"
     },
     {
       "relation": "rationale_for",
@@ -11733,9 +11753,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1292",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1292",
-      "target": "backend_main_export_suburbs_csv",
-      "confidence_score": 1.0
+      "target": "backend_main_export_suburbs_csv"
     },
     {
       "relation": "uses",
@@ -11824,9 +11844,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1347",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1347",
-      "target": "backend_main_get_suburb_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_v3"
     },
     {
       "relation": "calls",
@@ -11845,9 +11865,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1417",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1417",
-      "target": "backend_main_get_osm_livability",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_livability"
     },
     {
       "relation": "calls",
@@ -11866,9 +11886,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1446",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1446",
-      "target": "backend_main_get_osm_boundary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_boundary"
     },
     {
       "relation": "rationale_for",
@@ -11876,9 +11896,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1455",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1455",
-      "target": "backend_main_get_suburb_properties",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_properties"
     },
     {
       "relation": "contains",
@@ -12545,6 +12565,16 @@
       "target": "backend_predictive_ai_engine_calculate_predictive_score"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/preload.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "backend_preload_rationale_1",
+      "target": "backend_preload",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/rank_suburbs.py",
@@ -12766,9 +12796,9 @@
       "source_file": "backend/suburb_utils.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_suburb_utils",
-      "target": "backend_suburb_utils_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_suburb_utils_normalize_suburb_id"
     },
     {
       "relation": "rationale_for",
@@ -12776,9 +12806,9 @@
       "source_file": "backend/suburb_utils.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_suburb_utils_rationale_1",
-      "target": "backend_suburb_utils",
-      "confidence_score": 1.0
+      "target": "backend_suburb_utils"
     },
     {
       "relation": "rationale_for",
@@ -12786,9 +12816,9 @@
       "source_file": "backend/suburb_utils.py",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_suburb_utils_rationale_8",
-      "target": "backend_suburb_utils_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_suburb_utils_normalize_suburb_id"
     },
     {
       "relation": "calls",
@@ -12829,9 +12859,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment"
     },
     {
       "relation": "contains",
@@ -12839,9 +12869,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment",
-      "target": "backend_test_ai_sentiment_testcachedai",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testcachedai"
     },
     {
       "relation": "contains",
@@ -12849,9 +12879,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment",
-      "target": "backend_test_ai_sentiment_testidnormalization",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testidnormalization"
     },
     {
       "relation": "contains",
@@ -12859,9 +12889,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback"
     },
     {
       "relation": "rationale_for",
@@ -12869,9 +12899,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_rationale_1",
-      "target": "backend_test_ai_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment"
     },
     {
       "relation": "rationale_for",
@@ -12879,9 +12909,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_rationale_16",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback"
     },
     {
       "relation": "method",
@@ -12889,9 +12919,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testsentimentkeywordfallback",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_empty_text",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_empty_text"
     },
     {
       "relation": "method",
@@ -12899,9 +12929,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testsentimentkeywordfallback",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_negative_text",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_negative_text"
     },
     {
       "relation": "method",
@@ -12909,9 +12939,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testsentimentkeywordfallback",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_neutral_text",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_neutral_text"
     },
     {
       "relation": "method",
@@ -12919,9 +12949,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testsentimentkeywordfallback",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_positive_text",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_positive_text"
     },
     {
       "relation": "method",
@@ -12929,9 +12959,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testsentimentkeywordfallback",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_score_bounds",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_score_bounds"
     },
     {
       "relation": "rationale_for",
@@ -12939,9 +12969,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_rationale_45",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment"
     },
     {
       "relation": "method",
@@ -12949,9 +12979,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_empty_input",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_empty_input"
     },
     {
       "relation": "method",
@@ -12959,9 +12989,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_keyword_fallback_bullish",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_keyword_fallback_bullish"
     },
     {
       "relation": "method",
@@ -12969,9 +12999,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_failure_fallsback",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_failure_fallsback"
     },
     {
       "relation": "method",
@@ -12979,9 +13009,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_negative",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_negative"
     },
     {
       "relation": "method",
@@ -12989,9 +13019,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_positive",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_positive"
     },
     {
       "relation": "rationale_for",
@@ -12999,9 +13029,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_rationale_98",
-      "target": "backend_test_ai_sentiment_testidnormalization",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testidnormalization"
     },
     {
       "relation": "method",
@@ -13009,9 +13039,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testidnormalization",
-      "target": "backend_test_ai_sentiment_testidnormalization_test_frontend_to_db_format",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testidnormalization_test_frontend_to_db_format"
     },
     {
       "relation": "method",
@@ -13019,9 +13049,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testidnormalization",
-      "target": "backend_test_ai_sentiment_testidnormalization_test_single_word_name",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testidnormalization_test_single_word_name"
     },
     {
       "relation": "method",
@@ -13029,9 +13059,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L110",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testidnormalization",
-      "target": "backend_test_ai_sentiment_testidnormalization_test_unknown_format_fallback",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testidnormalization_test_unknown_format_fallback"
     },
     {
       "relation": "rationale_for",
@@ -13039,9 +13069,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L117",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_rationale_117",
-      "target": "backend_test_ai_sentiment_testcachedai",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testcachedai"
     },
     {
       "relation": "method",
@@ -13049,9 +13079,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testcachedai",
-      "target": "backend_test_ai_sentiment_testcachedai_test_decorator_calls_function",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testcachedai_test_decorator_calls_function"
     },
     {
       "relation": "method",
@@ -13059,9 +13089,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L137",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testcachedai",
-      "target": "backend_test_ai_sentiment_testcachedai_test_decorator_imports_cache",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testcachedai_test_decorator_imports_cache"
     },
     {
       "relation": "method",
@@ -13069,9 +13099,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testcachedai",
-      "target": "backend_test_ai_sentiment_testcachedai_test_decorator_preserves_function_metadata",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testcachedai_test_decorator_preserves_function_metadata"
     },
     {
       "relation": "contains",
@@ -13844,9 +13874,9 @@
       "source_file": "package.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test",
-      "confidence_score": 1.0
+      "target": "package_scripts_test"
     },
     {
       "relation": "contains",
@@ -13944,9 +13974,9 @@
       "source_file": "package.json",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_jsdom",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_jsdom"
     },
     {
       "relation": "contains",
@@ -13964,9 +13994,9 @@
       "source_file": "package.json",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_testing_library_jest_dom",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_testing_library_jest_dom"
     },
     {
       "relation": "contains",
@@ -13974,9 +14004,9 @@
       "source_file": "package.json",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_testing_library_react",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_testing_library_react"
     },
     {
       "relation": "contains",
@@ -14054,9 +14084,9 @@
       "source_file": "package.json",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_vitest",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_vitest"
     },
     {
       "relation": "contains",
@@ -14405,9 +14435,9 @@
       "source_file": "src/components/AIInsightPanel.test.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_aiinsightpanel_test",
-      "target": "components_aiinsightpanel",
-      "confidence_score": 1.0
+      "target": "components_aiinsightpanel"
     },
     {
       "relation": "contains",
@@ -14415,9 +14445,9 @@
       "source_file": "src/components/AIInsightPanel.test.tsx",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_aiinsightpanel_test",
-      "target": "components_aiinsightpanel_test_basesuburb",
-      "confidence_score": 1.0
+      "target": "components_aiinsightpanel_test_basesuburb"
     },
     {
       "relation": "contains",
@@ -14425,9 +14455,9 @@
       "source_file": "src/components/AIInsightPanel.test.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_aiinsightpanel_test",
-      "target": "components_aiinsightpanel_test_mockfetch",
-      "confidence_score": 1.0
+      "target": "components_aiinsightpanel_test_mockfetch"
     },
     {
       "relation": "contains",
@@ -14435,9 +14465,9 @@
       "source_file": "src/components/AIInsightPanel.test.tsx",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_aiinsightpanel_test",
-      "target": "components_aiinsightpanel_test_mocksetactivesuburb",
-      "confidence_score": 1.0
+      "target": "components_aiinsightpanel_test_mocksetactivesuburb"
     },
     {
       "relation": "contains",
@@ -14445,9 +14475,9 @@
       "source_file": "src/components/AIInsightPanel.test.tsx",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_aiinsightpanel_test",
-      "target": "components_aiinsightpanel_test_renderpanel",
-      "confidence_score": 1.0
+      "target": "components_aiinsightpanel_test_renderpanel"
     },
     {
       "relation": "calls",
@@ -16053,9 +16083,9 @@
       "source_file": "README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme",
-      "target": "readme_realestate_engine_v3",
-      "confidence_score": 1.0
+      "target": "readme_realestate_engine_v3"
     },
     {
       "relation": "contains",
@@ -16063,9 +16093,9 @@
       "source_file": "README.md",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_realestate_engine_v3",
-      "target": "readme_ai_usage",
-      "confidence_score": 1.0
+      "target": "readme_ai_usage"
     },
     {
       "relation": "contains",
@@ -16073,9 +16103,9 @@
       "source_file": "README.md",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_realestate_engine_v3",
-      "target": "readme_architecture",
-      "confidence_score": 1.0
+      "target": "readme_architecture"
     },
     {
       "relation": "contains",
@@ -16083,9 +16113,9 @@
       "source_file": "README.md",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_realestate_engine_v3",
-      "target": "readme_data_sources",
-      "confidence_score": 1.0
+      "target": "readme_data_sources"
     },
     {
       "relation": "contains",
@@ -16093,9 +16123,9 @@
       "source_file": "README.md",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_realestate_engine_v3",
-      "target": "readme_deployment",
-      "confidence_score": 1.0
+      "target": "readme_deployment"
     },
     {
       "relation": "contains",
@@ -16103,9 +16133,9 @@
       "source_file": "README.md",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_realestate_engine_v3",
-      "target": "readme_quick_start",
-      "confidence_score": 1.0
+      "target": "readme_quick_start"
     },
     {
       "relation": "contains",
@@ -16113,9 +16143,9 @@
       "source_file": "README.md",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_ai_usage",
-      "target": "readme_ai_insights_panel",
-      "confidence_score": 1.0
+      "target": "readme_ai_insights_panel"
     },
     {
       "relation": "contains",
@@ -16123,9 +16153,9 @@
       "source_file": "README.md",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_ai_usage",
-      "target": "readme_caching_behaviour",
-      "confidence_score": 1.0
+      "target": "readme_caching_behaviour"
     },
     {
       "relation": "contains",
@@ -16133,9 +16163,9 @@
       "source_file": "README.md",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_ai_usage",
-      "target": "readme_disclaimer",
-      "confidence_score": 1.0
+      "target": "readme_disclaimer"
     },
     {
       "relation": "contains",
@@ -16143,9 +16173,9 @@
       "source_file": "README.md",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_ai_usage",
-      "target": "readme_required_environment_variables",
-      "confidence_score": 1.0
+      "target": "readme_required_environment_variables"
     },
     {
       "relation": "contains",
@@ -16995,5 +17025,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "7a94d338da0a5fccde2e5005a4d06eed7678c46f"
+  "built_at_commit": "669b1d0b1c16a6934910ad32be602ce57be5e9df"
 }
