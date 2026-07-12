@@ -45,8 +45,8 @@
     "semantic_hash": "dd79773dd6a35613e1f50e8149237464"
   },
   "src/App.tsx": {
-    "mtime": 1783834480.7362697,
-    "ast_hash": "5c5240821dca9f8e87f5612b7c850adc",
+    "mtime": 1783837234.09995,
+    "ast_hash": "b875ea25f30c98aa55eb4520e212a576",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
