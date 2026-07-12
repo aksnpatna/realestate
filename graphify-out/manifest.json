@@ -10,8 +10,8 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1783762729.3021986,
-    "ast_hash": "42cb1ea574450be11747145ad76ea684",
+    "mtime": 1783842330.332906,
+    "ast_hash": "c756e77e3362ef105b66dbb17c0a40a2",
     "semantic_hash": ""
   },
   "backend/downloader.py": {
@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783840200.6516204,
-    "ast_hash": "d27513a5f2cc8d8fe8f0ecd22a416a01",
+    "mtime": 1783842376.118769,
+    "ast_hash": "f1769b6acb958adf151881e6726b4cb4",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": "dd79773dd6a35613e1f50e8149237464"
   },
   "src/App.tsx": {
-    "mtime": 1783840723.1446617,
-    "ast_hash": "85a9346bfcbf8a45ad362b2f88207db6",
+    "mtime": 1783842617.9977837,
+    "ast_hash": "39b23da3a89276a94dc0a6c28389c314",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -140,9 +140,9 @@
     "semantic_hash": "3903fdd09ac66228d8137b28f7ec7dd9"
   },
   "backend/requirements.txt": {
-    "mtime": 1783502383.1114893,
-    "ast_hash": "89f08b9e5de167d6cd764dc601da39ae",
-    "semantic_hash": "89f08b9e5de167d6cd764dc601da39ae"
+    "mtime": 1783842382.5027483,
+    "ast_hash": "e82a51a41f6010b88fe6bc84266dbc47",
+    "semantic_hash": ""
   },
   "docker-compose.yml": {
     "mtime": 1783508821.9555228,
@@ -542,6 +542,26 @@
   "src/components/UserFavoritesTab.tsx": {
     "mtime": 1783763092.1004164,
     "ast_hash": "f848adf6ab30f4f7353f1c7233b45fed",
+    "semantic_hash": ""
+  },
+  "backend/ai_sentiment.py": {
+    "mtime": 1783842278.0400388,
+    "ast_hash": "f06afe117a0874e63b55bf615d566a8e",
+    "semantic_hash": ""
+  },
+  "backend/cache_utils.py": {
+    "mtime": 1783842289.3870125,
+    "ast_hash": "dbc7871971580cdd3867aaabc26961d1",
+    "semantic_hash": ""
+  },
+  "src/components/AIInsightPanel.tsx": {
+    "mtime": 1783842478.1504016,
+    "ast_hash": "2b92fd916684b5637ef0e774b4b351cd",
+    "semantic_hash": ""
+  },
+  ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
+    "mtime": 1783842107.7512612,
+    "ast_hash": "7cd7e60f6f6173b949a6506df4a8ff58",
     "semantic_hash": ""
   }
 }
