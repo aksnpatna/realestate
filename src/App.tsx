@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback, lazy, Suspense } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef, lazy, Suspense } from 'react'
 import { mockSuburbsData } from './data/suburbs'
 import type { SuburbData } from './data/suburbs'
 import SuburbMap from './components/SuburbMap'
@@ -189,7 +189,13 @@ function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeState, stateSuburbs])
 
+  const prevSuburbId = useRef<string | null>(null)
+
   useEffect(() => {
+    const currentId = activeSuburb?.id || null;
+    if (currentId === prevSuburbId.current) return; // Same suburb — skip (AI enrichment, metrics update, etc.)
+    prevSuburbId.current = currentId;
+    
     setLivabilityData(null)
     setClusteringResults(null)
     setShowAmenitiesOnMap(false)
@@ -648,21 +654,39 @@ function App() {
                             if (isAnalyzingNews) return;
                             setIsAnalyzingNews(true);
                             try {
+                              const id = activeSuburb.id;
                               const res = await fetch('/api/analyze-suburb', {
                                 method: 'POST',
                                 headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id: activeSuburb.id })
+                                body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id })
                               });
                               if(res.ok) {
                                 const data = await res.json();
-                                setActiveSuburb((prev: any) => ({
-                                  ...prev,
-                                  metrics: {
-                                    ...prev.metrics,
-                                    aiNewsSentiment: data.verdict || 'Analysis Complete',
-                                    aiNewsSummary: data.playbook || data.reality_check || 'AI analysis completed. Check Panel D for detailed results.'
-                                  }
-                                }));
+                                if (data.status === 'success' && data.result && data.result.verdict) {
+                                  const result = data.result;
+                                  // Map verdict to sentiment display
+                                  const verdict = result.verdict;
+                                  const sentiment = verdict.includes('BUY') ? 'Bullish' :
+                                                     verdict.includes('HOLD') ? 'Neutral' :
+                                                     verdict.includes('SELL') ? 'Bearish' : verdict;
+                                  // Store full AI committee data
+                                  const aiResult = {
+                                    aiVerdict: verdict,
+                                    aiConsensus: result.playbook,
+                                    aiRiskLevel: result.reality_check,
+                                    aiBullView: result.bull,
+                                    aiBearView: result.bear,
+                                    aiUrbanView: result.urban,
+                                    highlights: result.catalysts || activeSuburb.highlights,
+                                    metrics: {
+                                      ...activeSuburb.metrics,
+                                      aiNewsSentiment: sentiment,
+                                      aiNewsSummary: result.playbook || result.reality_check || ''
+                                    }
+                                  };
+                                  setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }));
+                                  try { localStorage.setItem('ai_' + id, JSON.stringify(aiResult)); } catch {}
+                                }
                               }
                             } catch {
                               alert("Analysis failed.");
@@ -684,7 +708,7 @@ function App() {
                         activeSuburb.metrics.aiNewsSentiment?.includes('Bullish') ? 'highlight-cyan' :
                         activeSuburb.metrics.aiNewsSentiment?.includes('Bearish') ? 'text-warning' : 'text-muted'
                       }`}>
-                        {activeSuburb.metrics.aiNewsSentiment || 'Neutral (0.0)'}
+                        {activeSuburb.metrics.aiNewsSentiment || 'Click "Analyze Live News"'}
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontStyle: 'italic' }}>
                         {activeSuburb.metrics.aiNewsSummary || 'Disclaimer: AI generated sentiment based on live news. Always verify with actual market data before considering.'}
@@ -1168,6 +1192,9 @@ function App() {
                             });
                             const data = await res.json();
                             if(res.ok && data.status === "success" && data.result && data.result.verdict) {
+                              const sentiment = data.result.verdict.includes('BUY') ? 'Bullish' :
+                                                data.result.verdict.includes('HOLD') ? 'Neutral' :
+                                                data.result.verdict.includes('SELL') ? 'Bearish' : data.result.verdict;
                               const aiResult = {
                                 aiVerdict: data.result.verdict,
                                 aiConsensus: data.result.playbook,
@@ -1175,10 +1202,14 @@ function App() {
                                 aiBullView: data.result.bull,
                                 aiBearView: data.result.bear,
                                 aiUrbanView: data.result.urban,
-                                highlights: data.result.catalysts || activeSuburb.highlights
+                                highlights: data.result.catalysts || activeSuburb.highlights,
+                                metrics: {
+                                  ...activeSuburb.metrics,
+                                  aiNewsSentiment: sentiment,
+                                  aiNewsSummary: data.result.playbook || data.result.reality_check || ''
+                                }
                               }
                               setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }))
-                              // Cache in localStorage keyed by suburb id
                               try { localStorage.setItem('ai_' + activeSuburb.id, JSON.stringify(aiResult)) } catch {}
                             }
                           } catch(e){ console.error(e) }
@@ -1189,14 +1220,14 @@ function App() {
                           border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem'
                         }}
                       >
-                        {isAnalyzingAI ? 'Analyzing...' : 'Run AI Committee'}
+                        {isAnalyzingAI ? 'Analyzing...' : (activeSuburb as any).aiVerdict ? 'Refresh AI Committee' : 'Run AI Committee'}
                       </button>
                     </div>
                     {(activeSuburb as any).aiVerdict ? (
                       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                         <div style={{ flex: '1 1 100%', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', marginBottom: '8px' }}>
                           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>Consensus Verdict</div>
-                          <div style={{ fontWeight: 800, fontSize: '1.3rem', color: 'var(--accent-cyan)' }}>{(activeSuburb as any).aiVerdict}</div>
+                          <div style={{ fontWeight: 800, fontSize: '1.3rem', color: (activeSuburb as any).aiVerdict?.includes('BUY') ? '#10b981' : (activeSuburb as any).aiVerdict?.includes('SELL') ? '#ef4444' : 'var(--accent-cyan)' }}>{(activeSuburb as any).aiVerdict}</div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{(activeSuburb as any).aiRiskLevel || '—'}</span></div>
                         </div>
                         <div style={{ flex: '1 1 250px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
@@ -1220,7 +1251,9 @@ function App() {
                       </div>
                     ) : (
                       <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
-                        Click "Run AI Committee" to get a multi-agent analysis of {activeSuburb.name}.
+                        {(activeSuburb as any).metrics?.aiNewsSentiment && (activeSuburb as any).metrics.aiNewsSentiment !== 'Click "Analyze Live News"' 
+                          ? 'AI Committee results loaded above. Click "Run AI Committee" to refresh analysis.'
+                          : `Click "Analyze Live News" above or "Run AI Committee" to get AI investment analysis for ${activeSuburb.name}.`}
                       </div>
                     )}
                   </div>
