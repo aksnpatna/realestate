@@ -44,6 +44,8 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabName>('profile')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
+  // Track if the user manually selected a suburb to prevent auto‑reset
+  const manualSelectionRef = useRef(false)
   const [regionMode, setRegionMode] = useState<'metro' | 'national'>('metro')
   const [isClustering, setIsClustering] = useState(false)
   const [showAmenitiesOnMap, setShowAmenitiesOnMap] = useState(false)
@@ -179,9 +181,13 @@ function App() {
 
   useEffect(() => {
     if (stateSuburbs.length > 0) {
-      if (!activeSuburb || activeSuburb.state !== activeState) {
+      // Only auto‑load the first suburb when the user hasn't manually selected one
+      if (!manualSelectionRef.current && (!activeSuburb || activeSuburb.state !== activeState)) {
         loadColdSuburb(stateSuburbs[0].id)
         trackActivity('VIEW_SUBURB', stateSuburbs[0].id)
+      } else {
+        // Reset flag after respecting manual selection
+        manualSelectionRef.current = false
       }
     } else {
       setActiveSuburb(null)
@@ -506,11 +512,13 @@ function App() {
                   onChange={(e) => {
                     if (e.target.value) {
                       const target = stateSuburbs.find(s => s.id === e.target.value);
-                      if (target) {
-                        setActiveSuburb(target);
-                      }
-                      loadColdSuburb(e.target.value)
-                      trackActivity('VIEW_SUBURB', e.target.value)
+if (target) {
+                          setActiveSuburb(target);
+                        }
+                        // Mark manual selection to avoid auto‑reset
+                        manualSelectionRef.current = true;
+                        loadColdSuburb(e.target.value)
+                        trackActivity('VIEW_SUBURB', e.target.value)
                     }
                   }}
                 >

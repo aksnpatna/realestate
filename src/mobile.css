@@ -1,0 +1,26 @@
+/* Mobile responsive tweaks - prevent overflow on small screens */
+.highlights-section {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .highlights-section {
+    padding: 12px;
+  }
+  .highlights-section > div {
+    width: 100% !important;
+  }
+  .metric-box {
+    grid-column: span 2 !important;
+  }
+  .metric-box div {
+    word-break: break-all;
+  }
+}

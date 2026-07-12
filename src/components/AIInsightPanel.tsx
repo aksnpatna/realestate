@@ -246,7 +246,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
           </div>
 
           <div style={{
-            display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px',
+            display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '12px',
           }}>
             <div style={{
               fontSize: '2.5rem', fontWeight: 800,
