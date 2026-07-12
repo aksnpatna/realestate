@@ -393,13 +393,41 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         "playbook": "",
         "reality_check": ""
     }
-    
-    # If we don't want to burn Tavily credits on every click, we can bypass the news node manually here
-    # But since the graph statically goes to fetch_news, the node itself handles skipping if API key is missing.
-    # To restrict usage, we can just clear the API key in .env or pass a flag.
-    # For now, it will fetch up to 2 results per run.
-    
-    result = ai_committee_app.invoke(initial_state)
+
+    # Dynamic agent routing: skip agents that have nothing useful to say
+    from agent_router import route_agents
+    agents, skipped = route_agents(metrics)
+
+    # Build a fresh graph with only the selected agents
+    dynamic_graph = StateGraph(CommitteeState)
+    dynamic_graph.add_node("fetch_news", fetch_news_node)
+    dynamic_graph.add_node("supervisor", supervisor_and_playbook_node)
+
+    for agent_name in agents:
+        if agent_name == "bull_agent":
+            dynamic_graph.add_node("bull_agent", bull_agent_node)
+        elif agent_name == "bear_agent":
+            dynamic_graph.add_node("bear_agent", bear_agent_node)
+        elif agent_name == "urban_planner":
+            dynamic_graph.add_node("urban_planner", urban_planner_node)
+
+    dynamic_graph.set_entry_point("fetch_news")
+    prev = "fetch_news"
+    for agent_name in agents:
+        dynamic_graph.add_edge(prev, agent_name)
+        prev = agent_name
+    dynamic_graph.add_edge(prev, "supervisor")
+    dynamic_graph.add_edge("supervisor", END)
+
+    dynamic_app = dynamic_graph.compile()
+
+    from observability import record_committee_call
+    record_committee_call()
+
+    if skipped:
+        logger.info(f"[committee] {suburb}: skipped agents → {', '.join(skipped)}")
+
+    result = dynamic_app.invoke(initial_state)
     
     # Risk-adjusted verdict via Monte Carlo simulation
     risk_assessment = {}
