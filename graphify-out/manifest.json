@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783842617.9977837,
-    "ast_hash": "39b23da3a89276a94dc0a6c28389c314",
+    "mtime": 1783847411.185237,
+    "ast_hash": "36e80891dca8ff445677fb90b51d30b1",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -140,14 +140,14 @@
     "semantic_hash": "3903fdd09ac66228d8137b28f7ec7dd9"
   },
   "backend/requirements.txt": {
-    "mtime": 1783842382.5027483,
-    "ast_hash": "e82a51a41f6010b88fe6bc84266dbc47",
+    "mtime": 1783848703.5402412,
+    "ast_hash": "cbaa052c8261f79084344f8d4d9c0187",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1783508821.9555228,
-    "ast_hash": "997d4b70f7aed38d6345d1a3076c859a",
-    "semantic_hash": "997d4b70f7aed38d6345d1a3076c859a"
+    "mtime": 1783848510.6469858,
+    "ast_hash": "2dff51603321d7554fd5f0d2fde1e851",
+    "semantic_hash": ""
   },
   "graphify-out/converted/vic_sales_time_series_20yr_latest_5350cb9d.md": {
     "mtime": 1782692997.2808726,
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1783842478.1504016,
-    "ast_hash": "2b92fd916684b5637ef0e774b4b351cd",
+    "mtime": 1783847088.5660822,
+    "ast_hash": "32c128450aa06a0e9a33985c754a53aa",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -577,6 +577,11 @@
   "src/components/AIInsightPanel.test.tsx": {
     "mtime": 1783845911.897933,
     "ast_hash": "e111e6f0b140a11370199ee9babf8b69",
+    "semantic_hash": ""
+  },
+  "backend/preload.py": {
+    "mtime": 1783848436.3361115,
+    "ast_hash": "bf947cf989afa78746254dc1175169de",
     "semantic_hash": ""
   }
 }
