@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 93 files · ~2,212,875 words
+- 97 files · ~2,214,896 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 615 nodes · 842 edges · 99 communities (65 shown, 34 thin omitted)
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 128 edges (avg confidence: 0.53)
+- 643 nodes · 873 edges · 101 communities (66 shown, 35 thin omitted)
+- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 129 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4e511612`
+- Built from commit: `0a2ffcc0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -80,6 +80,7 @@
 - [[_COMMUNITY_Community 76|Community 76]]
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
 - [[_COMMUNITY_Community 91|Community 91]]
@@ -88,6 +89,7 @@
 - [[_COMMUNITY_Community 94|Community 94]]
 - [[_COMMUNITY_Community 95|Community 95]]
 - [[_COMMUNITY_Community 96|Community 96]]
+- [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
 
 ## God Nodes (most connected - your core abstractions)
@@ -128,15 +130,15 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (99 total, 34 thin omitted)
+## Communities (101 total, 35 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection, moduleResolution (+10 more)
 
 ### Community 1 - "ETL Transform V3 Pipeline"
-Cohesion: 0.17
-Nodes (18): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+10 more)
+Cohesion: 0.20
+Nodes (16): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+8 more)
 
 ### Community 2 - "V3 Scheduler Orchestration"
 Cohesion: 0.15
@@ -155,8 +157,8 @@ Cohesion: 0.29
 Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi
 
 ### Community 6 - "Database Models & Scrapers"
-Cohesion: 0.08
-Nodes (67): ActivityRequest, analyze_suburb(), AnalyzeRequest, BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty(), _check_auth_rate() (+59 more)
+Cohesion: 0.06
+Nodes (82): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+74 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -227,8 +229,8 @@ Cohesion: 0.07
 Nodes (28): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+20 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.24
-Nodes (14): Any, bear_agent_node(), bull_agent_node(), CommitteeState, fetch_news_node(), get_llm(), get_news_sentiment(), On-demand Tavily news search for a single suburb.     Cached in DB — only fetche (+6 more)
+Cohesion: 0.14
+Nodes (21): Any, bear_agent_node(), bull_agent_node(), CommitteeState, fetch_news_node(), get_llm(), get_news_sentiment(), On-demand news sentiment for a single suburb.     Uses HuggingFace transformer f (+13 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
@@ -240,7 +242,7 @@ Nodes (12): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, prima
 
 ### Community 68 - "Community 68"
 Cohesion: 0.18
-Nodes (13): _annualize_cagr(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), get_suburb(), get_suburb_v3(), get_suburbs(), Returns full V3 institutional data for a single suburb. (+5 more)
+Nodes (10): 1. UI/UX Improvements, 2. Backend Enhancements, 3. Documentation & Developer Guidance, AI Usage Enhancement Plan, Context, Goals, High‑Level Implementation Steps, Open Questions (+2 more)
 
 ### Community 69 - "Community 69"
 Cohesion: 0.21
@@ -255,8 +257,12 @@ Cohesion: 0.18
 Nodes (13): SortKey, calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase(), calculateStampDuty(), FHOG, FIRST_HOME_CONCESSION (+5 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.21
-Nodes (7): CashflowGearingProps, GearingResult, SearchResultCard, BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps, SuburbData
+Cohesion: 0.17
+Nodes (9): AIInsightPanelProps, AnalysisStep, AnalysisTab, CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps (+1 more)
+
+### Community 88 - "Community 88"
+Cohesion: 0.50
+Nodes (3): cached_ai(), cache_utils.py — Redis-primary + DB-fallback caching layer for AI features. Prov, Decorator that caches function results using Redis (primary) with DB fallback.
 
 ### Community 89 - "Community 89"
 Cohesion: 0.25
@@ -291,19 +297,19 @@ Cohesion: 0.13
 Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, Calculators, CashflowGearing, HouseSearch, InstitutionalV3Panel, MyPurchasePlan (+2 more)
 
 ## Knowledge Gaps
-- **195 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+190 more)
+- **205 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+200 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **34 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Database Models & Scrapers` to `ETL Transform V3 Pipeline`, `ETL Extract V3 Pipeline`, `Community 68`?**
+- **Why does `Session` connect `Database Models & Scrapers` to `ETL Extract V3 Pipeline`?**
   _High betweenness centrality (0.033) - this node is a cross-community bridge._
 - **Why does `SuburbUIV3` connect `Database Models & Scrapers` to `Predictive AI Engine`, `ABS Census Integration`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **Why does `V3Scheduler` connect `V3 Scheduler Orchestration` to `Database Models & Scrapers`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **Why does `analyze_suburb()` connect `Database Models & Scrapers` to `Community 65`?**
+  _High betweenness centrality (0.026) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
   _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**
