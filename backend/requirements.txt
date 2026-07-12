@@ -28,5 +28,5 @@ scipy
 headroom-ai[all]
 ddgs
 redis
-transformers==4.50.2
-torch==2.6.0
+transformers==5.13.1
+torch==2.13.0
