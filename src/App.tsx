@@ -5,6 +5,7 @@ import SuburbMap from './components/SuburbMap'
 import OnboardingTour from './components/OnboardingTour'
 import TermsOfUseModal from './components/TermsOfUseModal'
 import UserFavoritesTab from './components/UserFavoritesTab'
+import AIInsightPanel from './components/AIInsightPanel'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -44,8 +45,6 @@ function App() {
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
   const [regionMode, setRegionMode] = useState<'metro' | 'national'>('metro')
-  const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
-  const [isAnalyzingNews, setIsAnalyzingNews] = useState(false)
   const [isClustering, setIsClustering] = useState(false)
   const [showAmenitiesOnMap, setShowAmenitiesOnMap] = useState(false)
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
@@ -654,66 +653,15 @@ function App() {
                         {(activeSuburb as any).rentalYield ? `${(activeSuburb as any).rentalYield}%` : (activeSuburb as any).houseGrossRentalYield ? `${(activeSuburb as any).houseGrossRentalYield}%` : activeSuburb.metrics?.rentalYield ? `${activeSuburb.metrics.rentalYield}%` : 'No data'}
                       </div>
                     </div>
-                    <div className="metric-box" style={{ gridColumn: 'span 2' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <div className="metric-label" style={{ marginBottom: 0 }}>AI News Sentiment</div>
-                        <button 
-                          disabled={isAnalyzingNews}
-                          onClick={async () => {
-                            if (isAnalyzingNews) return;
-                            setIsAnalyzingNews(true);
-                            try {
-                              const res = await fetch(`/api/suburbs/${activeSuburb.id}/news-sentiment`, {
-                                method: 'POST',
-                              });
-                              if (res.ok) {
-                                const data = await res.json();
-                                const sentimentLabel = data.label || (data.score >= 7 ? 'Bullish' : data.score >= 4 ? 'Neutral' : 'Bearish');
-                                setActiveSuburb((prev: any) => ({
-                                  ...prev,
-                                  metrics: {
-                                    ...prev.metrics,
-                                    aiNewsSentiment: `${sentimentLabel} (${data.score}/10)`,
-                                    aiNewsSummary: data.summary || `${data.articles?.length || 0} articles analyzed`,
-                                    _newsScore: data.score,
-                                    _newsLabel: sentimentLabel,
-                                    _newsArticles: data.articles || [],
-                                  }
-                                }));
-                              } else {
-                                setActiveSuburb((prev: any) => ({
-                                  ...prev,
-                                  metrics: { ...prev.metrics, aiNewsSentiment: 'Unavailable', aiNewsSummary: 'News analysis failed. Try again later.' }
-                                }));
-                              }
-                            } catch {
-                              setActiveSuburb((prev: any) => ({
-                                ...prev,
-                                metrics: { ...prev.metrics, aiNewsSentiment: 'Error', aiNewsSummary: 'Network error. Check connection.' }
-                              }));
-                            } finally {
-                              setIsAnalyzingNews(false);
-                            }
-                          }}
-                          style={{
-                            background: isAnalyzingNews ? 'var(--bg-glass)' : 'var(--accent-cyan)', 
-                            color: isAnalyzingNews ? 'var(--text-secondary)' : '#000', 
-                            border: 'none', 
-                            padding: '4px 12px', borderRadius: '4px', cursor: isAnalyzingNews ? 'not-allowed' : 'pointer', fontSize: '0.8rem', fontWeight: 'bold'
-                          }}
-                        >
-                          {isAnalyzingNews ? 'Analyzing...' : 'Analyze Live News'}
-                        </button>
-                      </div>
+                    <div className="metric-box">
+                      <div className="metric-label">AI News Sentiment</div>
                       <div className={`metric-value ${
                         (activeSuburb.metrics as any)?._newsScore >= 7 ? 'highlight-cyan' :
                         (activeSuburb.metrics as any)?._newsScore >= 4 ? 'text-muted' : 'text-warning'
-                      }`}>
-                        {activeSuburb.metrics.aiNewsSentiment || 'Click "Analyze Live News"'}
+                      }`} style={{ fontSize: '1rem' }}>
+                        {activeSuburb.metrics.aiNewsSentiment || 'Pending'}
                       </div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontStyle: 'italic' }}>
-                        {activeSuburb.metrics.aiNewsSummary || 'AI-powered news sentiment from live media sources. Score 0-10 (Bearish→Bullish).'}
-                      </div>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>See AI Insights panel below</span>
                     </div>
                    </div>
 
@@ -1176,85 +1124,11 @@ function App() {
                     </div>
                   </div>
 
-                  {/* PANEL D: AI Investment Committee */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                      <h3>Panel D: AI Investment Committee</h3>
-                      <button
-                        disabled={isAnalyzingAI}
-                        onClick={async () => {
-                          try {
-                            setIsAnalyzingAI(true);
-                            const res = await fetch('/api/analyze-suburb', {
-                              method: 'POST',
-                              headers: {'Content-Type': 'application/json'},
-                              body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id: activeSuburb.id })
-                            });
-                            const data = await res.json();
-                            if(res.ok && data.status === "success" && data.result && data.result.verdict) {
-                              const sentiment = data.result.verdict.includes('BUY') ? 'Bullish' :
-                                                data.result.verdict.includes('HOLD') ? 'Neutral' :
-                                                data.result.verdict.includes('SELL') ? 'Bearish' : data.result.verdict;
-                              const aiResult = {
-                                aiVerdict: data.result.verdict,
-                                aiConsensus: data.result.playbook,
-                                aiRiskLevel: data.result.reality_check,
-                                aiBullView: data.result.bull,
-                                aiBearView: data.result.bear,
-                                aiUrbanView: data.result.urban,
-                                highlights: data.result.catalysts || activeSuburb.highlights,
-                                metrics: {
-                                  ...activeSuburb.metrics,
-                                  aiNewsSentiment: sentiment,
-                                  aiNewsSummary: data.result.playbook || data.result.reality_check || ''
-                                }
-                              }
-                              setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }))
-                              try { localStorage.setItem('ai_' + activeSuburb.id, JSON.stringify(aiResult)) } catch {}
-                            }
-                          } catch(e){ console.error(e) }
-                          finally { setIsAnalyzingAI(false) }
-                        }}
-                        style={{
-                          padding: '8px 16px', background: 'var(--accent-purple)', color: '#fff',
-                          border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem'
-                        }}
-                      >
-                        {isAnalyzingAI ? 'Analyzing...' : (activeSuburb as any).aiVerdict ? 'Refresh AI Committee' : 'Run AI Committee'}
-                      </button>
-                    </div>
-                    {(activeSuburb as any).aiVerdict ? (
-                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                        <div style={{ flex: '1 1 100%', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', marginBottom: '8px' }}>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>Consensus Verdict</div>
-                          <div style={{ fontWeight: 800, fontSize: '1.3rem', color: (activeSuburb as any).aiVerdict?.includes('BUY') ? '#10b981' : (activeSuburb as any).aiVerdict?.includes('SELL') ? '#ef4444' : 'var(--accent-cyan)' }}>{(activeSuburb as any).aiVerdict}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{(activeSuburb as any).aiRiskLevel || '—'}</span></div>
-                        </div>
-                        <div style={{ flex: '1 1 250px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '0.75rem', color: '#10b981', marginBottom: '4px' }}>🐂 Bull — Anna</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{(activeSuburb as any).aiBullView || 'Awaiting analysis'}</div>
-                        </div>
-                        <div style={{ flex: '1 1 250px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '15px', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '0.75rem', color: '#ef4444', marginBottom: '4px' }}>🐻 Bear — Alex</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{(activeSuburb as any).aiBearView || 'Awaiting analysis'}</div>
-                        </div>
-                        <div style={{ flex: '1 1 250px', background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', padding: '15px', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '0.75rem', color: '#8b5cf6', marginBottom: '4px' }}>🏙️ Urban Planner</div>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{(activeSuburb as any).aiUrbanView || 'Awaiting analysis'}</div>
-                        </div>
-                        {(activeSuburb as any).aiConsensus && (
-                          <div style={{ flex: '1 1 100%', background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', marginBottom: '4px' }}>📋 Investor CEO Playbook</div>
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap', maxHeight: '200px', overflowY: 'auto' }}>{(activeSuburb as any).aiConsensus}</div>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
-                        Click "Run AI Committee" to get a multi-agent investment analysis of {activeSuburb.name}. This is separate from the News Sentiment score above.
-                      </div>
-                    )}
-                  </div>
+                  {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
+                  <AIInsightPanel
+                    activeSuburb={activeSuburb}
+                    setActiveSuburb={setActiveSuburb}
+                  />
 
                   {/* PANEL E: Quick ROI Calculator */}
                   <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>

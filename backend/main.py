@@ -57,6 +57,9 @@ except Exception as e:
     print(f"[cache] Redis not available: {e}. Falling back to DB-only.")
     redis_client = None
 
+# Feature flag for AI features
+ENABLE_AI_INSIGHTS = os.getenv("ENABLE_AI_INSIGHTS", "true").lower() in ("true", "1", "yes")
+
 def get_cached_or_query(cache_key: str, query_func, expire_secs: int = 3600):
     if not redis_client:
         return query_func()
@@ -808,6 +811,8 @@ def _check_rate_limit(client_key: str, max_requests: int = 10, window_seconds: i
 
 @app.post("/api/analyze-suburb")
 def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    if not ENABLE_AI_INSIGHTS:
+        raise HTTPException(status_code=503, detail="AI insights have been temporarily disabled (ENABLE_AI_INSIGHTS=false)")
     # Rate limiting: max 10 requests per minute per suburb
     client_key = f"{req.id}:{datetime.now().strftime('%Y%m%d%H%M')}"
     if not _check_rate_limit(client_key, max_requests=10, window_seconds=60):
@@ -935,6 +940,8 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
 @app.post("/api/suburbs/{suburb_id}/news-sentiment")
 def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
     """On-demand news sentiment for a suburb. Cached for 24h. Only calls Tavily if needed."""
+    if not ENABLE_AI_INSIGHTS:
+        raise HTTPException(status_code=503, detail="AI insights have been temporarily disabled (ENABLE_AI_INSIGHTS=false)")
     # Normalize ID: frontend sends "parramatta-nsw-2150" → DB has "NSW_PARRAMATTA_2150"
     parts = suburb_id.rsplit("-", 1)  # ["parramatta-nsw", "2150"]
     if len(parts) == 2:

@@ -45,8 +45,8 @@
     "semantic_hash": "dd79773dd6a35613e1f50e8149237464"
   },
   "src/App.tsx": {
-    "mtime": 1783840125.3441682,
-    "ast_hash": "4ac5a3356bcc94ed76354fc3b89e89d9",
+    "mtime": 1783840723.1446617,
+    "ast_hash": "85a9346bfcbf8a45ad362b2f88207db6",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -90,9 +90,9 @@
     "semantic_hash": "2af7e1f214119d02a913305d55682cad"
   },
   "src/services/osmApi.ts": {
-    "mtime": 1783651472.3946013,
-    "ast_hash": "7b925eaa43fc58db791a2ca392977658",
-    "semantic_hash": "7b925eaa43fc58db791a2ca392977658"
+    "mtime": 1783840681.9172904,
+    "ast_hash": "abbf180468281baf9564cc1470363e17",
+    "semantic_hash": ""
   },
   "suburbs-melbourne-data.json": {
     "mtime": 1782562773.7848988,

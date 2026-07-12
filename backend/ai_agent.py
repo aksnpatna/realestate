@@ -1,5 +1,6 @@
 import os
 import re
+import logging
 from typing import TypedDict, Dict, Any, List
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, END
@@ -9,6 +10,8 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from tavily import TavilyClient
 
 load_dotenv()
+
+logger = logging.getLogger("uvicorn")
 
 def get_llm():
     # 1st: NVIDIA (Llama 3.1 70B)
@@ -113,9 +116,10 @@ def fetch_news_node(state: CommitteeState):
 
 
 def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
-    """On-demand Tavily news search for a single suburb.
-    Cached in DB — only fetches if no cached result within 24h.
-    Returns: {score, label, summary, articles, fetched_at}
+    """On-demand news sentiment for a single suburb.
+    Uses HuggingFace transformer for scoring, with keyword fallback.
+    Cached externally via cache_utils.cached_ai decorator.
+    Returns: {score, label, summary, articles, fetched_at, provider_used}
     """
     try:
         query_suburb = f"{suburb_name} {state_code} Australia real estate market news prices outlook 2026"
@@ -129,55 +133,49 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
         if macro_articles:
             articles.extend(macro_articles)
 
-        # Simple sentiment scoring from article titles
-        positive_words = ["surge", "boom", "growth", "rising", "up", "strong", "record",
-                         "increase", "high demand", "hot", "outperform", "recovery", "bull"]
-        negative_words = ["fall", "drop", "decline", "crash", "slump", "weak", "fear",
-                         "bust", "crisis", "affordability", "tightening", "rate hike", "bear",
-                         "overvalued", "correction", "bubble"]
-        
-        total_score = 0
-        scored_articles = 0
+        # Build combined text for transformer analysis
+        combined_text = " ".join(
+            f"{(a.get('title') or '').lower()} {(a.get('content') or '').lower()}"
+            for a in articles
+        )
+
+        # Use transformer sentiment (with keyword fallback)
+        from ai_sentiment import analyze_sentiment
+        sentiment_result = analyze_sentiment(combined_text)
+        score = sentiment_result["score"]
+        label = sentiment_result["label"]
+        provider = sentiment_result["provider"]
+
+        # Collect article summaries
         summaries = []
-        
         for art in articles:
-            title = (art.get("title") or "").lower()
-            content = (art.get("content") or "").lower()
-            text = title + " " + content
-            
-            pos = sum(1 for w in positive_words if w in text)
-            neg = sum(1 for w in negative_words if w in text)
-            
-            if pos + neg > 0:
-                article_score = 5 + (pos - neg) * 1.5
-                article_score = max(1, min(10, article_score))
-                total_score += article_score
-                scored_articles += 1
-            
+            title = (art.get("title") or "")
             if title:
                 summaries.append(title[:120])
-        
-        if scored_articles > 0:
-            avg_score = round(total_score / scored_articles, 1)
-        else:
-            avg_score = 5.0
-        
-        if avg_score >= 7:
-            label = "Bullish"
-        elif avg_score >= 4.5:
-            label = "Neutral"
-        else:
-            label = "Bearish"
-        
+
+        logger.info(
+            f"[news-sentiment] {suburb_name}, {state_code}: "
+            f"score={score} label={label} provider={provider} articles={len(articles)}"
+        )
+
         return {
-            "score": avg_score,
+            "score": score,
             "label": label,
             "summary": "; ".join(summaries[:3]) if summaries else "No relevant articles found.",
             "articles": len(articles),
             "fetched_at": __import__("datetime").datetime.utcnow().isoformat(),
+            "provider_used": provider,
         }
     except Exception as e:
-        return {"score": 5.0, "label": "Neutral", "summary": f"Tavily API error: {str(e)[:100]}", "articles": 0, "fetched_at": None}
+        logger.error(f"[news-sentiment] Error: {e}")
+        return {
+            "score": 5.0,
+            "label": "Neutral",
+            "summary": f"Error: {str(e)[:100]}",
+            "articles": 0,
+            "fetched_at": None,
+            "provider_used": "keyword",
+        }
 
 def bull_agent_node(state: CommitteeState):
     llm = get_llm()
@@ -298,6 +296,9 @@ committee_graph.add_edge("supervisor", END)
 
 ai_committee_app = committee_graph.compile()
 
+from cache_utils import cached_ai
+
+@cached_ai("ai_committee:{0}:{1}")
 def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], fetch_news: bool = False):
     initial_state = {
         "suburb": suburb, 
@@ -318,6 +319,19 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
     # For now, it will fetch up to 2 results per run.
     
     result = ai_committee_app.invoke(initial_state)
+    
+    llm_provider = "unknown"
+    if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
+        llm_provider = "nvidia/llama-3.1-70b"
+    elif os.getenv("GROQ_API_KEY") and os.getenv("GROQ_API_KEY") != "none":
+        llm_provider = "groq/llama-3.3-70b"
+    elif os.getenv("DEEPSEEK_API_KEY") and os.getenv("DEEPSEEK_API_KEY") != "none":
+        llm_provider = "deepseek-chat"
+    elif os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API_KEY") != "none":
+        llm_provider = "openai/gpt-4o-mini"
+    else:
+        llm_provider = "ollama/qwen2.5:7b"
+    
     return {
         "bull": result["bull_argument"],
         "bear": result["bear_argument"],
@@ -325,5 +339,6 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         "verdict": result["final_verdict"],
         "playbook": result["playbook"],
         "reality_check": result["reality_check"],
-        "catalysts": result.get("catalysts", [])
+        "catalysts": result.get("catalysts", []),
+        "llm_provider": llm_provider,
     }
