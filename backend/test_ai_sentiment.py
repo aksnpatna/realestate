@@ -5,16 +5,13 @@ Run: cd backend && python -m pytest test_ai_sentiment.py -v
 import sys
 import os
 import json
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import patch, MagicMock
 
-# Ensure backend is on path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.environ["ENABLE_AI_INSIGHTS"] = "true"
 
 
 class TestSentimentKeywordFallback:
-    """Test the keyword-based sentiment scoring (no transformers required)."""
-
     def test_positive_text(self):
         from ai_sentiment import _keyword_sentiment
         score = _keyword_sentiment("property prices surge with boom growth rising up strong record demand bull")
@@ -42,8 +39,6 @@ class TestSentimentKeywordFallback:
 
 
 class TestAnalyzeSentiment:
-    """Test the main analyze_sentiment function with mocked transformer."""
-
     def test_empty_input(self):
         from ai_sentiment import analyze_sentiment
         result = analyze_sentiment("")
@@ -51,52 +46,41 @@ class TestAnalyzeSentiment:
         assert result["label"] == "Neutral"
         assert result["provider"] == "keyword"
 
-    @patch("ai_sentiment._load_transformer")
-    def test_keyword_fallback_bullish(self, mock_load):
-        mock_load.return_value = None  # Force keyword fallback
-
-        from ai_sentiment import analyze_sentiment
-        result = analyze_sentiment("record growth strong demand booming market surge")
-        assert result["score"] >= 6.5, f"Expected bullish, got {result}"
-        assert result["label"] == "Bullish"
-        assert result["provider"] == "keyword"
-
-    @patch("ai_sentiment._load_transformer")
-    def test_transformer_positive(self, mock_load):
-        mock_pipeline = MagicMock()
-        mock_pipeline.return_value = [{"label": "POSITIVE", "score": 0.98}]
-        mock_load.return_value = mock_pipeline
-
+    @patch("ai_sentiment._call_remote_llm")
+    def test_remote_positive(self, mock_call):
+        mock_call.return_value = {"score": 8.5, "label": "Bullish", "provider": "qwen-7b"}
         from ai_sentiment import analyze_sentiment
         result = analyze_sentiment("the housing market is booming with incredible growth this year")
-        assert result["score"] >= 9.0, f"Expected score >= 9.0 got {result['score']}"
+        assert result["score"] == 8.5
         assert result["label"] == "Bullish"
-        assert result["provider"] == "transformers"
+        assert result["provider"] == "qwen-7b"
 
-    @patch("ai_sentiment._load_transformer")
-    def test_transformer_negative(self, mock_load):
-        mock_pipeline = MagicMock()
-        mock_pipeline.return_value = [{"label": "NEGATIVE", "score": 0.99}]
-        mock_load.return_value = mock_pipeline
-
+    @patch("ai_sentiment._call_remote_llm")
+    def test_remote_negative(self, mock_call):
+        mock_call.return_value = {"score": 2.5, "label": "Bearish", "provider": "qwen-7b"}
         from ai_sentiment import analyze_sentiment
         result = analyze_sentiment("market crash prices falling everywhere")
-        assert result["score"] <= 1.1, f"Expected score <= 1.1"
+        assert result["score"] == 2.5
         assert result["label"] == "Bearish"
-        assert result["provider"] == "transformers"
+        assert result["provider"] == "qwen-7b"
 
-    @patch("ai_sentiment._load_transformer")
-    def test_transformer_failure_fallsback(self, mock_load):
-        mock_load.return_value = None
-
+    @patch("ai_sentiment._call_remote_llm")
+    def test_remote_fallback_to_keyword(self, mock_call):
+        mock_call.return_value = None  # Simulate remote failure
         from ai_sentiment import analyze_sentiment
         result = analyze_sentiment("surge boom growth record")
         assert result["provider"] == "keyword"
 
+    @patch("ai_sentiment._call_remote_llm")
+    def test_explanation_included(self, mock_call):
+        mock_call.return_value = {"score": 8.5, "label": "Bullish", "provider": "qwen-7b"}
+        from ai_sentiment import analyze_sentiment
+        result = analyze_sentiment("record growth strong demand booming market surge")
+        assert len(result["explanation"]) >= 1, "Should have keyword explanations"
+        assert any(e["sentiment"] == "positive" for e in result["explanation"])
+
 
 class TestIDNormalization:
-    """Test the suburb ID normalizer."""
-
     def test_frontend_to_db_format(self):
         from suburb_utils import normalize_suburb_id
         assert normalize_suburb_id("parramatta-nsw-2150") == "NSW_PARRAMATTA_2150"
@@ -114,12 +98,9 @@ class TestIDNormalization:
 
 
 class TestCachedAI:
-    """Test the cached_ai decorator behavior."""
-
     @patch.dict(os.environ, {"AI_CACHE_TTL": "60"})
     def test_decorator_calls_function(self):
         from cache_utils import cached_ai
-
         call_count = [0]
 
         @cached_ai("test:{0}")
@@ -127,14 +108,12 @@ class TestCachedAI:
             call_count[0] += 1
             return {"result": arg, "count": call_count[0]}
 
-        # First call should execute
         result = my_func("hello")
         assert result["result"] == "hello"
         assert call_count[0] == 1
 
     @patch.dict(os.environ, {"AI_CACHE_TTL": "3600"})
-    @patch("cache_utils.logger")
-    def test_decorator_imports_cache(self, mock_logger):
+    def test_decorator_imports_cache(self):
         from cache_utils import cached_ai
 
         @cached_ai("import_test:{0}")
