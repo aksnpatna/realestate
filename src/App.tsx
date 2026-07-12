@@ -57,6 +57,7 @@ function App() {
       const res = await fetch(`/api/suburbs/${id}`)
       if (res.ok) {
         const data = await res.json()
+        data.id = id  // Preserve frontend ID format for dropdown match
         setActiveSuburb(data)
         try {
           const cached = localStorage.getItem('ai_' + id)
