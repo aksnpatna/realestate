@@ -480,8 +480,8 @@
     "semantic_hash": "b8aff440bce3b824e046304be7958dcd"
   },
   "src/components/QuickRoiCalculator.tsx": {
-    "mtime": 1783834611.989392,
-    "ast_hash": "94ea1aadb768d9997d6c2ef13d252228",
+    "mtime": 1783837627.136189,
+    "ast_hash": "47e0d6d12e1048773b552b9bf0bf8a2b",
     "semantic_hash": ""
   },
   "backend/migrate_history_to_timeseries.py": {
