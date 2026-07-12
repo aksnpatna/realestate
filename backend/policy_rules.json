@@ -1,0 +1,61 @@
+{
+  "_comment": "Policy rules for Australian real estate investment. Evaluated during AI committee playbook generation.",
+  "rules": [
+    {
+      "id": "heritage_zones",
+      "description": "High-rise developments restricted in heritage-listed areas",
+      "condition": { "field": "heritage_listed", "operator": "equals", "value": true },
+      "action": "warn",
+      "message": "Heritage overlay applies — high-rise development may be restricted. Verify with local council before relying on capital growth projections."
+    },
+    {
+      "id": "flood_risk",
+      "description": "Flood-prone areas require additional insurance and risk premium",
+      "condition": { "field": "flood_risk", "operator": "gte", "value": "medium" },
+      "action": "warn",
+      "message": "Area has elevated flood risk — factor in additional insurance costs (~0.3‑0.5% of property value annually)."
+    },
+    {
+      "id": "bushfire_zone",
+      "description": "Bushfire-prone areas have stricter building codes",
+      "condition": { "field": "bushfire_zone", "operator": "equals", "value": true },
+      "action": "warn",
+      "message": "Designated bushfire-prone area — new builds must meet BAL (Bushfire Attack Level) requirements, adding ~$20k‑$50k to construction costs."
+    },
+    {
+      "id": "high_vacancy_risk",
+      "description": "Vacancy rates above 5% indicate oversupply",
+      "condition": { "field": "vacancy_rate", "operator": "gte", "value": 5.0 },
+      "action": "downgrade",
+      "message": "Vacancy rate above 5% — suggest HOLD or PASS. Rental income may be unreliable; factor in 2‑3 month vacancy periods."
+    },
+    {
+      "id": "low_yield_single_dwelling",
+      "description": "Gross yield below 2% is negative cashflow for single dwellings",
+      "condition": { "field": "rental_yield", "operator": "lt", "value": 2.0 },
+      "action": "downgrade",
+      "message": "Gross yield below 2% — significant negative cashflow expected. Only suitable for pure capital growth strategy with strong equity buffer."
+    },
+    {
+      "id": "nsw_stamp_duty_surcharge",
+      "description": "Foreign buyer surcharge in NSW",
+      "condition": { "field": "state", "operator": "equals", "value": "NSW" },
+      "action": "info",
+      "message": "NSW applies an 8% foreign buyer surcharge on residential property. Overseas investors should factor this into their cost base."
+    },
+    {
+      "id": "vic_land_tax",
+      "description": "VIC has higher land tax for investment properties",
+      "condition": { "field": "state", "operator": "equals", "value": "VIC" },
+      "action": "info",
+      "message": "VIC land tax scales progressively — investment properties above $300k land value incur annual tax. Check State Revenue Office calculator."
+    },
+    {
+      "id": "low_population_growth",
+      "description": "Suburbs with declining or stagnant population are higher risk",
+      "condition": { "field": "population_cagr", "operator": "lt", "value": 0.5 },
+      "action": "downgrade",
+      "message": "Population growth below 0.5% CAGR — limited demand pipeline. Long-term capital growth prospects are weak."
+    }
+  ]
+}

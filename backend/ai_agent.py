@@ -300,6 +300,52 @@ ai_committee_app = committee_graph.compile()
 
 from cache_utils import cached_ai
 
+# Load policy rules for playbook generation
+import json as _json
+from pathlib import Path as _Path
+
+_policy_path = _Path(__file__).parent / "policy_rules.json"
+POLICY_RULES = []
+if _policy_path.exists():
+    try:
+        POLICY_RULES = _json.loads(_policy_path.read_text()).get("rules", [])
+    except Exception:
+        pass
+
+
+def _evaluate_policy_rules(metrics: Dict[str, Any], state_code: str) -> list:
+    """Evaluate policy rules against a suburb's metrics. Returns list of applicable messages."""
+    applicable = []
+    for rule in POLICY_RULES:
+        cond = rule.get("condition", {})
+        field = cond.get("field", "")
+        value = cond.get("value")
+        op = cond.get("operator", "equals")
+
+        actual = metrics.get(field, "state_code_placeholder" if field == "state" else None)
+        if field == "state":
+            actual = state_code
+
+        if actual is None:
+            continue
+
+        match = False
+        if op == "equals":
+            match = actual == value
+        elif op == "gte":
+            match = float(actual) >= float(value)
+        elif op == "lt":
+            match = float(actual) < float(value)
+
+        if match:
+            applicable.append({
+                "rule_id": rule["id"],
+                "action": rule.get("action", "info"),
+                "message": rule["message"],
+            })
+    return applicable
+
+
 @cached_ai("ai_committee:{0}:{1}")
 def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], fetch_news: bool = False):
     """
@@ -355,6 +401,20 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
     
     result = ai_committee_app.invoke(initial_state)
     
+    # Risk-adjusted verdict via Monte Carlo simulation
+    risk_assessment = {}
+    try:
+        from risk_engine import compute_risk_rating
+        price = metrics.get("houseMedianPrice") or metrics.get("medianPrice") or 800000
+        yld = metrics.get("rentalYield") or (metrics.get("houseMedianRent", 0) * 52 / price * 100 if metrics.get("houseMedianRent") else 4.0) or 4.0
+        gs = metrics.get("growthScore") or 50
+        risk_assessment = compute_risk_rating(price, yld, gs)
+    except Exception as e:
+        risk_assessment = {"risk_rating": "Unavailable", "error": str(e)[:100]}
+    
+    # Policy-aware playbook: evaluate planning rules
+    policy_warnings = _evaluate_policy_rules(metrics, state)
+    
     llm_provider = "unknown"
     if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
         llm_provider = "nvidia/llama-3.1-70b"
@@ -376,5 +436,7 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         "reality_check": result["reality_check"],
         "catalysts": result.get("catalysts", []),
         "source_snippets": result.get("source_snippets", []),
+        "risk_assessment": risk_assessment,
+        "policy_warnings": policy_warnings,
         "llm_provider": llm_provider,
     }

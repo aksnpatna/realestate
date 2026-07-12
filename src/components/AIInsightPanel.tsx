@@ -49,11 +49,12 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
         ...prev,
         metrics: {
           ...prev.metrics,
-          aiNewsSentiment: `${sentimentLabel} (${data.score}/10)`,
-          aiNewsSummary: data.summary || `${data.articles || 0} articles analyzed`,
-          _newsScore: data.score,
-          _newsLabel: sentimentLabel,
-          _newsArticles: data.articles || [],
+                                    aiNewsSentiment: `${sentimentLabel} (${data.score}/10)`,
+                                    aiNewsSummary: data.summary || `${data.articles || 0} articles analyzed`,
+                                    _newsScore: data.score,
+                                    _newsLabel: sentimentLabel,
+                                    _newsArticles: data.articles || [],
+                                    _newsExplanation: data.explanation || [],
         },
       }))
     } catch (e: any) {
@@ -111,6 +112,8 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
           aiUrbanView: data.result.urban,
           highlights: data.result.catalysts || activeSuburb.highlights,
           _sourceSnippets: data.result.source_snippets || [],
+          _riskAssessment: data.result.risk_assessment || null,
+          _policyWarnings: data.result.policy_warnings || [],
           metrics: {
             ...activeSuburb.metrics,
             aiNewsSentiment: sentiment,
@@ -305,6 +308,30 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
               }} />
             </div>
           </div>
+
+          {/* Explanation tooltip */}
+          {suburb.metrics?._newsExplanation && suburb.metrics._newsExplanation.length > 0 && (
+            <div style={{ marginTop: '10px', padding: '8px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'help' }}
+                    title="Top keywords driving this sentiment score">
+                ⓘ Why this score?
+              </span>
+              <div style={{ display: 'flex', gap: '6px', marginTop: '6px', flexWrap: 'wrap' }}>
+                {suburb.metrics._newsExplanation.map((exp: any, i: number) => (
+                  <span key={i} style={{
+                    padding: '2px 8px',
+                    background: exp.sentiment === 'positive' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
+                    color: exp.sentiment === 'positive' ? '#10b981' : '#ef4444',
+                    borderRadius: '4px',
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                  }}>
+                    {exp.token} ({exp.occurrences})
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -348,6 +375,22 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
                   Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{suburb.aiRiskLevel || '—'}</span>
+                  {suburb._riskAssessment && (
+                    <>
+                      {' • '}
+                      <span title="Monte Carlo simulation of 1-year price trajectory (5,000 iterations)" style={{ cursor: 'help', borderBottom: '1px dotted var(--text-secondary)' }}>
+                        Monte Carlo: <span style={{
+                          fontWeight: 700,
+                          color: suburb._riskAssessment.risk_rating === 'Low' ? '#10b981'
+                            : suburb._riskAssessment.risk_rating === 'Medium' ? '#eab308' : '#ef4444',
+                        }}>{suburb._riskAssessment.risk_rating}</span>
+                      </span>
+                      {' '}({Math.round(suburb._riskAssessment.price_decline_probability * 100)}% decline risk)
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                        Projected: ${(suburb._riskAssessment.projected_range?.[1] / 1000).toFixed(0)}k median ({suburb._riskAssessment.expected_return}% expected return)
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               <div style={{ flex: '1 1 250px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
@@ -366,6 +409,17 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                 <div style={{ flex: '1 1 100%', background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', marginBottom: '4px' }}>📋 Investor CEO Playbook</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap', maxHeight: '200px', overflowY: 'auto' }}>{suburb.aiConsensus}</div>
+                </div>
+              )}
+              {suburb._policyWarnings?.length > 0 && (
+                <div style={{ flex: '1 1 100%', marginTop: '8px', padding: '12px', background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.75rem', color: '#eab308', fontWeight: 600, marginBottom: '6px' }}>⚠️ Policy & Regulatory Notices</div>
+                  {suburb._policyWarnings.map((w: any, i: number) => (
+                    <div key={i} style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', display: 'flex', gap: '6px' }}>
+                      <span style={{ color: w.action === 'downgrade' ? '#ef4444' : '#eab308' }}>{w.action === 'downgrade' ? '🔴' : '🟡'}</span>
+                      <span>{w.message}</span>
+                    </div>
+                  ))}
                 </div>
               )}
               {suburb._sourceSnippets?.length > 0 && (

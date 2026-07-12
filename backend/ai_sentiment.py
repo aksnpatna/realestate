@@ -64,8 +64,9 @@ def analyze_sentiment(text: str) -> dict:
         dict with keys: score (float 1-10), label (str), provider (str)
     """
     if not text or not text.strip():
-        return {"score": 5.0, "label": "Neutral", "provider": "keyword"}
+        return {"score": 5.0, "label": "Neutral", "provider": "keyword", "explanation": []}
 
+    text_lower = text.lower()
     pipeline = _load_transformer()
 
     if pipeline is not None:
@@ -93,12 +94,13 @@ def analyze_sentiment(text: str) -> dict:
                 "score": score,
                 "label": sentiment_label,
                 "provider": "transformers",
+                "explanation": _extract_keywords(text_lower),
             }
         except Exception as e:
             logger.warning(f"[sentiment] Transformer inference failed: {e}. Falling back to keyword.")
 
     # Keyword fallback
-    score = _keyword_sentiment(text)
+    score = _keyword_sentiment(text_lower)
     if score >= 7:
         sentiment_label = "Bullish"
     elif score >= 4.5:
@@ -110,4 +112,20 @@ def analyze_sentiment(text: str) -> dict:
         "score": score,
         "label": sentiment_label,
         "provider": "keyword",
+        "explanation": _extract_keywords(text_lower),
     }
+
+
+def _extract_keywords(text: str) -> list:
+    """Extract matching sentiment keywords from the text with counts."""
+    positive_hits = [(w, text.count(w)) for w in POSITIVE_WORDS if w in text]
+    negative_hits = [(w, text.count(w)) for w in NEGATIVE_WORDS if w in text]
+    positive_hits.sort(key=lambda x: -x[1])
+    negative_hits.sort(key=lambda x: -x[1])
+
+    result = []
+    for word, count in positive_hits[:3]:
+        result.append({"token": word, "sentiment": "positive", "occurrences": count})
+    for word, count in negative_hits[:3]:
+        result.append({"token": word, "sentiment": "negative", "occurrences": count})
+    return result[:5]
