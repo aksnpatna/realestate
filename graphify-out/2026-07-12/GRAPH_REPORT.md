@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 102 files · ~2,217,062 words
+- 104 files · ~2,218,811 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 699 nodes · 948 edges · 104 communities (67 shown, 37 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 148 edges (avg confidence: 0.56)
+- 708 nodes · 960 edges · 103 communities (67 shown, 36 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 149 edges (avg confidence: 0.57)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ee9f626c`
+- Built from commit: `b91e528f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -38,7 +38,6 @@
 - [[_COMMUNITY_Data Downloader|Data Downloader]]
 - [[_COMMUNITY_ABS Census Integration|ABS Census Integration]]
 - [[_COMMUNITY_README Documentation|README Documentation]]
-- [[_COMMUNITY_Suburb Clustering|Suburb Clustering]]
 - [[_COMMUNITY_Database Maintenance|Database Maintenance]]
 - [[_COMMUNITY_Password Utility|Password Utility]]
 - [[_COMMUNITY_School Location Data|School Location Data]]
@@ -116,8 +115,8 @@
   backend/ai_agent.py → backend/ai_sentiment.py
 - `analyze_suburb()` --calls--> `run_investment_committee()`  [INFERRED]
   backend/main.py → backend/ai_agent.py
-- `get_similar_suburbs()` --calls--> `find_similar_suburbs()`  [INFERRED]
-  backend/main.py → backend/clustering.py
+- `seed_raw_v3()` --calls--> `SuburbRawV3`  [INFERRED]
+  backend/etl_extract_v3.py → backend/models_v3.py
 
 ## Import Cycles
 - None detected.
@@ -133,15 +132,15 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (104 total, 37 thin omitted)
+## Communities (103 total, 36 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection, moduleResolution (+10 more)
 
 ### Community 1 - "ETL Transform V3 Pipeline"
-Cohesion: 0.20
-Nodes (16): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+8 more)
+Cohesion: 0.17
+Nodes (18): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+10 more)
 
 ### Community 2 - "V3 Scheduler Orchestration"
 Cohesion: 0.15
@@ -161,7 +160,7 @@ Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMP
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.06
-Nodes (86): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+78 more)
+Nodes (84): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache() (+76 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -232,8 +231,8 @@ Cohesion: 0.06
 Nodes (33): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+25 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.24
-Nodes (14): Any, bear_agent_node(), bull_agent_node(), CommitteeState, fetch_news_node(), get_llm(), get_news_sentiment(), On-demand news sentiment for a single suburb.     Uses HuggingFace transformer f (+6 more)
+Cohesion: 0.15
+Nodes (20): Any, bear_agent_node(), bull_agent_node(), CommitteeState, _evaluate_policy_rules(), fetch_news_node(), get_llm(), get_news_sentiment() (+12 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
@@ -264,8 +263,8 @@ Cohesion: 0.17
 Nodes (9): AIInsightPanelProps, AnalysisStep, AnalysisTab, CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps (+1 more)
 
 ### Community 88 - "Community 88"
-Cohesion: 0.09
-Nodes (17): analyze_sentiment(), _keyword_sentiment(), _load_transformer(), ai_sentiment.py — Transformer-based sentiment analysis for real-estate news. Use, Lazy-load the HuggingFace sentiment pipeline., Keyword-based sentiment scoring as fallback. Returns 1-10 score., Analyze sentiment of text and return a 1-10 score with label and provider info., cached_ai() (+9 more)
+Cohesion: 0.08
+Nodes (19): analyze_sentiment(), _extract_keywords(), _keyword_sentiment(), _load_transformer(), ai_sentiment.py — Transformer-based sentiment analysis for real-estate news. Use, Extract matching sentiment keywords from the text with counts., Lazy-load the HuggingFace sentiment pipeline., Keyword-based sentiment scoring as fallback. Returns 1-10 score. (+11 more)
 
 ### Community 89 - "Community 89"
 Cohesion: 0.25
@@ -300,23 +299,23 @@ Cohesion: 0.13
 Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, Calculators, CashflowGearing, HouseSearch, InstitutionalV3Panel, MyPurchasePlan (+2 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.28
-Nodes (5): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Test the suburb ID normalizer., TestIDNormalization
+Cohesion: 0.22
+Nodes (7): _normalize_suburb_id(), Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21, normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Test the suburb ID normalizer., TestIDNormalization
 
 ## Knowledge Gaps
-- **219 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+214 more)
+- **218 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+213 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **37 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Database Models & Scrapers` to `ETL Extract V3 Pipeline`, `Community 103`?**
-  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **Why does `Session` connect `Database Models & Scrapers` to `ETL Transform V3 Pipeline`, `ETL Extract V3 Pipeline`, `Community 103`?**
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
 - **Why does `analyze_suburb()` connect `Database Models & Scrapers` to `Community 65`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **Why does `run_investment_committee()` connect `Community 65` to `Database Models & Scrapers`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **Are the 9 inferred relationships involving `Session` (e.g. with `worker()` and `warmup()`) actually correct?**
   _`Session` has 9 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**
