@@ -445,7 +445,7 @@
       "label": "_evaluate_policy_rules()",
       "file_type": "code",
       "source_file": "backend/ai_agent.py",
-      "source_location": "L316",
+      "source_location": "L327",
       "_origin": "ast",
       "id": "backend_ai_agent_evaluate_policy_rules",
       "community": 65,
@@ -455,7 +455,7 @@
       "label": "Any",
       "file_type": "code",
       "source_file": "backend/ai_agent.py",
-      "source_location": "L316",
+      "source_location": "L327",
       "_origin": "ast",
       "id": "any",
       "community": 65,
@@ -465,7 +465,7 @@
       "label": "run_investment_committee()",
       "file_type": "code",
       "source_file": "backend/ai_agent.py",
-      "source_location": "L350",
+      "source_location": "L361",
       "_origin": "ast",
       "id": "backend_ai_agent_run_investment_committee",
       "community": 65,
@@ -495,9 +495,9 @@
       "label": "Evaluate policy rules against a suburb's metrics. Returns list of applicable mes",
       "file_type": "rationale",
       "source_file": "backend/ai_agent.py",
-      "source_location": "L317",
+      "source_location": "L328",
       "_origin": "ast",
-      "id": "backend_ai_agent_rationale_317",
+      "id": "backend_ai_agent_rationale_328",
       "community": 65,
       "norm_label": "evaluate policy rules against a suburb's metrics. returns list of applicable mes"
     },
@@ -505,11 +505,61 @@
       "label": "Run the multi-agent LangGraph investment committee for a suburb.      Pipeline (",
       "file_type": "rationale",
       "source_file": "backend/ai_agent.py",
-      "source_location": "L351",
+      "source_location": "L362",
       "_origin": "ast",
-      "id": "backend_ai_agent_rationale_351",
+      "id": "backend_ai_agent_rationale_362",
       "community": 65,
       "norm_label": "run the multi-agent langgraph investment committee for a suburb.      pipeline ("
+    },
+    {
+      "label": "ai_alerts.py",
+      "file_type": "code",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_ai_alerts",
+      "community": 23,
+      "norm_label": "ai_alerts.py"
+    },
+    {
+      "label": "load_last_state()",
+      "file_type": "code",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "backend_ai_alerts_load_last_state",
+      "community": 23,
+      "norm_label": "load_last_state()"
+    },
+    {
+      "label": "save_last_state()",
+      "file_type": "code",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "backend_ai_alerts_save_last_state",
+      "community": 23,
+      "norm_label": "save_last_state()"
+    },
+    {
+      "label": "check_alerts()",
+      "file_type": "code",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "backend_ai_alerts_check_alerts",
+      "community": 23,
+      "norm_label": "check_alerts()"
+    },
+    {
+      "label": "ai_alerts.py \u2014 Detects sentiment and verdict changes for monitored suburbs. Run",
+      "file_type": "rationale",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_ai_alerts_rationale_1",
+      "community": 23,
+      "norm_label": "ai_alerts.py \u2014 detects sentiment and verdict changes for monitored suburbs. run"
     },
     {
       "label": "ai_sentiment.py",
@@ -522,10 +572,30 @@
       "norm_label": "ai_sentiment.py"
     },
     {
-      "label": "_call_remote_llm()",
+      "label": "_detect_non_english()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L35",
+      "_origin": "ast",
+      "id": "backend_ai_sentiment_detect_non_english",
+      "community": 88,
+      "norm_label": "_detect_non_english()"
+    },
+    {
+      "label": "_translate_text()",
+      "file_type": "code",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "backend_ai_sentiment_translate_text",
+      "community": 88,
+      "norm_label": "_translate_text()"
+    },
+    {
+      "label": "_call_remote_llm()",
+      "file_type": "code",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "backend_ai_sentiment_call_remote_llm",
       "community": 88,
@@ -535,7 +605,7 @@
       "label": "_keyword_sentiment()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L118",
+      "source_location": "L182",
       "_origin": "ast",
       "id": "backend_ai_sentiment_keyword_sentiment",
       "community": 88,
@@ -545,7 +615,7 @@
       "label": "analyze_sentiment()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L129",
+      "source_location": "L193",
       "_origin": "ast",
       "id": "backend_ai_sentiment_analyze_sentiment",
       "community": 88,
@@ -555,7 +625,7 @@
       "label": "_extract_keywords()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L169",
+      "source_location": "L240",
       "_origin": "ast",
       "id": "backend_ai_sentiment_extract_keywords",
       "community": 88,
@@ -572,12 +642,32 @@
       "norm_label": "ai_sentiment.py \u2014 sentiment analysis via remote llm (ollama / llama.cpp gguf). c"
     },
     {
-      "label": "Call the remote Qwen model over HTTP for sentiment classification.     Supports",
+      "label": "Return ratio of non-Latin characters. > 0.15 means likely non-English.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L36",
       "_origin": "ast",
       "id": "backend_ai_sentiment_rationale_36",
+      "community": 88,
+      "norm_label": "return ratio of non-latin characters. > 0.15 means likely non-english."
+    },
+    {
+      "label": "Translate non-English text to English using Qwen on Mac Air.     Returns origina",
+      "file_type": "rationale",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "backend_ai_sentiment_rationale_48",
+      "community": 88,
+      "norm_label": "translate non-english text to english using qwen on mac air.     returns origina"
+    },
+    {
+      "label": "Call the remote Qwen model over HTTP for sentiment classification.     Supports",
+      "file_type": "rationale",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "backend_ai_sentiment_rationale_100",
       "community": 88,
       "norm_label": "call the remote qwen model over http for sentiment classification.     supports"
     },
@@ -585,9 +675,9 @@
       "label": "Keyword-based sentiment scoring as fallback. Returns 1-10 score.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L119",
+      "source_location": "L183",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_119",
+      "id": "backend_ai_sentiment_rationale_183",
       "community": 88,
       "norm_label": "keyword-based sentiment scoring as fallback. returns 1-10 score."
     },
@@ -595,9 +685,9 @@
       "label": "Analyze sentiment of text. Tries remote Qwen 3B first, falls back to keyword.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L130",
+      "source_location": "L194",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_130",
+      "id": "backend_ai_sentiment_rationale_194",
       "community": 88,
       "norm_label": "analyze sentiment of text. tries remote qwen 3b first, falls back to keyword."
     },
@@ -605,9 +695,9 @@
       "label": "Extract matching sentiment keywords from the text with counts.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L170",
+      "source_location": "L241",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_170",
+      "id": "backend_ai_sentiment_rationale_241",
       "community": 88,
       "norm_label": "extract matching sentiment keywords from the text with counts."
     },
@@ -680,6 +770,66 @@
       "id": "backend_clustering_rationale_10",
       "community": 103,
       "norm_label": "finds cheaper suburbs that share similar institutional-grade characteristics"
+    },
+    {
+      "label": "committee_memory.py",
+      "file_type": "code",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_committee_memory",
+      "community": 65,
+      "norm_label": "committee_memory.py"
+    },
+    {
+      "label": "store_analysis()",
+      "file_type": "code",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "backend_committee_memory_store_analysis",
+      "community": 65,
+      "norm_label": "store_analysis()"
+    },
+    {
+      "label": "retrieve_similar()",
+      "file_type": "code",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L65",
+      "_origin": "ast",
+      "id": "backend_committee_memory_retrieve_similar",
+      "community": 65,
+      "norm_label": "retrieve_similar()"
+    },
+    {
+      "label": "committee_memory.py \u2014 PostgreSQL-backed committee analysis memory. Stores past a",
+      "file_type": "rationale",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_committee_memory_rationale_1",
+      "community": 65,
+      "norm_label": "committee_memory.py \u2014 postgresql-backed committee analysis memory. stores past a"
+    },
+    {
+      "label": "Persist a committee analysis to the DB for future retrieval.      Args:",
+      "file_type": "rationale",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "backend_committee_memory_rationale_20",
+      "community": 65,
+      "norm_label": "persist a committee analysis to the db for future retrieval.      args:"
+    },
+    {
+      "label": "Find the most similar past committee analyses in the same state.      Similarity",
+      "file_type": "rationale",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "backend_committee_memory_rationale_66",
+      "community": 65,
+      "norm_label": "find the most similar past committee analyses in the same state.      similarity"
     },
     {
       "label": "downloader.py",
@@ -2008,7 +2158,7 @@
       "source_location": "L960",
       "_origin": "ast",
       "id": "backend_main_normalize_suburb_id",
-      "community": 99,
+      "community": 6,
       "norm_label": "_normalize_suburb_id()"
     },
     {
@@ -2018,7 +2168,7 @@
       "source_location": "L966",
       "_origin": "ast",
       "id": "backend_main_get_suburb_or_404",
-      "community": 99,
+      "community": 6,
       "norm_label": "_get_suburb_or_404()"
     },
     {
@@ -2028,7 +2178,7 @@
       "source_location": "L981",
       "_origin": "ast",
       "id": "backend_main_get_news_sentiment",
-      "community": 99,
+      "community": 6,
       "norm_label": "get_news_sentiment()"
     },
     {
@@ -2168,7 +2318,7 @@
       "source_location": "L1463",
       "_origin": "ast",
       "id": "backend_main_get_suburb_properties",
-      "community": 1,
+      "community": 6,
       "norm_label": "get_suburb_properties()"
     },
     {
@@ -2178,7 +2328,7 @@
       "source_location": "L1514",
       "_origin": "ast",
       "id": "backend_main_metrics",
-      "community": 99,
+      "community": 65,
       "norm_label": "metrics()"
     },
     {
@@ -2288,7 +2438,7 @@
       "source_location": "L961",
       "_origin": "ast",
       "id": "backend_main_rationale_961",
-      "community": 99,
+      "community": 6,
       "norm_label": "convert frontend id format (parramatta-nsw-2150) to db format (nsw_parramatta_21"
     },
     {
@@ -2298,7 +2448,7 @@
       "source_location": "L967",
       "_origin": "ast",
       "id": "backend_main_rationale_967",
-      "community": 99,
+      "community": 6,
       "norm_label": "look up a suburbuiv3 by normalized id. raises 404 if not found."
     },
     {
@@ -2308,7 +2458,7 @@
       "source_location": "L982",
       "_origin": "ast",
       "id": "backend_main_rationale_982",
-      "community": 99,
+      "community": 6,
       "norm_label": "on-demand news sentiment for a suburb.     caching: db (ttl=ai_cache_ttl) \u2192 redi"
     },
     {
@@ -2378,7 +2528,7 @@
       "source_location": "L1464",
       "_origin": "ast",
       "id": "backend_main_rationale_1464",
-      "community": 1,
+      "community": 6,
       "norm_label": "returns authentic property listings scraped from onthehouse.com.au     only retu"
     },
     {
@@ -2388,7 +2538,7 @@
       "source_location": "L1515",
       "_origin": "ast",
       "id": "backend_main_rationale_1515",
-      "community": 99,
+      "community": 65,
       "norm_label": "prometheus-compatible metrics endpoint for ai observability."
     },
     {
@@ -2622,6 +2772,16 @@
       "norm_label": "propertylisting"
     },
     {
+      "label": "CommitteeMemory",
+      "file_type": "code",
+      "source_file": "backend/models_v3.py",
+      "source_location": "L209",
+      "_origin": "ast",
+      "id": "backend_models_v3_committeememory",
+      "community": 6,
+      "norm_label": "committeememory"
+    },
+    {
       "label": "models_v3.py \u2014 Clean ETL Architecture v3 =======================================",
       "file_type": "rationale",
       "source_file": "backend/models_v3.py",
@@ -2640,6 +2800,16 @@
       "id": "backend_models_v3_rationale_169",
       "community": 6,
       "norm_label": "time-series table for 10-year historical price data.     separated from suburbui"
+    },
+    {
+      "label": "Store committee analyses for similarity-based few-shot retrieval.",
+      "file_type": "rationale",
+      "source_file": "backend/models_v3.py",
+      "source_location": "L210",
+      "_origin": "ast",
+      "id": "backend_models_v3_rationale_210",
+      "community": 6,
+      "norm_label": "store committee analyses for similarity-based few-shot retrieval."
     },
     {
       "label": "models_v3_unpacked.py",
@@ -2678,7 +2848,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_observability",
-      "community": 99,
+      "community": 65,
       "norm_label": "observability.py"
     },
     {
@@ -2688,7 +2858,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "backend_observability_record_sentiment_call",
-      "community": 99,
+      "community": 65,
       "norm_label": "record_sentiment_call()"
     },
     {
@@ -2698,7 +2868,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "backend_observability_record_committee_call",
-      "community": 99,
+      "community": 65,
       "norm_label": "record_committee_call()"
     },
     {
@@ -2708,7 +2878,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "backend_observability_record_cache_hit",
-      "community": 99,
+      "community": 65,
       "norm_label": "record_cache_hit()"
     },
     {
@@ -2718,7 +2888,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "backend_observability_record_cache_miss",
-      "community": 99,
+      "community": 6,
       "norm_label": "record_cache_miss()"
     },
     {
@@ -2728,7 +2898,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "backend_observability_get_metrics_text",
-      "community": 99,
+      "community": 65,
       "norm_label": "get_metrics_text()"
     },
     {
@@ -2738,7 +2908,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_observability_rationale_1",
-      "community": 99,
+      "community": 65,
       "norm_label": "observability.py \u2014 prometheus metrics for ai feature monitoring. exposes counter"
     },
     {
@@ -2748,7 +2918,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "backend_observability_rationale_44",
-      "community": 99,
+      "community": 65,
       "norm_label": "return prometheus text format metrics."
     },
     {
@@ -3986,7 +4156,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_warm_cache",
-      "community": 103,
+      "community": 89,
       "norm_label": "warm_cache.py"
     },
     {
@@ -3996,7 +4166,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "backend_warm_cache_warmup",
-      "community": 103,
+      "community": 89,
       "norm_label": "warmup()"
     },
     {
@@ -4006,7 +4176,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_warm_cache_rationale_1",
-      "community": 103,
+      "community": 89,
       "norm_label": "cache warm-up: pre-populates redis ai cache for top-20 most-queried suburbs. run"
     },
     {
@@ -7533,9 +7703,9 @@
       "source_file": "backend/agent_router.py",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_agent_router",
-      "target": "backend_agent_router_route_agents",
-      "confidence_score": 1.0
+      "target": "backend_agent_router_route_agents"
     },
     {
       "relation": "rationale_for",
@@ -7543,9 +7713,9 @@
       "source_file": "backend/agent_router.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_agent_router_rationale_1",
-      "target": "backend_agent_router",
-      "confidence_score": 1.0
+      "target": "backend_agent_router"
     },
     {
       "relation": "rationale_for",
@@ -7553,9 +7723,9 @@
       "source_file": "backend/agent_router.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_agent_router_rationale_10",
-      "target": "backend_agent_router_route_agents",
-      "confidence_score": 1.0
+      "target": "backend_agent_router_route_agents"
     },
     {
       "relation": "calls",
@@ -7841,6 +8011,17 @@
       "target": "backend_ai_agent_get_news_sentiment"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/ai_agent.py",
+      "source_location": "L231",
+      "weight": 1.0,
+      "source": "backend_ai_agent_supervisor_and_playbook_node",
+      "target": "backend_committee_memory_retrieve_similar"
+    },
+    {
       "relation": "references",
       "context": "generic_arg",
       "confidence": "EXTRACTED",
@@ -7855,11 +8036,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_agent.py",
-      "source_location": "L317",
+      "source_location": "L328",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_agent_rationale_317",
-      "target": "backend_ai_agent_evaluate_policy_rules"
+      "source": "backend_ai_agent_rationale_328",
+      "target": "backend_ai_agent_evaluate_policy_rules",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -7887,11 +8068,22 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_agent.py",
-      "source_location": "L351",
+      "source_location": "L362",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_agent_rationale_351",
-      "target": "backend_ai_agent_run_investment_committee"
+      "source": "backend_ai_agent_rationale_362",
+      "target": "backend_ai_agent_run_investment_committee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/ai_agent.py",
+      "source_location": "L460",
+      "weight": 1.0,
+      "source": "backend_ai_agent_run_investment_committee",
+      "target": "backend_committee_memory_store_analysis"
     },
     {
       "relation": "calls",
@@ -7929,6 +8121,68 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "backend_ai_alerts",
+      "target": "backend_ai_alerts_check_alerts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "backend_ai_alerts",
+      "target": "backend_ai_alerts_load_last_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "backend_ai_alerts",
+      "target": "backend_ai_alerts_save_last_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "backend_ai_alerts_rationale_1",
+      "target": "backend_ai_alerts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "backend_ai_alerts_check_alerts",
+      "target": "backend_ai_alerts_load_last_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_alerts.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "backend_ai_alerts_check_alerts",
+      "target": "backend_ai_alerts_save_last_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L56",
       "weight": 1.0,
@@ -7945,6 +8199,16 @@
       "confidence_score": 1.0,
       "source": "backend_ai_sentiment",
       "target": "backend_ai_sentiment_call_remote_llm"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment",
+      "target": "backend_ai_sentiment_detect_non_english",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7967,6 +8231,16 @@
       "target": "backend_ai_sentiment_keyword_sentiment"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment",
+      "target": "backend_ai_sentiment_translate_text",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
@@ -7981,11 +8255,63 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
+      "source_location": "L207",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment_analyze_sentiment",
+      "target": "backend_ai_sentiment_detect_non_english",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment_rationale_36",
+      "target": "backend_ai_sentiment_detect_non_english",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L209",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment_analyze_sentiment",
+      "target": "backend_ai_sentiment_translate_text",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment_rationale_48",
+      "target": "backend_ai_sentiment_translate_text",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
       "source_location": "L143",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "backend_ai_sentiment_analyze_sentiment",
       "target": "backend_ai_sentiment_call_remote_llm"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment_rationale_100",
+      "target": "backend_ai_sentiment_call_remote_llm",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -8012,11 +8338,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L119",
+      "source_location": "L183",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_sentiment_rationale_119",
-      "target": "backend_ai_sentiment_keyword_sentiment"
+      "source": "backend_ai_sentiment_rationale_183",
+      "target": "backend_ai_sentiment_keyword_sentiment",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -8099,11 +8425,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L130",
+      "source_location": "L194",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_sentiment_rationale_130",
-      "target": "backend_ai_sentiment_analyze_sentiment"
+      "source": "backend_ai_sentiment_rationale_194",
+      "target": "backend_ai_sentiment_analyze_sentiment",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -8164,9 +8490,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L170",
+      "source_location": "L241",
       "weight": 1.0,
-      "source": "backend_ai_sentiment_rationale_170",
+      "source": "backend_ai_sentiment_rationale_241",
       "target": "backend_ai_sentiment_extract_keywords",
       "confidence_score": 1.0
     },
@@ -8263,6 +8589,67 @@
       "weight": 1.0,
       "source": "backend_main_get_similar_suburbs",
       "target": "backend_clustering_find_similar_suburbs"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "backend_committee_memory",
+      "target": "backend_committee_memory_retrieve_similar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "backend_committee_memory",
+      "target": "backend_committee_memory_store_analysis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "backend_committee_memory_rationale_1",
+      "target": "backend_committee_memory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "backend_committee_memory_rationale_20",
+      "target": "backend_committee_memory_store_analysis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "backend_committee_memory_store_analysis",
+      "target": "backend_models_v3_committeememory"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/committee_memory.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "backend_committee_memory_rationale_66",
+      "target": "backend_committee_memory_retrieve_similar",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9798,9 +10185,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1514",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_metrics",
-      "confidence_score": 1.0
+      "target": "backend_main_metrics"
     },
     {
       "relation": "contains",
@@ -10183,6 +10570,16 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "backend/models_v3.py",
+      "source_location": "L209",
+      "weight": 1.0,
+      "source": "backend_models_v3_committeememory",
+      "target": "base",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/models_v3.py",
       "source_location": "L184",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10437,9 +10834,9 @@
       "source_file": "backend/main.py",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_147",
-      "target": "backend_main_userconsent",
-      "confidence_score": 1.0
+      "target": "backend_main_userconsent"
     },
     {
       "relation": "calls",
@@ -11583,9 +11980,9 @@
       "source_file": "backend/main.py",
       "source_location": "L342",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_342",
-      "target": "backend_main_record_consent",
-      "confidence_score": 1.0
+      "target": "backend_main_record_consent"
     },
     {
       "relation": "rationale_for",
@@ -11593,9 +11990,9 @@
       "source_file": "backend/main.py",
       "source_location": "L393",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_393",
-      "target": "backend_main_health_check",
-      "confidence_score": 1.0
+      "target": "backend_main_health_check"
     },
     {
       "relation": "calls",
@@ -11614,9 +12011,9 @@
       "source_file": "backend/main.py",
       "source_location": "L406",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_406",
-      "target": "backend_main_get_vap_etf",
-      "confidence_score": 1.0
+      "target": "backend_main_get_vap_etf"
     },
     {
       "relation": "rationale_for",
@@ -11624,9 +12021,9 @@
       "source_file": "backend/main.py",
       "source_location": "L442",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_442",
-      "target": "backend_main_bust_suburbs_cache",
-      "confidence_score": 1.0
+      "target": "backend_main_bust_suburbs_cache"
     },
     {
       "relation": "calls",
@@ -11678,9 +12075,9 @@
       "source_file": "backend/main.py",
       "source_location": "L528",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_528",
-      "target": "backend_main_annualize_cagr",
-      "confidence_score": 1.0
+      "target": "backend_main_annualize_cagr"
     },
     {
       "relation": "calls",
@@ -11699,9 +12096,9 @@
       "source_file": "backend/main.py",
       "source_location": "L539",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_539",
-      "target": "backend_main_cap_yield",
-      "confidence_score": 1.0
+      "target": "backend_main_cap_yield"
     },
     {
       "relation": "calls",
@@ -11731,9 +12128,9 @@
       "source_file": "backend/main.py",
       "source_location": "L545",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_545",
-      "target": "backend_main_calibrate_dq",
-      "confidence_score": 1.0
+      "target": "backend_main_calibrate_dq"
     },
     {
       "relation": "references",
@@ -11763,9 +12160,9 @@
       "source_file": "backend/main.py",
       "source_location": "L566",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_566",
-      "target": "backend_main_compute_growth_score",
-      "confidence_score": 1.0
+      "target": "backend_main_compute_growth_score"
     },
     {
       "relation": "uses",
@@ -11843,9 +12240,9 @@
       "source_file": "backend/main.py",
       "source_location": "L691",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_691",
-      "target": "backend_main_get_suburb",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb"
     },
     {
       "relation": "references",
@@ -11978,9 +12375,9 @@
       "source_file": "backend/main.py",
       "source_location": "L961",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_961",
-      "target": "backend_main_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_main_normalize_suburb_id"
     },
     {
       "relation": "calls",
@@ -11999,9 +12396,9 @@
       "source_file": "backend/main.py",
       "source_location": "L967",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_967",
-      "target": "backend_main_get_suburb_or_404",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_or_404"
     },
     {
       "relation": "calls",
@@ -12020,9 +12417,9 @@
       "source_file": "backend/main.py",
       "source_location": "L982",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_982",
-      "target": "backend_main_get_news_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_main_get_news_sentiment"
     },
     {
       "relation": "rationale_for",
@@ -12030,9 +12427,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1028",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1028",
-      "target": "backend_main_reload_suburbs",
-      "confidence_score": 1.0
+      "target": "backend_main_reload_suburbs"
     },
     {
       "relation": "references",
@@ -12132,9 +12529,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1223",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1223",
-      "target": "backend_main_get_suburbs_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburbs_v3"
     },
     {
       "relation": "rationale_for",
@@ -12142,9 +12539,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1301",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1301",
-      "target": "backend_main_export_suburbs_csv",
-      "confidence_score": 1.0
+      "target": "backend_main_export_suburbs_csv"
     },
     {
       "relation": "uses",
@@ -12233,9 +12630,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1356",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1356",
-      "target": "backend_main_get_suburb_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_v3"
     },
     {
       "relation": "calls",
@@ -12254,9 +12651,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1426",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1426",
-      "target": "backend_main_get_osm_livability",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_livability"
     },
     {
       "relation": "calls",
@@ -12275,9 +12672,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1455",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1455",
-      "target": "backend_main_get_osm_boundary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_boundary"
     },
     {
       "relation": "rationale_for",
@@ -12285,9 +12682,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1464",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1464",
-      "target": "backend_main_get_suburb_properties",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_properties"
     },
     {
       "relation": "calls",
@@ -12306,9 +12703,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1515",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1515",
-      "target": "backend_main_metrics",
-      "confidence_score": 1.0
+      "target": "backend_main_metrics"
     },
     {
       "relation": "contains",
@@ -12477,6 +12874,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/models_v3.py",
+      "source_location": "L209",
+      "weight": 1.0,
+      "source": "backend_models_v3",
+      "target": "backend_models_v3_committeememory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/models_v3.py",
       "source_location": "L184",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -12565,6 +12972,16 @@
       "target": "backend_models_v3_suburbpricehistory"
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/models_v3.py",
+      "source_location": "L210",
+      "weight": 1.0,
+      "source": "backend_models_v3_rationale_210",
+      "target": "backend_models_v3_committeememory",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/models_v3_unpacked.py",
@@ -12601,9 +13018,9 @@
       "source_file": "backend/observability.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_observability",
-      "target": "backend_observability_get_metrics_text",
-      "confidence_score": 1.0
+      "target": "backend_observability_get_metrics_text"
     },
     {
       "relation": "contains",
@@ -12611,9 +13028,9 @@
       "source_file": "backend/observability.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_observability",
-      "target": "backend_observability_record_cache_hit",
-      "confidence_score": 1.0
+      "target": "backend_observability_record_cache_hit"
     },
     {
       "relation": "contains",
@@ -12621,9 +13038,9 @@
       "source_file": "backend/observability.py",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_observability",
-      "target": "backend_observability_record_cache_miss",
-      "confidence_score": 1.0
+      "target": "backend_observability_record_cache_miss"
     },
     {
       "relation": "contains",
@@ -12631,9 +13048,9 @@
       "source_file": "backend/observability.py",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_observability",
-      "target": "backend_observability_record_committee_call",
-      "confidence_score": 1.0
+      "target": "backend_observability_record_committee_call"
     },
     {
       "relation": "contains",
@@ -12641,9 +13058,9 @@
       "source_file": "backend/observability.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_observability",
-      "target": "backend_observability_record_sentiment_call",
-      "confidence_score": 1.0
+      "target": "backend_observability_record_sentiment_call"
     },
     {
       "relation": "rationale_for",
@@ -12651,9 +13068,9 @@
       "source_file": "backend/observability.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_observability_rationale_1",
-      "target": "backend_observability",
-      "confidence_score": 1.0
+      "target": "backend_observability"
     },
     {
       "relation": "rationale_for",
@@ -12661,9 +13078,9 @@
       "source_file": "backend/observability.py",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_observability_rationale_44",
-      "target": "backend_observability_get_metrics_text",
-      "confidence_score": 1.0
+      "target": "backend_observability_get_metrics_text"
     },
     {
       "relation": "contains",
@@ -17505,5 +17922,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "01efbe150d00bbc560ab79781503a34bc9486e50"
+  "built_at_commit": "8619f318cb28298ab5e9f12e8e7368ec476c9e1f"
 }
