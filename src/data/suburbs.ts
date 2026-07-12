@@ -134,6 +134,9 @@ export interface SuburbData {
   topSchoolName?: string;
   schoolCount?: number;
   historyRent?: { date: string; value: number }[];
+  unemploymentRate?: number;
+  buildingApprovals12m?: number;
+  infrastructureInvestment?: string;
 }
 
 export interface StampDutyRates {
