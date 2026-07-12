@@ -193,7 +193,7 @@ function App() {
 
   useEffect(() => {
     const currentId = activeSuburb?.id || null;
-    if (currentId === prevSuburbId.current) return; // Same suburb — skip (AI enrichment, metrics update, etc.)
+    if (currentId === prevSuburbId.current) return;
     prevSuburbId.current = currentId;
     
     setLivabilityData(null)
@@ -202,13 +202,18 @@ function App() {
     
     if (activeSuburb) {
       setLoadingLivability(true);
-      const coords = activeSuburb.coordinates || [-37.8, 145.0];
-      fetchLivabilityData(coords[0], coords[1])
-        .then(data => setLivabilityData(data))
-        .catch(() => console.error("Failed to load livability data"))
+      const lat = activeSuburb.coordinates?.[0] || -33.8688;
+      const lng = activeSuburb.coordinates?.[1] || 151.2093;
+      console.log(`[livability] fetching for ${activeSuburb.name} at ${lat},${lng}`);
+      fetchLivabilityData(lat, lng)
+        .then(data => {
+          console.log(`[livability] received: cafes=${data.cafes?.length} parks=${data.parks?.length} walkability=${data.walkabilityScore}`);
+          setLivabilityData(data);
+        })
+        .catch((err) => console.error("Failed to load livability data:", err))
         .finally(() => setLoadingLivability(false));
     }
-  }, [activeSuburb])
+  }, [activeSuburb?.id])
 
   const mappedPois = useMemo(() => [
     ...(activeSuburb?.pois || []),
@@ -654,42 +659,34 @@ function App() {
                             if (isAnalyzingNews) return;
                             setIsAnalyzingNews(true);
                             try {
-                              const id = activeSuburb.id;
-                              const res = await fetch('/api/analyze-suburb', {
+                              const res = await fetch(`/api/suburbs/${activeSuburb.id}/news-sentiment`, {
                                 method: 'POST',
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({ suburb: activeSuburb.name, state: activeSuburb.state, id })
                               });
-                              if(res.ok) {
+                              if (res.ok) {
                                 const data = await res.json();
-                                if (data.status === 'success' && data.result && data.result.verdict) {
-                                  const result = data.result;
-                                  // Map verdict to sentiment display
-                                  const verdict = result.verdict;
-                                  const sentiment = verdict.includes('BUY') ? 'Bullish' :
-                                                     verdict.includes('HOLD') ? 'Neutral' :
-                                                     verdict.includes('SELL') ? 'Bearish' : verdict;
-                                  // Store full AI committee data
-                                  const aiResult = {
-                                    aiVerdict: verdict,
-                                    aiConsensus: result.playbook,
-                                    aiRiskLevel: result.reality_check,
-                                    aiBullView: result.bull,
-                                    aiBearView: result.bear,
-                                    aiUrbanView: result.urban,
-                                    highlights: result.catalysts || activeSuburb.highlights,
-                                    metrics: {
-                                      ...activeSuburb.metrics,
-                                      aiNewsSentiment: sentiment,
-                                      aiNewsSummary: result.playbook || result.reality_check || ''
-                                    }
-                                  };
-                                  setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }));
-                                  try { localStorage.setItem('ai_' + id, JSON.stringify(aiResult)); } catch {}
-                                }
+                                const sentimentLabel = data.label || (data.score >= 7 ? 'Bullish' : data.score >= 4 ? 'Neutral' : 'Bearish');
+                                setActiveSuburb((prev: any) => ({
+                                  ...prev,
+                                  metrics: {
+                                    ...prev.metrics,
+                                    aiNewsSentiment: `${sentimentLabel} (${data.score}/10)`,
+                                    aiNewsSummary: data.summary || `${data.articles?.length || 0} articles analyzed`,
+                                    _newsScore: data.score,
+                                    _newsLabel: sentimentLabel,
+                                    _newsArticles: data.articles || [],
+                                  }
+                                }));
+                              } else {
+                                setActiveSuburb((prev: any) => ({
+                                  ...prev,
+                                  metrics: { ...prev.metrics, aiNewsSentiment: 'Unavailable', aiNewsSummary: 'News analysis failed. Try again later.' }
+                                }));
                               }
                             } catch {
-                              alert("Analysis failed.");
+                              setActiveSuburb((prev: any) => ({
+                                ...prev,
+                                metrics: { ...prev.metrics, aiNewsSentiment: 'Error', aiNewsSummary: 'Network error. Check connection.' }
+                              }));
                             } finally {
                               setIsAnalyzingNews(false);
                             }
@@ -705,14 +702,13 @@ function App() {
                         </button>
                       </div>
                       <div className={`metric-value ${
-                        activeSuburb.metrics.aiNewsSentiment?.includes('Bullish') ? 'highlight-cyan' :
-                        activeSuburb.metrics.aiNewsSentiment?.includes('Bearish') ? 'text-warning' : 'text-muted'
+                        (activeSuburb.metrics as any)?._newsScore >= 7 ? 'highlight-cyan' :
+                        (activeSuburb.metrics as any)?._newsScore >= 4 ? 'text-muted' : 'text-warning'
                       }`}>
                         {activeSuburb.metrics.aiNewsSentiment || 'Click "Analyze Live News"'}
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontStyle: 'italic' }}>
-                        {activeSuburb.metrics.aiNewsSummary || 'Disclaimer: AI generated sentiment based on live news. Always verify with actual market data before considering.'}
-                        {activeSuburb.metrics.aiNewsSummary && <div style={{marginTop: '4px'}}>*Disclaimer: AI generated sentiment based on live news. Always verify with actual market data before considering.</div>}
+                        {activeSuburb.metrics.aiNewsSummary || 'AI-powered news sentiment from live media sources. Score 0-10 (Bearish→Bullish).'}
                       </div>
                     </div>
                    </div>
@@ -1251,9 +1247,7 @@ function App() {
                       </div>
                     ) : (
                       <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
-                        {(activeSuburb as any).metrics?.aiNewsSentiment && (activeSuburb as any).metrics.aiNewsSentiment !== 'Click "Analyze Live News"' 
-                          ? 'AI Committee results loaded above. Click "Run AI Committee" to refresh analysis.'
-                          : `Click "Analyze Live News" above or "Run AI Committee" to get AI investment analysis for ${activeSuburb.name}.`}
+                        Click "Run AI Committee" to get a multi-agent investment analysis of {activeSuburb.name}. This is separate from the News Sentiment score above.
                       </div>
                     )}
                   </div>
