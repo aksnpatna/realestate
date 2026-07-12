@@ -476,6 +476,10 @@ function App() {
                   value={activeSuburb?.id || ''}
                   onChange={(e) => {
                     if (e.target.value) {
+                      const target = stateSuburbs.find(s => s.id === e.target.value);
+                      if (target) {
+                        setActiveSuburb(target);
+                      }
                       loadColdSuburb(e.target.value)
                       trackActivity('VIEW_SUBURB', e.target.value)
                     }
@@ -930,20 +934,44 @@ function App() {
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h3>Livability & Amenities</h3>
-                      <button
-                        onClick={() => setShowAmenitiesOnMap(!showAmenitiesOnMap)}
-                        style={{
-                          background: showAmenitiesOnMap ? 'var(--accent-cyan)' : 'var(--bg-glass)', 
-                          color: showAmenitiesOnMap ? '#000' : 'var(--text-primary)', 
-                          border: '1px solid var(--border-glass)', 
-                          padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold'
-                        }}
-                      >
-                        {showAmenitiesOnMap ? 'Hide Amenities from Map' : 'Click to overlay on map below'}
-                      </button>
+                      {livabilityData && (
+                        <button
+                          onClick={() => setShowAmenitiesOnMap(!showAmenitiesOnMap)}
+                          style={{
+                            background: showAmenitiesOnMap ? 'var(--accent-cyan)' : 'var(--bg-glass)', 
+                            color: showAmenitiesOnMap ? '#000' : 'var(--text-primary)', 
+                            border: '1px solid var(--border-glass)', 
+                            padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold'
+                          }}
+                        >
+                          {showAmenitiesOnMap ? 'Hide Amenities from Map' : 'Show Amenities on Map'}
+                        </button>
+                      )}
                     </div>
-                    {loadingLivability && <p style={{ color: 'var(--text-secondary)' }}>Scanning neighborhood via OpenStreetMap...</p>}
-                    {livabilityData && (
+                    {loadingLivability && (
+                      <div style={{ marginTop: '15px' }}>
+                        <p style={{ color: 'var(--text-secondary)' }}>Scanning neighborhood via OpenStreetMap...</p>
+                        <div className="metrics-grid" style={{ marginBottom: '15px' }}>
+                          <div className="metric-box">
+                            <div className="metric-label">Walkability Score</div>
+                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Cafes & Dining</div>
+                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Parks & Leisure</div>
+                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                          </div>
+                          <div className="metric-box">
+                            <div className="metric-label">Transit Stops</div>
+                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {livabilityData && !loadingLivability && (
                       <div style={{ marginTop: '15px' }}>
                         <div className="metrics-grid" style={{ marginBottom: '15px' }}>
                           <div className="metric-box">
