@@ -829,19 +829,26 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
         ai_cache = v3.ai_insights or {}
             
         # P0 FIX: Check if already analyzed to prevent LLM API exhaustion
-        if ai_cache.get("aiCommitteeVerdict"):
-            return {
-                "status": "success",
-                "result": {
-                    "bull": ai_cache.get("aiCommitteeDebate", {}).get("bull", ""),
-                    "bear": ai_cache.get("aiCommitteeDebate", {}).get("bear", ""),
-                    "urban": ai_cache.get("aiCommitteeDebate", {}).get("urban", ""),
-                    "reality_check": ai_cache.get("aiCommitteeDebate", {}).get("reality_check", ""),
-                    "verdict": ai_cache["aiCommitteeVerdict"],
-                    "playbook": ai_cache["aiCommitteePlaybook"],
-                    "catalysts": v3.highlights or []
-                }
-            }
+        if ai_cache.get("aiCommitteeVerdict") and ai_cache.get("fetched_at"):
+            try:
+                fetched_dt = datetime.fromisoformat(ai_cache["fetched_at"])
+                if (datetime.utcnow() - fetched_dt).total_seconds() < AI_CACHE_TTL_SECONDS:
+                    return {
+                        "status": "success",
+                        "cached": True,
+                        "cache_ttl": AI_CACHE_TTL_SECONDS,
+                        "result": {
+                            "bull": ai_cache.get("aiCommitteeDebate", {}).get("bull", ""),
+                            "bear": ai_cache.get("aiCommitteeDebate", {}).get("bear", ""),
+                            "urban": ai_cache.get("aiCommitteeDebate", {}).get("urban", ""),
+                            "reality_check": ai_cache.get("aiCommitteeDebate", {}).get("reality_check", ""),
+                            "verdict": ai_cache["aiCommitteeVerdict"],
+                            "playbook": ai_cache["aiCommitteePlaybook"],
+                            "catalysts": v3.highlights or [],
+                        }
+                    }
+            except (ValueError, TypeError):
+                pass
             
         # Compile rich V3 metrics for the AI to analyze
         # Fetch ETF for macro benchmark comparison
@@ -879,10 +886,10 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
             "urban": ai_result["urban"],
             "reality_check": ai_result["reality_check"]
         }
+        ai_cache["fetched_at"] = datetime.utcnow().isoformat()
         
         v3.ai_insights = ai_cache
         
-        # Save extracted catalysts directly to the highlights column for the UI to consume
         if ai_result.get("catalysts") and len(ai_result["catalysts"]) > 0:
             v3.highlights = ai_result["catalysts"]
             
@@ -893,7 +900,12 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
             
         db.commit()
             
-        return {"status": "success", "result": ai_result}
+        return {
+            "status": "success",
+            "cached": False,
+            "cache_ttl": AI_CACHE_TTL_SECONDS,
+            "result": ai_result,
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -937,52 +949,77 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/suburbs/{suburb_id}/news-sentiment")
-def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
-    """On-demand news sentiment for a suburb. Cached for 24h. Only calls Tavily if needed."""
-    if not ENABLE_AI_INSIGHTS:
-        raise HTTPException(status_code=503, detail="AI insights have been temporarily disabled (ENABLE_AI_INSIGHTS=false)")
-    # Normalize ID: frontend sends "parramatta-nsw-2150" → DB has "NSW_PARRAMATTA_2150"
-    parts = suburb_id.rsplit("-", 1)  # ["parramatta-nsw", "2150"]
+def _normalize_suburb_id(suburb_id: str) -> str:
+    """Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_2150)."""
+    parts = suburb_id.rsplit("-", 1)
     if len(parts) == 2:
         postcode = parts[1]
-        rest = parts[0].split("-")     # ["parramatta", "nsw"]
+        rest = parts[0].split("-")
         if len(rest) == 2:
-            normalized = f"{rest[1].upper()}_{rest[0].upper()}_{postcode}"
-        else:
-            normalized = suburb_id.upper().replace("-", "_")
-    else:
-        normalized = suburb_id.upper().replace("-", "_")
-    
+            return f"{rest[1].upper()}_{rest[0].upper()}_{postcode}"
+    return suburb_id.upper().replace("-", "_")
+
+
+def _get_suburb_or_404(suburb_id: str, db: Session):
+    """Look up a SuburbUIV3 by normalized ID. Raises 404 if not found."""
+    normalized = _normalize_suburb_id(suburb_id)
     v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == normalized).first()
     if not v3:
-        # Fallback: try case-insensitive match
         v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id.ilike(f"%{suburb_id.replace('-', '_')}%")).first()
     if not v3:
         raise HTTPException(status_code=404, detail="Suburb not found")
-        
-    # Check cache (within 24h)
+    return v3
+
+
+# Cache TTL for AI features (default 7 days)
+AI_CACHE_TTL_SECONDS = int(os.getenv("AI_CACHE_TTL", "604800"))
+
+@app.post("/api/suburbs/{suburb_id}/news-sentiment")
+def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
+    """On-demand news sentiment for a suburb.
+    Caching: DB (TTL=AI_CACHE_TTL) → Redis (TTL=AI_CACHE_TTL) → Tavily+Transformers.
+    """
+    if not ENABLE_AI_INSIGHTS:
+        raise HTTPException(status_code=503, detail="AI insights have been temporarily disabled (ENABLE_AI_INSIGHTS=false)")
+    
+    v3 = _get_suburb_or_404(suburb_id, db)
+    
+    # Layer 1: DB cache
     cached = v3.news_sentiment or {}
     if isinstance(cached, dict):
         fetched = cached.get("fetched_at")
         if fetched:
             try:
-                from datetime import datetime, timedelta
+                from datetime import datetime
                 fetched_dt = datetime.fromisoformat(fetched)
-                if datetime.utcnow() - fetched_dt < timedelta(days=30):
-                    return {"cached": True, **cached}
+                if (datetime.utcnow() - fetched_dt).total_seconds() < AI_CACHE_TTL_SECONDS:
+                    return {
+                        "cached": True,
+                        "cache_ttl": AI_CACHE_TTL_SECONDS,
+                        **cached,
+                    }
             except (ValueError, TypeError):
                 pass
     
-    # Fetch fresh from Tavily
+    # Layer 2: Redis (via cached_ai wrapper on get_news_sentiment)
+    # Layer 3: Fresh fetch from Tavily + Transformers
     from ai_agent import get_news_sentiment as fetch_sentiment
-    result = fetch_sentiment(v3.name or "", v3.state or "")
+    cache_key = f"ai_sentiment:{v3.name}:{v3.state}"
     
-    # Cache in DB
+    def _fetch():
+        return fetch_sentiment(v3.name or "", v3.state or "")
+    
+    result = get_cached_or_query(cache_key, _fetch, expire_secs=AI_CACHE_TTL_SECONDS)
+    
+    # Persist to DB for cold-start
     v3.news_sentiment = result
     db.commit()
     
-    return {"cached": False, **result}
+    return {
+        "cached": False,
+        "cache_ttl": AI_CACHE_TTL_SECONDS,
+        **result,
+    }
 def reload_suburbs():
     """Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data)."""
     from enrich_from_unpacked import enrich_all
