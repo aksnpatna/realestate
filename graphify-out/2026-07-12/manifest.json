@@ -10,8 +10,8 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1783852327.1847434,
-    "ast_hash": "7830ba48f487d390ed60518d4d96e106",
+    "mtime": 1783855700.392657,
+    "ast_hash": "d448872d85e830541383e7463d0f7130",
     "semantic_hash": ""
   },
   "backend/downloader.py": {
@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783852032.5125766,
-    "ast_hash": "af4a5414aed1b83e16913b9275b2e7d2",
+    "mtime": 1783855754.026949,
+    "ast_hash": "e8b59ada45c40b45f1f673cb2b318203",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -545,8 +545,8 @@
     "semantic_hash": ""
   },
   "backend/ai_sentiment.py": {
-    "mtime": 1783855057.3765965,
-    "ast_hash": "0c9e23a3d0be9bcb87629b429230768b",
+    "mtime": 1783855693.540748,
+    "ast_hash": "3d2f93a45d3d9c805a730acf8e4e228e",
     "semantic_hash": ""
   },
   "backend/cache_utils.py": {
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1783852179.4113972,
-    "ast_hash": "11b3966683b363366b6948837214d250",
+    "mtime": 1783855671.1020455,
+    "ast_hash": "942ecaee3cc48a36cdcb8431db5aefc8",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -592,6 +592,16 @@
   "backend/risk_engine.py": {
     "mtime": 1783851919.9134896,
     "ast_hash": "dac81523effb5e600e743a8c131f8b1d",
+    "semantic_hash": ""
+  },
+  "backend/agent_router.py": {
+    "mtime": 1783855609.7128632,
+    "ast_hash": "32215c3ae582922ef6623ddf3ab9875c",
+    "semantic_hash": ""
+  },
+  "backend/observability.py": {
+    "mtime": 1783855683.3672504,
+    "ast_hash": "8e89acfd39e39625329534d1e0c45b26",
     "semantic_hash": ""
   }
 }

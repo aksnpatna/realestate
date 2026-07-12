@@ -10,8 +10,8 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1783855700.392657,
-    "ast_hash": "d448872d85e830541383e7463d0f7130",
+    "mtime": 1783856246.4958954,
+    "ast_hash": "fb3be0af72e5bcb0ab648f50e668c83f",
     "semantic_hash": ""
   },
   "backend/downloader.py": {
@@ -290,8 +290,8 @@
     "semantic_hash": "84390dab89b4799da261cbab3a6216ec"
   },
   "backend/models_v3.py": {
-    "mtime": 1783750428.4354382,
-    "ast_hash": "950ba64759d281282095c9a4983e5efc",
+    "mtime": 1783856181.210735,
+    "ast_hash": "470b56da2a65616b952d0131d8957758",
     "semantic_hash": ""
   },
   "backend/models_v3_unpacked.py": {
@@ -545,8 +545,8 @@
     "semantic_hash": ""
   },
   "backend/ai_sentiment.py": {
-    "mtime": 1783855693.540748,
-    "ast_hash": "3d2f93a45d3d9c805a730acf8e4e228e",
+    "mtime": 1783856283.789474,
+    "ast_hash": "570310cd6053321dfd6dce95d22346ee",
     "semantic_hash": ""
   },
   "backend/cache_utils.py": {
@@ -602,6 +602,16 @@
   "backend/observability.py": {
     "mtime": 1783855683.3672504,
     "ast_hash": "8e89acfd39e39625329534d1e0c45b26",
+    "semantic_hash": ""
+  },
+  "backend/ai_alerts.py": {
+    "mtime": 1783856262.8881485,
+    "ast_hash": "ef5ef1e8125f3be90f34effcc1b011d2",
+    "semantic_hash": ""
+  },
+  "backend/committee_memory.py": {
+    "mtime": 1783856196.0750167,
+    "ast_hash": "69df1c4957634514336c4d716bd57cc8",
     "semantic_hash": ""
   }
 }

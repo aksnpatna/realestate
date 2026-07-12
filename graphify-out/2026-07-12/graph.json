@@ -292,6 +292,46 @@
       "norm_label": "add_column.py"
     },
     {
+      "label": "agent_router.py",
+      "file_type": "code",
+      "source_file": "backend/agent_router.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_agent_router",
+      "community": 65,
+      "norm_label": "agent_router.py"
+    },
+    {
+      "label": "route_agents()",
+      "file_type": "code",
+      "source_file": "backend/agent_router.py",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "backend_agent_router_route_agents",
+      "community": 65,
+      "norm_label": "route_agents()"
+    },
+    {
+      "label": "agent_router.py \u2014 Rules-based dynamic agent selection for the investment committ",
+      "file_type": "rationale",
+      "source_file": "backend/agent_router.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_agent_router_rationale_1",
+      "community": 65,
+      "norm_label": "agent_router.py \u2014 rules-based dynamic agent selection for the investment committ"
+    },
+    {
+      "label": "Determine which committee agents to run for a given suburb.      Rules (evaluate",
+      "file_type": "rationale",
+      "source_file": "backend/agent_router.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "backend_agent_router_rationale_10",
+      "community": 65,
+      "norm_label": "determine which committee agents to run for a given suburb.      rules (evaluate"
+    },
+    {
       "label": "ai_agent.py",
       "file_type": "code",
       "source_file": "backend/ai_agent.py",
@@ -515,7 +555,7 @@
       "label": "_extract_keywords()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L165",
+      "source_location": "L169",
       "_origin": "ast",
       "id": "backend_ai_sentiment_extract_keywords",
       "community": 88,
@@ -552,22 +592,22 @@
       "norm_label": "keyword-based sentiment scoring as fallback. returns 1-10 score."
     },
     {
-      "label": "Analyze sentiment of text. Tries remote Qwen 7B first, falls back to keyword.",
+      "label": "Analyze sentiment of text. Tries remote Qwen 3B first, falls back to keyword.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L130",
       "_origin": "ast",
       "id": "backend_ai_sentiment_rationale_130",
       "community": 88,
-      "norm_label": "analyze sentiment of text. tries remote qwen 7b first, falls back to keyword."
+      "norm_label": "analyze sentiment of text. tries remote qwen 3b first, falls back to keyword."
     },
     {
       "label": "Extract matching sentiment keywords from the text with counts.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L166",
+      "source_location": "L170",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_166",
+      "id": "backend_ai_sentiment_rationale_170",
       "community": 88,
       "norm_label": "extract matching sentiment keywords from the text with counts."
     },
@@ -618,7 +658,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_clustering",
-      "community": 6,
+      "community": 103,
       "norm_label": "clustering.py"
     },
     {
@@ -628,7 +668,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "backend_clustering_find_similar_suburbs",
-      "community": 6,
+      "community": 103,
       "norm_label": "find_similar_suburbs()"
     },
     {
@@ -638,7 +678,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_clustering_rationale_10",
-      "community": 6,
+      "community": 103,
       "norm_label": "finds cheaper suburbs that share similar institutional-grade characteristics"
     },
     {
@@ -1505,7 +1545,7 @@
       "label": "_check_auth_rate()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L103",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "backend_main_check_auth_rate",
       "community": 6,
@@ -1515,7 +1555,7 @@
       "label": "UserModel",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L116",
+      "source_location": "L118",
       "_origin": "ast",
       "id": "backend_main_usermodel",
       "community": 6,
@@ -1535,7 +1575,7 @@
       "label": "UserFavorite",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L129",
+      "source_location": "L131",
       "_origin": "ast",
       "id": "backend_main_userfavorite",
       "community": 6,
@@ -1545,7 +1585,7 @@
       "label": "UserActivity",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L136",
+      "source_location": "L138",
       "_origin": "ast",
       "id": "backend_main_useractivity",
       "community": 6,
@@ -1555,7 +1595,7 @@
       "label": "UserConsent",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L144",
+      "source_location": "L146",
       "_origin": "ast",
       "id": "backend_main_userconsent",
       "community": 6,
@@ -1565,7 +1605,7 @@
       "label": "get_db()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L157",
+      "source_location": "L159",
       "_origin": "ast",
       "id": "backend_main_get_db",
       "community": 6,
@@ -1575,7 +1615,7 @@
       "label": "startup_event()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L165",
+      "source_location": "L167",
       "_origin": "ast",
       "id": "backend_main_startup_event",
       "community": 69,
@@ -1585,7 +1625,7 @@
       "label": "LoginRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L180",
+      "source_location": "L182",
       "_origin": "ast",
       "id": "backend_main_loginrequest",
       "community": 6,
@@ -1605,7 +1645,7 @@
       "label": "RegisterRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L184",
+      "source_location": "L186",
       "_origin": "ast",
       "id": "backend_main_registerrequest",
       "community": 6,
@@ -1615,7 +1655,7 @@
       "label": "ActivityRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L191",
+      "source_location": "L193",
       "_origin": "ast",
       "id": "backend_main_activityrequest",
       "community": 6,
@@ -1625,7 +1665,7 @@
       "label": "send_verification_email()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L195",
+      "source_location": "L197",
       "_origin": "ast",
       "id": "backend_main_send_verification_email",
       "community": 6,
@@ -1635,7 +1675,7 @@
       "label": "BoundedRateLimitStore",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L222",
+      "source_location": "L224",
       "_origin": "ast",
       "id": "backend_main_boundedratelimitstore",
       "community": 6,
@@ -1645,7 +1685,7 @@
       "label": ".__init__()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L223",
+      "source_location": "L225",
       "_origin": "ast",
       "id": "backend_main_boundedratelimitstore_init",
       "community": 6,
@@ -1655,7 +1695,7 @@
       "label": ".__getitem__()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L227",
+      "source_location": "L229",
       "_origin": "ast",
       "id": "backend_main_boundedratelimitstore_getitem",
       "community": 6,
@@ -1665,7 +1705,7 @@
       "label": ".__setitem__()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L230",
+      "source_location": "L232",
       "_origin": "ast",
       "id": "backend_main_boundedratelimitstore_setitem",
       "community": 6,
@@ -1675,7 +1715,7 @@
       "label": ".__contains__()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L235",
+      "source_location": "L237",
       "_origin": "ast",
       "id": "backend_main_boundedratelimitstore_contains",
       "community": 6,
@@ -1685,7 +1725,7 @@
       "label": "hash_password()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L245",
+      "source_location": "L247",
       "_origin": "ast",
       "id": "backend_main_hash_password",
       "community": 6,
@@ -1695,7 +1735,7 @@
       "label": "verify_password()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L248",
+      "source_location": "L250",
       "_origin": "ast",
       "id": "backend_main_verify_password",
       "community": 6,
@@ -1705,7 +1745,7 @@
       "label": "get_current_user()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L254",
+      "source_location": "L256",
       "_origin": "ast",
       "id": "backend_main_get_current_user",
       "community": 6,
@@ -1715,7 +1755,7 @@
       "label": "Request",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L254",
+      "source_location": "L256",
       "_origin": "ast",
       "id": "request",
       "community": 6,
@@ -1725,7 +1765,7 @@
       "label": "Session",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L254",
+      "source_location": "L256",
       "_origin": "ast",
       "id": "session",
       "community": 6,
@@ -1735,7 +1775,7 @@
       "label": "register()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L275",
+      "source_location": "L277",
       "_origin": "ast",
       "id": "backend_main_register",
       "community": 6,
@@ -1745,7 +1785,7 @@
       "label": "login()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L308",
+      "source_location": "L310",
       "_origin": "ast",
       "id": "backend_main_login",
       "community": 6,
@@ -1755,7 +1795,7 @@
       "label": "Response",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L308",
+      "source_location": "L310",
       "_origin": "ast",
       "id": "response",
       "community": 6,
@@ -1765,7 +1805,7 @@
       "label": "ConsentRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L335",
+      "source_location": "L337",
       "_origin": "ast",
       "id": "backend_main_consentrequest",
       "community": 6,
@@ -1775,7 +1815,7 @@
       "label": "record_consent()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L339",
+      "source_location": "L341",
       "_origin": "ast",
       "id": "backend_main_record_consent",
       "community": 6,
@@ -1785,7 +1825,7 @@
       "label": "get_me()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L364",
+      "source_location": "L366",
       "_origin": "ast",
       "id": "backend_main_get_me",
       "community": 6,
@@ -1795,7 +1835,7 @@
       "label": "verify_email()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L368",
+      "source_location": "L370",
       "_origin": "ast",
       "id": "backend_main_verify_email",
       "community": 6,
@@ -1805,7 +1845,7 @@
       "label": "track_activity()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L379",
+      "source_location": "L381",
       "_origin": "ast",
       "id": "backend_main_track_activity",
       "community": 6,
@@ -1815,7 +1855,7 @@
       "label": "health_check()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L390",
+      "source_location": "L392",
       "_origin": "ast",
       "id": "backend_main_health_check",
       "community": 6,
@@ -1825,7 +1865,7 @@
       "label": "get_vap_etf()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L403",
+      "source_location": "L405",
       "_origin": "ast",
       "id": "backend_main_get_vap_etf",
       "community": 6,
@@ -1835,7 +1875,7 @@
       "label": "bust_suburbs_cache()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L439",
+      "source_location": "L441",
       "_origin": "ast",
       "id": "backend_main_bust_suburbs_cache",
       "community": 6,
@@ -1845,7 +1885,7 @@
       "label": "get_suburbs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L447",
+      "source_location": "L449",
       "_origin": "ast",
       "id": "backend_main_get_suburbs",
       "community": 6,
@@ -1855,7 +1895,7 @@
       "label": "search_suburbs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L516",
+      "source_location": "L518",
       "_origin": "ast",
       "id": "backend_main_search_suburbs",
       "community": 6,
@@ -1865,7 +1905,7 @@
       "label": "_annualize_cagr()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L525",
+      "source_location": "L527",
       "_origin": "ast",
       "id": "backend_main_annualize_cagr",
       "community": 6,
@@ -1875,7 +1915,7 @@
       "label": "_cap_yield()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L536",
+      "source_location": "L538",
       "_origin": "ast",
       "id": "backend_main_cap_yield",
       "community": 6,
@@ -1885,7 +1925,7 @@
       "label": "_calibrate_dq()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L542",
+      "source_location": "L544",
       "_origin": "ast",
       "id": "backend_main_calibrate_dq",
       "community": 6,
@@ -1895,7 +1935,7 @@
       "label": "_compute_growth_score()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L563",
+      "source_location": "L565",
       "_origin": "ast",
       "id": "backend_main_compute_growth_score",
       "community": 6,
@@ -1905,7 +1945,7 @@
       "label": "SuburbUIV3",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L563",
+      "source_location": "L565",
       "_origin": "ast",
       "id": "suburbuiv3",
       "community": 6,
@@ -1915,7 +1955,7 @@
       "label": "get_suburb()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L688",
+      "source_location": "L690",
       "_origin": "ast",
       "id": "backend_main_get_suburb",
       "community": 6,
@@ -1925,7 +1965,7 @@
       "label": "AnalyzeRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L790",
+      "source_location": "L792",
       "_origin": "ast",
       "id": "backend_main_analyzerequest",
       "community": 6,
@@ -1935,7 +1975,7 @@
       "label": "_check_rate_limit()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L795",
+      "source_location": "L797",
       "_origin": "ast",
       "id": "backend_main_check_rate_limit",
       "community": 6,
@@ -1945,7 +1985,7 @@
       "label": "analyze_suburb()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L813",
+      "source_location": "L815",
       "_origin": "ast",
       "id": "backend_main_analyze_suburb",
       "community": 6,
@@ -1955,7 +1995,7 @@
       "label": "get_similar_suburbs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L919",
+      "source_location": "L921",
       "_origin": "ast",
       "id": "backend_main_get_similar_suburbs",
       "community": 6,
@@ -1965,7 +2005,7 @@
       "label": "_normalize_suburb_id()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L958",
+      "source_location": "L960",
       "_origin": "ast",
       "id": "backend_main_normalize_suburb_id",
       "community": 99,
@@ -1975,27 +2015,27 @@
       "label": "_get_suburb_or_404()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L964",
+      "source_location": "L966",
       "_origin": "ast",
       "id": "backend_main_get_suburb_or_404",
-      "community": 6,
+      "community": 99,
       "norm_label": "_get_suburb_or_404()"
     },
     {
       "label": "get_news_sentiment()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L979",
+      "source_location": "L981",
       "_origin": "ast",
       "id": "backend_main_get_news_sentiment",
-      "community": 6,
+      "community": 99,
       "norm_label": "get_news_sentiment()"
     },
     {
       "label": "reload_suburbs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1024",
+      "source_location": "L1027",
       "_origin": "ast",
       "id": "backend_main_reload_suburbs",
       "community": 18,
@@ -2005,7 +2045,7 @@
       "label": "ROICalcRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1038",
+      "source_location": "L1041",
       "_origin": "ast",
       "id": "backend_main_roicalcrequest",
       "community": 6,
@@ -2015,7 +2055,7 @@
       "label": "calculate_stamp_duty()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1055",
+      "source_location": "L1058",
       "_origin": "ast",
       "id": "backend_main_calculate_stamp_duty",
       "community": 6,
@@ -2025,7 +2065,7 @@
       "label": "calculate_roi()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1120",
+      "source_location": "L1123",
       "_origin": "ast",
       "id": "backend_main_calculate_roi",
       "community": 6,
@@ -2035,7 +2075,7 @@
       "label": "get_mortgage_rate()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1199",
+      "source_location": "L1202",
       "_origin": "ast",
       "id": "backend_main_get_mortgage_rate",
       "community": 6,
@@ -2045,7 +2085,7 @@
       "label": "get_suburbs_v3()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1219",
+      "source_location": "L1222",
       "_origin": "ast",
       "id": "backend_main_get_suburbs_v3",
       "community": 6,
@@ -2055,7 +2095,7 @@
       "label": "export_suburbs_csv()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1297",
+      "source_location": "L1300",
       "_origin": "ast",
       "id": "backend_main_export_suburbs_csv",
       "community": 6,
@@ -2065,7 +2105,7 @@
       "label": "FavoriteRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1329",
+      "source_location": "L1332",
       "_origin": "ast",
       "id": "backend_main_favoriterequest",
       "community": 6,
@@ -2075,7 +2115,7 @@
       "label": "get_favorites()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1333",
+      "source_location": "L1336",
       "_origin": "ast",
       "id": "backend_main_get_favorites",
       "community": 6,
@@ -2085,7 +2125,7 @@
       "label": "toggle_favorite()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1339",
+      "source_location": "L1342",
       "_origin": "ast",
       "id": "backend_main_toggle_favorite",
       "community": 6,
@@ -2095,7 +2135,7 @@
       "label": "get_suburb_v3()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1352",
+      "source_location": "L1355",
       "_origin": "ast",
       "id": "backend_main_get_suburb_v3",
       "community": 6,
@@ -2105,7 +2145,7 @@
       "label": "get_osm_livability()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1422",
+      "source_location": "L1425",
       "_origin": "ast",
       "id": "backend_main_get_osm_livability",
       "community": 66,
@@ -2115,7 +2155,7 @@
       "label": "get_osm_boundary()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1451",
+      "source_location": "L1454",
       "_origin": "ast",
       "id": "backend_main_get_osm_boundary",
       "community": 66,
@@ -2125,19 +2165,29 @@
       "label": "get_suburb_properties()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1460",
+      "source_location": "L1463",
       "_origin": "ast",
       "id": "backend_main_get_suburb_properties",
       "community": 1,
       "norm_label": "get_suburb_properties()"
     },
     {
+      "label": "metrics()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L1514",
+      "_origin": "ast",
+      "id": "backend_main_metrics",
+      "community": 99,
+      "norm_label": "metrics()"
+    },
+    {
       "label": "Stores legally binding Click-Wrap agreements with timestamps and IP records.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L145",
+      "source_location": "L147",
       "_origin": "ast",
-      "id": "backend_main_rationale_145",
+      "id": "backend_main_rationale_147",
       "community": 6,
       "norm_label": "stores legally binding click-wrap agreements with timestamps and ip records."
     },
@@ -2145,9 +2195,9 @@
       "label": "Records a legally binding Click-Wrap agreement to the database with IP tracing.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L340",
+      "source_location": "L342",
       "_origin": "ast",
-      "id": "backend_main_rationale_340",
+      "id": "backend_main_rationale_342",
       "community": 6,
       "norm_label": "records a legally binding click-wrap agreement to the database with ip tracing."
     },
@@ -2155,9 +2205,9 @@
       "label": "Lightweight health check for Docker healthcheck and monitoring.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L391",
+      "source_location": "L393",
       "_origin": "ast",
-      "id": "backend_main_rationale_391",
+      "id": "backend_main_rationale_393",
       "community": 6,
       "norm_label": "lightweight health check for docker healthcheck and monitoring."
     },
@@ -2165,9 +2215,9 @@
       "label": "Fetches Vanguard Australian Property ETF performance (macro benchmark). Cached 2",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L404",
+      "source_location": "L406",
       "_origin": "ast",
-      "id": "backend_main_rationale_404",
+      "id": "backend_main_rationale_406",
       "community": 6,
       "norm_label": "fetches vanguard australian property etf performance (macro benchmark). cached 2"
     },
@@ -2175,9 +2225,9 @@
       "label": "Invalidate the in-memory suburbs list cache. Call after any pipeline run.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L440",
+      "source_location": "L442",
       "_origin": "ast",
-      "id": "backend_main_rationale_440",
+      "id": "backend_main_rationale_442",
       "community": 6,
       "norm_label": "invalidate the in-memory suburbs list cache. call after any pipeline run."
     },
@@ -2185,9 +2235,9 @@
       "label": "Convert 5yr total growth % to annual CAGR %. Values >10% treated as total growth",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L526",
+      "source_location": "L528",
       "_origin": "ast",
-      "id": "backend_main_rationale_526",
+      "id": "backend_main_rationale_528",
       "community": 6,
       "norm_label": "convert 5yr total growth % to annual cagr %. values >10% treated as total growth"
     },
@@ -2195,9 +2245,9 @@
       "label": "Clamp rental yields to prevent absurd outliers from low-price suburbs.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L537",
+      "source_location": "L539",
       "_origin": "ast",
-      "id": "backend_main_rationale_537",
+      "id": "backend_main_rationale_539",
       "community": 6,
       "norm_label": "clamp rental yields to prevent absurd outliers from low-price suburbs."
     },
@@ -2205,9 +2255,9 @@
       "label": "Recalibrate DQ Score: subtract points for NULL critical fields.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L543",
+      "source_location": "L545",
       "_origin": "ast",
-      "id": "backend_main_rationale_543",
+      "id": "backend_main_rationale_545",
       "community": 6,
       "norm_label": "recalibrate dq score: subtract points for null critical fields."
     },
@@ -2215,9 +2265,9 @@
       "label": "Compute a 0-92 growth score from real V3 metrics.     Version: 1.2.0 \u2014 Probabili",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L564",
+      "source_location": "L566",
       "_origin": "ast",
-      "id": "backend_main_rationale_564",
+      "id": "backend_main_rationale_566",
       "community": 6,
       "norm_label": "compute a 0-92 growth score from real v3 metrics.     version: 1.2.0 \u2014 probabili"
     },
@@ -2225,9 +2275,9 @@
       "label": "V3-only endpoint \u2014 all data from suburbs_ui_v3 (self-sufficient).",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L689",
+      "source_location": "L691",
       "_origin": "ast",
-      "id": "backend_main_rationale_689",
+      "id": "backend_main_rationale_691",
       "community": 6,
       "norm_label": "v3-only endpoint \u2014 all data from suburbs_ui_v3 (self-sufficient)."
     },
@@ -2235,9 +2285,9 @@
       "label": "Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L959",
+      "source_location": "L961",
       "_origin": "ast",
-      "id": "backend_main_rationale_959",
+      "id": "backend_main_rationale_961",
       "community": 99,
       "norm_label": "convert frontend id format (parramatta-nsw-2150) to db format (nsw_parramatta_21"
     },
@@ -2245,29 +2295,29 @@
       "label": "Look up a SuburbUIV3 by normalized ID. Raises 404 if not found.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L965",
+      "source_location": "L967",
       "_origin": "ast",
-      "id": "backend_main_rationale_965",
-      "community": 6,
+      "id": "backend_main_rationale_967",
+      "community": 99,
       "norm_label": "look up a suburbuiv3 by normalized id. raises 404 if not found."
     },
     {
       "label": "On-demand news sentiment for a suburb.     Caching: DB (TTL=AI_CACHE_TTL) \u2192 Redi",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L980",
+      "source_location": "L982",
       "_origin": "ast",
-      "id": "backend_main_rationale_980",
-      "community": 6,
+      "id": "backend_main_rationale_982",
+      "community": 99,
       "norm_label": "on-demand news sentiment for a suburb.     caching: db (ttl=ai_cache_ttl) \u2192 redi"
     },
     {
       "label": "Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1025",
+      "source_location": "L1028",
       "_origin": "ast",
-      "id": "backend_main_rationale_1025",
+      "id": "backend_main_rationale_1028",
       "community": 18,
       "norm_label": "triggers v3 pipeline enrichment from unpacked table (replaces old transform_data"
     },
@@ -2275,9 +2325,9 @@
       "label": "Returns V3-enriched suburbs for the institutional dashboard view.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1220",
+      "source_location": "L1223",
       "_origin": "ast",
-      "id": "backend_main_rationale_1220",
+      "id": "backend_main_rationale_1223",
       "community": 6,
       "norm_label": "returns v3-enriched suburbs for the institutional dashboard view."
     },
@@ -2285,9 +2335,9 @@
       "label": "Exports the V3 suburbs table to a CSV file.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1298",
+      "source_location": "L1301",
       "_origin": "ast",
-      "id": "backend_main_rationale_1298",
+      "id": "backend_main_rationale_1301",
       "community": 6,
       "norm_label": "exports the v3 suburbs table to a csv file."
     },
@@ -2295,9 +2345,9 @@
       "label": "Returns full V3 institutional data for a single suburb.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1353",
+      "source_location": "L1356",
       "_origin": "ast",
-      "id": "backend_main_rationale_1353",
+      "id": "backend_main_rationale_1356",
       "community": 6,
       "norm_label": "returns full v3 institutional data for a single suburb."
     },
@@ -2305,9 +2355,9 @@
       "label": "Returns local POI data and livability scores from PostGIS OSM tables.     Replac",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1423",
+      "source_location": "L1426",
       "_origin": "ast",
-      "id": "backend_main_rationale_1423",
+      "id": "backend_main_rationale_1426",
       "community": 66,
       "norm_label": "returns local poi data and livability scores from postgis osm tables.     replac"
     },
@@ -2315,9 +2365,9 @@
       "label": "Returns suburb boundary geojson and center coordinates from local PostGIS.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1452",
+      "source_location": "L1455",
       "_origin": "ast",
-      "id": "backend_main_rationale_1452",
+      "id": "backend_main_rationale_1455",
       "community": 66,
       "norm_label": "returns suburb boundary geojson and center coordinates from local postgis."
     },
@@ -2325,11 +2375,21 @@
       "label": "Returns authentic property listings scraped from onthehouse.com.au     Only retu",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1461",
+      "source_location": "L1464",
       "_origin": "ast",
-      "id": "backend_main_rationale_1461",
+      "id": "backend_main_rationale_1464",
       "community": 1,
       "norm_label": "returns authentic property listings scraped from onthehouse.com.au     only retu"
+    },
+    {
+      "label": "Prometheus-compatible metrics endpoint for AI observability.",
+      "file_type": "rationale",
+      "source_file": "backend/main.py",
+      "source_location": "L1515",
+      "_origin": "ast",
+      "id": "backend_main_rationale_1515",
+      "community": 99,
+      "norm_label": "prometheus-compatible metrics endpoint for ai observability."
     },
     {
       "label": "maintenance.py",
@@ -2610,6 +2670,86 @@
       "id": "backend_models_v3_unpacked_rationale_1",
       "community": 7,
       "norm_label": "models_v3_unpacked.py \u2014 layer 1a: unpacked columnar table ======================"
+    },
+    {
+      "label": "observability.py",
+      "file_type": "code",
+      "source_file": "backend/observability.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_observability",
+      "community": 99,
+      "norm_label": "observability.py"
+    },
+    {
+      "label": "record_sentiment_call()",
+      "file_type": "code",
+      "source_file": "backend/observability.py",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "backend_observability_record_sentiment_call",
+      "community": 99,
+      "norm_label": "record_sentiment_call()"
+    },
+    {
+      "label": "record_committee_call()",
+      "file_type": "code",
+      "source_file": "backend/observability.py",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "backend_observability_record_committee_call",
+      "community": 99,
+      "norm_label": "record_committee_call()"
+    },
+    {
+      "label": "record_cache_hit()",
+      "file_type": "code",
+      "source_file": "backend/observability.py",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "backend_observability_record_cache_hit",
+      "community": 99,
+      "norm_label": "record_cache_hit()"
+    },
+    {
+      "label": "record_cache_miss()",
+      "file_type": "code",
+      "source_file": "backend/observability.py",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "backend_observability_record_cache_miss",
+      "community": 99,
+      "norm_label": "record_cache_miss()"
+    },
+    {
+      "label": "get_metrics_text()",
+      "file_type": "code",
+      "source_file": "backend/observability.py",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "backend_observability_get_metrics_text",
+      "community": 99,
+      "norm_label": "get_metrics_text()"
+    },
+    {
+      "label": "observability.py \u2014 Prometheus metrics for AI feature monitoring. Exposes counter",
+      "file_type": "rationale",
+      "source_file": "backend/observability.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_observability_rationale_1",
+      "community": 99,
+      "norm_label": "observability.py \u2014 prometheus metrics for ai feature monitoring. exposes counter"
+    },
+    {
+      "label": "Return Prometheus text format metrics.",
+      "file_type": "rationale",
+      "source_file": "backend/observability.py",
+      "source_location": "L44",
+      "_origin": "ast",
+      "id": "backend_observability_rationale_44",
+      "community": 99,
+      "norm_label": "return prometheus text format metrics."
     },
     {
       "label": "osm_local.py",
@@ -6234,7 +6374,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "australian_suburbs_data",
-      "community": 92,
+      "community": 19,
       "norm_label": "australian-suburbs-data.md"
     },
     {
@@ -6244,7 +6384,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "australian_suburbs_data_australian_suburbs_comprehensive_data_2025_2026",
-      "community": 92,
+      "community": 19,
       "norm_label": "australian suburbs comprehensive data (2025-2026)"
     },
     {
@@ -6254,7 +6394,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "australian_suburbs_data_act_australian_capital_territory",
-      "community": 93,
+      "community": 19,
       "norm_label": "act (australian capital territory)"
     },
     {
@@ -6264,7 +6404,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "australian_suburbs_data_belconnen_act_2617",
-      "community": 93,
+      "community": 19,
       "norm_label": "belconnen act 2617"
     },
     {
@@ -6274,7 +6414,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "australian_suburbs_data_gungahlin_act_2912",
-      "community": 93,
+      "community": 19,
       "norm_label": "gungahlin act 2912"
     },
     {
@@ -6284,7 +6424,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "australian_suburbs_data_tuggeranong_act_2900",
-      "community": 93,
+      "community": 19,
       "norm_label": "tuggeranong act 2900"
     },
     {
@@ -6294,7 +6434,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "australian_suburbs_data_woden_act_2606",
-      "community": 93,
+      "community": 19,
       "norm_label": "woden act 2606"
     },
     {
@@ -6304,7 +6444,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "australian_suburbs_data_queanbeyan_nsw_2620",
-      "community": 93,
+      "community": 19,
       "norm_label": "queanbeyan nsw 2620"
     },
     {
@@ -6544,7 +6684,7 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "australian_suburbs_data_qld_queensland",
-      "community": 89,
+      "community": 19,
       "norm_label": "qld (queensland)"
     },
     {
@@ -6554,7 +6694,7 @@
       "source_location": "L431",
       "_origin": "ast",
       "id": "australian_suburbs_data_coomera_qld_4209",
-      "community": 89,
+      "community": 19,
       "norm_label": "coomera qld 4209"
     },
     {
@@ -6564,7 +6704,7 @@
       "source_location": "L447",
       "_origin": "ast",
       "id": "australian_suburbs_data_logan_central_qld_4114",
-      "community": 89,
+      "community": 19,
       "norm_label": "logan central qld 4114"
     },
     {
@@ -6574,7 +6714,7 @@
       "source_location": "L463",
       "_origin": "ast",
       "id": "australian_suburbs_data_caboolture_qld_4510",
-      "community": 89,
+      "community": 19,
       "norm_label": "caboolture qld 4510"
     },
     {
@@ -6584,7 +6724,7 @@
       "source_location": "L479",
       "_origin": "ast",
       "id": "australian_suburbs_data_ipswich_qld_4305",
-      "community": 89,
+      "community": 19,
       "norm_label": "ipswich qld 4305"
     },
     {
@@ -6594,7 +6734,7 @@
       "source_location": "L495",
       "_origin": "ast",
       "id": "australian_suburbs_data_chermside_qld_4032",
-      "community": 89,
+      "community": 19,
       "norm_label": "chermside qld 4032"
     },
     {
@@ -6604,7 +6744,7 @@
       "source_location": "L511",
       "_origin": "ast",
       "id": "australian_suburbs_data_springfield_qld_4300",
-      "community": 89,
+      "community": 19,
       "norm_label": "springfield qld 4300"
     },
     {
@@ -6614,7 +6754,7 @@
       "source_location": "L527",
       "_origin": "ast",
       "id": "australian_suburbs_data_surfers_paradise_qld_4217",
-      "community": 89,
+      "community": 19,
       "norm_label": "surfers paradise qld 4217"
     },
     {
@@ -6624,7 +6764,7 @@
       "source_location": "L543",
       "_origin": "ast",
       "id": "australian_suburbs_data_wa_western_australia",
-      "community": 91,
+      "community": 19,
       "norm_label": "wa (western australia)"
     },
     {
@@ -6634,7 +6774,7 @@
       "source_location": "L547",
       "_origin": "ast",
       "id": "australian_suburbs_data_joondalup_wa_6027",
-      "community": 91,
+      "community": 19,
       "norm_label": "joondalup wa 6027"
     },
     {
@@ -6644,7 +6784,7 @@
       "source_location": "L563",
       "_origin": "ast",
       "id": "australian_suburbs_data_fremantle_wa_6160",
-      "community": 91,
+      "community": 19,
       "norm_label": "fremantle wa 6160"
     },
     {
@@ -6654,7 +6794,7 @@
       "source_location": "L579",
       "_origin": "ast",
       "id": "australian_suburbs_data_mandurah_wa_6210",
-      "community": 91,
+      "community": 19,
       "norm_label": "mandurah wa 6210"
     },
     {
@@ -6664,7 +6804,7 @@
       "source_location": "L595",
       "_origin": "ast",
       "id": "australian_suburbs_data_armadale_wa_6112",
-      "community": 91,
+      "community": 19,
       "norm_label": "armadale wa 6112"
     },
     {
@@ -6674,7 +6814,7 @@
       "source_location": "L611",
       "_origin": "ast",
       "id": "australian_suburbs_data_midland_wa_6056",
-      "community": 91,
+      "community": 19,
       "norm_label": "midland wa 6056"
     },
     {
@@ -6684,7 +6824,7 @@
       "source_location": "L627",
       "_origin": "ast",
       "id": "australian_suburbs_data_rockingham_wa_6168",
-      "community": 91,
+      "community": 19,
       "norm_label": "rockingham wa 6168"
     },
     {
@@ -6694,7 +6834,7 @@
       "source_location": "L643",
       "_origin": "ast",
       "id": "australian_suburbs_data_sa_south_australia",
-      "community": 95,
+      "community": 19,
       "norm_label": "sa (south australia)"
     },
     {
@@ -6704,7 +6844,7 @@
       "source_location": "L647",
       "_origin": "ast",
       "id": "australian_suburbs_data_elizabeth_sa_5112",
-      "community": 95,
+      "community": 19,
       "norm_label": "elizabeth sa 5112"
     },
     {
@@ -6714,7 +6854,7 @@
       "source_location": "L663",
       "_origin": "ast",
       "id": "australian_suburbs_data_salisbury_sa_5108",
-      "community": 95,
+      "community": 19,
       "norm_label": "salisbury sa 5108"
     },
     {
@@ -6724,7 +6864,7 @@
       "source_location": "L679",
       "_origin": "ast",
       "id": "australian_suburbs_data_noarlunga_sa_5168",
-      "community": 95,
+      "community": 19,
       "norm_label": "noarlunga sa 5168"
     },
     {
@@ -6734,7 +6874,7 @@
       "source_location": "L695",
       "_origin": "ast",
       "id": "australian_suburbs_data_prospect_sa_5082",
-      "community": 95,
+      "community": 19,
       "norm_label": "prospect sa 5082"
     },
     {
@@ -6744,7 +6884,7 @@
       "source_location": "L710",
       "_origin": "ast",
       "id": "australian_suburbs_data_tas_tasmania",
-      "community": 96,
+      "community": 19,
       "norm_label": "tas (tasmania)"
     },
     {
@@ -6754,7 +6894,7 @@
       "source_location": "L714",
       "_origin": "ast",
       "id": "australian_suburbs_data_hobart_tas_7000",
-      "community": 96,
+      "community": 19,
       "norm_label": "hobart tas 7000"
     },
     {
@@ -6764,7 +6904,7 @@
       "source_location": "L731",
       "_origin": "ast",
       "id": "australian_suburbs_data_launceston_tas_7250",
-      "community": 96,
+      "community": 19,
       "norm_label": "launceston tas 7250"
     },
     {
@@ -6774,7 +6914,7 @@
       "source_location": "L747",
       "_origin": "ast",
       "id": "australian_suburbs_data_devonport_tas_7310",
-      "community": 96,
+      "community": 19,
       "norm_label": "devonport tas 7310"
     },
     {
@@ -6784,7 +6924,7 @@
       "source_location": "L763",
       "_origin": "ast",
       "id": "australian_suburbs_data_nt_northern_territory",
-      "community": 92,
+      "community": 19,
       "norm_label": "nt (northern territory)"
     },
     {
@@ -6794,7 +6934,7 @@
       "source_location": "L767",
       "_origin": "ast",
       "id": "australian_suburbs_data_darwin_nt_0800",
-      "community": 92,
+      "community": 19,
       "norm_label": "darwin nt 0800"
     },
     {
@@ -6804,7 +6944,7 @@
       "source_location": "L784",
       "_origin": "ast",
       "id": "australian_suburbs_data_palmerston_nt_0830",
-      "community": 92,
+      "community": 19,
       "norm_label": "palmerston nt 0830"
     },
     {
@@ -6814,7 +6954,7 @@
       "source_location": "L800",
       "_origin": "ast",
       "id": "australian_suburbs_data_data_sources",
-      "community": 92,
+      "community": 19,
       "norm_label": "data sources"
     },
     {
@@ -7390,6 +7530,47 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "backend/agent_router.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "backend_agent_router",
+      "target": "backend_agent_router_route_agents",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/agent_router.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "backend_agent_router_rationale_1",
+      "target": "backend_agent_router",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/agent_router.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "backend_agent_router_rationale_10",
+      "target": "backend_agent_router_route_agents",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/ai_agent.py",
+      "source_location": "L399",
+      "weight": 1.0,
+      "source": "backend_ai_agent_run_investment_committee",
+      "target": "backend_agent_router_route_agents"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "backend/ai_agent.py",
       "source_location": "L191",
       "weight": 1.0,
@@ -7718,6 +7899,17 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "backend/ai_agent.py",
+      "source_location": "L425",
+      "weight": 1.0,
+      "source": "backend_ai_agent_run_investment_committee",
+      "target": "backend_observability_record_committee_call"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/ai_agent.py",
       "source_location": "L411",
       "weight": 1.0,
       "source": "backend_ai_agent_run_investment_committee",
@@ -7750,9 +7942,9 @@
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_sentiment",
-      "target": "backend_ai_sentiment_call_remote_llm",
-      "confidence_score": 1.0
+      "target": "backend_ai_sentiment_call_remote_llm"
     },
     {
       "relation": "contains",
@@ -7791,9 +7983,9 @@
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L143",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_sentiment_analyze_sentiment",
-      "target": "backend_ai_sentiment_call_remote_llm",
-      "confidence_score": 1.0
+      "target": "backend_ai_sentiment_call_remote_llm"
     },
     {
       "relation": "rationale_for",
@@ -7801,9 +7993,9 @@
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_sentiment_rationale_36",
-      "target": "backend_ai_sentiment_call_remote_llm",
-      "confidence_score": 1.0
+      "target": "backend_ai_sentiment_call_remote_llm"
     },
     {
       "relation": "calls",
@@ -7822,9 +8014,9 @@
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_sentiment_rationale_119",
-      "target": "backend_ai_sentiment_keyword_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_ai_sentiment_keyword_sentiment"
     },
     {
       "relation": "calls",
@@ -7893,14 +8085,25 @@
       "target": "backend_ai_sentiment_extract_keywords"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "backend_ai_sentiment_analyze_sentiment",
+      "target": "backend_observability_record_sentiment_call"
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_sentiment_rationale_130",
-      "target": "backend_ai_sentiment_analyze_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_ai_sentiment_analyze_sentiment"
     },
     {
       "relation": "calls",
@@ -7961,9 +8164,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L166",
+      "source_location": "L170",
       "weight": 1.0,
-      "source": "backend_ai_sentiment_rationale_166",
+      "source": "backend_ai_sentiment_rationale_170",
       "target": "backend_ai_sentiment_extract_keywords",
       "confidence_score": 1.0
     },
@@ -9593,6 +9796,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
+      "source_location": "L1514",
+      "weight": 1.0,
+      "source": "backend_main",
+      "target": "backend_main_metrics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
       "source_location": "L952",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10222,11 +10435,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L145",
+      "source_location": "L147",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_145",
-      "target": "backend_main_userconsent"
+      "source": "backend_main_rationale_147",
+      "target": "backend_main_userconsent",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -11368,21 +11581,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L340",
+      "source_location": "L342",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_340",
-      "target": "backend_main_record_consent"
+      "source": "backend_main_rationale_342",
+      "target": "backend_main_record_consent",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L391",
+      "source_location": "L393",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_391",
-      "target": "backend_main_health_check"
+      "source": "backend_main_rationale_393",
+      "target": "backend_main_health_check",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -11399,21 +11612,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L404",
+      "source_location": "L406",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_404",
-      "target": "backend_main_get_vap_etf"
+      "source": "backend_main_rationale_406",
+      "target": "backend_main_get_vap_etf",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L440",
+      "source_location": "L442",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_440",
-      "target": "backend_main_bust_suburbs_cache"
+      "source": "backend_main_rationale_442",
+      "target": "backend_main_bust_suburbs_cache",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -11463,11 +11676,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L526",
+      "source_location": "L528",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_526",
-      "target": "backend_main_annualize_cagr"
+      "source": "backend_main_rationale_528",
+      "target": "backend_main_annualize_cagr",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -11484,11 +11697,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L537",
+      "source_location": "L539",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_537",
-      "target": "backend_main_cap_yield"
+      "source": "backend_main_rationale_539",
+      "target": "backend_main_cap_yield",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -11516,11 +11729,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L543",
+      "source_location": "L545",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_543",
-      "target": "backend_main_calibrate_dq"
+      "source": "backend_main_rationale_545",
+      "target": "backend_main_calibrate_dq",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -11548,11 +11761,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L564",
+      "source_location": "L566",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_564",
-      "target": "backend_main_compute_growth_score"
+      "source": "backend_main_rationale_566",
+      "target": "backend_main_compute_growth_score",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -11628,11 +11841,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L689",
+      "source_location": "L691",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_689",
-      "target": "backend_main_get_suburb"
+      "source": "backend_main_rationale_691",
+      "target": "backend_main_get_suburb",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -11763,11 +11976,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L959",
+      "source_location": "L961",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_959",
-      "target": "backend_main_normalize_suburb_id"
+      "source": "backend_main_rationale_961",
+      "target": "backend_main_normalize_suburb_id",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -11784,31 +11997,42 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L965",
+      "source_location": "L967",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_965",
-      "target": "backend_main_get_suburb_or_404"
+      "source": "backend_main_rationale_967",
+      "target": "backend_main_get_suburb_or_404",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/main.py",
+      "source_location": "L1009",
+      "weight": 1.0,
+      "source": "backend_main_get_news_sentiment",
+      "target": "backend_observability_record_cache_miss"
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L980",
+      "source_location": "L982",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_980",
-      "target": "backend_main_get_news_sentiment"
+      "source": "backend_main_rationale_982",
+      "target": "backend_main_get_news_sentiment",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1025",
+      "source_location": "L1028",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1025",
-      "target": "backend_main_reload_suburbs"
+      "source": "backend_main_rationale_1028",
+      "target": "backend_main_reload_suburbs",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -11906,21 +12130,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1220",
+      "source_location": "L1223",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1220",
-      "target": "backend_main_get_suburbs_v3"
+      "source": "backend_main_rationale_1223",
+      "target": "backend_main_get_suburbs_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1298",
+      "source_location": "L1301",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1298",
-      "target": "backend_main_export_suburbs_csv"
+      "source": "backend_main_rationale_1301",
+      "target": "backend_main_export_suburbs_csv",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -12007,11 +12231,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1353",
+      "source_location": "L1356",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1353",
-      "target": "backend_main_get_suburb_v3"
+      "source": "backend_main_rationale_1356",
+      "target": "backend_main_get_suburb_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -12028,11 +12252,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1423",
+      "source_location": "L1426",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1423",
-      "target": "backend_main_get_osm_livability"
+      "source": "backend_main_rationale_1426",
+      "target": "backend_main_get_osm_livability",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -12049,21 +12273,42 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1452",
+      "source_location": "L1455",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1452",
-      "target": "backend_main_get_osm_boundary"
+      "source": "backend_main_rationale_1455",
+      "target": "backend_main_get_osm_boundary",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1461",
+      "source_location": "L1464",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1461",
-      "target": "backend_main_get_suburb_properties"
+      "source": "backend_main_rationale_1464",
+      "target": "backend_main_get_suburb_properties",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/main.py",
+      "source_location": "L1516",
+      "weight": 1.0,
+      "source": "backend_main_metrics",
+      "target": "backend_observability_get_metrics_text"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L1515",
+      "weight": 1.0,
+      "source": "backend_main_rationale_1515",
+      "target": "backend_main_metrics",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12349,6 +12594,76 @@
       "weight": 1.0,
       "source": "backend_unpack_json_to_table_unpack_all",
       "target": "backend_models_v3_unpacked_suburbunpackedv3"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/observability.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "backend_observability",
+      "target": "backend_observability_get_metrics_text",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/observability.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "backend_observability",
+      "target": "backend_observability_record_cache_hit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/observability.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "backend_observability",
+      "target": "backend_observability_record_cache_miss",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/observability.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "backend_observability",
+      "target": "backend_observability_record_committee_call",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/observability.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "backend_observability",
+      "target": "backend_observability_record_sentiment_call",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/observability.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "backend_observability_rationale_1",
+      "target": "backend_observability",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/observability.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "backend_observability_rationale_44",
+      "target": "backend_observability_get_metrics_text",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13154,9 +13469,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_explanation_included",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_explanation_included"
     },
     {
       "relation": "method",
@@ -13164,9 +13479,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_fallback_to_keyword",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_fallback_to_keyword"
     },
     {
       "relation": "method",
@@ -13174,9 +13489,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_negative",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_negative"
     },
     {
       "relation": "method",
@@ -13184,9 +13499,9 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_positive",
-      "confidence_score": 1.0
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_positive"
     },
     {
       "relation": "method",
@@ -17190,5 +17505,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "399171152c293ed83b6e08ecb8a1e157fb9c53b0"
+  "built_at_commit": "01efbe150d00bbc560ab79781503a34bc9486e50"
 }
