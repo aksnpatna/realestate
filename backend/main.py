@@ -845,6 +845,7 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
                             "verdict": ai_cache["aiCommitteeVerdict"],
                             "playbook": ai_cache["aiCommitteePlaybook"],
                             "catalysts": v3.highlights or [],
+                            "source_snippets": ai_cache.get("source_snippets", []),
                         }
                     }
             except (ValueError, TypeError):
@@ -886,6 +887,7 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
             "urban": ai_result["urban"],
             "reality_check": ai_result["reality_check"]
         }
+        ai_cache["source_snippets"] = ai_result.get("source_snippets", [])
         ai_cache["fetched_at"] = datetime.utcnow().isoformat()
         
         v3.ai_insights = ai_cache
