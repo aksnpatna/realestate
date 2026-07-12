@@ -222,6 +222,7 @@ class CommitteeMemory(Base):
     urban_argument = Column(Text)
     playbook = Column(Text)
     risk_rating = Column(String)
+    raw_metrics_payload = Column(JSON)  # For supervised fine-tuning dataset generation
     created_at = Column(DateTime)
 
     __table_args__ = (
