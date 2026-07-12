@@ -41,6 +41,7 @@ def store_analysis(suburb: str, state: str, metrics: Dict, result: Dict) -> None
             urban_argument=result.get("urban", ""),
             playbook=result.get("playbook", ""),
             risk_rating=result.get("risk_assessment", {}).get("risk_rating", ""),
+            raw_metrics_payload=metrics,
             created_at=datetime.utcnow(),
         )
         db.add(entry)
