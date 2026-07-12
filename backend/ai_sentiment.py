@@ -128,7 +128,7 @@ def _keyword_sentiment(text: str) -> float:
 
 def analyze_sentiment(text: str) -> dict:
     """
-    Analyze sentiment of text. Tries remote Qwen 7B first, falls back to keyword.
+    Analyze sentiment of text. Tries remote Qwen 3B first, falls back to keyword.
 
     Args:
         text: Combined article text to analyze.
@@ -139,13 +139,17 @@ def analyze_sentiment(text: str) -> dict:
     if not text or not text.strip():
         return {"score": 5.0, "label": "Neutral", "provider": "keyword", "explanation": []}
 
+    from observability import record_sentiment_call
+
     # Try remote LLM first
     result = _call_remote_llm(text)
     if result is not None:
+        record_sentiment_call(result.get("provider", "unknown"))
         result["explanation"] = _extract_keywords(text.lower())
         return result
 
     # Keyword fallback
+    record_sentiment_call("keyword")
     score = _keyword_sentiment(text)
     if score >= 7:
         label = "Bullish"

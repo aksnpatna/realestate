@@ -22,6 +22,10 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
   const [error, setError] = useState<string | null>(null)
   const [aiDisabled, setAiDisabled] = useState(false)
   const [showSources, setShowSources] = useState(false)
+  const [whatIfOpen, setWhatIfOpen] = useState(false)
+  const [whatIfRate, setWhatIfRate] = useState(6.2)
+  const [whatIfYield, setWhatIfYield] = useState(4.0)
+  const [whatIfVacancy, setWhatIfVacancy] = useState(3.0)
 
   const stepMessages: Record<AnalysisStep, string> = {
     idle: '',
@@ -446,6 +450,69 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{s.snippet}</div>
                         </div>
                       ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {hasVerdict && (
+                <div style={{ flex: '1 1 100%', marginTop: '10px' }}>
+                  <button
+                    onClick={() => setWhatIfOpen(!whatIfOpen)}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'var(--bg-glass)',
+                      color: 'var(--accent-cyan)',
+                      border: '1px solid var(--border-glass)',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {whatIfOpen ? 'Hide' : '🔮 What-If Simulator'}
+                  </button>
+                  {whatIfOpen && (
+                    <div style={{ marginTop: '10px', padding: '12px', background: 'rgba(14,165,233,0.06)', border: '1px solid rgba(14,165,233,0.15)', borderRadius: '8px' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                        Tweak market parameters to see projected risk changes
+                      </div>
+                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                        <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                          Interest Rate {whatIfRate}%
+                          <input type="range" min="2" max="12" step="0.25" value={whatIfRate}
+                            onChange={e => setWhatIfRate(Number(e.target.value))}
+                            style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
+                        </label>
+                        <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                          Rental Yield {whatIfYield}%
+                          <input type="range" min="1" max="10" step="0.25" value={whatIfYield}
+                            onChange={e => setWhatIfYield(Number(e.target.value))}
+                            style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
+                        </label>
+                        <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                          Vacancy Rate {whatIfVacancy}%
+                          <input type="range" min="0" max="15" step="0.5" value={whatIfVacancy}
+                            onChange={e => setWhatIfVacancy(Number(e.target.value))}
+                            style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
+                        </label>
+                      </div>
+                      {(() => {
+                        // Client-side risk estimate formula
+                        const baseRisk = 0.15
+                        const ratePenalty = Math.max(0, (whatIfRate - 5) * 0.05)
+                        const yieldBuffer = Math.max(0, (5 - whatIfYield) * 0.03)
+                        const vacancyPenalty = Math.max(0, (whatIfVacancy - 3) * 0.04)
+                        const simRisk = Math.min(0.95, Math.max(0.02, baseRisk + ratePenalty + yieldBuffer + vacancyPenalty))
+                        const simRating = simRisk < 0.15 ? 'Low' : simRisk < 0.30 ? 'Medium' : 'High'
+                        const simColor = simRating === 'Low' ? '#10b981' : simRating === 'Medium' ? '#eab308' : '#ef4444'
+                        return (
+                          <div style={{ textAlign: 'center', padding: '10px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px' }}>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Projected Risk: </span>
+                            <span style={{ fontWeight: 800, fontSize: '1.1rem', color: simColor }}>{simRating}</span>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginLeft: '6px' }}>({(simRisk*100).toFixed(0)}% decline probability)</span>
+                          </div>
+                        )
+                      })()}
                     </div>
                   )}
                 </div>

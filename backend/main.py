@@ -76,6 +76,8 @@ def get_cached_or_query(cache_key: str, query_func, expire_secs: int = 3600):
         print(f"[cache] Redis error on {cache_key}: {e}. Falling back to DB.")
         return query_func()
 
+from observability import record_cache_hit, record_cache_miss, get_metrics_text
+
 app = FastAPI()
 
 # CORS: In production, restrict to your actual frontend origin(s)
@@ -1004,6 +1006,7 @@ def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
     
     # Layer 2: Redis (via cached_ai wrapper on get_news_sentiment)
     # Layer 3: Fresh fetch from Tavily + Transformers
+    record_cache_miss()
     from ai_agent import get_news_sentiment as fetch_sentiment
     cache_key = f"ai_sentiment:{v3.name}:{v3.state}"
     
@@ -1506,3 +1509,8 @@ def get_suburb_properties(suburb_id: str, db: Session = Depends(get_db)):
         })
         
     return properties
+
+@app.get("/metrics")
+def metrics():
+    """Prometheus-compatible metrics endpoint for AI observability."""
+    return Response(content=get_metrics_text(), media_type="text/plain; version=0.0.4")
