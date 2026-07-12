@@ -20,6 +20,8 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
   const [analysisStep, setAnalysisStep] = useState<AnalysisStep>('idle')
   const [error, setError] = useState<string | null>(null)
+  const [aiDisabled, setAiDisabled] = useState(false)
+  const [showSources, setShowSources] = useState(false)
 
   const stepMessages: Record<AnalysisStep, string> = {
     idle: '',
@@ -34,10 +36,11 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
     if (isAnalyzingNews) return
     setIsAnalyzingNews(true)
     setError(null)
+    setAiDisabled(false)
     try {
       const res = await fetch(`/api/suburbs/${activeSuburb.id}/news-sentiment`, { method: 'POST' })
       if (!res.ok) {
-        if (res.status === 503) throw new Error('AI insights temporarily disabled')
+        if (res.status === 503) { setAiDisabled(true); throw new Error('AI insights temporarily disabled') }
         throw new Error(`Server error (${res.status})`)
       }
       const data = await res.json()
@@ -72,6 +75,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
     if (isAnalyzingAI) return
     setIsAnalyzingAI(true)
     setError(null)
+    setAiDisabled(false)
 
     const steps: AnalysisStep[] = ['fetchNews', 'bull', 'bear', 'urban', 'final']
     let stepIndex = 0
@@ -90,7 +94,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
       })
       const data = await res.json()
       if (!res.ok) {
-        if (res.status === 503) throw new Error('AI insights temporarily disabled')
+        if (res.status === 503) { setAiDisabled(true); throw new Error('AI insights temporarily disabled') }
         throw new Error(`Server error (${res.status})`)
       }
       if (data.status === 'success' && data.result && data.result.verdict) {
@@ -106,6 +110,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
           aiBearView: data.result.bear,
           aiUrbanView: data.result.urban,
           highlights: data.result.catalysts || activeSuburb.highlights,
+          _sourceSnippets: data.result.source_snippets || [],
           metrics: {
             ...activeSuburb.metrics,
             aiNewsSentiment: sentiment,
@@ -192,6 +197,23 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
           >
             ✕
           </button>
+        </div>
+      )}
+
+      {aiDisabled && (
+        <div style={{
+          padding: '16px',
+          background: 'rgba(234,179,8,0.1)',
+          border: '1px solid rgba(234,179,8,0.3)',
+          borderRadius: '8px',
+          marginBottom: '15px',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '1.5rem', marginBottom: '6px' }}>🔧</div>
+          <div style={{ color: '#eab308', fontWeight: 600, marginBottom: '4px' }}>AI Insights Temporarily Unavailable</div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+            The AI engine is undergoing maintenance. Cached results (shown below if available) may be up to 7 days old.
+          </div>
         </div>
       )}
 
@@ -344,6 +366,34 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                 <div style={{ flex: '1 1 100%', background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', marginBottom: '4px' }}>📋 Investor CEO Playbook</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap', maxHeight: '200px', overflowY: 'auto' }}>{suburb.aiConsensus}</div>
+                </div>
+              )}
+              {suburb._sourceSnippets?.length > 0 && (
+                <div style={{ flex: '1 1 100%', marginTop: '8px' }}>
+                  <button
+                    onClick={() => setShowSources(!showSources)}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'var(--bg-glass)',
+                      color: 'var(--text-secondary)',
+                      border: '1px solid var(--border-glass)',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                    }}
+                  >
+                    {showSources ? 'Hide' : 'Show'} Source Excerpts ({suburb._sourceSnippets.length})
+                  </button>
+                  {showSources && (
+                    <div style={{ marginTop: '10px', maxHeight: '200px', overflowY: 'auto' }}>
+                      {suburb._sourceSnippets.map((s: any, i: number) => (
+                        <div key={i} style={{ padding: '8px', marginBottom: '6px', background: 'rgba(255,255,255,0.03)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>{s.title}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{s.snippet}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

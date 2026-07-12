@@ -58,6 +58,7 @@ class CommitteeState(TypedDict):
     state: str
     metrics: Dict[str, Any]
     news_articles: str
+    source_snippets: list
     bull_argument: str
     bear_argument: str
     urban_argument: str
@@ -107,10 +108,11 @@ def fetch_news_node(state: CommitteeState):
         articles = robust_search(query, max_results=5)
         
         if not articles:
-            return {"news_articles": "No major infrastructure or zoning news found."}
+            return {"news_articles": "No major infrastructure or zoning news found.", "source_snippets": []}
         
         snippets = [f"- {a.get('title')}: {a.get('content')}" for a in articles]
-        return {"news_articles": "\n".join(snippets)}
+        source_snippets = [{"title": a.get("title", ""), "snippet": (a.get("content", "") or "")[:200]} for a in articles]
+        return {"news_articles": "\n".join(snippets), "source_snippets": source_snippets}
     except Exception as e:
         return {"news_articles": f"Error fetching news: {str(e)}"}
 
@@ -305,6 +307,7 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         "state": state, 
         "metrics": metrics,
         "news_articles": "",
+        "source_snippets": [],
         "bull_argument": "",
         "bear_argument": "",
         "urban_argument": "",
@@ -340,5 +343,6 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         "playbook": result["playbook"],
         "reality_check": result["reality_check"],
         "catalysts": result.get("catalysts", []),
+        "source_snippets": result.get("source_snippets", []),
         "llm_provider": llm_provider,
     }
