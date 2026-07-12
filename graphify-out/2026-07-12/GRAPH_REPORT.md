@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 93 files · ~2,212,694 words
+- 93 files · ~2,212,163 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 615 nodes · 842 edges · 99 communities (65 shown, 34 thin omitted)
+- 612 nodes · 837 edges · 100 communities (64 shown, 36 thin omitted)
 - Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 128 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `26b16d74`
+- Built from commit: `12cd671a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -80,6 +80,7 @@
 - [[_COMMUNITY_Community 76|Community 76]]
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
 - [[_COMMUNITY_Community 91|Community 91]]
@@ -128,7 +129,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (99 total, 34 thin omitted)
+## Communities (100 total, 36 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -139,8 +140,8 @@ Cohesion: 0.17
 Nodes (18): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+10 more)
 
 ### Community 2 - "V3 Scheduler Orchestration"
-Cohesion: 0.15
-Nodes (15): _acquire_lock(), mark_changed_for_enrich(), mark_changed_for_unpack(), _python(), v3_scheduler.py — Tiered Update Scheduler with Change Detection ================, Find raw records where data has changed since last unpack.     Sets is_unpacked=, Find unpacked records newer than their enriched counterparts.     Sets is_enrich, Tiered update scheduler for the V3 pipeline. (+7 more)
+Cohesion: 0.18
+Nodes (11): mark_changed_for_enrich(), mark_changed_for_unpack(), _python(), v3_scheduler.py — Tiered Update Scheduler with Change Detection ================, Find unpacked records newer than their enriched counterparts.     Sets is_enrich, Tiered update scheduler for the V3 pipeline., Run a Python helper script as a subprocess., Set suburbs_raw_v3.status = 'pending' for suburbs older than threshold.     This (+3 more)
 
 ### Community 3 - "ETL Runbook Documentation"
 Cohesion: 0.11
@@ -151,8 +152,8 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 5 - "Frontend Property Calculators"
-Cohesion: 0.29
-Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi
+Cohesion: 0.18
+Nodes (7): TabName, OnboardingTour(), mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi, TabName
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.08
@@ -172,7 +173,7 @@ Nodes (8): ASXPredictor, calculate_predictive_score(), fetch_environmental_risks
 
 ### Community 10 - "ETL Extract V3 Pipeline"
 Cohesion: 0.27
-Nodes (9): extract_single_suburb(), etl_extract_v3.py — Layer 1: RAW Extraction ====================================, Extract a single suburb's REDUX_DATA payload via Playwright with anti-blocking m, Worker coroutine: consumes jobs from queue, writes results to DB with circuit br, Main extraction runner., Seeds the raw_v3 table from the existing suburbs_all table.     Preserves any al, run_extraction(), seed_raw_v3() (+1 more)
+Nodes (9): extract_single_suburb(), etl_extract_v3.py — Layer 1: RAW Extraction ====================================, Worker coroutine: consumes jobs from queue, writes results to DB., Main extraction runner., Seeds the raw_v3 table from the existing suburbs_all table.     Preserves any al, Extract a single suburb's REDUX_DATA payload via Playwright., run_extraction(), seed_raw_v3() (+1 more)
 
 ### Community 11 - "ETL Runbook Script References"
 Cohesion: 0.22
@@ -251,12 +252,12 @@ Cohesion: 0.15
 Nodes (13): Bankstown NSW 2200, Blacktown NSW 2148, Bondi Junction NSW 2022, Campbelltown NSW 2560, Castle Hill NSW 2154, Chatswood NSW 2067, Hurstville NSW 2220, Liverpool NSW 2170 (+5 more)
 
 ### Community 86 - "Community 86"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (13): SortKey, calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase(), calculateStampDuty(), FHOG, FIRST_HOME_CONCESSION (+5 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.21
-Nodes (7): CashflowGearingProps, GearingResult, SearchResultCard, BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps, SuburbData
+Cohesion: 0.22
+Nodes (4): BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps, SuburbData
 
 ### Community 89 - "Community 89"
 Cohesion: 0.25
@@ -264,7 +265,7 @@ Nodes (8): Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209, Ipswich QL
 
 ### Community 90 - "Community 90"
 Cohesion: 0.33
-Nodes (4): CalcType, CHART_COLORS, PropertyType, STATE_OPTIONS
+Nodes (6): CalcType, Calculators(), CHART_COLORS, formatCurrency(), PropertyType, STATE_OPTIONS
 
 ### Community 91 - "Community 91"
 Cohesion: 0.29
@@ -286,24 +287,20 @@ Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Aus
 Cohesion: 0.50
 Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasmania)
 
-### Community 98 - "Community 98"
-Cohesion: 0.13
-Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, Calculators, CashflowGearing, HouseSearch, InstitutionalV3Panel, MyPurchasePlan (+2 more)
-
 ## Knowledge Gaps
-- **195 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+190 more)
+- **187 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+182 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **34 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Session` connect `Database Models & Scrapers` to `ETL Transform V3 Pipeline`, `ETL Extract V3 Pipeline`, `Community 68`?**
-  _High betweenness centrality (0.033) - this node is a cross-community bridge._
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `SuburbUIV3` connect `Database Models & Scrapers` to `Predictive AI Engine`, `ABS Census Integration`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **Why does `V3Scheduler` connect `V3 Scheduler Orchestration` to `Database Models & Scrapers`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `get_suburb_properties()` connect `ETL Transform V3 Pipeline` to `Database Models & Scrapers`?**
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
   _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**

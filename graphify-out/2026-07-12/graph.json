@@ -835,7 +835,7 @@
       "label": "seed_raw_v3()",
       "file_type": "code",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L61",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "backend_etl_extract_v3_seed_raw_v3",
       "community": 10,
@@ -845,7 +845,7 @@
       "label": "extract_single_suburb()",
       "file_type": "code",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L108",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "backend_etl_extract_v3_extract_single_suburb",
       "community": 10,
@@ -855,7 +855,7 @@
       "label": "worker()",
       "file_type": "code",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L215",
+      "source_location": "L156",
       "_origin": "ast",
       "id": "backend_etl_extract_v3_worker",
       "community": 10,
@@ -865,7 +865,7 @@
       "label": "run_extraction()",
       "file_type": "code",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L274",
+      "source_location": "L203",
       "_origin": "ast",
       "id": "backend_etl_extract_v3_run_extraction",
       "community": 10,
@@ -885,39 +885,39 @@
       "label": "Seeds the raw_v3 table from the existing suburbs_all table.     Preserves any al",
       "file_type": "rationale",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L62",
+      "source_location": "L44",
       "_origin": "ast",
-      "id": "backend_etl_extract_v3_rationale_62",
+      "id": "backend_etl_extract_v3_rationale_44",
       "community": 10,
       "norm_label": "seeds the raw_v3 table from the existing suburbs_all table.     preserves any al"
     },
     {
-      "label": "Extract a single suburb's REDUX_DATA payload via Playwright with anti-blocking m",
+      "label": "Extract a single suburb's REDUX_DATA payload via Playwright.",
       "file_type": "rationale",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L109",
+      "source_location": "L91",
       "_origin": "ast",
-      "id": "backend_etl_extract_v3_rationale_109",
+      "id": "backend_etl_extract_v3_rationale_91",
       "community": 10,
-      "norm_label": "extract a single suburb's redux_data payload via playwright with anti-blocking m"
+      "norm_label": "extract a single suburb's redux_data payload via playwright."
     },
     {
-      "label": "Worker coroutine: consumes jobs from queue, writes results to DB with circuit br",
+      "label": "Worker coroutine: consumes jobs from queue, writes results to DB.",
       "file_type": "rationale",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L216",
+      "source_location": "L157",
       "_origin": "ast",
-      "id": "backend_etl_extract_v3_rationale_216",
+      "id": "backend_etl_extract_v3_rationale_157",
       "community": 10,
-      "norm_label": "worker coroutine: consumes jobs from queue, writes results to db with circuit br"
+      "norm_label": "worker coroutine: consumes jobs from queue, writes results to db."
     },
     {
       "label": "Main extraction runner.",
       "file_type": "rationale",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L275",
+      "source_location": "L204",
       "_origin": "ast",
-      "id": "backend_etl_extract_v3_rationale_275",
+      "id": "backend_etl_extract_v3_rationale_204",
       "community": 10,
       "norm_label": "main extraction runner."
     },
@@ -3120,30 +3120,10 @@
       "norm_label": "v3_scheduler.py"
     },
     {
-      "label": "_acquire_lock()",
-      "file_type": "code",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L37",
-      "_origin": "ast",
-      "id": "backend_v3_scheduler_acquire_lock",
-      "community": 2,
-      "norm_label": "_acquire_lock()"
-    },
-    {
-      "label": "_release_lock()",
-      "file_type": "code",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L51",
-      "_origin": "ast",
-      "id": "backend_v3_scheduler_release_lock",
-      "community": 2,
-      "norm_label": "_release_lock()"
-    },
-    {
       "label": "_python()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L65",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "backend_v3_scheduler_python",
       "community": 2,
@@ -3153,7 +3133,7 @@
       "label": "seed_pending_raw()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L76",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "backend_v3_scheduler_seed_pending_raw",
       "community": 2,
@@ -3163,7 +3143,7 @@
       "label": "mark_changed_for_unpack()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L113",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "backend_v3_scheduler_mark_changed_for_unpack",
       "community": 2,
@@ -3173,7 +3153,7 @@
       "label": "mark_changed_for_enrich()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L144",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "backend_v3_scheduler_mark_changed_for_enrich",
       "community": 2,
@@ -3183,7 +3163,7 @@
       "label": "V3Scheduler",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L170",
+      "source_location": "L140",
       "_origin": "ast",
       "id": "backend_v3_scheduler_v3scheduler",
       "community": 2,
@@ -3193,7 +3173,7 @@
       "label": ".__init__()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L173",
+      "source_location": "L143",
       "_origin": "ast",
       "id": "backend_v3_scheduler_v3scheduler_init",
       "community": 2,
@@ -3203,7 +3183,7 @@
       "label": "._run_monthly_metro()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L180",
+      "source_location": "L149",
       "_origin": "ast",
       "id": "backend_v3_scheduler_v3scheduler_run_monthly_metro",
       "community": 2,
@@ -3213,7 +3193,7 @@
       "label": "._run_quarterly_full()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L213",
+      "source_location": "L175",
       "_origin": "ast",
       "id": "backend_v3_scheduler_v3scheduler_run_quarterly_full",
       "community": 2,
@@ -3223,7 +3203,7 @@
       "label": "._loop()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L246",
+      "source_location": "L197",
       "_origin": "ast",
       "id": "backend_v3_scheduler_v3scheduler_loop",
       "community": 2,
@@ -3233,7 +3213,7 @@
       "label": ".start()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L269",
+      "source_location": "L220",
       "_origin": "ast",
       "id": "backend_v3_scheduler_v3scheduler_start",
       "community": 2,
@@ -3243,7 +3223,7 @@
       "label": ".stop()",
       "file_type": "code",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L273",
+      "source_location": "L224",
       "_origin": "ast",
       "id": "backend_v3_scheduler_v3scheduler_stop",
       "community": 2,
@@ -3260,32 +3240,12 @@
       "norm_label": "v3_scheduler.py \u2014 tiered update scheduler with change detection ================"
     },
     {
-      "label": "Try to acquire exclusive lock to prevent concurrent scheduler runs.",
-      "file_type": "rationale",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L38",
-      "_origin": "ast",
-      "id": "backend_v3_scheduler_rationale_38",
-      "community": 2,
-      "norm_label": "try to acquire exclusive lock to prevent concurrent scheduler runs."
-    },
-    {
-      "label": "Release the scheduler lock.",
-      "file_type": "rationale",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L52",
-      "_origin": "ast",
-      "id": "backend_v3_scheduler_rationale_52",
-      "community": 2,
-      "norm_label": "release the scheduler lock."
-    },
-    {
       "label": "Run a Python helper script as a subprocess.",
       "file_type": "rationale",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L66",
+      "source_location": "L36",
       "_origin": "ast",
-      "id": "backend_v3_scheduler_rationale_66",
+      "id": "backend_v3_scheduler_rationale_36",
       "community": 2,
       "norm_label": "run a python helper script as a subprocess."
     },
@@ -3293,9 +3253,9 @@
       "label": "Set suburbs_raw_v3.status = 'pending' for suburbs older than threshold.     This",
       "file_type": "rationale",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L77",
+      "source_location": "L47",
       "_origin": "ast",
-      "id": "backend_v3_scheduler_rationale_77",
+      "id": "backend_v3_scheduler_rationale_47",
       "community": 2,
       "norm_label": "set suburbs_raw_v3.status = 'pending' for suburbs older than threshold.     this"
     },
@@ -3303,9 +3263,9 @@
       "label": "Find raw records where data has changed since last unpack.     Sets is_unpacked=",
       "file_type": "rationale",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L114",
+      "source_location": "L84",
       "_origin": "ast",
-      "id": "backend_v3_scheduler_rationale_114",
+      "id": "backend_v3_scheduler_rationale_84",
       "community": 2,
       "norm_label": "find raw records where data has changed since last unpack.     sets is_unpacked="
     },
@@ -3313,9 +3273,9 @@
       "label": "Find unpacked records newer than their enriched counterparts.     Sets is_enrich",
       "file_type": "rationale",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L145",
+      "source_location": "L115",
       "_origin": "ast",
-      "id": "backend_v3_scheduler_rationale_145",
+      "id": "backend_v3_scheduler_rationale_115",
       "community": 2,
       "norm_label": "find unpacked records newer than their enriched counterparts.     sets is_enrich"
     },
@@ -3323,9 +3283,9 @@
       "label": "Tiered update scheduler for the V3 pipeline.",
       "file_type": "rationale",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L171",
+      "source_location": "L141",
       "_origin": "ast",
-      "id": "backend_v3_scheduler_rationale_171",
+      "id": "backend_v3_scheduler_rationale_141",
       "community": 2,
       "norm_label": "tiered update scheduler for the v3 pipeline."
     },
@@ -3786,97 +3746,27 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app",
-      "community": 98,
+      "community": 5,
       "norm_label": "app.tsx"
-    },
-    {
-      "label": "Calculators",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "src_app_calculators",
-      "community": 98,
-      "norm_label": "calculators"
-    },
-    {
-      "label": "AffordabilityCalculator",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "src_app_affordabilitycalculator",
-      "community": 98,
-      "norm_label": "affordabilitycalculator"
-    },
-    {
-      "label": "HouseSearch",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "src_app_housesearch",
-      "community": 98,
-      "norm_label": "housesearch"
-    },
-    {
-      "label": "CashflowGearing",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "src_app_cashflowgearing",
-      "community": 98,
-      "norm_label": "cashflowgearing"
-    },
-    {
-      "label": "InstitutionalV3Panel",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "src_app_institutionalv3panel",
-      "community": 98,
-      "norm_label": "institutionalv3panel"
-    },
-    {
-      "label": "MyPurchasePlan",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "src_app_mypurchaseplan",
-      "community": 98,
-      "norm_label": "mypurchaseplan"
-    },
-    {
-      "label": "QuickRoiCalculator",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "src_app_quickroicalculator",
-      "community": 98,
-      "norm_label": "quickroicalculator"
     },
     {
       "label": "TabName",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L20",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "src_app_tabname",
-      "community": 98,
+      "community": 5,
       "norm_label": "tabname"
     },
     {
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L22",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 98,
+      "community": 5,
       "norm_label": "app()"
     },
     {
@@ -3898,6 +3788,16 @@
       "id": "components_affordabilitycalculator_sortkey",
       "community": 86,
       "norm_label": "sortkey"
+    },
+    {
+      "label": "AffordabilityCalculator()",
+      "file_type": "code",
+      "source_file": "src/components/AffordabilityCalculator.tsx",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "components_affordabilitycalculator_affordabilitycalculator",
+      "community": 86,
+      "norm_label": "affordabilitycalculator()"
     },
     {
       "label": "Calculators.tsx",
@@ -3960,13 +3860,23 @@
       "norm_label": "formatcurrency()"
     },
     {
+      "label": "Calculators()",
+      "file_type": "code",
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "components_calculators_calculators",
+      "community": 90,
+      "norm_label": "calculators()"
+    },
+    {
       "label": "CashflowGearing.tsx",
       "file_type": "code",
       "source_file": "src/components/CashflowGearing.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_cashflowgearing",
-      "community": 87,
+      "community": 88,
       "norm_label": "cashflowgearing.tsx"
     },
     {
@@ -3976,7 +3886,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_cashflowgearing_gearingresult",
-      "community": 87,
+      "community": 88,
       "norm_label": "gearingresult"
     },
     {
@@ -3986,8 +3896,18 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_cashflowgearing_cashflowgearingprops",
-      "community": 87,
+      "community": 88,
       "norm_label": "cashflowgearingprops"
+    },
+    {
+      "label": "CashflowGearing()",
+      "file_type": "code",
+      "source_file": "src/components/CashflowGearing.tsx",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "components_cashflowgearing_cashflowgearing",
+      "community": 88,
+      "norm_label": "cashflowgearing()"
     },
     {
       "label": "ErrorBoundary.tsx",
@@ -4070,14 +3990,24 @@
       "norm_label": "housesearch.tsx"
     },
     {
-      "label": "SearchResultCard",
+      "label": "HouseSearch()",
+      "file_type": "code",
+      "source_file": "src/components/HouseSearch.tsx",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "components_housesearch_housesearch",
+      "community": 87,
+      "norm_label": "housesearch()"
+    },
+    {
+      "label": "SearchResultCard()",
       "file_type": "code",
       "source_file": "src/components/HouseSearch.tsx",
       "source_location": "L177",
       "_origin": "ast",
       "id": "components_housesearch_searchresultcard",
       "community": 87,
-      "norm_label": "searchresultcard"
+      "norm_label": "searchresultcard()"
     },
     {
       "label": "InstitutionalV3Panel.tsx",
@@ -4120,6 +4050,16 @@
       "norm_label": "dqbadge()"
     },
     {
+      "label": "InstitutionalV3Panel()",
+      "file_type": "code",
+      "source_file": "src/components/InstitutionalV3Panel.tsx",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "components_institutionalv3panel_institutionalv3panel",
+      "community": 94,
+      "norm_label": "institutionalv3panel()"
+    },
+    {
       "label": "MyPurchasePlan.tsx",
       "file_type": "code",
       "source_file": "src/components/MyPurchasePlan.tsx",
@@ -4150,13 +4090,23 @@
       "norm_label": "buyerprofile"
     },
     {
+      "label": "MyPurchasePlan()",
+      "file_type": "code",
+      "source_file": "src/components/MyPurchasePlan.tsx",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "components_mypurchaseplan_mypurchaseplan",
+      "community": 87,
+      "norm_label": "mypurchaseplan()"
+    },
+    {
       "label": "OnboardingTour.tsx",
       "file_type": "code",
       "source_file": "src/components/OnboardingTour.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_onboardingtour",
-      "community": 98,
+      "community": 5,
       "norm_label": "onboardingtour.tsx"
     },
     {
@@ -4166,7 +4116,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_onboardingtour_onboardingtour",
-      "community": 98,
+      "community": 5,
       "norm_label": "onboardingtour()"
     },
     {
@@ -4188,6 +4138,16 @@
       "id": "components_quickroicalculator_quickroicalculatorprops",
       "community": 98,
       "norm_label": "quickroicalculatorprops"
+    },
+    {
+      "label": "QuickRoiCalculator()",
+      "file_type": "code",
+      "source_file": "src/components/QuickRoiCalculator.tsx",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "components_quickroicalculator_quickroicalculator",
+      "community": 98,
+      "norm_label": "quickroicalculator()"
     },
     {
       "label": "SuburbMap.tsx",
@@ -4330,13 +4290,23 @@
       "norm_label": "boundarycache"
     },
     {
+      "label": "SuburbMap()",
+      "file_type": "code",
+      "source_file": "src/components/SuburbMap.tsx",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "components_suburbmap_suburbmap",
+      "community": 67,
+      "norm_label": "suburbmap()"
+    },
+    {
       "label": "TermsOfUseModal.tsx",
       "file_type": "code",
       "source_file": "src/components/TermsOfUseModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_termsofusemodal",
-      "community": 98,
+      "community": 5,
       "norm_label": "termsofusemodal.tsx"
     },
     {
@@ -4346,7 +4316,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_termsofusemodal_termsofusemodal",
-      "community": 98,
+      "community": 5,
       "norm_label": "termsofusemodal()"
     },
     {
@@ -7307,11 +7277,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L62",
+      "source_location": "L44",
       "weight": 1.0,
-      "source": "backend_etl_extract_v3_rationale_62",
-      "target": "backend_etl_extract_v3_seed_raw_v3",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_etl_extract_v3_rationale_44",
+      "target": "backend_etl_extract_v3_seed_raw_v3"
     },
     {
       "relation": "calls",
@@ -7339,11 +7309,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L109",
+      "source_location": "L91",
       "weight": 1.0,
-      "source": "backend_etl_extract_v3_rationale_109",
-      "target": "backend_etl_extract_v3_extract_single_suburb",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_etl_extract_v3_rationale_91",
+      "target": "backend_etl_extract_v3_extract_single_suburb"
     },
     {
       "relation": "calls",
@@ -7360,11 +7330,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L216",
+      "source_location": "L157",
       "weight": 1.0,
-      "source": "backend_etl_extract_v3_rationale_216",
-      "target": "backend_etl_extract_v3_worker",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_etl_extract_v3_rationale_157",
+      "target": "backend_etl_extract_v3_worker"
     },
     {
       "relation": "calls",
@@ -7392,11 +7362,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/etl_extract_v3.py",
-      "source_location": "L275",
+      "source_location": "L204",
       "weight": 1.0,
-      "source": "backend_etl_extract_v3_rationale_275",
-      "target": "backend_etl_extract_v3_run_extraction",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_etl_extract_v3_rationale_204",
+      "target": "backend_etl_extract_v3_run_extraction"
     },
     {
       "relation": "contains",
@@ -8953,9 +8923,9 @@
       "source_file": "backend/main.py",
       "source_location": "L142",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_142",
-      "target": "backend_main_userconsent"
+      "target": "backend_main_userconsent",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10077,9 +10047,9 @@
       "source_file": "backend/main.py",
       "source_location": "L337",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_337",
-      "target": "backend_main_record_consent"
+      "target": "backend_main_record_consent",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -10087,9 +10057,9 @@
       "source_file": "backend/main.py",
       "source_location": "L388",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_388",
-      "target": "backend_main_health_check"
+      "target": "backend_main_health_check",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10108,9 +10078,9 @@
       "source_file": "backend/main.py",
       "source_location": "L401",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_401",
-      "target": "backend_main_get_vap_etf"
+      "target": "backend_main_get_vap_etf",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -10118,9 +10088,9 @@
       "source_file": "backend/main.py",
       "source_location": "L437",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_437",
-      "target": "backend_main_bust_suburbs_cache"
+      "target": "backend_main_bust_suburbs_cache",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10140,9 +10110,9 @@
       "source_file": "backend/main.py",
       "source_location": "L467",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_get_suburbs",
-      "target": "backend_main_compute_growth_score"
+      "target": "backend_main_compute_growth_score",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10172,9 +10142,9 @@
       "source_file": "backend/main.py",
       "source_location": "L523",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_523",
-      "target": "backend_main_annualize_cagr"
+      "target": "backend_main_annualize_cagr",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10193,9 +10163,9 @@
       "source_file": "backend/main.py",
       "source_location": "L534",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_534",
-      "target": "backend_main_cap_yield"
+      "target": "backend_main_cap_yield",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10225,9 +10195,9 @@
       "source_file": "backend/main.py",
       "source_location": "L540",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_540",
-      "target": "backend_main_calibrate_dq"
+      "target": "backend_main_calibrate_dq",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -10257,9 +10227,9 @@
       "source_file": "backend/main.py",
       "source_location": "L561",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_561",
-      "target": "backend_main_compute_growth_score"
+      "target": "backend_main_compute_growth_score",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -10337,9 +10307,9 @@
       "source_file": "backend/main.py",
       "source_location": "L686",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_686",
-      "target": "backend_main_get_suburb"
+      "target": "backend_main_get_suburb",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -10450,9 +10420,9 @@
       "source_file": "backend/main.py",
       "source_location": "L937",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_937",
-      "target": "backend_main_get_news_sentiment"
+      "target": "backend_main_get_news_sentiment",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -10460,9 +10430,9 @@
       "source_file": "backend/main.py",
       "source_location": "L965",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_965",
-      "target": "backend_main_reload_suburbs"
+      "target": "backend_main_reload_suburbs",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -10562,9 +10532,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1160",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1160",
-      "target": "backend_main_get_suburbs_v3"
+      "target": "backend_main_get_suburbs_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -10572,9 +10542,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1238",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1238",
-      "target": "backend_main_export_suburbs_csv"
+      "target": "backend_main_export_suburbs_csv",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -10663,9 +10633,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1293",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1293",
-      "target": "backend_main_get_suburb_v3"
+      "target": "backend_main_get_suburb_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10684,9 +10654,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1363",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1363",
-      "target": "backend_main_get_osm_livability"
+      "target": "backend_main_get_osm_livability",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -10705,9 +10675,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1392",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1392",
-      "target": "backend_main_get_osm_boundary"
+      "target": "backend_main_get_osm_boundary",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -10715,9 +10685,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1401",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_main_rationale_1401",
-      "target": "backend_main_get_suburb_properties"
+      "target": "backend_main_get_suburb_properties",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11874,16 +11844,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L37",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
       "source_location": "L114",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -11909,16 +11869,6 @@
       "confidence_score": 1.0,
       "source": "backend_v3_scheduler",
       "target": "backend_v3_scheduler_python"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L51",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11954,75 +11904,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L38",
+      "source_location": "L36",
       "weight": 1.0,
-      "source": "backend_v3_scheduler_rationale_38",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L184",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler_v3scheduler_run_monthly_metro",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L217",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler_v3scheduler_run_quarterly_full",
-      "target": "backend_v3_scheduler_acquire_lock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L52",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler_rationale_52",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L211",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler_v3scheduler_run_monthly_metro",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L244",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler_v3scheduler_run_quarterly_full",
-      "target": "backend_v3_scheduler_release_lock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/v3_scheduler.py",
-      "source_location": "L66",
-      "weight": 1.0,
-      "source": "backend_v3_scheduler_rationale_66",
-      "target": "backend_v3_scheduler_python",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_v3_scheduler_rationale_36",
+      "target": "backend_v3_scheduler_python"
     },
     {
       "relation": "calls",
@@ -12050,11 +11936,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L77",
+      "source_location": "L47",
       "weight": 1.0,
-      "source": "backend_v3_scheduler_rationale_77",
-      "target": "backend_v3_scheduler_seed_pending_raw",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_v3_scheduler_rationale_47",
+      "target": "backend_v3_scheduler_seed_pending_raw"
     },
     {
       "relation": "calls",
@@ -12082,11 +11968,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L114",
+      "source_location": "L84",
       "weight": 1.0,
-      "source": "backend_v3_scheduler_rationale_114",
-      "target": "backend_v3_scheduler_mark_changed_for_unpack",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_v3_scheduler_rationale_84",
+      "target": "backend_v3_scheduler_mark_changed_for_unpack"
     },
     {
       "relation": "calls",
@@ -12114,11 +12000,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L145",
+      "source_location": "L115",
       "weight": 1.0,
-      "source": "backend_v3_scheduler_rationale_145",
-      "target": "backend_v3_scheduler_mark_changed_for_enrich",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_v3_scheduler_rationale_115",
+      "target": "backend_v3_scheduler_mark_changed_for_enrich"
     },
     {
       "relation": "calls",
@@ -12146,11 +12032,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/v3_scheduler.py",
-      "source_location": "L171",
+      "source_location": "L141",
       "weight": 1.0,
-      "source": "backend_v3_scheduler_rationale_171",
-      "target": "backend_v3_scheduler_v3scheduler",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "backend_v3_scheduler_rationale_141",
+      "target": "backend_v3_scheduler_v3scheduler"
     },
     {
       "relation": "method",
@@ -12766,81 +12652,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_affordabilitycalculator",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
       "source_location": "L19",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_app",
       "target": "src_app_app"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L12",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_calculators",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L15",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_cashflowgearing",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L14",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_housesearch",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_institutionalv3panel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L17",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_mypurchaseplan",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L18",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_quickroicalculator",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12862,6 +12678,16 @@
       "confidence_score": 1.0,
       "source": "src_main",
       "target": "src_app"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/AffordabilityCalculator.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_affordabilitycalculator",
+      "target": "components_affordabilitycalculator_affordabilitycalculator"
     },
     {
       "relation": "contains",
@@ -12915,6 +12741,16 @@
       "confidence_score": 1.0,
       "source": "components_calculators",
       "target": "components_calculators_calctype"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_calculators",
+      "target": "components_calculators_calculators"
     },
     {
       "relation": "contains",
@@ -12977,6 +12813,38 @@
       "confidence_score": 1.0,
       "source": "components_calculators",
       "target": "data_suburbs_calculatecomprehensivestampduty"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L109",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_calculators_calculators",
+      "target": "components_calculators_formatcurrency"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/Calculators.tsx",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "components_calculators_calculators",
+      "target": "data_suburbs_calculatecomprehensivestampduty"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/CashflowGearing.tsx",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_cashflowgearing",
+      "target": "components_cashflowgearing_cashflowgearing"
     },
     {
       "relation": "contains",
@@ -13117,6 +12985,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/HouseSearch.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_housesearch",
+      "target": "components_housesearch_housesearch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/HouseSearch.tsx",
       "source_location": "L177",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -13159,6 +13037,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InstitutionalV3Panel.tsx",
+      "source_location": "L53",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_institutionalv3panel",
+      "target": "components_institutionalv3panel_institutionalv3panel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/InstitutionalV3Panel.tsx",
       "source_location": "L28",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -13184,6 +13072,16 @@
       "confidence_score": 1.0,
       "source": "components_mypurchaseplan",
       "target": "components_mypurchaseplan_buyerprofile"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/MyPurchasePlan.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_mypurchaseplan",
+      "target": "components_mypurchaseplan_mypurchaseplan"
     },
     {
       "relation": "contains",
@@ -13237,6 +13135,16 @@
       "confidence_score": 1.0,
       "source": "components_onboardingtour",
       "target": "components_onboardingtour_onboardingtour"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/QuickRoiCalculator.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_quickroicalculator",
+      "target": "components_quickroicalculator_quickroicalculator"
     },
     {
       "relation": "contains",
@@ -13367,6 +13275,16 @@
       "confidence_score": 1.0,
       "source": "components_suburbmap",
       "target": "components_suburbmap_stationicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SuburbMap.tsx",
+      "source_location": "L58",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_suburbmap",
+      "target": "components_suburbmap_suburbmap"
     },
     {
       "relation": "contains",
@@ -15155,5 +15073,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "26b16d740336426e61179fdafc6845d3d7a8a2ca"
+  "built_at_commit": "12cd671a8f610649761035324fd6f9a831d5c6c5"
 }
