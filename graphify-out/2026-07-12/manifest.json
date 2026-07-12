@@ -10,8 +10,8 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1783849513.9132092,
-    "ast_hash": "4c462a2ad91562967ade53a155e69908",
+    "mtime": 1783852327.1847434,
+    "ast_hash": "7830ba48f487d390ed60518d4d96e106",
     "semantic_hash": ""
   },
   "backend/downloader.py": {
@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783849682.329981,
-    "ast_hash": "71013a9922d89e0292339e3b6ad75eaa",
+    "mtime": 1783852032.5125766,
+    "ast_hash": "af4a5414aed1b83e16913b9275b2e7d2",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783847411.185237,
-    "ast_hash": "36e80891dca8ff445677fb90b51d30b1",
+    "mtime": 1783850862.9546144,
+    "ast_hash": "6135aed96dfda1f9164e77af979a3b84",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -545,18 +545,18 @@
     "semantic_hash": ""
   },
   "backend/ai_sentiment.py": {
-    "mtime": 1783842278.0400388,
-    "ast_hash": "f06afe117a0874e63b55bf615d566a8e",
+    "mtime": 1783851962.8323233,
+    "ast_hash": "f5828865e23579c6a3eb3c347d51fd36",
     "semantic_hash": ""
   },
   "backend/cache_utils.py": {
-    "mtime": 1783842289.3870125,
-    "ast_hash": "dbc7871971580cdd3867aaabc26961d1",
+    "mtime": 1783850838.2165809,
+    "ast_hash": "dbc2f57acc7408f79cf642b8d74278ef",
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1783849732.9418235,
-    "ast_hash": "86e38064c74e859020b5ec712ad78321",
+    "mtime": 1783852179.4113972,
+    "ast_hash": "11b3966683b363366b6948837214d250",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -587,6 +587,16 @@
   "backend/warm_cache.py": {
     "mtime": 1783849530.1940203,
     "ast_hash": "a131b6dbf96fedaa05026415de2190ae",
+    "semantic_hash": ""
+  },
+  "backend/policy_rules.json": {
+    "mtime": 1783851942.1558762,
+    "ast_hash": "010601c772beb32f7778a85117201b1c",
+    "semantic_hash": ""
+  },
+  "backend/risk_engine.py": {
+    "mtime": 1783851919.9134896,
+    "ast_hash": "dac81523effb5e600e743a8c131f8b1d",
     "semantic_hash": ""
   }
 }

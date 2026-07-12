@@ -140,13 +140,13 @@
     "semantic_hash": "3903fdd09ac66228d8137b28f7ec7dd9"
   },
   "backend/requirements.txt": {
-    "mtime": 1783848703.5402412,
-    "ast_hash": "cbaa052c8261f79084344f8d4d9c0187",
+    "mtime": 1783854409.9954045,
+    "ast_hash": "e85f25f021aca2a688795adfb6bf5e10",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1783848510.6469858,
-    "ast_hash": "2dff51603321d7554fd5f0d2fde1e851",
+    "mtime": 1783854489.5041614,
+    "ast_hash": "2329952ed46bd2ce098ce62e87c14a53",
     "semantic_hash": ""
   },
   "graphify-out/converted/vic_sales_time_series_20yr_latest_5350cb9d.md": {
@@ -545,8 +545,8 @@
     "semantic_hash": ""
   },
   "backend/ai_sentiment.py": {
-    "mtime": 1783851962.8323233,
-    "ast_hash": "f5828865e23579c6a3eb3c347d51fd36",
+    "mtime": 1783855057.3765965,
+    "ast_hash": "0c9e23a3d0be9bcb87629b429230768b",
     "semantic_hash": ""
   },
   "backend/cache_utils.py": {
@@ -570,18 +570,13 @@
     "semantic_hash": ""
   },
   "backend/test_ai_sentiment.py": {
-    "mtime": 1783846097.3645048,
-    "ast_hash": "05e99d9feb2cae354a89237685990cb3",
+    "mtime": 1783854543.3461232,
+    "ast_hash": "7a2d0c028e457d2fdd10cdaf212689c8",
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.test.tsx": {
     "mtime": 1783845911.897933,
     "ast_hash": "e111e6f0b140a11370199ee9babf8b69",
-    "semantic_hash": ""
-  },
-  "backend/preload.py": {
-    "mtime": 1783848436.3361115,
-    "ast_hash": "bf947cf989afa78746254dc1175169de",
     "semantic_hash": ""
   },
   "backend/warm_cache.py": {
