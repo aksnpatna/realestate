@@ -13,7 +13,7 @@ export default memo(function QuickRoiCalculator({ medianPrice, medianRent, state
   const [loanType, setLoanType] = useState('io');
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     let active = true;
