@@ -302,6 +302,38 @@ from cache_utils import cached_ai
 
 @cached_ai("ai_committee:{0}:{1}")
 def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], fetch_news: bool = False):
+    """
+    Run the multi-agent LangGraph investment committee for a suburb.
+
+    Pipeline (4 sequential agents → Supervisor):
+        1. fetch_news      — DuckDuckGo/Tavily search for infrastructure/zoning news
+        2. bull_agent      — 🐂 "Anna": finds reasons to BUY (yield, growth, demand)
+        3. bear_agent      — 🐻 "Alex": finds reasons to AVOID (risk, affordability)
+        4. urban_planner   — 🏙️: evaluates demographics, schools, gentrification
+        5. supervisor      — 📋 CIO: final Buy/Hold/Pass verdict + playbook + reality check
+
+    Args:
+        suburb: Suburb name (e.g. "Parramatta").
+        state: State code (e.g. "NSW").
+        metrics: Dict of V3 market metrics (median_price, yield, vacancy, etc.).
+        fetch_news: When True, enables live web search (default: False to save credits).
+
+    Returns:
+        dict with keys:
+            verdict (str)      — "BUY", "HOLD", or "PASS"
+            playbook (str)     — 3-point investment strategy
+            reality_check (str)— comparison of media vs. actual data
+            bull (str)         — bullish argument text
+            bear (str)         — bearish argument text
+            urban (str)        — urban planner argument text
+            catalysts (list)   — extracted infrastructure/policy catalysts
+            source_snippets (list) — article titles+snippets backing the analysis
+            llm_provider (str) — which LLM generated the result (nvidia/groq/deepseek/openai/ollama)
+
+    Caching: Redis key "ai_committee:{suburb}:{state}" with AI_CACHE_TTL (7 days).
+    LLM selection: Priority order → NVIDIA → Groq → DeepSeek → OpenAI → Ollama.
+    Env vars: NVIDIA_API_KEY, GROQ_API_KEY, DEEPSEEK_API_KEY, OPENAI_API_KEY, AI_CACHE_TTL.
+    """
     initial_state = {
         "suburb": suburb, 
         "state": state, 

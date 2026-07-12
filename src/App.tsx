@@ -52,6 +52,15 @@ function App() {
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
   const [macroEtf, setMacroEtf] = useState<any>(null)
 
+  /**
+   * Fetch a suburb's enriched data from the V3 cold-load API.
+   * 
+   * Preserves the frontend ID format (name-state-postcode) so the dropdown
+   * selector continues to match after the API returns a different format.
+   * After loading, restores any cached AI committee result from localStorage.
+   *
+   * @param id - Frontend suburb ID (e.g. "parramatta-nsw-2150")
+   */
   const loadColdSuburb = useCallback(async (id: string) => {
     try {
       const res = await fetch(`/api/suburbs/${id}`)
