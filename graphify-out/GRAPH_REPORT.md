@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 103 files · ~2,218,813 words
+- 105 files · ~2,219,633 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 702 nodes · 955 edges · 102 communities (67 shown, 35 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 149 edges (avg confidence: 0.57)
+- 716 nodes · 972 edges · 96 communities (62 shown, 34 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 154 edges (avg confidence: 0.57)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `39917115`
+- Built from commit: `01efbe15`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -80,14 +80,8 @@
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
-- [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
-- [[_COMMUNITY_Community 91|Community 91]]
-- [[_COMMUNITY_Community 92|Community 92]]
-- [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 94|Community 94]]
-- [[_COMMUNITY_Community 95|Community 95]]
-- [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 99|Community 99]]
@@ -106,16 +100,16 @@
 10. `compilerOptions` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `run_investment_committee()` --calls--> `record_committee_call()`  [INFERRED]
+  backend/ai_agent.py → backend/observability.py
+- `analyze_sentiment()` --calls--> `record_sentiment_call()`  [INFERRED]
+  backend/ai_sentiment.py → backend/observability.py
 - `Path` --uses--> `SuburbUIV3`  [INFERRED]
   backend/etl_abs_census.py → backend/models_v3.py
 - `warmup()` --calls--> `Session`  [INFERRED]
   backend/warm_cache.py → backend/main.py
 - `get_news_sentiment()` --calls--> `analyze_sentiment()`  [INFERRED]
   backend/ai_agent.py → backend/ai_sentiment.py
-- `analyze_suburb()` --calls--> `run_investment_committee()`  [INFERRED]
-  backend/main.py → backend/ai_agent.py
-- `seed_raw_v3()` --calls--> `SuburbRawV3`  [INFERRED]
-  backend/etl_extract_v3.py → backend/models_v3.py
 
 ## Import Cycles
 - None detected.
@@ -131,7 +125,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (102 total, 35 thin omitted)
+## Communities (96 total, 34 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -158,8 +152,8 @@ Cohesion: 0.29
 Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi
 
 ### Community 6 - "Database Models & Scrapers"
-Cohesion: 0.06
-Nodes (84): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache() (+76 more)
+Cohesion: 0.07
+Nodes (78): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+70 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -210,8 +204,8 @@ Cohesion: 0.29
 Nodes (6): enrich_all(), enrich_changed(), enrich_from_unpacked.py — SQL-level enrichment from unpacked table -> suburbs_ui, Only enrich records where unpacked data is newer than UI data., Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data, reload_suburbs()
 
 ### Community 19 - "Institutional V3 Panel"
-Cohesion: 0.20
-Nodes (10): Box Hill VIC 3128, Craigieburn VIC 3064, Dandenong VIC 3175, Epping VIC 3076, Frankston VIC 3199, Glen Waverley VIC 3150, Preston VIC 3072, Sunshine VIC 3020 (+2 more)
+Cohesion: 0.04
+Nodes (45): ACT (Australian Capital Territory), Armadale WA 6112, Australian Suburbs Comprehensive Data (2025-2026), Belconnen ACT 2617, Box Hill VIC 3128, Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209 (+37 more)
 
 ### Community 20 - "Data Downloader"
 Cohesion: 0.83
@@ -230,8 +224,8 @@ Cohesion: 0.06
 Nodes (33): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+25 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.15
-Nodes (20): Any, bear_agent_node(), bull_agent_node(), CommitteeState, _evaluate_policy_rules(), fetch_news_node(), get_llm(), get_news_sentiment() (+12 more)
+Cohesion: 0.12
+Nodes (23): Any, agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), bear_agent_node(), bull_agent_node(), CommitteeState, _evaluate_policy_rules() (+15 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
@@ -263,58 +257,38 @@ Nodes (9): AIInsightPanelProps, AnalysisStep, AnalysisTab, CashflowGearingProps,
 
 ### Community 88 - "Community 88"
 Cohesion: 0.09
-Nodes (16): analyze_sentiment(), _call_remote_llm(), _extract_keywords(), _keyword_sentiment(), ai_sentiment.py — Sentiment analysis via remote LLM (Ollama / llama.cpp GGUF). C, Keyword-based sentiment scoring as fallback. Returns 1-10 score., Analyze sentiment of text. Tries remote Qwen 7B first, falls back to keyword., Extract matching sentiment keywords from the text with counts. (+8 more)
-
-### Community 89 - "Community 89"
-Cohesion: 0.25
-Nodes (8): Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209, Ipswich QLD 4305, Logan Central QLD 4114, QLD (Queensland), Springfield QLD 4300, Surfers Paradise QLD 4217
+Nodes (16): analyze_sentiment(), _call_remote_llm(), _extract_keywords(), _keyword_sentiment(), ai_sentiment.py — Sentiment analysis via remote LLM (Ollama / llama.cpp GGUF). C, Keyword-based sentiment scoring as fallback. Returns 1-10 score., Analyze sentiment of text. Tries remote Qwen 3B first, falls back to keyword., Extract matching sentiment keywords from the text with counts. (+8 more)
 
 ### Community 90 - "Community 90"
 Cohesion: 0.33
 Nodes (4): CalcType, CHART_COLORS, PropertyType, STATE_OPTIONS
-
-### Community 91 - "Community 91"
-Cohesion: 0.29
-Nodes (7): Armadale WA 6112, Fremantle WA 6160, Joondalup WA 6027, Mandurah WA 6210, Midland WA 6056, Rockingham WA 6168, WA (Western Australia)
-
-### Community 92 - "Community 92"
-Cohesion: 0.33
-Nodes (5): Australian Suburbs Comprehensive Data (2025-2026), Darwin NT 0800, Data Sources, NT (Northern Territory), Palmerston NT 0830
-
-### Community 93 - "Community 93"
-Cohesion: 0.33
-Nodes (6): ACT (Australian Capital Territory), Belconnen ACT 2617, Gungahlin ACT 2912, Queanbeyan NSW 2620, Tuggeranong ACT 2900, Woden ACT 2606
-
-### Community 95 - "Community 95"
-Cohesion: 0.40
-Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Australia), Salisbury SA 5108
-
-### Community 96 - "Community 96"
-Cohesion: 0.50
-Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasmania)
 
 ### Community 98 - "Community 98"
 Cohesion: 0.13
 Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, Calculators, CashflowGearing, HouseSearch, InstitutionalV3Panel, MyPurchasePlan (+2 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.24
-Nodes (6): _normalize_suburb_id(), Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21, normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, TestIDNormalization
+Cohesion: 0.09
+Nodes (18): get_news_sentiment(), _get_suburb_or_404(), metrics(), _normalize_suburb_id(), Prometheus-compatible metrics endpoint for AI observability., Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21, Look up a SuburbUIV3 by normalized ID. Raises 404 if not found., On-demand news sentiment for a suburb.     Caching: DB (TTL=AI_CACHE_TTL) → Redi (+10 more)
+
+### Community 103 - "Community 103"
+Cohesion: 0.27
+Nodes (4): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, Cache warm-up: pre-populates Redis AI cache for top-20 most-queried suburbs. Run, warmup()
 
 ## Knowledge Gaps
 - **218 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+213 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **34 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `Session` connect `Database Models & Scrapers` to `ETL Transform V3 Pipeline`, `ETL Extract V3 Pipeline`, `Community 99`, `Community 103`?**
+  _High betweenness centrality (0.042) - this node is a cross-community bridge._
+- **Why does `run_investment_committee()` connect `Community 65` to `Community 99`, `Database Models & Scrapers`?**
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
 - **Why does `analyze_suburb()` connect `Database Models & Scrapers` to `Community 65`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
-- **Why does `Session` connect `Database Models & Scrapers` to `ETL Transform V3 Pipeline`, `ETL Extract V3 Pipeline`, `Community 103`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
-- **Why does `run_investment_committee()` connect `Community 65` to `Database Models & Scrapers`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
 - **Are the 9 inferred relationships involving `Session` (e.g. with `worker()` and `warmup()`) actually correct?**
   _`Session` has 9 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**

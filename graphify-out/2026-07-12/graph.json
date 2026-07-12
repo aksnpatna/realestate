@@ -482,20 +482,20 @@
       "norm_label": "ai_sentiment.py"
     },
     {
-      "label": "_load_transformer()",
+      "label": "_call_remote_llm()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L25",
+      "source_location": "L35",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_load_transformer",
+      "id": "backend_ai_sentiment_call_remote_llm",
       "community": 88,
-      "norm_label": "_load_transformer()"
+      "norm_label": "_call_remote_llm()"
     },
     {
       "label": "_keyword_sentiment()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L45",
+      "source_location": "L118",
       "_origin": "ast",
       "id": "backend_ai_sentiment_keyword_sentiment",
       "community": 88,
@@ -505,7 +505,7 @@
       "label": "analyze_sentiment()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L56",
+      "source_location": "L129",
       "_origin": "ast",
       "id": "backend_ai_sentiment_analyze_sentiment",
       "community": 88,
@@ -515,59 +515,59 @@
       "label": "_extract_keywords()",
       "file_type": "code",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L119",
+      "source_location": "L165",
       "_origin": "ast",
       "id": "backend_ai_sentiment_extract_keywords",
       "community": 88,
       "norm_label": "_extract_keywords()"
     },
     {
-      "label": "ai_sentiment.py \u2014 Transformer-based sentiment analysis for real-estate news. Use",
+      "label": "ai_sentiment.py \u2014 Sentiment analysis via remote LLM (Ollama / llama.cpp GGUF). C",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_ai_sentiment_rationale_1",
       "community": 88,
-      "norm_label": "ai_sentiment.py \u2014 transformer-based sentiment analysis for real-estate news. use"
+      "norm_label": "ai_sentiment.py \u2014 sentiment analysis via remote llm (ollama / llama.cpp gguf). c"
     },
     {
-      "label": "Lazy-load the HuggingFace sentiment pipeline.",
+      "label": "Call the remote Qwen model over HTTP for sentiment classification.     Supports",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L26",
+      "source_location": "L36",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_26",
+      "id": "backend_ai_sentiment_rationale_36",
       "community": 88,
-      "norm_label": "lazy-load the huggingface sentiment pipeline."
+      "norm_label": "call the remote qwen model over http for sentiment classification.     supports"
     },
     {
       "label": "Keyword-based sentiment scoring as fallback. Returns 1-10 score.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L46",
+      "source_location": "L119",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_46",
+      "id": "backend_ai_sentiment_rationale_119",
       "community": 88,
       "norm_label": "keyword-based sentiment scoring as fallback. returns 1-10 score."
     },
     {
-      "label": "Analyze sentiment of text and return a 1-10 score with label and provider info.",
+      "label": "Analyze sentiment of text. Tries remote Qwen 7B first, falls back to keyword.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L57",
+      "source_location": "L130",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_57",
+      "id": "backend_ai_sentiment_rationale_130",
       "community": 88,
-      "norm_label": "analyze sentiment of text and return a 1-10 score with label and provider info."
+      "norm_label": "analyze sentiment of text. tries remote qwen 7b first, falls back to keyword."
     },
     {
       "label": "Extract matching sentiment keywords from the text with counts.",
       "file_type": "rationale",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L120",
+      "source_location": "L166",
       "_origin": "ast",
-      "id": "backend_ai_sentiment_rationale_120",
+      "id": "backend_ai_sentiment_rationale_166",
       "community": 88,
       "norm_label": "extract matching sentiment keywords from the text with counts."
     },
@@ -2912,26 +2912,6 @@
       "norm_label": "algorithm combining leading indicators for capital growth:     - falling days on"
     },
     {
-      "label": "preload.py",
-      "file_type": "code",
-      "source_file": "backend/preload.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "backend_preload",
-      "community": 102,
-      "norm_label": "preload.py"
-    },
-    {
-      "label": "Pre\u2011load HuggingFace transformer at container start. Fails fast if model downloa",
-      "file_type": "rationale",
-      "source_file": "backend/preload.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "backend_preload_rationale_1",
-      "community": 102,
-      "norm_label": "pre\u2010load huggingface transformer at container start. fails fast if model downloa"
-    },
-    {
       "label": "rank_suburbs.py",
       "file_type": "code",
       "source_file": "backend/rank_suburbs.py",
@@ -3225,7 +3205,7 @@
       "label": "TestSentimentKeywordFallback",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L15",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testsentimentkeywordfallback",
       "community": 88,
@@ -3235,7 +3215,7 @@
       "label": ".test_positive_text()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L18",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_positive_text",
       "community": 88,
@@ -3245,7 +3225,7 @@
       "label": ".test_negative_text()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L23",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_negative_text",
       "community": 88,
@@ -3255,7 +3235,7 @@
       "label": ".test_neutral_text()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L28",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_neutral_text",
       "community": 88,
@@ -3265,7 +3245,7 @@
       "label": ".test_score_bounds()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L33",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_score_bounds",
       "community": 88,
@@ -3275,7 +3255,7 @@
       "label": ".test_empty_text()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L38",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_empty_text",
       "community": 88,
@@ -3285,7 +3265,7 @@
       "label": "TestAnalyzeSentiment",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L44",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testanalyzesentiment",
       "community": 88,
@@ -3295,57 +3275,57 @@
       "label": ".test_empty_input()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L47",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testanalyzesentiment_test_empty_input",
       "community": 88,
       "norm_label": ".test_empty_input()"
     },
     {
-      "label": ".test_keyword_fallback_bullish()",
+      "label": ".test_remote_positive()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L55",
+      "source_location": "L50",
       "_origin": "ast",
-      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_keyword_fallback_bullish",
+      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_positive",
       "community": 88,
-      "norm_label": ".test_keyword_fallback_bullish()"
+      "norm_label": ".test_remote_positive()"
     },
     {
-      "label": ".test_transformer_positive()",
+      "label": ".test_remote_negative()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L65",
+      "source_location": "L59",
       "_origin": "ast",
-      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_positive",
+      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_negative",
       "community": 88,
-      "norm_label": ".test_transformer_positive()"
+      "norm_label": ".test_remote_negative()"
     },
     {
-      "label": ".test_transformer_negative()",
+      "label": ".test_remote_fallback_to_keyword()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L77",
+      "source_location": "L68",
       "_origin": "ast",
-      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_negative",
+      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_fallback_to_keyword",
       "community": 88,
-      "norm_label": ".test_transformer_negative()"
+      "norm_label": ".test_remote_fallback_to_keyword()"
     },
     {
-      "label": ".test_transformer_failure_fallsback()",
+      "label": ".test_explanation_included()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L89",
+      "source_location": "L75",
       "_origin": "ast",
-      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_failure_fallsback",
+      "id": "backend_test_ai_sentiment_testanalyzesentiment_test_explanation_included",
       "community": 88,
-      "norm_label": ".test_transformer_failure_fallsback()"
+      "norm_label": ".test_explanation_included()"
     },
     {
       "label": "TestIDNormalization",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L97",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testidnormalization",
       "community": 99,
@@ -3355,7 +3335,7 @@
       "label": ".test_frontend_to_db_format()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L100",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testidnormalization_test_frontend_to_db_format",
       "community": 99,
@@ -3365,7 +3345,7 @@
       "label": ".test_single_word_name()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L106",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testidnormalization_test_single_word_name",
       "community": 99,
@@ -3375,7 +3355,7 @@
       "label": ".test_unknown_format_fallback()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L110",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testidnormalization_test_unknown_format_fallback",
       "community": 99,
@@ -3385,7 +3365,7 @@
       "label": "TestCachedAI",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L116",
+      "source_location": "L100",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testcachedai",
       "community": 88,
@@ -3395,7 +3375,7 @@
       "label": ".test_decorator_calls_function()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L120",
+      "source_location": "L102",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testcachedai_test_decorator_calls_function",
       "community": 88,
@@ -3405,7 +3385,7 @@
       "label": ".test_decorator_imports_cache()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L137",
+      "source_location": "L116",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testcachedai_test_decorator_imports_cache",
       "community": 88,
@@ -3415,7 +3395,7 @@
       "label": ".test_decorator_preserves_function_metadata()",
       "file_type": "code",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L147",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testcachedai_test_decorator_preserves_function_metadata",
       "community": 88,
@@ -3430,46 +3410,6 @@
       "id": "backend_test_ai_sentiment_rationale_1",
       "community": 88,
       "norm_label": "unit tests for ai sentiment analysis and caching layer. run: cd backend && pytho"
-    },
-    {
-      "label": "Test the keyword-based sentiment scoring (no transformers required).",
-      "file_type": "rationale",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "backend_test_ai_sentiment_rationale_16",
-      "community": 88,
-      "norm_label": "test the keyword-based sentiment scoring (no transformers required)."
-    },
-    {
-      "label": "Test the main analyze_sentiment function with mocked transformer.",
-      "file_type": "rationale",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L45",
-      "_origin": "ast",
-      "id": "backend_test_ai_sentiment_rationale_45",
-      "community": 88,
-      "norm_label": "test the main analyze_sentiment function with mocked transformer."
-    },
-    {
-      "label": "Test the suburb ID normalizer.",
-      "file_type": "rationale",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L98",
-      "_origin": "ast",
-      "id": "backend_test_ai_sentiment_rationale_98",
-      "community": 99,
-      "norm_label": "test the suburb id normalizer."
-    },
-    {
-      "label": "Test the cached_ai decorator behavior.",
-      "file_type": "rationale",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L117",
-      "_origin": "ast",
-      "id": "backend_test_ai_sentiment_rationale_117",
-      "community": 88,
-      "norm_label": "test the cached_ai decorator behavior."
     },
     {
       "label": "test_llm.py",
@@ -7483,9 +7423,9 @@
       "source_file": "backend/ai_agent.py",
       "source_location": "L316",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_agent",
-      "target": "backend_ai_agent_evaluate_policy_rules",
-      "confidence_score": 1.0
+      "target": "backend_ai_agent_evaluate_policy_rules"
     },
     {
       "relation": "contains",
@@ -7726,9 +7666,9 @@
       "source_file": "backend/ai_agent.py",
       "source_location": "L316",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_agent_evaluate_policy_rules",
-      "target": "any",
-      "confidence_score": 1.0
+      "target": "any"
     },
     {
       "relation": "rationale_for",
@@ -7736,9 +7676,9 @@
       "source_file": "backend/ai_agent.py",
       "source_location": "L317",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_agent_rationale_317",
-      "target": "backend_ai_agent_evaluate_policy_rules",
-      "confidence_score": 1.0
+      "target": "backend_ai_agent_evaluate_policy_rules"
     },
     {
       "relation": "calls",
@@ -7747,9 +7687,9 @@
       "source_file": "backend/ai_agent.py",
       "source_location": "L416",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_agent_run_investment_committee",
-      "target": "backend_ai_agent_evaluate_policy_rules",
-      "confidence_score": 1.0
+      "target": "backend_ai_agent_evaluate_policy_rules"
     },
     {
       "relation": "references",
@@ -7768,9 +7708,9 @@
       "source_file": "backend/ai_agent.py",
       "source_location": "L351",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_agent_rationale_351",
-      "target": "backend_ai_agent_run_investment_committee",
-      "confidence_score": 1.0
+      "target": "backend_ai_agent_run_investment_committee"
     },
     {
       "relation": "calls",
@@ -7808,11 +7748,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L119",
+      "source_location": "L35",
       "weight": 1.0,
       "source": "backend_ai_sentiment",
-      "target": "backend_ai_sentiment_extract_keywords",
+      "target": "backend_ai_sentiment_call_remote_llm",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ai_sentiment.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_ai_sentiment",
+      "target": "backend_ai_sentiment_extract_keywords"
     },
     {
       "relation": "contains",
@@ -7823,16 +7773,6 @@
       "confidence_score": 1.0,
       "source": "backend_ai_sentiment",
       "target": "backend_ai_sentiment_keyword_sentiment"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/ai_sentiment.py",
-      "source_location": "L25",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_sentiment",
-      "target": "backend_ai_sentiment_load_transformer"
     },
     {
       "relation": "rationale_for",
@@ -7849,21 +7789,21 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L69",
+      "source_location": "L143",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_ai_sentiment_analyze_sentiment",
-      "target": "backend_ai_sentiment_load_transformer"
+      "target": "backend_ai_sentiment_call_remote_llm",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L26",
+      "source_location": "L36",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_sentiment_rationale_26",
-      "target": "backend_ai_sentiment_load_transformer"
+      "source": "backend_ai_sentiment_rationale_36",
+      "target": "backend_ai_sentiment_call_remote_llm",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -7880,11 +7820,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L46",
+      "source_location": "L119",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_sentiment_rationale_46",
-      "target": "backend_ai_sentiment_keyword_sentiment"
+      "source": "backend_ai_sentiment_rationale_119",
+      "target": "backend_ai_sentiment_keyword_sentiment",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -7948,19 +7888,19 @@
       "source_file": "backend/ai_sentiment.py",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_ai_sentiment_analyze_sentiment",
-      "target": "backend_ai_sentiment_extract_keywords",
-      "confidence_score": 1.0
+      "target": "backend_ai_sentiment_extract_keywords"
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L57",
+      "source_location": "L130",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_ai_sentiment_rationale_57",
-      "target": "backend_ai_sentiment_analyze_sentiment"
+      "source": "backend_ai_sentiment_rationale_130",
+      "target": "backend_ai_sentiment_analyze_sentiment",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -7979,31 +7919,9 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L59",
+      "source_location": "L78",
       "weight": 1.0,
-      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_keyword_fallback_bullish",
-      "target": "backend_ai_sentiment_analyze_sentiment"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L93",
-      "weight": 1.0,
-      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_failure_fallsback",
-      "target": "backend_ai_sentiment_analyze_sentiment"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L83",
-      "weight": 1.0,
-      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_negative",
+      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_explanation_included",
       "target": "backend_ai_sentiment_analyze_sentiment"
     },
     {
@@ -8014,16 +7932,38 @@
       "source_file": "backend/test_ai_sentiment.py",
       "source_location": "L71",
       "weight": 1.0,
-      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_positive",
+      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_fallback_to_keyword",
+      "target": "backend_ai_sentiment_analyze_sentiment"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/test_ai_sentiment.py",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_negative",
+      "target": "backend_ai_sentiment_analyze_sentiment"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/test_ai_sentiment.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_positive",
       "target": "backend_ai_sentiment_analyze_sentiment"
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/ai_sentiment.py",
-      "source_location": "L120",
+      "source_location": "L166",
       "weight": 1.0,
-      "source": "backend_ai_sentiment_rationale_120",
+      "source": "backend_ai_sentiment_rationale_166",
       "target": "backend_ai_sentiment_extract_keywords",
       "confidence_score": 1.0
     },
@@ -11825,9 +11765,9 @@
       "source_file": "backend/main.py",
       "source_location": "L959",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_959",
-      "target": "backend_main_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_main_normalize_suburb_id"
     },
     {
       "relation": "calls",
@@ -11846,9 +11786,9 @@
       "source_file": "backend/main.py",
       "source_location": "L965",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_965",
-      "target": "backend_main_get_suburb_or_404",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_or_404"
     },
     {
       "relation": "rationale_for",
@@ -11856,9 +11796,9 @@
       "source_file": "backend/main.py",
       "source_location": "L980",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_980",
-      "target": "backend_main_get_news_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_main_get_news_sentiment"
     },
     {
       "relation": "rationale_for",
@@ -11866,9 +11806,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1025",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1025",
-      "target": "backend_main_reload_suburbs",
-      "confidence_score": 1.0
+      "target": "backend_main_reload_suburbs"
     },
     {
       "relation": "references",
@@ -11968,9 +11908,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1220",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1220",
-      "target": "backend_main_get_suburbs_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburbs_v3"
     },
     {
       "relation": "rationale_for",
@@ -11978,9 +11918,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1298",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1298",
-      "target": "backend_main_export_suburbs_csv",
-      "confidence_score": 1.0
+      "target": "backend_main_export_suburbs_csv"
     },
     {
       "relation": "uses",
@@ -12069,9 +12009,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1353",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1353",
-      "target": "backend_main_get_suburb_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_v3"
     },
     {
       "relation": "calls",
@@ -12090,9 +12030,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1423",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1423",
-      "target": "backend_main_get_osm_livability",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_livability"
     },
     {
       "relation": "calls",
@@ -12111,9 +12051,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1452",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1452",
-      "target": "backend_main_get_osm_boundary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_boundary"
     },
     {
       "relation": "rationale_for",
@@ -12121,9 +12061,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1461",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1461",
-      "target": "backend_main_get_suburb_properties",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_properties"
     },
     {
       "relation": "contains",
@@ -12790,16 +12730,6 @@
       "target": "backend_predictive_ai_engine_calculate_predictive_score"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/preload.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_preload_rationale_1",
-      "target": "backend_preload"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/rank_suburbs.py",
@@ -12815,9 +12745,9 @@
       "source_file": "backend/risk_engine.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_risk_engine",
-      "target": "backend_risk_engine_compute_risk_rating",
-      "confidence_score": 1.0
+      "target": "backend_risk_engine_compute_risk_rating"
     },
     {
       "relation": "rationale_for",
@@ -12825,9 +12755,9 @@
       "source_file": "backend/risk_engine.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_risk_engine_rationale_1",
-      "target": "backend_risk_engine",
-      "confidence_score": 1.0
+      "target": "backend_risk_engine"
     },
     {
       "relation": "rationale_for",
@@ -12835,9 +12765,9 @@
       "source_file": "backend/risk_engine.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_risk_engine_rationale_29",
-      "target": "backend_risk_engine_compute_risk_rating",
-      "confidence_score": 1.0
+      "target": "backend_risk_engine_compute_risk_rating"
     },
     {
       "relation": "rationale_for",
@@ -13159,16 +13089,6 @@
       "target": "backend_test_ai_sentiment"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_test_ai_sentiment_rationale_16",
-      "target": "backend_test_ai_sentiment_testsentimentkeywordfallback"
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/test_ai_sentiment.py",
@@ -13219,16 +13139,6 @@
       "target": "backend_test_ai_sentiment_testsentimentkeywordfallback_test_score_bounds"
     },
     {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L45",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_test_ai_sentiment_rationale_45",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment"
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/test_ai_sentiment.py",
@@ -13242,51 +13152,41 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L55",
+      "source_location": "L75",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_keyword_fallback_bullish"
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_explanation_included",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L89",
+      "source_location": "L68",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_failure_fallsback"
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_fallback_to_keyword",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L77",
+      "source_location": "L59",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_negative"
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_negative",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L65",
+      "source_location": "L50",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testanalyzesentiment",
-      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_transformer_positive"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L98",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_test_ai_sentiment_rationale_98",
-      "target": "backend_test_ai_sentiment_testidnormalization"
+      "target": "backend_test_ai_sentiment_testanalyzesentiment_test_remote_positive",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -13317,16 +13217,6 @@
       "confidence_score": 1.0,
       "source": "backend_test_ai_sentiment_testidnormalization",
       "target": "backend_test_ai_sentiment_testidnormalization_test_unknown_format_fallback"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/test_ai_sentiment.py",
-      "source_location": "L117",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_test_ai_sentiment_rationale_117",
-      "target": "backend_test_ai_sentiment_testcachedai"
     },
     {
       "relation": "method",
@@ -17300,5 +17190,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "b91e528f6e380549b912f23947d47282442be111"
+  "built_at_commit": "399171152c293ed83b6e08ecb8a1e157fb9c53b0"
 }
