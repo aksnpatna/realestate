@@ -36,6 +36,7 @@ function App() {
   const [loadingData, setLoadingData] = useState(true)
   const [livabilityData, setLivabilityData] = useState<LivabilityData | null>(null)
   const [loadingLivability, setLoadingLivability] = useState(false)
+  const [livabilityError, setLivabilityError] = useState<string | null>(null)
   const [showPrimarySchools, setShowPrimarySchools] = useState(false)
   const [showSecondarySchools, setShowSecondarySchools] = useState(false)
 
@@ -197,6 +198,7 @@ function App() {
     prevSuburbId.current = currentId;
     
     setLivabilityData(null)
+    setLivabilityError(null)
     setClusteringResults(null)
     setShowAmenitiesOnMap(false)
     
@@ -204,13 +206,14 @@ function App() {
       setLoadingLivability(true);
       const lat = activeSuburb.coordinates?.[0] || -33.8688;
       const lng = activeSuburb.coordinates?.[1] || 151.2093;
-      console.log(`[livability] fetching for ${activeSuburb.name} at ${lat},${lng}`);
       fetchLivabilityData(lat, lng)
         .then(data => {
-          console.log(`[livability] received: cafes=${data.cafes?.length} parks=${data.parks?.length} walkability=${data.walkabilityScore}`);
           setLivabilityData(data);
         })
-        .catch((err) => console.error("Failed to load livability data:", err))
+        .catch((err) => {
+          console.error("Failed to load livability data:", err);
+          setLivabilityError(err.message || "Failed to load");
+        })
         .finally(() => setLoadingLivability(false));
     }
   }, [activeSuburb?.id])
@@ -346,8 +349,9 @@ function App() {
                   </div>
                   <span style={{ fontSize: '0.7rem', color: strengthColor, fontWeight: 600 }}>{passwordStrength}</span>
                 </div>
-              )}
-            </div>
+                    )}
+                    {livabilityError && <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', color: '#ef4444', fontSize: '0.9rem' }}>⚠ Failed to load amenities: {livabilityError}</div>}
+                  </div>
             {isRegistering && (
               <>
                 <div className="control-group">
