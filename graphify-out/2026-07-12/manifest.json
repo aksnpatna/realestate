@@ -10,8 +10,8 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1783842330.332906,
-    "ast_hash": "c756e77e3362ef105b66dbb17c0a40a2",
+    "mtime": 1783849513.9132092,
+    "ast_hash": "4c462a2ad91562967ade53a155e69908",
     "semantic_hash": ""
   },
   "backend/downloader.py": {
@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783846087.5836358,
-    "ast_hash": "9cbc94bfcdf918a6d58b102ee6513c52",
+    "mtime": 1783849682.329981,
+    "ast_hash": "71013a9922d89e0292339e3b6ad75eaa",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1783847088.5660822,
-    "ast_hash": "32c128450aa06a0e9a33985c754a53aa",
+    "mtime": 1783849732.9418235,
+    "ast_hash": "86e38064c74e859020b5ec712ad78321",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -582,6 +582,11 @@
   "backend/preload.py": {
     "mtime": 1783848436.3361115,
     "ast_hash": "bf947cf989afa78746254dc1175169de",
+    "semantic_hash": ""
+  },
+  "backend/warm_cache.py": {
+    "mtime": 1783849530.1940203,
+    "ast_hash": "a131b6dbf96fedaa05026415de2190ae",
     "semantic_hash": ""
   }
 }
