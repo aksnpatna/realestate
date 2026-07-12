@@ -935,7 +935,22 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
 @app.post("/api/suburbs/{suburb_id}/news-sentiment")
 def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
     """On-demand news sentiment for a suburb. Cached for 24h. Only calls Tavily if needed."""
-    v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id.ilike(suburb_id)).first()
+    # Normalize ID: frontend sends "parramatta-nsw-2150" → DB has "NSW_PARRAMATTA_2150"
+    parts = suburb_id.rsplit("-", 1)  # ["parramatta-nsw", "2150"]
+    if len(parts) == 2:
+        postcode = parts[1]
+        rest = parts[0].split("-")     # ["parramatta", "nsw"]
+        if len(rest) == 2:
+            normalized = f"{rest[1].upper()}_{rest[0].upper()}_{postcode}"
+        else:
+            normalized = suburb_id.upper().replace("-", "_")
+    else:
+        normalized = suburb_id.upper().replace("-", "_")
+    
+    v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == normalized).first()
+    if not v3:
+        # Fallback: try case-insensitive match
+        v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id.ilike(f"%{suburb_id.replace('-', '_')}%")).first()
     if not v3:
         raise HTTPException(status_code=404, detail="Suburb not found")
         
