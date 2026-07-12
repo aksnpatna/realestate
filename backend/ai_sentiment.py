@@ -20,6 +20,70 @@ REMOTE_LLM_URL = os.getenv(
 # Concurrency guard — max 3 parallel calls to the Mac Air
 _sentiment_sem = threading.BoundedSemaphore(3)
 
+# Character ranges for non-English detection
+NON_LATIN_RANGES = [
+    (0x4E00, 0x9FFF),   # CJK Unified
+    (0xAC00, 0xD7AF),    # Hangul
+    (0x3040, 0x309F),    # Hiragana
+    (0x30A0, 0x30FF),    # Katakana
+    (0x0400, 0x04FF),    # Cyrillic
+    (0x0600, 0x06FF),    # Arabic
+    (0x0590, 0x05FF),    # Hebrew
+]
+
+
+def _detect_non_english(text: str) -> float:
+    """Return ratio of non-Latin characters. > 0.15 means likely non-English."""
+    if not text:
+        return 0.0
+    non_latin = 0
+    for ch in text:
+        code = ord(ch)
+        if code > 127:
+            non_latin += 1
+    return non_latin / len(text)
+
+
+def _translate_text(text: str) -> str:
+    """
+    Translate non-English text to English using Qwen on Mac Air.
+    Returns original text if translation fails.
+    """
+    if not REMOTE_LLM_URL:
+        return text
+
+    truncated = text[:800]
+    prompt = f"Translate the following text to English. Output ONLY the translation:\n\n{truncated}"
+
+    try:
+        if "/api/generate" in REMOTE_LLM_URL:
+            payload = {
+                "model": "qwen2.5:3b",
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0.0, "num_predict": 500},
+            }
+        else:
+            payload = {
+                "prompt": prompt,
+                "max_tokens": 500,
+                "temperature": 0.0,
+                "stream": False,
+            }
+
+        with httpx.Client(timeout=15.0) as client:
+            resp = client.post(REMOTE_LLM_URL, json=payload)
+            resp.raise_for_status()
+            data = resp.json()
+
+            if "/api/generate" in REMOTE_LLM_URL:
+                return data.get("response", text).strip()
+            else:
+                return data.get("choices", [{}])[0].get("text", text).strip()
+    except Exception as e:
+        logger.warning(f"[translate] Failed: {e}")
+        return text
+
 # Positive/negative keyword lists (fallback)
 POSITIVE_WORDS = [
     "surge", "boom", "growth", "rising", "up", "strong", "record",
@@ -138,6 +202,13 @@ def analyze_sentiment(text: str) -> dict:
     """
     if not text or not text.strip():
         return {"score": 5.0, "label": "Neutral", "provider": "keyword", "explanation": []}
+
+    # Detect and translate non-English text
+    if _detect_non_english(text) > 0.15:
+        logger.info(f"[sentiment] Detected non-English text ({_detect_non_english(text):.0%}), translating...")
+        text = _translate_text(text)
+        if not text:
+            return {"score": 5.0, "label": "Neutral", "provider": "keyword", "explanation": []}
 
     from observability import record_sentiment_call
 

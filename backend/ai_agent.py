@@ -223,9 +223,20 @@ def urban_planner_node(state: CommitteeState):
 
 def supervisor_and_playbook_node(state: CommitteeState):
     llm = get_llm()
+    
+    # Retrieve similar past analyses for few-shot context
+    past_context = ""
+    try:
+        from committee_memory import retrieve_similar
+        past_context = retrieve_similar(state["suburb"], state["state"], state["metrics"])
+    except Exception:
+        pass
+    
     prompt = f"""
     You are the Chief Investment Officer.
     You have received reports from your committee on {state['suburb']}, {state['state']}.
+    
+    {past_context}
     
     Bull's Argument: {state['bull_argument']}
     Bear's Argument: {state['bear_argument']}
@@ -442,7 +453,21 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
     
     # Policy-aware playbook: evaluate planning rules
     policy_warnings = _evaluate_policy_rules(metrics, state)
-    
+
+    # Store analysis for future few-shot retrieval
+    try:
+        from committee_memory import store_analysis
+        store_analysis(suburb, state, metrics, {
+            "verdict": result.get("final_verdict", ""),
+            "bull": result.get("bull_argument", ""),
+            "bear": result.get("bear_argument", ""),
+            "urban": result.get("urban_argument", ""),
+            "playbook": result.get("playbook", ""),
+            "risk_assessment": risk_assessment,
+        })
+    except Exception as e:
+        logger.warning(f"[memory] Failed to store: {e}")
+
     llm_provider = "unknown"
     if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
         llm_provider = "nvidia/llama-3.1-70b"

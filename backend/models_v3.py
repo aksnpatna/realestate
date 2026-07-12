@@ -206,5 +206,28 @@ class PropertyListing(Base):
         Index("idx_property_suburb_type", "suburb_id", "listing_type"),
     )
 
+class CommitteeMemory(Base):
+    """Store committee analyses for similarity-based few-shot retrieval."""
+    __tablename__ = "committee_memory"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    suburb = Column(String, index=True)
+    state = Column(String(3), index=True)
+    growth_score = Column(Float, index=True)
+    rental_yield = Column(Float)
+    vacancy_rate = Column(Float)
+    median_price = Column(Float)
+    verdict = Column(String)
+    bull_argument = Column(Text)
+    bear_argument = Column(Text)
+    urban_argument = Column(Text)
+    playbook = Column(Text)
+    risk_rating = Column(String)
+    created_at = Column(DateTime)
+
+    __table_args__ = (
+        Index("idx_cm_state_growth", "state", "growth_score"),
+        Index("idx_cm_state_yield", "state", "rental_yield"),
+    )
+
 Base.metadata.create_all(bind=engine)
 print("V3 tables created/verified.")
