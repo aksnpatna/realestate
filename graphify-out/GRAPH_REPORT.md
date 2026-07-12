@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-07-11)
+# Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 93 files · ~2,212,524 words
+- 93 files · ~2,212,163 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 616 nodes · 845 edges · 94 communities (58 shown, 36 thin omitted)
+- 612 nodes · 837 edges · 100 communities (64 shown, 36 thin omitted)
 - Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 128 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7fb84702`
+- Built from commit: `12cd671a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -81,8 +81,14 @@
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
+- [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
+- [[_COMMUNITY_Community 91|Community 91]]
+- [[_COMMUNITY_Community 92|Community 92]]
+- [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 94|Community 94]]
+- [[_COMMUNITY_Community 95|Community 95]]
+- [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 98|Community 98]]
 
 ## God Nodes (most connected - your core abstractions)
@@ -123,7 +129,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (94 total, 36 thin omitted)
+## Communities (100 total, 36 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -151,7 +157,7 @@ Nodes (7): TabName, OnboardingTour(), mockSuburbsData, fetchLivabilityData(), Li
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.08
-Nodes (69): ActivityRequest, analyze_suburb(), AnalyzeRequest, BoundedRateLimitStore, _build_v2_only_response(), bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+61 more)
+Nodes (67): ActivityRequest, analyze_suburb(), AnalyzeRequest, BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty(), _check_auth_rate() (+59 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -202,8 +208,8 @@ Cohesion: 0.29
 Nodes (6): enrich_all(), enrich_changed(), enrich_from_unpacked.py — SQL-level enrichment from unpacked table -> suburbs_ui, Only enrich records where unpacked data is newer than UI data., Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data, reload_suburbs()
 
 ### Community 19 - "Institutional V3 Panel"
-Cohesion: 0.04
-Nodes (45): ACT (Australian Capital Territory), Armadale WA 6112, Australian Suburbs Comprehensive Data (2025-2026), Belconnen ACT 2617, Box Hill VIC 3128, Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209 (+37 more)
+Cohesion: 0.20
+Nodes (10): Box Hill VIC 3128, Craigieburn VIC 3064, Dandenong VIC 3175, Epping VIC 3076, Frankston VIC 3199, Glen Waverley VIC 3150, Preston VIC 3072, Sunshine VIC 3020 (+2 more)
 
 ### Community 20 - "Data Downloader"
 Cohesion: 0.83
@@ -234,8 +240,8 @@ Cohesion: 0.12
 Nodes (12): AUSTRALIA_CENTER, boundaryCache, cafeIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon, shoppingIcon (+4 more)
 
 ### Community 68 - "Community 68"
-Cohesion: 0.17
-Nodes (15): _annualize_cagr(), _build_v3_fallback_response(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), get_suburb(), get_suburb_v3(), get_suburbs() (+7 more)
+Cohesion: 0.18
+Nodes (13): _annualize_cagr(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), get_suburb(), get_suburb_v3(), get_suburbs(), Returns full V3 institutional data for a single suburb. (+5 more)
 
 ### Community 69 - "Community 69"
 Cohesion: 0.21
@@ -253,9 +259,33 @@ Nodes (13): SortKey, calcMortgageRegFee(), calcTransferFee(), calculateComprehen
 Cohesion: 0.22
 Nodes (4): BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps, SuburbData
 
+### Community 89 - "Community 89"
+Cohesion: 0.25
+Nodes (8): Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209, Ipswich QLD 4305, Logan Central QLD 4114, QLD (Queensland), Springfield QLD 4300, Surfers Paradise QLD 4217
+
 ### Community 90 - "Community 90"
 Cohesion: 0.33
 Nodes (6): CalcType, Calculators(), CHART_COLORS, formatCurrency(), PropertyType, STATE_OPTIONS
+
+### Community 91 - "Community 91"
+Cohesion: 0.29
+Nodes (7): Armadale WA 6112, Fremantle WA 6160, Joondalup WA 6027, Mandurah WA 6210, Midland WA 6056, Rockingham WA 6168, WA (Western Australia)
+
+### Community 92 - "Community 92"
+Cohesion: 0.33
+Nodes (5): Australian Suburbs Comprehensive Data (2025-2026), Darwin NT 0800, Data Sources, NT (Northern Territory), Palmerston NT 0830
+
+### Community 93 - "Community 93"
+Cohesion: 0.33
+Nodes (6): ACT (Australian Capital Territory), Belconnen ACT 2617, Gungahlin ACT 2912, Queanbeyan NSW 2620, Tuggeranong ACT 2900, Woden ACT 2606
+
+### Community 95 - "Community 95"
+Cohesion: 0.40
+Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Australia), Salisbury SA 5108
+
+### Community 96 - "Community 96"
+Cohesion: 0.50
+Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasmania)
 
 ## Knowledge Gaps
 - **187 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+182 more)
@@ -268,7 +298,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `Session` connect `Database Models & Scrapers` to `ETL Transform V3 Pipeline`, `ETL Extract V3 Pipeline`, `Community 68`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `SuburbUIV3` connect `Database Models & Scrapers` to `Predictive AI Engine`, `ABS Census Integration`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Why does `get_suburb_properties()` connect `ETL Transform V3 Pipeline` to `Database Models & Scrapers`?**
   _High betweenness centrality (0.023) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**

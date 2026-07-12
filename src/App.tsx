@@ -1,20 +1,21 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback, lazy, Suspense } from 'react'
 import { mockSuburbsData } from './data/suburbs'
 import type { SuburbData } from './data/suburbs'
 import SuburbMap from './components/SuburbMap'
-import Calculators from './components/Calculators'
-import AffordabilityCalculator from './components/AffordabilityCalculator'
-import HouseSearch from './components/HouseSearch'
-import CashflowGearing from './components/CashflowGearing'
-import InstitutionalV3Panel from './components/InstitutionalV3Panel'
-import MyPurchasePlan from './components/MyPurchasePlan'
-import QuickRoiCalculator from './components/QuickRoiCalculator'
 import OnboardingTour from './components/OnboardingTour'
 import TermsOfUseModal from './components/TermsOfUseModal'
 import UserFavoritesTab from './components/UserFavoritesTab'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
+
+const Calculators = lazy(() => import('./components/Calculators'))
+const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
+const HouseSearch = lazy(() => import('./components/HouseSearch'))
+const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
+const InstitutionalV3Panel = lazy(() => import('./components/InstitutionalV3Panel'))
+const MyPurchasePlan = lazy(() => import('./components/MyPurchasePlan'))
+const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 
 type TabName = 'profile' | 'search' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites';
 
@@ -49,13 +50,12 @@ function App() {
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
   const [macroEtf, setMacroEtf] = useState<any>(null)
 
-  const loadColdSuburb = async (id: string) => {
+  const loadColdSuburb = useCallback(async (id: string) => {
     try {
       const res = await fetch(`/api/suburbs/${id}`)
       if (res.ok) {
         const data = await res.json()
         setActiveSuburb(data)
-        // Restore cached AI result if available
         try {
           const cached = localStorage.getItem('ai_' + id)
           if (cached) {
@@ -67,7 +67,7 @@ function App() {
     } catch (e) {
       console.error('loadColdSuburb error', id, e)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -120,14 +120,14 @@ function App() {
     }
   }, []);
 
-  const trackActivity = (action: string, target?: string) => {
+  const trackActivity = useCallback((action: string, target?: string) => {
     if (!isAuthenticated) return;
     fetch('/api/track-activity', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action_type: action, target_id: target })
     }).catch(console.error);
-  };
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated && activeTab) {
@@ -135,7 +135,7 @@ function App() {
     }
   }, [isAuthenticated, activeTab]);
 
-  const toggleFavorite = async (suburbId: string) => {
+  const toggleFavorite = useCallback(async (suburbId: string) => {
     // Optimistic update
     setFavorites(prev => 
       prev.includes(suburbId) ? prev.filter(id => id !== suburbId) : [...prev, suburbId]
@@ -159,7 +159,7 @@ function App() {
         prev.includes(suburbId) ? prev.filter(id => id !== suburbId) : [...prev, suburbId]
       );
     }
-  };
+  }, []);
 
   const filteredSuburbsData = useMemo(() => {
     return suburbsData.filter(s => regionMode === 'metro' ? (s as any).isMetro : !(s as any).isMetro);
@@ -203,6 +203,21 @@ function App() {
         .finally(() => setLoadingLivability(false));
     }
   }, [activeSuburb])
+
+  const mappedPois = useMemo(() => [
+    ...(activeSuburb?.pois || []),
+    ...(livabilityData && showAmenitiesOnMap ? [
+      ...(livabilityData.cafes || []).map((c:any) => ({...c, type: 'cafe', coordinates: c.coordinates || c.latlon})),
+      ...(livabilityData.parks || []).map((p:any) => ({...p, type: 'park', coordinates: p.coordinates || p.latlon})),
+      ...(livabilityData.transit || []).map((t:any) => ({...t, type: 'transit', coordinates: t.coordinates || t.latlon})),
+      ...(livabilityData.train_stations || []).map((t:any) => ({...t, type: 'train_station', coordinates: t.coordinates || t.latlon})),
+    ] : [])
+  ], [activeSuburb?.pois, livabilityData, showAmenitiesOnMap])
+
+  const mappedSchools = useMemo(() => [
+    ...(activeSuburb?.schools || []),
+    ...(livabilityData?.schools || []).map((s:any) => ({...s, type: s.type || 'Primary'}))
+  ], [activeSuburb?.schools, livabilityData?.schools])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -1211,12 +1226,14 @@ function App() {
                   </div>
 
                   {/* PANEL E: Quick ROI Calculator */}
+                  <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
                   <QuickRoiCalculator 
                     medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
                     medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
                     state={(activeSuburb as any).state || "VIC"}
                     onAdvancedClick={() => setActiveTab('gearing')}
                   />
+                  </Suspense>
 
                   {/* K-Means Clustering: Similar Suburbs */}
                   <div style={{ marginTop: '20px' }}>
@@ -1391,19 +1408,8 @@ function App() {
 
                 <SuburbMap
                   center={activeSuburb.coordinates || [-25.2744, 133.7751]}
-                  pois={[
-                    ...(activeSuburb.pois || []),
-                    ...(livabilityData && showAmenitiesOnMap ? [
-                      ...(livabilityData.cafes || []).map((c:any) => ({...c, type: 'cafe', coordinates: c.coordinates || c.latlon})),
-                      ...(livabilityData.parks || []).map((p:any) => ({...p, type: 'park', coordinates: p.coordinates || p.latlon})),
-                      ...(livabilityData.transit || []).map((t:any) => ({...t, type: 'transit', coordinates: t.coordinates || t.latlon})),
-                      ...(livabilityData.train_stations || []).map((t:any) => ({...t, type: 'train_station', coordinates: t.coordinates || t.latlon})),
-                    ] : [])
-                  ]}
-                  schools={[
-                    ...(activeSuburb.schools || []),
-                    ...(livabilityData?.schools || []).map((s:any) => ({...s, type: s.type || 'Primary'}))
-                  ]}
+                  pois={mappedPois}
+                  schools={mappedSchools}
                   suburbName={activeSuburb.name}
                   stateName={activeSuburb.state}
                   postcode={activeSuburb.postcode}
@@ -1418,17 +1424,17 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'search' && <HouseSearch suburbsData={suburbsData} />}
-      {activeTab === 'affordability' && <AffordabilityCalculator suburbsData={suburbsData} />}
-      {activeTab === 'gearing' && <CashflowGearing 
+      {activeTab === 'search' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading search...</div>}><HouseSearch suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
         defaultSuburbId={activeSuburb?.id}
         defaultPrice={(activeSuburb as any)?.houseMedianPrice || (activeSuburb as any)?.medianPrice || undefined}
         defaultRent={(activeSuburb as any)?.houseMedianRent || (activeSuburb as any)?.weeklyRent || undefined}
-      />}
-      {activeTab === 'purchase-plan' && <MyPurchasePlan suburbsData={suburbsData} />}
-      {activeTab === 'institutional' && <InstitutionalV3Panel />}
-      {activeTab === 'calculators' && <Calculators />}
+      /></Suspense>}
+      {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'institutional' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading institutional panel...</div>}><InstitutionalV3Panel /></Suspense>}
+      {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculators...</div>}><Calculators /></Suspense>}
       {activeTab === 'favorites' && (
         <UserFavoritesTab 
           suburbsData={suburbsData} 

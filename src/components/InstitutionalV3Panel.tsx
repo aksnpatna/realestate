@@ -9,7 +9,7 @@
  * - Recent sales summary
  * Does NOT duplicate: price/rent/stock cards, charts (main profile handles those)
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 interface V3SuburbData {
   id: string; state: string; name: string; postcode: string; isEnriched: boolean;
@@ -50,7 +50,7 @@ function DQBadge({ score }: { score: number }) {
   );
 }
 
-export default function InstitutionalV3Panel() {
+export default memo(function InstitutionalV3Panel() {
   const [suburbs, setSuburbs] = useState<V3SuburbData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -232,4 +232,4 @@ export default function InstitutionalV3Panel() {
       </div>
     </div>
   );
-}
+});

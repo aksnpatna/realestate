@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, memo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 import { calculateComprehensiveStampDuty } from '../data/suburbs';
 import type { SuburbData } from '../data/suburbs';
@@ -30,7 +30,7 @@ interface CashflowGearingProps {
   defaultRent?: number;
 }
 
-export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultPrice, defaultRent }: CashflowGearingProps) {
+export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, defaultPrice, defaultRent }: CashflowGearingProps) {
   const [selectedSuburbId, setSelectedSuburbId] = useState<string>(defaultSuburbId || '');
   const [purchasePrice, setPurchasePrice] = useState<number>(defaultPrice || 700000);
   const [weeklyRent, setWeeklyRent] = useState<number>(defaultRent || 550);
@@ -541,4 +541,4 @@ export default function CashflowGearing({ suburbsData, defaultSuburbId, defaultP
       </div>
     </div>
   );
-}
+});

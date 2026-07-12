@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import type { SuburbData } from '../data/suburbs';
 
-export default function HouseSearch({ suburbsData }: { suburbsData: SuburbData[] }) {
+export default memo(function HouseSearch({ suburbsData }: { suburbsData: SuburbData[] }) {
   const [searchText, setSearchText] = useState('');
   const [selectedStates, setSelectedStates] = useState<Set<string>>(new Set());
   const [minGrowthScore, setMinGrowthScore] = useState(0);
@@ -172,9 +172,9 @@ const results = useMemo(() => {
       </div>
     </div>
   );
-}
+})
 
-function SearchResultCard({ suburb }: { suburb: SuburbData }) {
+const SearchResultCard = memo(function SearchResultCard({ suburb }: { suburb: SuburbData }) {
   return (
     <div className="result-card glass-card">
       <div className="result-card-header">
@@ -220,4 +220,4 @@ function SearchResultCard({ suburb }: { suburb: SuburbData }) {
       </div>
     </div>
   );
-}
+});

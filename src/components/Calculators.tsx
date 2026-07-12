@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
 import { calculateComprehensiveStampDuty } from '../data/suburbs';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
@@ -15,7 +15,7 @@ function formatCurrency(v: number) {
   return '$' + Math.max(0, Math.round(v)).toLocaleString();
 }
 
-export default function Calculators() {
+export default memo(function Calculators() {
   const [activeCalc, setActiveCalc] = useState<CalcType>('repayment');
 
   const [loanAmount, setLoanAmount] = useState(400000);
@@ -230,4 +230,4 @@ export default function Calculators() {
       </div>
     </div>
   );
-}
+});
