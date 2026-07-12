@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-12)
 
 ## Corpus Check
-- 101 files · ~2,216,631 words
+- 102 files · ~2,217,062 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 696 nodes · 945 edges · 103 communities (67 shown, 36 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 147 edges (avg confidence: 0.56)
+- 699 nodes · 948 edges · 104 communities (67 shown, 37 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 148 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `669b1d0b`
+- Built from commit: `ee9f626c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -93,9 +93,10 @@
 - [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 99|Community 99]]
 - [[_COMMUNITY_Community 102|Community 102]]
+- [[_COMMUNITY_Community 103|Community 103]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Session` - 28 edges
+1. `Session` - 29 edges
 2. `SuburbRawV3` - 20 edges
 3. `SuburbUIV3` - 20 edges
 4. `SuburbPriceHistory` - 20 edges
@@ -109,14 +110,14 @@
 ## Surprising Connections (you probably didn't know these)
 - `Path` --uses--> `SuburbUIV3`  [INFERRED]
   backend/etl_abs_census.py → backend/models_v3.py
+- `warmup()` --calls--> `Session`  [INFERRED]
+  backend/warm_cache.py → backend/main.py
 - `get_news_sentiment()` --calls--> `analyze_sentiment()`  [INFERRED]
   backend/ai_agent.py → backend/ai_sentiment.py
 - `analyze_suburb()` --calls--> `run_investment_committee()`  [INFERRED]
   backend/main.py → backend/ai_agent.py
 - `get_similar_suburbs()` --calls--> `find_similar_suburbs()`  [INFERRED]
   backend/main.py → backend/clustering.py
-- `seed_raw_v3()` --calls--> `SuburbRawV3`  [INFERRED]
-  backend/etl_extract_v3.py → backend/models_v3.py
 
 ## Import Cycles
 - None detected.
@@ -132,7 +133,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (103 total, 36 thin omitted)
+## Communities (104 total, 37 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -160,7 +161,7 @@ Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMP
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.06
-Nodes (84): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+76 more)
+Nodes (86): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+78 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -299,25 +300,25 @@ Cohesion: 0.13
 Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, Calculators, CashflowGearing, HouseSearch, InstitutionalV3Panel, MyPurchasePlan (+2 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.22
-Nodes (7): _normalize_suburb_id(), Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21, normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Test the suburb ID normalizer., TestIDNormalization
+Cohesion: 0.28
+Nodes (5): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Test the suburb ID normalizer., TestIDNormalization
 
 ## Knowledge Gaps
 - **219 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+214 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **37 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Database Models & Scrapers` to `ETL Extract V3 Pipeline`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `Session` connect `Database Models & Scrapers` to `ETL Extract V3 Pipeline`, `Community 103`?**
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
 - **Why does `analyze_suburb()` connect `Database Models & Scrapers` to `Community 65`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Why does `run_investment_committee()` connect `Community 65` to `Database Models & Scrapers`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
-- **Are the 8 inferred relationships involving `Session` (e.g. with `worker()` and `SuburbUIV2`) actually correct?**
-  _`Session` has 8 INFERRED edges - model-reasoned connections that need verification._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Are the 9 inferred relationships involving `Session` (e.g. with `worker()` and `warmup()`) actually correct?**
+  _`Session` has 9 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbRawV3` (e.g. with `seed_raw_v3()` and `ActivityRequest`) actually correct?**
   _`SuburbRawV3` has 18 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 18 inferred relationships involving `SuburbUIV3` (e.g. with `ActivityRequest` and `AnalyzeRequest`) actually correct?**
