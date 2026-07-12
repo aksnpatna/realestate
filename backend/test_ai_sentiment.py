@@ -98,18 +98,18 @@ class TestIDNormalization:
     """Test the suburb ID normalizer."""
 
     def test_frontend_to_db_format(self):
-        from main import _normalize_suburb_id
-        assert _normalize_suburb_id("parramatta-nsw-2150") == "NSW_PARRAMATTA_2150"
-        assert _normalize_suburb_id("tarneit-vic-3029") == "VIC_TARNEIT_3029"
-        assert _normalize_suburb_id("east-melbourne-vic-3002") == "VIC_EAST_MELBOURNE_3002"
+        from suburb_utils import normalize_suburb_id
+        assert normalize_suburb_id("parramatta-nsw-2150") == "NSW_PARRAMATTA_2150"
+        assert normalize_suburb_id("tarneit-vic-3029") == "VIC_TARNEIT_3029"
+        assert normalize_suburb_id("east-melbourne-vic-3002") == "VIC_EAST_MELBOURNE_3002"
 
     def test_single_word_name(self):
-        from main import _normalize_suburb_id
-        assert _normalize_suburb_id("ryde-nsw-2112") == "NSW_RYDE_2112"
+        from suburb_utils import normalize_suburb_id
+        assert normalize_suburb_id("ryde-nsw-2112") == "NSW_RYDE_2112"
 
     def test_unknown_format_fallback(self):
-        from main import _normalize_suburb_id
-        result = _normalize_suburb_id("SOME_WEIRD_ID")
+        from suburb_utils import normalize_suburb_id
+        result = normalize_suburb_id("SOME_WEIRD_ID")
         assert "_" in result
 
 
