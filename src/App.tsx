@@ -234,9 +234,6 @@ function App() {
       const lat = activeSuburb.coordinates?.[0];
       const lng = activeSuburb.coordinates?.[1];
       if (!lat || !lng) return; // Wait for cold-load
-      
-      // Prevent refetching if we already have it for this location
-      if (livabilityData && livabilityData.location?.lat === lat) return;
 
       setLoadingLivability(true);
       fetchLivabilityData(lat, lng)
