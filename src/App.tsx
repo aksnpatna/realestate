@@ -960,45 +960,21 @@ function App() {
                           </div>
                         </div>
                       )}
-                      {/* 10-Year Projection */}
-                      {activeSuburb.history && activeSuburb.history.length >= 2 && (() => {
-                        const hist = activeSuburb.history as any[];
-                        const firstVal = Number(hist[0]?.value || 0);
-                        const lastVal = Number(hist[hist.length-1]?.value || 0);
-                        const years = Math.max(1, hist.length-1);
-                        const baseRate = firstVal > 0 && lastVal > 0 ? Math.max(0.02, Math.min(0.08, Math.pow(lastVal/firstVal, 1/years)-1)) : 0.05;
-                        const bullRate = baseRate * 1.3;
-                        const bearRate = Math.max(0.005, baseRate * 0.3);
-                        const projData = Array.from({length:10}, (_, y) => ({
-                          year: `+${y+1}y`,
-                          bull: Math.round(lastVal * Math.pow(1+bullRate, y+1)),
-                          base: Math.round(lastVal * Math.pow(1+baseRate, y+1)),
-                          bear: Math.round(lastVal * Math.pow(1+bearRate, y+1)),
-                        }));
-                        return (
-                          <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                            <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Next 10-Year Projection</h4>
-                            <div style={{ height: '220px' }}>
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={projData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
-                                  <XAxis dataKey="year" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
-                                  <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `$${Math.round(val/1000)}k`} />
-                                  <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, '']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
-                                  <Line type="monotone" dataKey="bull" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Bull" />
-                                  <Line type="monotone" dataKey="base" stroke="var(--accent-cyan)" strokeWidth={3} dot={false} name="Base" />
-                                  <Line type="monotone" dataKey="bear" stroke="#ef4444" strokeWidth={2} strokeDasharray="3 3" dot={false} name="Bear" />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            </div>
-                            <div style={{ textAlign:'center', marginTop:'10px', fontSize:'0.75rem', color:'var(--text-secondary)', display:'flex', justifyContent:'center', gap:'16px' }}>
-                              <span><span style={{color:'#10b981',fontWeight:600}}>── Bull</span> (+{(bullRate*100).toFixed(1)}%)</span>
-                              <span><span style={{color:'var(--accent-cyan)',fontWeight:600}}>── Base</span> (+{(baseRate*100).toFixed(1)}%)</span>
-                              <span><span style={{color:'#ef4444',fontWeight:600}}>── Bear</span> (+{(bearRate*100).toFixed(1)}%)</span>
-                            </div>
-                          </div>
-                        );
-                      })()}
+                      {/* 10-Year Projection — NOT AVAILABLE in POC */}
+                      <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ textAlign: 'center', padding: '20px' }}>
+                          <h4 style={{ marginBottom: '10px', color: 'var(--text-secondary)' }}>Long-Horizon Forecast Unavailable</h4>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '300px', lineHeight: 1.5 }}>
+                            The POC does not yet produce calibrated long-horizon forecasts.
+                            Return after sufficient observation history is accumulated to enable
+                            empirical backtesting and calibration.
+                          </p>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+                            Scenario illustration only. This is not an empirical probability,
+                            calibrated forecast, or financial prediction.
+                          </p>
+                        </div>
+                      </div>
                     </div>
 
                   {/* NEW LIVABILITY SECTION */}

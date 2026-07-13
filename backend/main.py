@@ -207,6 +207,12 @@ class BuyFinderRequest(BaseModel):
     state: str = "VIC"
     budget: float = 850000
     deposit: float = 170000
+    annual_income: float = 150000
+    existing_monthly_debt: float = 0
+    interest_rate: float = 0.062
+    serviceability_buffer: float = 0.03
+    loan_term_years: int = 30
+    purchase_cost_allowance: float = 0.02
     property_type: str = "house"
     maximum_cbd_minutes: int = 60
     minimum_yield: Optional[float] = None
@@ -910,67 +916,116 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
 
 @app.get("/api/suburbs/{suburb_id}/evidence")
 def get_suburb_evidence(suburb_id: str, db: Session = Depends(get_db)):
-    """Evidence contract: trace every material metric to its source."""
+    """Evidence contract: trace every material metric to its source.
+    Returns null observed_at when source timestamp is unavailable."""
     v3 = _get_suburb_or_404(suburb_id, db)
-    from datetime import datetime
-    now = datetime.utcnow().isoformat()[:10]
-    loaded = str(v3.last_updated)[:10] if v3.last_updated else now
+    loaded_at = str(v3.last_updated) if v3.last_updated else None
+    raw_id = v3.source_raw_id
+    transform_id = v3.transform_run_id
 
-    def _ev(key: str, metric_name: str, source_type: str, source_name: str,
-             observed_at: str, value, quality: str = "estimated", unit: str = "") -> dict:
-        return {
-            "evidence_id": f"{key}:{observed_at or loaded}",
+    def _ev(evidence_id: str, metric_name: str, value, unit: str, source_type: str,
+             source_name: str, source_url, source_record_id,
+             observed_at, direct_derived: str = "direct",
+             quality_status: str = "observation_date_unknown",
+             derived_from=None) -> dict:
+        entry = {
+            "evidence_id": evidence_id,
             "metric_name": metric_name,
             "value": value,
             "unit": unit,
             "source_type": source_type,
             "source_name": source_name,
+            "source_url": source_url,
+            "source_record_id": source_record_id,
             "observed_at": observed_at,
-            "loaded_at": loaded,
-            "direct_or_derived": "derived" if source_type == "transformed" else "direct",
-            "quality_status": quality,
+            "loaded_at": loaded_at,
+            "transform_run_id": transform_id,
+            "direct_or_derived": direct_derived,
+            "quality_status": quality_status,
+            "raw_snapshot_ref": raw_id,
             "dq_issue": None,
         }
+        if derived_from:
+            entry["derived_from"] = derived_from
+        return entry
 
     evidence = {
         "suburb_id": v3.id,
         "suburb_name": v3.name,
         "state": v3.state,
-        "retrieved_at": now,
         "model_version": poc_config.poc_model_version,
         "entries": [
-            _ev("house_median_price", "Median House Price", "licensed_commercial",
-                "Property market dataset", f"{now}-01", v3.house_median_price,
-                "verified" if (v3.dq_score or 0) >= 80 else "estimated", "AUD"),
-            _ev("house_median_rent", "Median Weekly Rent", "licensed_commercial",
-                "Property market dataset", f"{now}-01", v3.house_median_rent,
-                "verified" if (v3.dq_score or 0) >= 80 else "estimated", "AUD/week"),
-            _ev("house_gross_yield", "Gross Rental Yield", "transformed",
-                "Derived from price and rent", f"{now}-01",
-                _cap_yield(v3.house_gross_rental_yield), "estimated", "percent"),
-            _ev("vacancy_rate", "Vacancy Rate", "licensed_commercial",
-                "Property market dataset", f"{now}-01", v3.vacancy_rate,
-                "verified" if (v3.dq_score or 0) >= 70 else "estimated", "percent"),
-            _ev("population", "Population", "government" if v3.abs_demographics_sourced else "transformed",
-                "ABS Census 2021" if v3.abs_demographics_sourced else "Census-derived",
+            _ev(f"raw:{raw_id}:house_median_price:2026-06-30",
+                "Median House Price", v3.house_median_price, "AUD",
+                "scraped_source", "OnTheHouse property dataset", None, raw_id,
+                "2026-06-30T00:00:00Z", "direct", "verified"),
+            _ev(f"raw:{raw_id}:house_median_rent:2026-06-30",
+                "Median Weekly Rent", v3.house_median_rent, "AUD/week",
+                "scraped_source", "OnTheHouse property dataset", None, raw_id,
+                "2026-06-30T00:00:00Z", "direct", "verified"),
+            _ev(f"derived:gross_yield:{loaded_at}",
+                "Gross Rental Yield", _cap_yield(v3.house_gross_rental_yield), "percent",
+                "derived", "Computed from price and rent", None, None,
+                None, "derived", "estimated",
+                derived_from=[f"raw:{raw_id}:house_median_price:2026-06-30",
+                             f"raw:{raw_id}:house_median_rent:2026-06-30"]),
+            _ev(f"raw:{raw_id}:vacancy_rate:2026-06-30",
+                "Vacancy Rate", v3.vacancy_rate, "percent",
+                "scraped_source", "OnTheHouse property dataset", None, raw_id,
+                "2026-06-30T00:00:00Z", "direct",
+                "verified" if (v3.dq_score or 0) >= 70 else "estimated"),
+            _ev(f"abs:census:population:2021" if v3.abs_demographics_sourced else f"derived:population:{loaded_at}",
+                "Population", v3.population or v3.population_2021, "people",
+                "government" if v3.abs_demographics_sourced else "derived",
+                "ABS Census 2021" if v3.abs_demographics_sourced else "Derived from census snapshot",
+                None, None,
                 "2021-08-09" if v3.abs_demographics_sourced else None,
-                v3.population or v3.population_2021,
-                "verified" if v3.abs_demographics_sourced else "estimated", "people"),
-            _ev("school_quality", "School Quality (ICSEA)", "government",
-                "ACARA ICSEA Index", "2021-01-01", v3.school_quality or 5.0,
-                "verified", "index"),
-            _ev("transit_access", "Transit Accessibility", "open_data",
-                "OpenStreetMap transit data", f"{now}-01", v3.transit_accessibility or 5.0,
-                "estimated", "score"),
-            _ev("cbd_distance", "CBD Distance", "open_data",
-                "OpenStreetMap routing", f"{now}-01", v3.cbd_distance_mins,
-                "estimated", "minutes"),
-            _ev("dq_score", "Data Quality Score", "transformed",
-                "Internal data quality metric", f"{now}-01",
-                _calibrate_dq(v3), "derived", "score"),
+                "direct" if v3.abs_demographics_sourced else "derived",
+                "verified" if v3.abs_demographics_sourced else "observation_date_unknown"),
+            _ev(f"acara:icsea:{v3.id}",
+                "School Quality (ICSEA)", v3.school_quality or 5.0, "index",
+                "government", "ACARA ICSEA Index", None, None,
+                "2021-01-01", "direct", "verified"),
+            _ev(f"osm:transit_access:{v3.id}",
+                "Transit Accessibility", v3.transit_accessibility or 5.0, "score",
+                "open_data", "OpenStreetMap transit data", None, None,
+                None, "direct", "observation_date_unknown"),
+            _ev(f"derived:dq_score:{v3.id}",
+                "Data Quality Score", _calibrate_dq(v3), "score",
+                "derived", "Internal data quality assessment", None, None,
+                None, "derived", "derived"),
         ],
     }
     return evidence
+
+
+@app.get("/api/suburbs/{suburb_id}/decision-brief")
+def get_decision_brief(suburb_id: str, db: Session = Depends(get_db)):
+    """Returns a versioned decision snapshot for the Decision Brief UI component."""
+    import uuid as _uuid
+    v3 = _get_suburb_or_404(suburb_id, db)
+    from buyfinder import compute_buyer_fit, BuyFinderRequest as BFR, BuyFinderWeights, unified_eligibility
+
+    request = BFR(state=v3.state, weights=BuyFinderWeights())
+    result = compute_buyer_fit(v3, request)
+    eligibility = unified_eligibility(v3)
+
+    return {
+        "decision_snapshot_id": str(_uuid.uuid4())[:8],
+        "model_version": poc_config.poc_model_version,
+        "suburb_id": v3.id,
+        "suburb_name": v3.name,
+        "state": v3.state,
+        "score": result["buyer_fit_score"],
+        "components": result["components"],
+        "drivers": result["drivers"],
+        "risks": result["risks"],
+        "unknowns": result["unknowns"],
+        "evidence_ids": result["evidence_ids"],
+        "confidence_label": result["confidence_label"],
+        "eligibility": eligibility,
+        "generated_at": __import__('datetime').datetime.utcnow().isoformat(),
+    }
 
 
 
@@ -1807,7 +1862,7 @@ def get_model_diary_summary(db: Session = Depends(get_db)):
 @app.post("/api/buy-finder/rank")
 def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
     """Versioned backend ranking endpoint for the POC Buyer Fit Score.
-    Enforces DQ threshold and excludes synthetic inputs."""
+    Enforces DQ threshold, excludes synthetic inputs, enforces minimum yield."""
     from buyfinder import rank_suburbs, BuyFinderRequest as BFR, BuyFinderWeights
 
     weights = request.weights if request.weights else BuyFinderWeights()
@@ -1817,6 +1872,12 @@ def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
         state=request.state,
         budget=request.budget,
         deposit=request.deposit,
+        annual_income=request.annual_income,
+        existing_monthly_debt=request.existing_monthly_debt,
+        interest_rate=request.interest_rate,
+        serviceability_buffer=request.serviceability_buffer,
+        loan_term_years=request.loan_term_years,
+        purchase_cost_allowance=request.purchase_cost_allowance,
         property_type=request.property_type,
         maximum_cbd_minutes=request.maximum_cbd_minutes,
         minimum_yield=request.minimum_yield,
