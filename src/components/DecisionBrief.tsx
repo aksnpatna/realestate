@@ -86,6 +86,9 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab }: Decis
           </div>
         )}
         <div style={{ flex: 1, minWidth: '200px' }}>
+          {!hasEvidence && (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', paddingLeft: '8px' }}>Insufficient data to form decision drivers. Try running AI analysis.</div>
+          )}
           {drivers.length > 0 && (
             <div style={{ marginBottom: '8px' }}>
               <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600, marginBottom: '4px' }}>+ Supports</div>
