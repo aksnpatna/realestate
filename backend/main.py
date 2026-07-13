@@ -194,6 +194,27 @@ class ActivityRequest(BaseModel):
     action_type: str
     target_id: Optional[str] = None
 
+class BuyFinderWeights(BaseModel):
+    growth: float = 30
+    income: float = 25
+    affordability: float = 20
+    risk: float = 15
+    livability: float = 10
+
+class BuyFinderRequest(BaseModel):
+    budget: float = 850000
+    deposit: float = 170000
+    annual_income: float = 150000
+    property_type: str = "house"
+    holding_period_years: int = 7
+    objective: str = "balanced"
+    minimum_yield: float = 3.5
+    maximum_vacancy: float = 4.0
+    maximum_cbd_minutes: int = 60
+    exclude_flood_risk: bool = True
+    exclude_bushfire_risk: bool = True
+    weights: Optional[BuyFinderWeights] = None
+
 def send_verification_email(to_email: str, token: str):
     verification_link = f"http://localhost:5173/verify?token={token}"
     print(f"\n=== [SMTP MOCK] Sending verification link to {to_email} ===")
@@ -541,6 +562,80 @@ def _cap_yield(val, max_yield=25.0) -> float | None:
     val = float(val)
     return min(val, max_yield) if val >= 0 else None
 
+
+def _provenance(value, source_type: str = "transformed", source_name: str = "",
+                observed_at: str = "", loaded_at: str = "", quality_status: str = "estimated"):
+    """Attach metric-level provenance metadata to a value."""
+    return {
+        "value": value,
+        "source_type": source_type,
+        "source_name": source_name,
+        "observed_at": observed_at,
+        "loaded_at": loaded_at,
+        "quality_status": quality_status,
+    }
+
+
+def _provenanced_metrics(v3) -> dict:
+    """Build provenance-attached metric dictionary."""
+    from datetime import datetime
+    now = datetime.utcnow().isoformat()[:7]
+    loaded = str(v3.last_updated)[:10] if v3.last_updated else now
+    
+    return {
+        "houseMedianPrice": _provenance(
+            v3.house_median_price, "licensed_commercial", "Property market dataset",
+            f"{now}-01", loaded, "verified" if v3.dq_score and v3.dq_score >= 80 else "estimated"
+        ),
+        "houseMedianPrice12mChangePct": _provenance(
+            v3.house_median_price_12m_change_pct, "transformed", "Derived from price history",
+            f"{now}-01", loaded, "estimated"
+        ),
+        "houseMedianRent": _provenance(
+            v3.house_median_rent, "licensed_commercial", "Property market dataset",
+            f"{now}-01", loaded, "verified" if v3.dq_score and v3.dq_score >= 80 else "estimated"
+        ),
+        "houseGrossRentalYield": _provenance(
+            _cap_yield(v3.house_gross_rental_yield), "transformed", "Derived from median price and rent",
+            f"{now}-01", loaded, "estimated"
+        ),
+        "vacancyRate": _provenance(
+            v3.vacancy_rate, "licensed_commercial", "Property market dataset",
+            f"{now}-01", loaded, "verified" if v3.dq_score and v3.dq_score >= 70 else "estimated"
+        ),
+        "populationCagr": _provenance(
+            round(_annualize_cagr(v3.population_cagr), 2) if v3.population_cagr else None,
+            "government" if v3.abs_demographics_sourced else "transformed",
+            "ABS Census 2016/2021" if v3.abs_demographics_sourced else "Derived from census counts",
+            "2021-08-09" if v3.abs_demographics_sourced else f"{now}-01",
+            loaded,
+            "verified" if v3.abs_demographics_sourced else "estimated"
+        ),
+        "population": _provenance(
+            v3.population or v3.population_2021,
+            "government" if v3.abs_demographics_sourced else "transformed",
+            "ABS Census 2021" if v3.abs_demographics_sourced else "Public data",
+            "2021-08-09" if v3.abs_demographics_sourced else None,
+            loaded,
+            "verified" if v3.abs_demographics_sourced else "estimated"
+        ),
+        "schoolQuality": _provenance(
+            v3.school_quality or 5.0,
+            "government", "ACARA ICSEA Index",
+            "2021-01-01", loaded, "verified"
+        ),
+        "transitAccessibility": _provenance(
+            v3.transit_accessibility or 5.0,
+            "open_data", "OpenStreetMap transit data",
+            f"{now}-01", loaded, "estimated"
+        ),
+        "dqScore": _provenance(
+            _calibrate_dq(v3),
+            "transformed", "Internal data quality metric",
+            f"{now}-01", loaded, "derived"
+        ),
+    }
+
 def _calibrate_dq(v3) -> float:
     """Recalibrate DQ Score: subtract points for NULL critical fields."""
     raw = float(v3.dq_score or 100)
@@ -784,8 +879,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "growthFactors": growth["factors"],
         "confidenceNotes": growth.get("confidence_notes", []),
         "lastUpdated": str(v3.last_updated) if v3.last_updated else None,
+        "_provenance": _provenanced_metrics(v3),
     }
-    return response
 
 
 
@@ -1535,3 +1630,29 @@ def risk_what_if(
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/buy-finder/rank")
+def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
+    """Versioned backend ranking endpoint for the Buy Finder."""
+    from buyfinder import rank_suburbs, BuyFinderRequest as BFR, BuyFinderWeights
+    
+    weights = None
+    if request.weights:
+        weights = BuyFinderWeights(**request.weights.dict())
+    
+    bf_request = BFR(
+        budget=request.budget,
+        deposit=request.deposit,
+        annual_income=request.annual_income,
+        property_type=request.property_type,
+        holding_period_years=request.holding_period_years,
+        objective=request.objective,
+        minimum_yield=request.minimum_yield,
+        maximum_vacancy=request.maximum_vacancy,
+        maximum_cbd_minutes=request.maximum_cbd_minutes,
+        exclude_flood_risk=request.exclude_flood_risk,
+        exclude_bushfire_risk=request.exclude_bushfire_risk,
+        weights=weights or BuyFinderWeights(),
+    )
+    return rank_suburbs(bf_request, db)
