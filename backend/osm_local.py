@@ -146,14 +146,14 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
         overpass_query = f"""
         [out:json][timeout:10];
         (
-          node["amenity"~"cafe|restaurant|fast_food|pub"](around:{radius_m},{lat},{lng});
-          node["leisure"~"park|playground"](around:{radius_m},{lat},{lng});
-          node["public_transport"="station"](around:{radius_m},{lat},{lng});
-          node["highway"="bus_stop"](around:{radius_m},{lat},{lng});
-          node["railway"="station"](around:{radius_m},{lat},{lng});
-          node["amenity"~"school|college|kindergarten"](around:{radius_m},{lat},{lng});
+          nwr["amenity"~"cafe|restaurant|fast_food|pub"](around:{radius_m},{lat},{lng});
+          nwr["leisure"~"park|playground"](around:{radius_m},{lat},{lng});
+          nwr["public_transport"="station"](around:{radius_m},{lat},{lng});
+          nwr["highway"="bus_stop"](around:{radius_m},{lat},{lng});
+          nwr["railway"="station"](around:{radius_m},{lat},{lng});
+          nwr["amenity"~"school|college|kindergarten"](around:{radius_m},{lat},{lng});
         );
-        out body;
+        out center;
         """
         try:
             headers = {"User-Agent": "RealEstateApp/1.0"}
@@ -163,8 +163,8 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
                 elements = data.get('elements', [])
                 for el in elements:
                     tags = el.get('tags', {})
-                    lat_val = el.get('lat')
-                    lon_val = el.get('lon')
+                    lat_val = el.get('lat') or el.get('center', {}).get('lat')
+                    lon_val = el.get('lon') or el.get('center', {}).get('lon')
                     name = tags.get('name', 'Unnamed')
                     if 'amenity' in tags and tags['amenity'] in ['cafe', 'restaurant', 'fast_food', 'pub']:
                         result.setdefault('cafe', []).append({"name": name, "distance": 0, "lat": lat_val, "lng": lon_val})

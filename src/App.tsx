@@ -216,20 +216,28 @@ function App() {
 
   const prevSuburbId = useRef<string | null>(null)
 
+  // Clear data when ID changes
   useEffect(() => {
     const currentId = activeSuburb?.id || null;
-    if (currentId === prevSuburbId.current) return;
-    prevSuburbId.current = currentId;
-    
-    setLivabilityData(null)
-    setLivabilityError(null)
-    setClusteringResults(null)
-    setShowAmenitiesOnMap(false)
-    
+    if (currentId !== prevSuburbId.current) {
+      prevSuburbId.current = currentId;
+      setLivabilityData(null);
+      setLivabilityError(null);
+      setClusteringResults(null);
+      setShowAmenitiesOnMap(false);
+    }
+  }, [activeSuburb?.id]);
+
+  // Fetch livability when coordinates are finally loaded
+  useEffect(() => {
     if (activeSuburb) {
       const lat = activeSuburb.coordinates?.[0];
       const lng = activeSuburb.coordinates?.[1];
-      if (!lat || !lng) return; // Wait for cold-load to provide real coordinates
+      if (!lat || !lng) return; // Wait for cold-load
+      
+      // Prevent refetching if we already have it for this location
+      if (livabilityData && livabilityData.location?.lat === lat) return;
+
       setLoadingLivability(true);
       fetchLivabilityData(lat, lng)
         .then(data => {
@@ -241,7 +249,7 @@ function App() {
         })
         .finally(() => setLoadingLivability(false));
     }
-  }, [activeSuburb?.id])
+  }, [activeSuburb?.coordinates]);
 
   const mappedPois = useMemo(() => [
     ...(activeSuburb?.pois || []),
@@ -526,32 +534,34 @@ function App() {
             <div className="control-group">
               <label className="control-label">Target Suburb</label>
               <div className="custom-select-wrapper">
-                <select
+                <input
+                  key={activeSuburb?.id || 'empty'}
+                  list="suburb-datalist"
                   className="premium-select"
-                  value={activeSuburb?.id || ''}
+                  placeholder="Type to search..."
+                  defaultValue={activeSuburb ? `${activeSuburb.name} (${activeSuburb.postcode})` : ''}
                   onChange={(e) => {
-                    if (e.target.value) {
-                      const target = stateSuburbs.find(s => s.id === e.target.value);
-if (target) {
-                          setActiveSuburb(target);
-                        }
-                        // Mark manual selection to avoid auto‑reset
-                        manualSelectionRef.current = true;
-                        loadColdSuburb(e.target.value)
-                        trackActivity('VIEW_SUBURB', e.target.value)
+                    const val = e.target.value;
+                    const target = stateSuburbs.find(s => `${s.name} (${s.postcode})` === val);
+                    if (target) {
+                      setActiveSuburb(target);
+                      manualSelectionRef.current = true;
+                      loadColdSuburb(target.id);
+                      trackActivity('VIEW_SUBURB', target.id);
                     }
                   }}
-                >
+                />
+                <datalist id="suburb-datalist">
                   {stateSuburbs.map(suburb => {
                     const dq = (suburb as any).dqScore;
                     const hasDqIssue = dq == null || dq < 70;
                     return (
-                      <option key={suburb.id} value={suburb.id}>
-                        {suburb.name} ({suburb.postcode}){hasDqIssue ? ' ⚠️' : ''}
+                      <option key={suburb.id} value={`${suburb.name} (${suburb.postcode})`}>
+                        {hasDqIssue ? '⚠️ Low Data Quality' : ''}
                       </option>
                     )
                   })}
-                </select>
+                </datalist>
               </div>
             </div>
 
