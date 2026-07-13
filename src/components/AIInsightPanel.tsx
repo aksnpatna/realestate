@@ -420,7 +420,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                       </span>
                       {' '}(~{Math.round((suburb._riskAssessment.price_decline_scenario ?? suburb._riskAssessment.price_decline_probability ?? 0) * 100)}% estimated downside)
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                        Est. median: ${((suburb._riskAssessment.projected_range?.[1]) / 1000).toFixed(0)}k ({suburb._riskAssessment.expected_return}% expected return) — model scenario only
+                        Est. median: ${((suburb._riskAssessment.projected_range?.[1]) / 1000).toFixed(0)}k ({suburb._riskAssessment.expected_return}% simulated return) — model scenario only
                       </div>
                     </>
                   )}
