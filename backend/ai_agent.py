@@ -183,12 +183,12 @@ def bull_agent_node(state: CommitteeState):
     llm = get_llm()
     metrics = state['metrics']
     prompt = f"""
-    You are 'The Bull', a high-yield real estate investor. Your job is to find reasons to BUY.
+    You are 'The Bull'. Your job is to find the most compelling reasons to BUY this property market.
     Analyze the following suburb: {state['suburb']}, {state['state']}.
     Metrics: {metrics}
     
-    Focus on positive indicators: Rental Yield, low Vacancy Rates, high Price-to-Rent ratio, Demographic CAGR, and if available, compare its 12-month growth against the National Vanguard Property ETF (VAP.AX) macro benchmark provided in the metrics.
-    Provide a 2-sentence bullish argument.
+    If the metrics contain insufficient evidence to make an argument, state exactly "INSUFFICIENT_EVIDENCE". Do not invent reasons or catalysts not present in the data.
+    Otherwise, provide a 2-sentence argument focused on Yield, Population Growth, and Days on Market.
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     return {"bull_argument": msg.content}
@@ -197,12 +197,12 @@ def bear_agent_node(state: CommitteeState):
     llm = get_llm()
     metrics = state['metrics']
     prompt = f"""
-    You are 'The Bear', a deeply conservative risk analyst. Your job is to find reasons NOT to buy.
+    You are 'The Bear'. Your job is to find the most compelling reasons to AVOID this property market.
     Analyze the following suburb: {state['suburb']}, {state['state']}.
     Metrics: {metrics}
     
-    Focus on negative indicators: high Days on Market, low yield, high vacancy rates, poor affordability, or underperformance compared to the National Vanguard Property ETF (VAP.AX) macro benchmark provided in the metrics.
-    Provide a 2-sentence bearish argument pointing out the highest risks.
+    If the metrics contain insufficient evidence to make an argument, state exactly "INSUFFICIENT_EVIDENCE". Do not invent risks not present in the data.
+    Otherwise, provide a 2-sentence argument focused on Supply, Vacancy, and Affordability constraints.
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     return {"bear_argument": msg.content}
@@ -216,7 +216,8 @@ def urban_planner_node(state: CommitteeState):
     Metrics: {metrics}
     
     Focus on: ACARA ICSEA School Quality, True Population CAGR, Walk/Liveability score proxies, and Density.
-    Provide a 2-sentence argument regarding the long-term desirability and gentrification potential.
+    If there is insufficient evidence to form an opinion, state exactly "INSUFFICIENT_EVIDENCE". Do not hallucinate amenities.
+    Otherwise, provide a 2-sentence argument regarding the long-term desirability and gentrification potential.
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     return {"urban_argument": msg.content}
@@ -246,7 +247,7 @@ def supervisor_and_playbook_node(state: CommitteeState):
     Task 1: Generate a final VERDICT (Buy, Hold, or Pass).
     Task 2: Generate a 3-point Investment STRATEGY PLAYBOOK (e.g. "Cashflow Strategy", "Blue-Chip School Zone Strategy").
     Task 3: REALITY CHECK (Compare the suburb's actual data to the macro ETF baseline and media sentiment. Is the media over-hyping or under-valuing?)
-    Task 4: Extract 1-3 CATALYSTS from the News (e.g. new train stations, zoning changes). If none found in News, infer 1 demographic/metric catalyst.
+    Task 4: Extract 1-3 CATALYSTS strictly from the supplied News and Metrics. If no evidence exists, output exactly 'INSUFFICIENT_EVIDENCE' instead of inventing catalysts. Do not hallucinate evidence.
     
     VERDICT: [Buy / Hold / Pass]
     STRATEGY:
