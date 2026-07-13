@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect, useCallback, useRef, lazy, Suspense } from 'react'
-import { mockSuburbsData } from './data/suburbs'
 import type { SuburbData } from './data/suburbs'
 import SuburbMap from './components/SuburbMap'
 import OnboardingTour from './components/OnboardingTour'
@@ -98,13 +97,15 @@ function App() {
         .then(apiData => {
           if (apiData && apiData.length > 0) {
             setSuburbsData(apiData)
+            setLoadingData(false)
           } else {
-            setSuburbsData(mockSuburbsData)
+            setSuburbsData([])
+            setLoadingData(false)
           }
-          setLoadingData(false)
         })
         .catch((err: unknown) => {
-          console.error("API error, using full mock data:", err)
+          console.error("API error — data unavailable:", err)
+          setSuburbsData([])
           setLoadingData(false)
         })
       
@@ -491,6 +492,14 @@ function App() {
               <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
                 Loading database...
               </div>
+            ) : suburbsData.length === 0 ? (
+              <div style={{ padding: '20px', textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>⚠️</div>
+                <div style={{ color: '#ef4444', fontWeight: 600, marginBottom: '4px' }}>Data Unavailable</div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                  No suburbs could be loaded from the API. Check that the backend is running and the database is populated.
+                </div>
+              </div>
             ) : (
               <>
                 <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
@@ -674,14 +683,14 @@ function App() {
                           <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Data Quality</div>
                         </div>
 
-                        {/* Investment Fit Score */}
+                        {/* Growth Score */}
                         <div className="main-score">
-                          <div className="main-score-value" title="Formula: (Pop% * 10) + (Infra$B * 3) + (School * 3) + (Transit * 2) + (Yield * 2) - Distance Penalty">
+                          <div className="main-score-value" title="Growth Score: composite of yield, population trends, and data quality">
                             {activeSuburb.growthScore}
                           </div>
-                          <div className="main-score-label">Investment Fit Score</div>
+                          <div className="main-score-label">Growth Score</div>
                           <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
-                            Based on yield, population<br/>& infrastructure trends
+                            Composite score, not a<br/>calibrated probability
                           </div>
                           <button
                             onClick={() => setActiveTab('gearing')}

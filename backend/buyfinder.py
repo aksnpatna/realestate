@@ -1,93 +1,61 @@
 """
-buyfinder.py — Versioned backend ranking engine for Buy Finder.
+buyfinder.py — Versioned backend ranking engine for the POC Buyer Fit Score.
 
-Implements the Investment Fit Score as a buyer-weighted composite of
-separately computed component scores: Growth, Income, Affordability,
-Risk, and Livability.
+Enforces POC DQ threshold gate (PUBLIC_POC_MIN_DQ_SCORE, default 80).
+Suburbs below the gate are excluded from ranking. Suburbs with synthetic
+recommendation inputs are also excluded.
 
-Model version: buyfit-1.0.0
+Model: buyer-fit-poc-1.0.0
 """
 import os
 import logging
 import math
+import uuid
 from typing import Optional
 from pydantic import BaseModel
 
-logger = logging.getLogger("uvicorn")
+from poc_config import poc_config
 
-MODEL_VERSION = "buyfit-1.0.0"
+logger = logging.getLogger("uvicorn")
 
 
 class BuyFinderWeights(BaseModel):
-    growth: float = 30
+    affordability: float = 30
     income: float = 25
-    affordability: float = 20
-    risk: float = 15
-    livability: float = 10
+    livability: float = 20
+    access: float = 15
+    evidence: float = 10
 
 
 class BuyFinderRequest(BaseModel):
+    buyer_profile: str = "first_home_buyer"
+    state: str = "VIC"
     budget: float = 850000
     deposit: float = 170000
-    annual_income: float = 150000
     property_type: str = "house"
-    holding_period_years: int = 7
-    objective: str = "balanced"
-    minimum_yield: float = 3.5
-    maximum_vacancy: float = 4.0
     maximum_cbd_minutes: int = 60
-    exclude_flood_risk: bool = True
-    exclude_bushfire_risk: bool = True
+    minimum_yield: Optional[float] = None
     weights: BuyFinderWeights = BuyFinderWeights()
 
 
-def calculate_stamp_duty(state: str, price: float) -> float:
-    state = state.upper()
-    if state == "VIC":
-        if price <= 25000: return price * 0.014
-        elif price <= 130000: return 350 + (price - 25000) * 0.024
-        elif price <= 960000: return 2870 + (price - 130000) * 0.06
-        elif price <= 2000000: return price * 0.055
-        else: return price * 0.065
-    elif state == "NSW":
-        if price <= 16000: return price * 0.0125
-        elif price <= 35000: return 200 + (price - 16000) * 0.015
-        elif price <= 93000: return 485 + (price - 35000) * 0.0175
-        elif price <= 351000: return 1500 + (price - 93000) * 0.035
-        elif price <= 1168000: return 10530 + (price - 351000) * 0.045
-        elif price <= 3505000: return 47295 + (price - 1168000) * 0.055
-        else: return 175830 + (price - 3505000) * 0.07
-    elif state == "QLD":
-        if price <= 5000: return 0
-        elif price <= 75000: return (price - 5000) * 0.015
-        elif price <= 540000: return 1050 + (price - 75000) * 0.035
-        elif price <= 1000000: return 17325 + (price - 540000) * 0.045
-        else: return 38025 + (price - 1000000) * 0.0575
-    return price * 0.05
-
-
-def compute_borrowing_capacity(annual_income: float, interest_rate: float = 6.2) -> float:
-    monthly_income = annual_income / 12
-    max_monthly_repayment = monthly_income * 0.30
-    r = (interest_rate / 100) / 12
-    n = 30 * 12
-    if r > 0:
-        max_loan = max_monthly_repayment * ((1 - (1 + r) ** -n) / r)
-    else:
-        max_loan = max_monthly_repayment * n
-    return max_loan
-
-
-def normalise_score(raw: float, cohort_values: list[float], cap: float = 100) -> float:
-    if len(cohort_values) < 3:
-        return max(0, min(cap, raw))
-    sorted_vals = sorted(cohort_values)
-    p10 = sorted_vals[int(len(sorted_vals) * 0.1)]
-    p90 = sorted_vals[int(len(sorted_vals) * 0.9)]
-    span = p90 - p10
-    if span <= 0:
-        return 50.0
-    return max(0, min(cap, 50 + ((raw - p10) / span) * 50))
+def _calibrate_dq(v3) -> float:
+    raw = float(v3.dq_score or 100)
+    penalties = 0
+    checks = [
+        v3.house_days_on_market,
+        v3.unit_days_on_market,
+        v3.house_auction_clearance_rate,
+        v3.predominant_occupation,
+        v3.avg_icsea,
+        v3.school_count,
+        v3.price_to_income_ratio,
+        v3.typical_mortgage_band,
+        v3.vacancy_rate,
+    ]
+    for c in checks:
+        if c is None or c == 0:
+            penalties += 3
+    return max(5, min(95, raw - penalties))
 
 
 def extract_price_and_yield(v3, property_type: str):
@@ -102,180 +70,178 @@ def extract_price_and_yield(v3, property_type: str):
     return price, yld, rent
 
 
-def compute_buyfit_score(v3, req: BuyFinderRequest, cohort_prices: list[float],
-                         cohort_yields: list[float], cohort_vacancies: list[float]) -> dict:
+def clamp(val, lo, hi):
+    return max(lo, min(hi, val))
+
+
+def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
     price, yld, rent = extract_price_and_yield(v3, req.property_type)
-    vacancy = v3.vacancy_rate or 3.0
-
-    # Hard constraint checks
-    hard_constraints_passed = True
-    hard_failures = []
-    if price <= 0 or price > req.budget:
-        hard_constraints_passed = False
-        hard_failures.append(f"Price ${price:,.0f} exceeds budget ${req.budget:,.0f}")
-    if yld < req.minimum_yield:
-        hard_constraints_passed = False
-        hard_failures.append(f"Yield {yld:.1f}% below minimum {req.minimum_yield}%")
-    if vacancy > req.maximum_vacancy:
-        hard_constraints_passed = False
-        hard_failures.append(f"Vacancy {vacancy:.1f}% exceeds maximum {req.maximum_vacancy}%")
+    vacancy = v3.vacancy_rate
+    dq = _calibrate_dq(v3)
     cbd_mins = v3.cbd_distance_mins or 999
-    if req.maximum_cbd_minutes and cbd_mins > req.maximum_cbd_minutes:
-        hard_constraints_passed = False
-        hard_failures.append(f"CBD distance {cbd_mins}min exceeds max {req.maximum_cbd_minutes}min")
 
-    # Growth score (0-100)
-    price_cagr = v3.house_median_price_12m_change_pct or 0
-    pop_cagr = v3.population_cagr or 0
-    if pop_cagr > 10:
-        pop_cagr = pop_cagr / 5
-    if v3.population_2016 and v3.population_2021 and v3.population_2016 > 0:
-        try:
-            pop_cagr = ((v3.population_2021 / v3.population_2016) ** (1/5) - 1) * 100
-        except:
-            pass
-    growth_raw = max(0, min(100, (price_cagr * 3) + (pop_cagr * 10) + 30))
-    growth_score = normalise_score(growth_raw, cohort_prices, 100)
+    has_synthetic = False
+    dq_issues = v3.dq_issues or {}
+    if isinstance(dq_issues, dict):
+        pa = dq_issues.get("predictive_analysis", {})
+        if isinstance(pa, dict) and pa.get("quality_status") == "synthetic_demo":
+            has_synthetic = True
 
-    # Income score (0-100)
-    income_raw = max(0, min(100, (yld * 10) + (max(0, 5 - vacancy) * 8) + (yld - req.minimum_yield) * 5 + 20))
-    income_score = normalise_score(income_raw, cohort_yields, 100)
+    eligibility = "eligible"
+    if dq < poc_config.public_poc_min_dq_score:
+        eligibility = "excluded_dq"
+    elif has_synthetic:
+        eligibility = "excluded_synthetic"
+    elif not v3.is_enriched:
+        eligibility = "excluded_unenriched"
 
-    # Affordability score (0-100)
-    borrowing = compute_borrowing_capacity(req.annual_income)
-    stamp = calculate_stamp_duty(v3.state, price)
-    total_needed = price + stamp
-    actual_deposit = req.deposit - stamp
-    if actual_deposit <= 0:
-        afford_score = 0.0
+    unknowns = []
+    if price is None or price <= 0:
+        unknowns.append("median_price")
+    if rent is None or rent < 0:
+        unknowns.append("median_rent")
+    if vacancy is None:
+        unknowns.append("vacancy_rate")
+    if v3.school_quality is None:
+        unknowns.append("school_quality")
+    if v3.transit_accessibility is None:
+        unknowns.append("transit_access")
+
+    if eligibility != "eligible":
+        return {
+            "rank": 0,
+            "suburb_id": v3.id,
+            "name": v3.name,
+            "state": v3.state,
+            "postcode": v3.postcode,
+            "buyer_fit_score": 0,
+            "confidence_label": "none",
+            "eligibility": eligibility,
+            "components": {},
+            "drivers": [],
+            "unknowns": unknowns,
+            "risks": [],
+            "evidence_ids": [],
+        }
+
+    available_budget = req.deposit + (req.budget - req.deposit)
+    if available_budget <= 0:
+        affordability_fit = 0
     else:
-        loan_needed = total_needed - req.deposit
-        if loan_needed <= 0:
-            afford_score = 100.0
-        elif borrowing <= 0:
-            afford_score = 0.0
-        else:
-            lvr = (loan_needed / borrowing) * 100
-            afford_score = max(0, 100 - lvr)
+        affordability_fit = clamp(100 - ((price - available_budget) / available_budget) * 100, 0, 100)
 
-    # Risk score (0-100) — lower is better, invert for composite
-    dq = v3.dq_score or 70
-    supply_ratio = v3.supply_demand_ratio or 0.5
-    supply_risk = min(50, max(0, supply_ratio * 50))
-    dq_penalty = max(0, (100 - dq) * 0.5)
-    risk_score = max(0, 100 - supply_risk - dq_penalty)
+    if price > 0 and rent > 0:
+        gross_yield = rent * 52 / price * 100
+        income_fit = clamp(gross_yield * 10, 0, 100)
+    else:
+        gross_yield = None
+        income_fit = 0
 
-    # Livability score (0-100)
-    school = v3.school_quality or 5
-    transit = v3.transit_accessibility or 5
-    safety = v3.safety_score or 60
-    parks = v3.parks_count or 0
-    oo_rate = v3.owner_occupier_rate or 65
-    live_raw = (school * 5) + (transit * 5) + (safety * 0.2) + min(20, parks * 2) + (oo_rate * 0.1)
-    livability_score = min(100, max(0, live_raw))
+    school_score = (v3.school_quality or 5) * 5
+    transit_score = (v3.transit_accessibility or 5) * 5
+    safety_score = (v3.safety_score or 60) * 0.2
+    park_score = min(20, (v3.parks_count or 0) * 2)
+    oo_score = (v3.owner_occupier_rate or 65) * 0.1
+    livability_fit = clamp(school_score + transit_score + safety_score + park_score + oo_score, 0, 100)
 
-    # Weighted composite
+    cbd_score = 100 if cbd_mins <= req.maximum_cbd_minutes else max(0, 100 - (cbd_mins - req.maximum_cbd_minutes))
+    access_fit = clamp((cbd_score + transit_score) / 2, 0, 100)
+
+    available_metrics = sum(1 for u in ["median_price", "median_rent", "vacancy_rate", "school_quality", "transit_access"] if u not in unknowns)
+    evidence_completeness = (available_metrics / 5) * 100
+
     w = req.weights
-    total_w = w.growth + w.income + w.affordability + w.risk + w.livability
+    total_w = w.affordability + w.income + w.livability + w.access + w.evidence
     if total_w <= 0:
-        fit_score = 0.0
+        buyer_fit_score = 0
     else:
-        fit_score = (
-            (growth_score * w.growth) +
-            (income_score * w.income) +
-            (afford_score * w.affordability) +
-            (risk_score * w.risk) +
-            (livability_score * w.livability)
+        buyer_fit_score = (
+            (affordability_fit * w.affordability) +
+            (income_fit * w.income) +
+            (livability_fit * w.livability) +
+            (access_fit * w.access) +
+            (evidence_completeness * w.evidence)
         ) / total_w
 
-    components = {
-        "growth": {"score": round(growth_score, 1), "weight": w.growth, "contribution": round(growth_score * w.growth / total_w, 1)},
-        "income": {"score": round(income_score, 1), "weight": w.income, "contribution": round(income_score * w.income / total_w, 1)},
-        "affordability": {"score": round(afford_score, 1), "weight": w.affordability, "contribution": round(afford_score * w.affordability / total_w, 1)},
-        "risk": {"score": round(risk_score, 1), "weight": w.risk, "contribution": round(risk_score * w.risk / total_w, 1)},
-        "livability": {"score": round(livability_score, 1), "weight": w.livability, "contribution": round(livability_score * w.livability / total_w, 1)},
-    }
-
-    confidence = min(0.95, max(0.1, dq / 100))
-    confidence_band = [max(0, round(fit_score - confidence * 10)), min(100, round(fit_score + confidence * 10))]
-
     drivers = []
-    if growth_score > 60:
-        drivers.append(f"Strong price/population growth signal ({round(growth_score, 0)}/100)")
-    if income_score > 60:
-        drivers.append(f"Sustainable rental income ({round(income_score, 0)}/100, yield {yld:.1f}%)")
-    if afford_score > 60:
-        drivers.append(f"Affordable within your budget (score {round(afford_score, 0)}/100)")
+    if affordability_fit > 70:
+        drivers.append("Affordable within budget")
+    if income_fit > 60 and gross_yield is not None:
+        drivers.append(f"Rental yield matches profile ({gross_yield:.1f}%)")
+    if livability_fit > 60:
+        drivers.append("Good schools, transit and amenity access")
+    if evidence_completeness > 80:
+        drivers.append("Strong data completeness")
 
-    risks = []
-    if risk_score < 40:
-        risks.append(f"Data quality concerns (DQ {round(dq)}/100)")
-    if vacancy > 3.0:
-        risks.append(f"Elevated vacancy ({vacancy:.1f}%)")
-    if supply_ratio > 0.7:
-        risks.append(f"High supply relative to demand (ratio {supply_ratio:.2f})")
+    risks_list = []
+    if affordability_fit < 30:
+        risks_list.append("High entry price relative to budget")
+    if evidence_completeness < 40:
+        risks_list.append(f"Low data completeness ({evidence_completeness:.0f}/100)")
+    if vacancy is not None and vacancy > 4:
+        risks_list.append(f"Elevated vacancy ({vacancy:.1f}%)")
+
+    confidence_label = "high" if evidence_completeness >= 80 else "medium" if evidence_completeness >= 50 else "low"
 
     return {
+        "rank": 0,
         "suburb_id": v3.id,
         "name": v3.name,
         "state": v3.state,
         "postcode": v3.postcode,
-        "median_price": price,
-        "rental_yield": round(yld, 2),
-        "vacancy_rate": round(vacancy, 2),
-        "cbd_mins": cbd_mins,
-        "hard_constraints_passed": hard_constraints_passed,
-        "hard_failures": hard_failures,
-        "fit_score": round(fit_score, 1),
-        "components": components,
-        "confidence": round(confidence, 2),
-        "confidence_band": confidence_band,
+        "buyer_fit_score": round(buyer_fit_score, 1),
+        "confidence_label": confidence_label,
+        "eligibility": eligibility,
+        "components": {
+            "affordability": {"score": round(affordability_fit, 1), "weight": w.affordability, "contribution": round(affordability_fit * w.affordability / total_w, 1) if total_w else 0},
+            "income": {"score": round(income_fit, 1), "weight": w.income, "contribution": round(income_fit * w.income / total_w, 1) if total_w else 0},
+            "livability": {"score": round(livability_fit, 1), "weight": w.livability, "contribution": round(livability_fit * w.livability / total_w, 1) if total_w else 0},
+            "access": {"score": round(access_fit, 1), "weight": w.access, "contribution": round(access_fit * w.access / total_w, 1) if total_w else 0},
+            "evidence": {"score": round(evidence_completeness, 1), "weight": w.evidence, "contribution": round(evidence_completeness * w.evidence / total_w, 1) if total_w else 0},
+        },
         "drivers": drivers,
-        "risks": risks,
+        "unknowns": unknowns,
+        "risks": risks_list,
+        "evidence_ids": [f"{'price' if price else ''}_{'yield' if gross_yield else ''}_{'vacancy' if vacancy else ''}".strip("_")],
     }
 
 
 def rank_suburbs(request: BuyFinderRequest, db_session) -> dict:
     from models_v3 import SuburbUIV3
-    from sqlalchemy import func
+    from predictive_ai_engine import has_synthetic_recommendation_inputs
 
-    v3_records = db_session.query(SuburbUIV3).filter(
-        SuburbUIV3.is_enriched == True
-    ).all()
-
-    if not v3_records:
-        return {"model_version": MODEL_VERSION, "request_id": "", "results": []}
-
-    cohort_prices = []
-    cohort_yields = []
-    cohort_vacancies = []
-    for v3 in v3_records:
-        price, yld, _ = extract_price_and_yield(v3, request.property_type)
-        if price > 0:
-            cohort_prices.append(price)
-        if yld > 0:
-            cohort_yields.append(yld)
-        vac = v3.vacancy_rate or 3.0
-        if vac > 0:
-            cohort_vacancies.append(vac)
+    query = db_session.query(SuburbUIV3).filter(
+        SuburbUIV3.is_enriched == True,
+        SuburbUIV3.dq_score >= poc_config.public_poc_min_dq_score,
+        SuburbUIV3.state == request.state.upper(),
+    )
+    v3_records = query.all()
 
     scored = []
+    excluded = []
     for v3 in v3_records:
-        result = compute_buyfit_score(v3, request, cohort_prices, cohort_yields, cohort_vacancies)
-        scored.append(result)
+        if has_synthetic_recommendation_inputs(v3):
+            excluded.append({"suburb_id": v3.id, "name": v3.name, "reason": "synthetic_recommendation_inputs"})
+            continue
+        result = compute_buyer_fit(v3, request)
+        if result["eligibility"] != "eligible":
+            excluded.append({"suburb_id": v3.id, "name": v3.name, "reason": result["eligibility"]})
+        else:
+            scored.append(result)
 
-    passed = [s for s in scored if s["hard_constraints_passed"]]
-    failed = [s for s in scored if not s["hard_constraints_passed"]]
+    scored.sort(key=lambda x: x["buyer_fit_score"], reverse=True)
 
-    passed.sort(key=lambda x: x["fit_score"], reverse=True)
+    for i, s in enumerate(scored):
+        s["rank"] = i + 1
 
-    import uuid
     request_id = str(uuid.uuid4())[:8]
 
     return {
-        "model_version": MODEL_VERSION,
+        "model_version": poc_config.poc_model_version,
         "request_id": request_id,
-        "results": passed[:20],
-        "excluded_count": len(failed),
-        "total_evaluated": len(scored),
+        "dq_threshold": poc_config.public_poc_min_dq_score,
+        "results": scored[:poc_config.poc_max_suburbs or 50],
+        "excluded_count": len(excluded),
+        "excluded": excluded[:10],
+        "total_evaluated": len(v3_records),
     }

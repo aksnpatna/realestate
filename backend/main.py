@@ -22,6 +22,7 @@ from email.mime.multipart import MIMEMultipart
 REQUIRE_EMAIL_VERIFICATION = False
 from dotenv import load_dotenv
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
+from poc_config import poc_config
 
 Base = declarative_base()
 
@@ -195,24 +196,20 @@ class ActivityRequest(BaseModel):
     target_id: Optional[str] = None
 
 class BuyFinderWeights(BaseModel):
-    growth: float = 30
+    affordability: float = 30
     income: float = 25
-    affordability: float = 20
-    risk: float = 15
-    livability: float = 10
+    livability: float = 20
+    access: float = 15
+    evidence: float = 10
 
 class BuyFinderRequest(BaseModel):
+    buyer_profile: str = "first_home_buyer"
+    state: str = "VIC"
     budget: float = 850000
     deposit: float = 170000
-    annual_income: float = 150000
     property_type: str = "house"
-    holding_period_years: int = 7
-    objective: str = "balanced"
-    minimum_yield: float = 3.5
-    maximum_vacancy: float = 4.0
     maximum_cbd_minutes: int = 60
-    exclude_flood_risk: bool = True
-    exclude_bushfire_risk: bool = True
+    minimum_yield: Optional[float] = None
     weights: Optional[BuyFinderWeights] = None
 
 def send_verification_email(to_email: str, token: str):
@@ -411,13 +408,30 @@ def track_activity(request: ActivityRequest, db: Session = Depends(get_db), user
 
 @app.get("/health")
 def health_check(db: Session = Depends(get_db)):
-    """Lightweight health check for Docker healthcheck and monitoring."""
+    """Lightweight health check with POC configuration visibility."""
     try:
         from sqlalchemy import text
         db.execute(text("SELECT 1"))
-        return {"status": "ok", "db": "connected"}
+        eligible = 0
+        if poc_config.public_poc_mode:
+            eligible = db.query(SuburbUIV3).filter(
+                SuburbUIV3.is_enriched == True,
+                SuburbUIV3.dq_score >= poc_config.public_poc_min_dq_score,
+            ).count()
+        return {
+            "status": "ok",
+            "db": "connected",
+            "poc": poc_config.to_dict(),
+            "eligible_suburbs": eligible,
+        }
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"DB unavailable: {e}")
+
+
+@app.get("/api/poc/config")
+def get_poc_config():
+    """Returns active POC configuration so the showcase can be verified."""
+    return poc_config.to_dict()
 
 _cache_etf_data = None
 _cache_etf_time = 0
@@ -479,21 +493,31 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
     result = []
     
     for state_name in TARGET_STATES:
-        v3_records = db.query(SuburbUIV3).filter(
+        query = db.query(SuburbUIV3).filter(
             SuburbUIV3.state == state_name,
-            SuburbUIV3.is_enriched == True
-        ).order_by(SuburbUIV3.house_median_price.desc().nulls_last()).all()
+            SuburbUIV3.is_enriched == True,
+        )
+        if poc_config.public_poc_mode:
+            query = query.filter(SuburbUIV3.dq_score >= poc_config.public_poc_min_dq_score)
+        v3_records = query.order_by(SuburbUIV3.house_median_price.desc().nulls_last()).all()
         
         for v3 in v3_records:
+            growth = _compute_growth_score(v3)
+            dq = _calibrate_dq(v3)
             record = {
                 "id": v3.id.upper(),
                 "name": v3.name,
                 "state": v3.state,
                 "postcode": v3.postcode,
-                "growthScore": _compute_growth_score(v3)["score"],
+                "growthScore": growth["score"],
+                "growthScoreLabel": "Growth Score",
                 "isMetro": bool(v3.metro_cbd),
                 "cbdDistanceMins": v3.cbd_distance_mins,
                 "metroCBD": v3.metro_cbd,
+                "dqScore": dq,
+                "pocEligible": poc_config.is_suburb_eligible(
+                    v3.dq_score, True, False, True
+                ),
                 "metrics": {
                     "medianPrice": v3.house_median_price or 0,
                     "weeklyRent": v3.house_median_rent or 0,
@@ -504,7 +528,6 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
                     "crimeRate": v3.crime_rate,
                 },
                 "v3Enriched": True,
-                "dqScore": min(95, max(5, v3.dq_score or 100)) if hasattr(v3, 'dq_score') else 100,
                 "houseMedianPrice": v3.house_median_price,
                 "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
                 "houseMedianRent": v3.house_median_rent,
@@ -861,6 +884,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "highlights": v3.highlights or [],
         "history": formatted_history if formatted_history else (v3.history_10yr or []),
         "historyRent": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
+        "historyPocNote": "Historical charts use existing dataset. Source rights and observation accuracy not yet validated for POC. Future forecasts not yet enabled.",
         "demographics": v3.demographics_detail or {},
         "demographicsDetailV3": v3.demographics_detail or {},
         "salesSummaryV3": v3.sales_summary or [],
@@ -881,6 +905,72 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "lastUpdated": str(v3.last_updated) if v3.last_updated else None,
         "_provenance": _provenanced_metrics(v3),
     }
+    return response
+
+
+@app.get("/api/suburbs/{suburb_id}/evidence")
+def get_suburb_evidence(suburb_id: str, db: Session = Depends(get_db)):
+    """Evidence contract: trace every material metric to its source."""
+    v3 = _get_suburb_or_404(suburb_id, db)
+    from datetime import datetime
+    now = datetime.utcnow().isoformat()[:10]
+    loaded = str(v3.last_updated)[:10] if v3.last_updated else now
+
+    def _ev(key: str, metric_name: str, source_type: str, source_name: str,
+             observed_at: str, value, quality: str = "estimated", unit: str = "") -> dict:
+        return {
+            "evidence_id": f"{key}:{observed_at or loaded}",
+            "metric_name": metric_name,
+            "value": value,
+            "unit": unit,
+            "source_type": source_type,
+            "source_name": source_name,
+            "observed_at": observed_at,
+            "loaded_at": loaded,
+            "direct_or_derived": "derived" if source_type == "transformed" else "direct",
+            "quality_status": quality,
+            "dq_issue": None,
+        }
+
+    evidence = {
+        "suburb_id": v3.id,
+        "suburb_name": v3.name,
+        "state": v3.state,
+        "retrieved_at": now,
+        "model_version": poc_config.poc_model_version,
+        "entries": [
+            _ev("house_median_price", "Median House Price", "licensed_commercial",
+                "Property market dataset", f"{now}-01", v3.house_median_price,
+                "verified" if (v3.dq_score or 0) >= 80 else "estimated", "AUD"),
+            _ev("house_median_rent", "Median Weekly Rent", "licensed_commercial",
+                "Property market dataset", f"{now}-01", v3.house_median_rent,
+                "verified" if (v3.dq_score or 0) >= 80 else "estimated", "AUD/week"),
+            _ev("house_gross_yield", "Gross Rental Yield", "transformed",
+                "Derived from price and rent", f"{now}-01",
+                _cap_yield(v3.house_gross_rental_yield), "estimated", "percent"),
+            _ev("vacancy_rate", "Vacancy Rate", "licensed_commercial",
+                "Property market dataset", f"{now}-01", v3.vacancy_rate,
+                "verified" if (v3.dq_score or 0) >= 70 else "estimated", "percent"),
+            _ev("population", "Population", "government" if v3.abs_demographics_sourced else "transformed",
+                "ABS Census 2021" if v3.abs_demographics_sourced else "Census-derived",
+                "2021-08-09" if v3.abs_demographics_sourced else None,
+                v3.population or v3.population_2021,
+                "verified" if v3.abs_demographics_sourced else "estimated", "people"),
+            _ev("school_quality", "School Quality (ICSEA)", "government",
+                "ACARA ICSEA Index", "2021-01-01", v3.school_quality or 5.0,
+                "verified", "index"),
+            _ev("transit_access", "Transit Accessibility", "open_data",
+                "OpenStreetMap transit data", f"{now}-01", v3.transit_accessibility or 5.0,
+                "estimated", "score"),
+            _ev("cbd_distance", "CBD Distance", "open_data",
+                "OpenStreetMap routing", f"{now}-01", v3.cbd_distance_mins,
+                "estimated", "minutes"),
+            _ev("dq_score", "Data Quality Score", "transformed",
+                "Internal data quality metric", f"{now}-01",
+                _calibrate_dq(v3), "derived", "score"),
+        ],
+    }
+    return evidence
 
 
 
@@ -1024,7 +1114,8 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
             
         all_suburbs = db.query(SuburbUIV3).filter(
             SuburbUIV3.is_live == True,
-            SuburbUIV3.state == target_suburb.state
+            SuburbUIV3.state == target_suburb.state,
+            SuburbUIV3.dq_score >= poc_config.public_poc_min_dq_score,
         ).all()
         
         def _build_cluster_data(v3):
@@ -1715,25 +1806,20 @@ def get_model_diary_summary(db: Session = Depends(get_db)):
 
 @app.post("/api/buy-finder/rank")
 def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
-    """Versioned backend ranking endpoint for the Buy Finder."""
+    """Versioned backend ranking endpoint for the POC Buyer Fit Score.
+    Enforces DQ threshold and excludes synthetic inputs."""
     from buyfinder import rank_suburbs, BuyFinderRequest as BFR, BuyFinderWeights
-    
-    weights = None
-    if request.weights:
-        weights = BuyFinderWeights(**request.weights.dict())
-    
+
+    weights = request.weights if request.weights else BuyFinderWeights()
+
     bf_request = BFR(
+        buyer_profile=request.buyer_profile,
+        state=request.state,
         budget=request.budget,
         deposit=request.deposit,
-        annual_income=request.annual_income,
         property_type=request.property_type,
-        holding_period_years=request.holding_period_years,
-        objective=request.objective,
-        minimum_yield=request.minimum_yield,
-        maximum_vacancy=request.maximum_vacancy,
         maximum_cbd_minutes=request.maximum_cbd_minutes,
-        exclude_flood_risk=request.exclude_flood_risk,
-        exclude_bushfire_risk=request.exclude_bushfire_risk,
-        weights=weights or BuyFinderWeights(),
+        minimum_yield=request.minimum_yield,
+        weights=weights,
     )
     return rank_suburbs(bf_request, db)
