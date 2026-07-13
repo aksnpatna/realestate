@@ -1195,12 +1195,18 @@ function App() {
                     </div>
                   </div>
 
-                  {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
-                  <AIInsightPanel
-                    activeSuburb={activeSuburb}
-                    setActiveSuburb={setActiveSuburb}
-                  />
                   </div>
+                  </details>
+
+                  {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
+                  <details className="expandable-section" style={{ marginTop: '20px' }}>
+                    <summary>🤖 View AI Investment Committee Debate & Sentiment</summary>
+                    <div style={{ padding: '20px' }}>
+                      <AIInsightPanel
+                        activeSuburb={activeSuburb}
+                        setActiveSuburb={setActiveSuburb}
+                      />
+                    </div>
                   </details>
 
                   {/* PANEL E: Quick ROI Calculator */}
