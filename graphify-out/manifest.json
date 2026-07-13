@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783855754.026949,
-    "ast_hash": "e8b59ada45c40b45f1f673cb2b318203",
+    "mtime": 1783932863.9274626,
+    "ast_hash": "04456b1bc3084df76e33bb8e110372b0",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783856773.801095,
-    "ast_hash": "c3fc9feda96d744a280997edb7a7c0e0",
+    "mtime": 1783933150.086152,
+    "ast_hash": "434c0d0c8e2c6dbbe8d93949a65cfb4e",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -300,9 +300,9 @@
     "semantic_hash": "34e4979ef97f6ab6a98e1bc9a8aad942"
   },
   "backend/osm_local.py": {
-    "mtime": 1783653068.6967816,
-    "ast_hash": "d9a89400b5882522b84de9930b262665",
-    "semantic_hash": "d9a89400b5882522b84de9930b262665"
+    "mtime": 1783932971.28973,
+    "ast_hash": "d538ceae940fa0ac11e2f2cadd99dc8b",
+    "semantic_hash": ""
   },
   "backend/predictive_ai_engine.py": {
     "mtime": 1783291827.3835573,
