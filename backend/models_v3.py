@@ -223,12 +223,22 @@ class CommitteeMemory(Base):
     urban_argument = Column(Text)
     playbook = Column(Text)
     risk_rating = Column(String)
-    raw_metrics_payload = Column(JSON)  # For supervised fine-tuning dataset generation
+    raw_metrics_payload = Column(JSON)
     created_at = Column(DateTime)
+    prompt_version = Column(String, default="ciov1-text-1.0")
+    model_version = Column(String, default="buyfit-1.0.0")
+    provider = Column(String, default="unknown")
+    input_hash = Column(String, default="")
+    review_status = Column(String, default="unreviewed")
+    outcome_status = Column(String, default="pending")
+    outcome_score = Column(Float, default=0.0)
+    benchmark_return = Column(Float, default=0.0)
+    verified_at = Column(DateTime, nullable=True)
 
     __table_args__ = (
         Index("idx_cm_state_growth", "state", "growth_score"),
         Index("idx_cm_state_yield", "state", "rental_yield"),
+        Index("idx_cm_review", "review_status", "outcome_status"),
     )
 
 class ModelDiary(Base):
