@@ -609,7 +609,7 @@ function App() {
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card">
                     <div className="detail-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
+                      <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                           <h2 className="detail-title" style={{ margin: 0 }}>{activeSuburb.name}, {activeSuburb.state}</h2>
                           <button
@@ -625,49 +625,71 @@ function App() {
                             {favorites.includes(activeSuburb.id) ? '♥' : '♡'}
                           </button>
                         </div>
-                        <div>
-                        {(()=>{
-                          const dq = (activeSuburb as any).dqScore;
-                          if (dq == null) {
-                            return <span title="Data Quality Score Unavailable" style={{marginLeft:'12px',fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:'4px',background:'rgba(245,158,11,0.15)',color:'#f59e0b',border:`1px solid #f59e0b40`}}>⚠️ DQ Unavailable</span>;
-                          }
-                          const c=dq>=90?'#10b981':dq>=70?'#f59e0b':'#ef4444';
-                          const bg=dq>=90?'rgba(16,185,129,0.15)':dq>=70?'rgba(245,158,11,0.15)':'rgba(239,68,68,0.15)';
-                          return <span title="Data Quality Score" style={{marginLeft:'12px',fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:'4px',background:bg,color:c,border:`1px solid ${c}40`}}>DQ {Math.round(dq)} {dq<70 && '⚠️'}</span>;
-                        })()}
-                        {(activeSuburb as any).lastV3Update && (
-                          <span style={{ marginLeft: '8px', fontSize: '0.6rem', color: 'var(--text-secondary)' }}>
-                            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', display: 'inline-block', marginRight: '4px' }} />
-                            V3 · {new Date((activeSuburb as any).lastV3Update).toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'})}
-                          </span>
-                        )}
-                        </div>
-                      <p className="subtitle">
-                        {(activeSuburb as any).cbdDistance
-                          ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
-                          : activeSuburb.metroCBD || 'Regional'}
-                      </p>
-                      {(activeSuburb as any).lastUpdated && (
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                          Data Last Updated: {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
+                        <p className="subtitle" style={{ marginTop: '5px' }}>
+                          {(activeSuburb as any).cbdDistance
+                            ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
+                            : activeSuburb.metroCBD || 'Regional'}
                         </p>
-                      )}
-                    </div>
-                    <div className="main-score">
-                      <div className="main-score-value" title="Formula: (Pop% * 10) + (Infra$B * 3) + (School * 3) + (Transit * 2) + (Yield * 2) - Distance Penalty">
-                        {activeSuburb.growthScore}
+                        {(activeSuburb as any).lastUpdated && (
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                            Data Last Updated: {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
+                          </p>
+                        )}
+                        
+                        {/* Evidence-backed highlights */}
+                        {(activeSuburb.highlights || []).length > 0 && (
+                          <div style={{ marginTop: '15px' }}>
+                            <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px' }}>Key Drivers</h4>
+                            <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-primary)', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              {(activeSuburb.highlights || []).slice(0, 3).map((h, i) => (
+                                <li key={i}>{h}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        
+                        <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+                          <button
+                            onClick={() => setActiveTab('buy-finder')}
+                            style={{ padding: '8px 16px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem', transition: 'background 0.2s' }}
+                            onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                            onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
+                          >
+                            🔍 Compare Alternatives
+                          </button>
+                        </div>
                       </div>
-                      <div className="main-score-label">Investment Fit Score</div>
-                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
-                        Based on yield, population<br/>& infrastructure trends
+
+                      <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                        {/* Confidence Band (Data Quality) */}
+                        <div className="main-score" style={{ textAlign: 'center', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)', marginBottom: '5px' }}>Confidence</div>
+                          {(()=>{
+                            const dq = (activeSuburb as any).dqScore;
+                            if (dq == null) return <div style={{ fontSize: '1.2rem', color: '#f59e0b', fontWeight: 'bold' }}>⚠️ Low</div>;
+                            const c=dq>=90?'#10b981':dq>=70?'#f59e0b':'#ef4444';
+                            return <div style={{ fontSize: '1.8rem', color: c, fontWeight: 'bold' }}>{Math.round(dq)}/100</div>;
+                          })()}
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Data Quality</div>
+                        </div>
+
+                        {/* Investment Fit Score */}
+                        <div className="main-score">
+                          <div className="main-score-value" title="Formula: (Pop% * 10) + (Infra$B * 3) + (School * 3) + (Transit * 2) + (Yield * 2) - Distance Penalty">
+                            {activeSuburb.growthScore}
+                          </div>
+                          <div className="main-score-label">Investment Fit Score</div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
+                            Based on yield, population<br/>& infrastructure trends
+                          </div>
+                          <button
+                            onClick={() => setActiveTab('gearing')}
+                            style={{ marginTop: '10px', padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', width: '100%' }}
+                          >
+                            💰 View Cashflow →
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => setActiveTab('gearing')}
-                        style={{ marginTop: '10px', padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', width: '100%' }}
-                      >
-                        💰 View Cashflow →
-                      </button>
-                    </div>
                   </div>
 
                   <div className="metrics-grid">
@@ -765,10 +787,16 @@ function App() {
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Visuals Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
-                      {/* Left Column */}
+                    {/* Visuals Grid (Hidden by default to simplify viewport) */}
+                    <details className="expandable-section" style={{ marginTop: '20px', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
+                      <summary style={{ cursor: 'pointer', fontWeight: 'bold', color: 'var(--accent-cyan)', padding: '10px', outline: 'none' }}>
+                        📊 View Detailed Demographics & Charts
+                      </summary>
+                      <div style={{ marginTop: '15px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+                          {/* Left Column */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         {/* House vs Unit bar chart */}
                         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
@@ -837,7 +865,6 @@ function App() {
                         </div>
                       </div>
                     </div>
-                  </div>
 
                   {/* BUYER AGENT SUMMARY */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
@@ -1173,6 +1200,8 @@ function App() {
                     activeSuburb={activeSuburb}
                     setActiveSuburb={setActiveSuburb}
                   />
+                  </div>
+                  </details>
 
                   {/* PANEL E: Quick ROI Calculator */}
                   <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
