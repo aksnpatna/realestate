@@ -22,6 +22,7 @@ from sqlalchemy import (
     DateTime, Text, create_engine, Index
 )
 from sqlalchemy.orm import sessionmaker, declarative_base
+from datetime import datetime
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -229,6 +230,33 @@ class CommitteeMemory(Base):
         Index("idx_cm_state_growth", "state", "growth_score"),
         Index("idx_cm_state_yield", "state", "rental_yield"),
     )
+
+class ModelDiary(Base):
+    """
+    Time-based outcome tracking for model predictions (Priority 6).
+    Stores the deterministic score and AI verdict at time T, enabling retrospective 
+    evaluation of accuracy at T+6m, T+12m, and T+36m before attempting fine-tuning.
+    """
+    __tablename__ = "model_diary"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    suburb_id = Column(String, index=True)
+    prediction_date = Column(DateTime, index=True, default=datetime.utcnow)
+    
+    # What was predicted?
+    predicted_fit_score = Column(Float)
+    ai_verdict = Column(String)
+    
+    # What was the state of the world at time T?
+    baseline_median_price = Column(Float)
+    baseline_rental_yield = Column(Float)
+    baseline_vacancy_rate = Column(Float)
+    data_quality_score = Column(Float)
+    
+    # Outcome tracking (populated later by a scheduled job)
+    realized_price_6m = Column(Float)
+    realized_price_12m = Column(Float)
+    realized_price_36m = Column(Float)
+    outcome_rating = Column(String)
 
 Base.metadata.create_all(bind=engine)
 print("V3 tables created/verified.")
