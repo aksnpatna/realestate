@@ -6,6 +6,7 @@ import OnboardingTour from './components/OnboardingTour'
 import TermsOfUseModal from './components/TermsOfUseModal'
 import UserFavoritesTab from './components/UserFavoritesTab'
 import AIInsightPanel from './components/AIInsightPanel'
+import DecisionBrief from './components/DecisionBrief'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -788,6 +789,9 @@ function App() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Decision Brief — compact evidence-based summary */}
+                  <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} />
 
                     {/* Visuals Grid (Hidden by default to simplify viewport) */}
                     <details className="expandable-section" style={{ marginTop: '20px', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
