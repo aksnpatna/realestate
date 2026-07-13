@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783933150.086152,
-    "ast_hash": "434c0d0c8e2c6dbbe8d93949a65cfb4e",
+    "mtime": 1783938613.1847208,
+    "ast_hash": "9fea8ebf7ad0cf04eaf3d39ac434b910",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1783854489.5041614,
-    "ast_hash": "2329952ed46bd2ce098ce62e87c14a53",
+    "mtime": 1783933458.007332,
+    "ast_hash": "b6d6e9203ac9ab14e946e787ebb7fe7a",
     "semantic_hash": ""
   },
   "graphify-out/converted/vic_sales_time_series_20yr_latest_5350cb9d.md": {
@@ -330,9 +330,9 @@
     "semantic_hash": "42192e4abbe72c5e5aacce5ca738ff0e"
   },
   "backend/updater.sh": {
-    "mtime": 1783652167.9294224,
-    "ast_hash": "fee92917b677e41f98a118295938fb69",
-    "semantic_hash": "fee92917b677e41f98a118295938fb69"
+    "mtime": 1783938205.6642945,
+    "ast_hash": "38aad9abcf9ff74402ab926e5066c796",
+    "semantic_hash": ""
   },
   "backend/v3_scheduler.py": {
     "mtime": 1783834562.7675264,
