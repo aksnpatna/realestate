@@ -3,13 +3,13 @@
  * Run: npm test -- src/components/AIInsightPanel.test.tsx
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import AIInsightPanel from './AIInsightPanel'
 
 // Mock fetch globally
 const mockFetch = vi.fn()
-global.fetch = mockFetch
+vi.stubGlobal('fetch', mockFetch)
 
 const mockSetActiveSuburb = vi.fn()
 
