@@ -1632,6 +1632,87 @@ def risk_what_if(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class ModelDiaryEntry(BaseModel):
+    suburb_id: str
+    property_type: str = "house"
+    predicted_fit_score: float
+    ai_verdict: str = ""
+    baseline_median_price: float
+    baseline_rental_yield: float
+    baseline_vacancy_rate: float
+    data_quality_score: float
+
+
+@app.post("/api/model-diary/predictions")
+def create_model_diary_entry(req: ModelDiaryEntry, db: Session = Depends(get_db)):
+    """Persist a prediction for later outcome tracking."""
+    from models_v3 import ModelDiary as MD
+    import uuid
+    entry = MD(
+        suburb_id=req.suburb_id,
+        prediction_date=datetime.utcnow(),
+        predicted_fit_score=req.predicted_fit_score,
+        ai_verdict=req.ai_verdict,
+        baseline_median_price=req.baseline_median_price,
+        baseline_rental_yield=req.baseline_rental_yield,
+        baseline_vacancy_rate=req.baseline_vacancy_rate,
+        data_quality_score=req.data_quality_score,
+    )
+    db.add(entry)
+    db.commit()
+    return {"status": "success", "id": entry.id}
+
+
+@app.get("/api/model-diary/{suburb_id}")
+def get_model_diary(suburb_id: str, db: Session = Depends(get_db)):
+    """Retrieve historical predictions for a suburb."""
+    from models_v3 import ModelDiary as MD
+    entries = db.query(MD).filter(MD.suburb_id == suburb_id.upper()).order_by(MD.prediction_date.desc()).all()
+    return {
+        "suburb_id": suburb_id,
+        "entries": [
+            {
+                "id": e.id,
+                "prediction_date": str(e.prediction_date),
+                "predicted_fit_score": e.predicted_fit_score,
+                "ai_verdict": e.ai_verdict,
+                "baseline_median_price": e.baseline_median_price,
+                "baseline_rental_yield": e.baseline_rental_yield,
+                "baseline_vacancy_rate": e.baseline_vacancy_rate,
+                "data_quality_score": e.data_quality_score,
+                "realized_price_6m": e.realized_price_6m,
+                "realized_price_12m": e.realized_price_12m,
+                "realized_price_36m": e.realized_price_36m,
+                "outcome_rating": e.outcome_rating,
+            }
+            for e in entries
+        ],
+    }
+
+
+@app.get("/api/model-diary/summary")
+def get_model_diary_summary(db: Session = Depends(get_db)):
+    """Summary of model prediction performance."""
+    from models_v3 import ModelDiary as MD
+    from sqlalchemy import func as sa_func
+
+    total = db.query(MD).count()
+    rated = db.query(MD).filter(MD.outcome_rating.isnot(None)).count()
+
+    entries = db.query(MD).filter(MD.outcome_rating.isnot(None)).all()
+    outperformed = sum(1 for e in entries if e.outcome_rating == "outperformed" or e.outcome_rating == "correct")
+
+    summary = {
+        "total_predictions": total,
+        "rated_predictions": rated,
+        "outperformed_or_correct": outperformed,
+        "hit_rate": round(outperformed / rated * 100, 1) if rated > 0 else None,
+        "status": "incomplete" if rated < 10 else "limited",
+        "note": "Insufficient outcome data for statistical calibration. Do not treat as validated probability model."
+    }
+    return summary
+
+
 @app.post("/api/buy-finder/rank")
 def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
     """Versioned backend ranking endpoint for the Buy Finder."""
