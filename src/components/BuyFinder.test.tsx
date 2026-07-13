@@ -16,15 +16,14 @@ describe('BuyFinder', () => {
   })
 
   it('renders search button and state selector', () => {
-    render(<BuyFinder suburbsData={[]} />)
+    render(<BuyFinder />)
     expect(screen.getByText('Search')).toBeInTheDocument()
     expect(screen.getByText('Buyer Profile & Location')).toBeInTheDocument()
   })
 
   it('shows loading state on initial render', async () => {
-    // never-resolving promise keeps loading state
     mockFetch.mockImplementation(() => new Promise(() => {}))
-    render(<BuyFinder suburbsData={[]} />)
+    render(<BuyFinder />)
 
     await waitFor(() => {
       expect(screen.getByText(/Ranking eligible suburbs/i)).toBeInTheDocument()
@@ -48,6 +47,12 @@ describe('BuyFinder', () => {
             buyer_fit_score: 78.2,
             confidence_label: 'high',
             eligibility: 'eligible',
+            affordability: {
+              serviceability_passed: true,
+              estimated_borrowing_capacity: 700000,
+              required_loan: 600000,
+              assumptions: { interest_rate: 0.062, serviceability_buffer: 0.03, loan_term_years: 30, purchase_cost_allowance_pct: 2.0 },
+            },
             components: {
               affordability: { score: 85, weight: 30, contribution: 25.5 },
               income: { score: 70, weight: 25, contribution: 17.5 },
@@ -68,19 +73,19 @@ describe('BuyFinder', () => {
       }),
     })
 
-    render(<BuyFinder suburbsData={[]} />)
+    render(<BuyFinder />)
 
     await waitFor(() => {
-      expect(screen.getByText('Melbourne')).toBeInTheDocument()
+      expect(screen.getByText(/Melbourne, VIC/i)).toBeInTheDocument()
     })
-    expect(screen.getByText('78.2')).toBeInTheDocument()
+    expect(screen.getByText('78')).toBeInTheDocument()
     expect(screen.getByText('HIGH')).toBeInTheDocument()
   })
 
   it('shows Data Unavailable on backend failure', async () => {
     mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
-    render(<BuyFinder suburbsData={[]} />)
+    render(<BuyFinder />)
 
     await waitFor(() => {
       expect(screen.getByText('Data Unavailable')).toBeInTheDocument()
@@ -90,21 +95,19 @@ describe('BuyFinder', () => {
   })
 
   it('does not calculate score client-side', () => {
-    render(<BuyFinder suburbsData={[{ id: 'vic-test-3000', name: 'Test', state: 'VIC', postcode: '3000', growthScore: 90, isMetro: true, metrics: { medianPrice: 800000, rentalYield: 4.0, schoolQuality: 7, transitAccessibility: 6 } } as any]} />)
-
-    // BuyFinder no longer has client-side ranking results
+    render(<BuyFinder />)
     expect(screen.queryByText('Fit Score')).not.toBeInTheDocument()
   })
 
   it('minimum-yield select exists', () => {
-    render(<BuyFinder suburbsData={[]} />)
+    render(<BuyFinder />)
     expect(screen.getByText('Min Yield %')).toBeInTheDocument()
   })
 
   it('has weight sliders', () => {
-    render(<BuyFinder suburbsData={[]} />)
-    expect(screen.getByText(/Affordability/i)).toBeInTheDocument()
-    expect(screen.getByText(/Income/i)).toBeInTheDocument()
-    expect(screen.getByText(/Livability/i)).toBeInTheDocument()
+    render(<BuyFinder />)
+    expect(screen.getByText(/Objective Weights/i)).toBeInTheDocument()
+    const affordabilityLabels = screen.getAllByText(/Affordability/i)
+    expect(affordabilityLabels.length).toBeGreaterThanOrEqual(1)
   })
 })

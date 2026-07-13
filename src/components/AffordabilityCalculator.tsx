@@ -65,8 +65,11 @@ export default memo(function AffordabilityCalculator({ suburbsData }: { suburbsD
   return (
     <div className="affordability-container">
       <div className="glass-card calculator-card">
-        <h2 className="detail-title">Affordability Calculator</h2>
-        <p className="subtitle">See what you can buy based on your deposit (80% LVR + stamp duty)</p>
+        <h2 className="detail-title">Price Ceiling Calculator</h2>
+        <p className="subtitle">Quick planning tool: estimate your maximum purchase price from deposit and LVR.</p>
+        <div style={{ background: 'rgba(14,165,233,0.08)', color: 'var(--accent-cyan)', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem', border: '1px solid rgba(14,165,233,0.2)' }}>
+          This is a quick estimate, not a lender pre-approval. For full suburb ranking with affordability based on your income, debt, and borrowing capacity, use the <strong>Buy Finder</strong> tab.
+        </div>
         <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
           <span role="img" aria-label="Warning">⚠️</span> Stamp duty rates are based on 2024 thresholds and do not reflect recent state budgets. Please consult a conveyancer.
         </div>
