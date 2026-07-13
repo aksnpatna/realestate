@@ -1,7 +1,7 @@
-# Graph Report - realestate  (2026-07-12)
+# Graph Report - realestate  (2026-07-13)
 
 ## Corpus Check
-- 107 files · ~2,220,605 words
+- 107 files · ~2,220,654 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8619f318`
+- Built from commit: `8493935f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

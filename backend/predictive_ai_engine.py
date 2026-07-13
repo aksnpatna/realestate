@@ -57,34 +57,18 @@ class ASXPredictor:
 
 def fetch_infrastructure_zoning_data(postcode):
     """
-    Mock function representing an API call to State Government Planning Portals.
-    Looks for new train stations, hospital upgrades, or high-density rezoning.
+    TODO: Replace with authoritative data from State Planning Portals.
+    Synthetic signals have been removed as per V3 guidelines.
     """
-    has_major_infra = int(postcode) % 7 == 0
-    rezoning_approved = int(postcode) % 11 == 0
-    
     events = []
-    if has_major_infra:
-        events.append({"type": "Infrastructure", "desc": "New Metro Station Approved", "impact_year": datetime.now().year + 3})
-    if rezoning_approved:
-        events.append({"type": "Zoning", "desc": "Low-to-Medium Density Rezoning", "impact_year": datetime.now().year + 1})
-        
     return events
 
 def fetch_environmental_risks(postcode):
     """
-    Mock function representing an API call to GeoScience Australia or State SES APIs.
-    Identifies if a suburb is in a high-risk flood or bushfire zone.
+    TODO: Replace with authoritative GIS overlays (e.g., GeoScience Australia).
+    Synthetic signals have been removed as per V3 guidelines.
     """
-    is_flood_prone = int(postcode) % 9 == 0
-    is_fire_prone = int(postcode) % 13 == 0
-    
     risks = []
-    if is_flood_prone:
-        risks.append({"type": "Flood", "severity": "High", "desc": "1-in-100 Year Flood Zone"})
-    if is_fire_prone:
-        risks.append({"type": "Bushfire", "severity": "Medium", "desc": "BAL-29 Bushfire Attack Level"})
-        
     return risks
 
 def calculate_predictive_score(suburb_data, infra_events, env_risks, macro_data):
@@ -127,18 +111,10 @@ def calculate_predictive_score(suburb_data, infra_events, env_risks, macro_data)
             base_score += (kde_peak * 10) # 0.1% daily peak adds 1 pt
     
     # 4. Infrastructure & Zoning
-    for event in infra_events:
-        if event["type"] == "Infrastructure":
-            base_score += 12
-        elif event["type"] == "Zoning":
-            base_score += 8
+    # (Removed synthetic score padding - awaiting authoritative GIS overlays)
             
     # 5. Environmental Risk Penalties
-    for risk in env_risks:
-        if risk["type"] == "Flood":
-            base_score -= 15 
-        elif risk["type"] == "Bushfire":
-            base_score -= 10 
+    # (Removed synthetic score penalties - awaiting authoritative GIS overlays)
             
     return min(100.0, max(0.0, base_score))
 
