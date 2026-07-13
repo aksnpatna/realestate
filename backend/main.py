@@ -1200,18 +1200,15 @@ def calculate_roi(req: ROICalcRequest):
 
 @app.get("/api/mortgage-rate")
 def get_mortgage_rate():
-    # In a full production environment, this would call a banking API (e.g. CoreLogic or RBA proxy).
-    # Since direct RBA scraping is blocked by Cloudflare, we simulate the dynamic fetch here.
-    # Base RBA Cash Rate (currently ~4.35%) + Average Retail Bank Margin (~1.85%) = 6.2%
-    # This endpoint allows the frontend to be fully dynamic.
     return {
         "status": "success",
         "base_cash_rate": 4.35,
         "retail_margin": 1.85,
         "effective_mortgage_rate": 6.20,
-        "source": "Simulated Live RBA + Margin API",
+        "source": "Simulated (indicative only; not live RBA data)",
         "last_updated": "Today",
-        "disclaimer": "This rate is indicative only. Always verify with your lender for actual rates."
+        "data_status": "simulated",
+        "disclaimer": "This rate is indicative only and simulated. Always verify with your lender for actual rates. Not for production decision-making."
     }
 
 # =============================================================================
@@ -1514,3 +1511,27 @@ def get_suburb_properties(suburb_id: str, db: Session = Depends(get_db)):
 def metrics():
     """Prometheus-compatible metrics endpoint for AI observability."""
     return Response(content=get_metrics_text(), media_type="text/plain; version=0.0.4")
+
+
+@app.get("/api/risk/what-if")
+def risk_what_if(
+    price: float = 800000,
+    rate: float = 6.2,
+    yield_val: float = 4.0,
+    vacancy: float = 3.0,
+    growth_score: float = 50,
+):
+    """Backend what-if scenario using the same Monte Carlo engine as the committee."""
+    macro = {
+        "cash_rate": rate,
+        "cpi_annual": 3.2,
+        "unemployment": 4.1,
+        "population_growth": 2.4,
+        "building_approvals": 1.0,
+    }
+    try:
+        from risk_engine import compute_risk_rating
+        result = compute_risk_rating(price, yield_val, growth_score, macro=macro)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

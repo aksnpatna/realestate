@@ -27,28 +27,28 @@ def compute_risk_rating(
     horizon_months: int = DEFAULT_HORIZON_MONTHS,
 ) -> dict:
     """
-    Run a Monte Carlo simulation of property price trajectories and return a risk assessment.
+    Run a Monte Carlo scenario simulation of property price trajectories.
 
-    Model:
-        Monthly return ~ N(μ, σ)
-        μ = base_growth + yield_adj + macro_adj
-        σ = base_volatility * macro_vol_multiplier
+    IMPORTANT: This is a model scenario, NOT a calibrated empirical probability.
+    The mean is derived from the heuristic growth score and is not yet validated
+    against historical outcomes. Do not present results as statistical probabilities.
 
     Parameters:
         median_price: Current median house price
         rental_yield: Gross rental yield (%)
         growth_score: Growth score (0-100) from the suburb metrics
-        macro: Dict of macro-economic indicators (cash_rate, cpi_annual, unemployment, etc.)
+        macro: Dict of macro-economic indicators
         iterations: Number of Monte Carlo runs (default 5000)
         horizon_months: Projection period in months (default 12)
 
     Returns:
         dict with:
-            risk_rating (str) — "Low", "Medium", or "High"
-            price_decline_probability (float) — probability of >5% decline
+            risk_rating (str) — "Low", "Medium", or "High" scenario estimate
+            price_decline_scenario (float) — estimated frequency of >5% decline in simulation
             projected_range (list) — [10th percentile, median, 90th percentile]
             expected_return (float) — mean annualized return (%)
             volatility (float) — annualized volatility (%)
+            is_calibrated (bool) — always False; model is not yet validated
     """
     macro = macro or DEFAULT_MACRO
 
@@ -100,10 +100,12 @@ def compute_risk_rating(
 
     return {
         "risk_rating": risk_rating,
-        "price_decline_probability": round(price_decline_prob, 3),
+        "price_decline_scenario": round(price_decline_prob, 3),
         "projected_range": [round(p10), round(p50), round(p90)],
         "expected_return": round(expected_return, 1),
         "volatility": round(annualized_vol, 1),
+        "is_calibrated": False,
+        "calibration_note": "Model scenario only — not validated against historical outcomes. Results are estimated, not empirical probabilities.",
         "simulation_params": {
             "iterations": iterations,
             "horizon_months": horizon_months,

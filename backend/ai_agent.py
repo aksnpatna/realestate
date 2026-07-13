@@ -1,17 +1,51 @@
 import os
 import re
+import json
 import logging
-from typing import TypedDict, Dict, Any, List
+from typing import TypedDict, Dict, Any, List, Literal
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from tavily import TavilyClient
+from pydantic import BaseModel
 
 load_dotenv()
 
 logger = logging.getLogger("uvicorn")
+
+
+class EvidenceClaim(BaseModel):
+    claim: str
+    evidence_ids: list[str] = []
+    confidence: float
+    status: Literal["supported", "contradicted", "unknown"]
+
+
+class CommitteeVerdict(BaseModel):
+    verdict: Literal["BUY", "HOLD", "PASS", "INSUFFICIENT_EVIDENCE"]
+    confidence: float
+    drivers: list[EvidenceClaim] = []
+    risks: list[EvidenceClaim] = []
+    strategy: str = ""
+    reality_check: str = ""
+    assumptions: list[str] = []
+    unknowns: list[str] = []
+    insufficient_evidence: bool = False
+
+
+INSUFFICIENT_EVIDENCE_FALLBACK = CommitteeVerdict(
+    verdict="INSUFFICIENT_EVIDENCE",
+    confidence=0.0,
+    drivers=[],
+    risks=[],
+    strategy="",
+    reality_check="",
+    assumptions=[],
+    unknowns=["The AI response did not satisfy the evidence schema."],
+    insufficient_evidence=True,
+)
 
 def get_llm():
     # 1st: NVIDIA (Llama 3.1 70B)
@@ -225,7 +259,6 @@ def urban_planner_node(state: CommitteeState):
 def supervisor_and_playbook_node(state: CommitteeState):
     llm = get_llm()
     
-    # Retrieve similar past analyses for few-shot context
     past_context = ""
     try:
         from committee_memory import retrieve_similar
@@ -244,54 +277,59 @@ def supervisor_and_playbook_node(state: CommitteeState):
     Urban Planner's Argument: {state['urban_argument']}
     News: {state['news_articles']}
     
-    Task 1: Generate a final VERDICT (Buy, Hold, or Pass).
-    Task 2: Generate a 3-point Investment STRATEGY PLAYBOOK (e.g. "Cashflow Strategy", "Blue-Chip School Zone Strategy").
-    Task 3: REALITY CHECK (Compare the suburb's actual data to the macro ETF baseline and media sentiment. Is the media over-hyping or under-valuing?)
-    Task 4: Extract 1-3 CATALYSTS strictly from the supplied News and Metrics. If no evidence exists, output exactly 'INSUFFICIENT_EVIDENCE' instead of inventing catalysts. Do not hallucinate evidence.
-    
-    VERDICT: [Buy / Hold / Pass]
-    STRATEGY:
-    1. [Point 1]
-    2. [Point 2]
-    3. [Point 3]
-    REALITY CHECK: [1-2 sentences comparing news to reality]
-    CATALYSTS:
-    - [Catalyst 1]
-    - [Catalyst 2]
-    - [Catalyst 3]
+    Return a single JSON object with no additional text. The JSON must have exactly these fields:
+    {{
+      "verdict": "BUY" | "HOLD" | "PASS" | "INSUFFICIENT_EVIDENCE",
+      "confidence": 0.0 to 1.0,
+      "drivers": [
+        {{"claim": "...", "evidence_ids": ["..."], "confidence": 0.0 to 1.0, "status": "supported" | "contradicted" | "unknown"}}
+      ],
+      "risks": [
+        {{"claim": "...", "evidence_ids": ["..."], "confidence": 0.0 to 1.0, "status": "supported" | "contradicted" | "unknown"}}
+      ],
+      "strategy": "3-point investment strategy text",
+      "reality_check": "1-2 sentence comparison of news vs data",
+      "assumptions": ["assumption 1", "assumption 2"],
+      "unknowns": ["unknown 1", "unknown 2"],
+      "insufficient_evidence": true | false
+    }}
+
+    Each claim in drivers and risks MUST reference specific metrics or data from the input.
+    If you cannot support a claim with input data, set insufficient_evidence to true and use verdict INSUFFICIENT_EVIDENCE.
+    Do not invent claims not present in the supplied data.
+    evidence_ids should reference fields from the metrics (e.g. "vacancy_rate:2026", "median_price:2026").
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     
-    content = msg.content
-    
-    verdict = "Hold"
-    strategy = "Awaiting full analysis."
-    reality_check = "No news available for check."
-    catalysts = []
+    content = msg.content.strip()
     
     try:
-        verdict_match = re.search(r'VERDICT:\s*(.*?)(?=\nSTRATEGY:)', content, re.IGNORECASE | re.DOTALL)
-        if verdict_match: verdict = verdict_match.group(1).strip()
+        if content.startswith("```json"):
+            content = content.split("```json")[1].split("```")[0].strip()
+        elif content.startswith("```"):
+            content = content.split("```")[1].split("```")[0].strip()
         
-        strategy_match = re.search(r'STRATEGY:\s*(.*?)(?=\nREALITY CHECK:)', content, re.IGNORECASE | re.DOTALL)
-        if strategy_match: strategy = strategy_match.group(1).strip()
+        data = json.loads(content)
+        validated = CommitteeVerdict(**data)
         
-        reality_match = re.search(r'REALITY CHECK:\s*(.*?)(?=\nCATALYSTS:|$)', content, re.IGNORECASE | re.DOTALL)
-        if reality_match: reality_check = reality_match.group(1).strip()
+        catalysts = [d.claim for d in validated.drivers]
         
-        catalysts_match = re.search(r'CATALYSTS:\s*(.*)', content, re.IGNORECASE | re.DOTALL)
-        if catalysts_match:
-            cat_lines = catalysts_match.group(1).strip().split('\n')
-            catalysts = [line.strip('- ').strip() for line in cat_lines if line.strip()]
-    except Exception:
-        pass
-        
-    return {
-        "final_verdict": verdict,
-        "playbook": strategy,
-        "reality_check": reality_check,
-        "catalysts": catalysts
-    }
+        return {
+            "final_verdict": validated.verdict,
+            "playbook": validated.strategy,
+            "reality_check": validated.reality_check,
+            "catalysts": catalysts,
+            "_structured_verdict": validated.model_dump(),
+        }
+    except Exception as e:
+        logger.warning(f"[supervisor] Schema validation failed for {state['suburb']}: {e}")
+        return {
+            "final_verdict": "INSUFFICIENT_EVIDENCE",
+            "playbook": "The AI response did not satisfy the evidence schema.",
+            "reality_check": "Response validation failed; cannot produce a reliable verdict.",
+            "catalysts": [],
+            "_structured_verdict": INSUFFICIENT_EVIDENCE_FALLBACK.model_dump(),
+        }
 
 # Build LangGraph for the Committee
 committee_graph = StateGraph(CommitteeState)
@@ -480,6 +518,8 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         llm_provider = "openai/gpt-4o-mini"
     else:
         llm_provider = "ollama/qwen2.5:7b"
+
+    structured_verdict = result.get("_structured_verdict", {})
     
     return {
         "bull": result["bull_argument"],
@@ -493,4 +533,8 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         "risk_assessment": risk_assessment,
         "policy_warnings": policy_warnings,
         "llm_provider": llm_provider,
+        "structured_verdict": structured_verdict,
+        "prompt_version": "ciov2-json-schema-1.0",
+        "agents_run": agents,
+        "agents_skipped": skipped,
     }

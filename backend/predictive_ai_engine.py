@@ -16,6 +16,8 @@ except ImportError:
 
 from models_v3 import SessionLocal, SuburbUIV3
 
+DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() in ("true", "1", "yes")
+
 class ASXPredictor:
     def __init__(self):
         # AREV.AX is a proxy for Australian Real Estate Investment Trusts (A-REITs)
@@ -164,7 +166,11 @@ def calculate_predictive_score(suburb_data, infra_events, env_risks, macro_data)
     return min(100.0, max(0.0, base_score))
 
 def run_predictive_engine():
-    print(f"[{datetime.now()}] Starting Real Estate Predictive AI Engine (V3)")
+    if not DEMO_MODE:
+        print(f"[{datetime.now()}] Predictive engine skipped — DEMO_MODE=false. Only authoritative data is used in production rankings.")
+        return
+
+    print(f"[{datetime.now()}] Starting Demo Predictive AI Engine (V3) — SIMULATED DATA ONLY")
     db = SessionLocal()
     
     try:
@@ -172,7 +178,7 @@ def run_predictive_engine():
         print(f"  Macro-economic REIT status: {macro}")
         
         suburbs = db.query(SuburbUIV3).filter(SuburbUIV3.is_enriched == True).limit(200).all()
-        print(f"  Scoring {len(suburbs)} suburbs for future capital growth...")
+        print(f"  Scoring {len(suburbs)} suburbs for future capital growth (DEMO ONLY)...")
         
         updates = 0
         for suburb in suburbs:
@@ -193,14 +199,16 @@ def run_predictive_engine():
                 "macro_reit_rsi": macro.get("rsi"),
                 "infrastructure_events": infra_events,
                 "environmental_risks": env_risks,
-                "calculated_at": datetime.utcnow().isoformat()
+                "calculated_at": datetime.utcnow().isoformat(),
+                "status": "simulated",
+                "warning": "DEMO MODE — results use crowd-sourced OSM proxy data, not authoritative government datasets. Do not use for production decision-making."
             }
             
             suburb.dq_issues = dq
             updates += 1
             
         db.commit()
-        print(f"  ✓ Predictive scoring complete for {updates} suburbs.")
+        print(f"  ✓ Demo predictive scoring complete for {updates} suburbs.")
         
     except Exception as e:
         print(f"  ✗ Predictive Engine Error: {e}")

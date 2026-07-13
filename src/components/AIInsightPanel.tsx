@@ -26,6 +26,8 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
   const [whatIfRate, setWhatIfRate] = useState(6.2)
   const [whatIfYield, setWhatIfYield] = useState(4.0)
   const [whatIfVacancy, setWhatIfVacancy] = useState(3.0)
+  const [whatIfLoading, setWhatIfLoading] = useState(false)
+  const [whatIfResult, setWhatIfResult] = useState<any>(null)
 
   const stepMessages: Record<AnalysisStep, string> = {
     idle: '',
@@ -34,6 +36,33 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
     bear: 'Running Bear analysis...',
     urban: 'Running Urban Planner analysis...',
     final: 'Compiling final verdict and playbook...',
+  }
+
+  const handleWhatIf = async () => {
+    if (whatIfLoading) return
+    setWhatIfLoading(true)
+    setError(null)
+    try {
+      const price = (activeSuburb as any).houseMedianPrice || 800000
+      const params = new URLSearchParams({
+        price: String(price),
+        rate: String(whatIfRate),
+        yield_val: String(whatIfYield),
+        vacancy: String(whatIfVacancy),
+        growth_score: String(activeSuburb.growthScore || 50),
+      })
+      const res = await fetch(`/api/risk/what-if?${params}`)
+      if (res.ok) {
+        const data = await res.json()
+        setWhatIfResult(data)
+      } else {
+        throw new Error(`Server error (${res.status})`)
+      }
+    } catch (e: any) {
+      setError(e.message || 'What-if simulation failed')
+    } finally {
+      setWhatIfLoading(false)
+    }
   }
 
   const handleSentiment = async () => {
@@ -382,16 +411,16 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                   {suburb._riskAssessment && (
                     <>
                       {' • '}
-                      <span title="Monte Carlo simulation of 1-year price trajectory (5,000 iterations)" style={{ cursor: 'help', borderBottom: '1px dotted var(--text-secondary)' }}>
-                        Monte Carlo: <span style={{
+                      <span title="Monte Carlo scenario simulation (5,000 iterations) — model scenario only, not calibrated against historical outcomes" style={{ cursor: 'help', borderBottom: '1px dotted var(--text-secondary)' }}>
+                        Scenario Risk: <span style={{
                           fontWeight: 700,
                           color: suburb._riskAssessment.risk_rating === 'Low' ? '#10b981'
                             : suburb._riskAssessment.risk_rating === 'Medium' ? '#eab308' : '#ef4444',
                         }}>{suburb._riskAssessment.risk_rating}</span>
                       </span>
-                      {' '}({Math.round(suburb._riskAssessment.price_decline_probability * 100)}% decline risk)
+                      {' '}(~{Math.round((suburb._riskAssessment.price_decline_scenario ?? suburb._riskAssessment.price_decline_probability ?? 0) * 100)}% estimated downside)
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                        Projected: ${(suburb._riskAssessment.projected_range?.[1] / 1000).toFixed(0)}k median ({suburb._riskAssessment.expected_return}% expected return)
+                        Est. median: ${((suburb._riskAssessment.projected_range?.[1]) / 1000).toFixed(0)}k ({suburb._riskAssessment.expected_return}% expected return) — model scenario only
                       </div>
                     </>
                   )}
@@ -474,45 +503,60 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                   {whatIfOpen && (
                     <div style={{ marginTop: '10px', padding: '12px', background: 'rgba(14,165,233,0.06)', border: '1px solid rgba(14,165,233,0.15)', borderRadius: '8px' }}>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                        Tweak market parameters to see projected risk changes
+                        Tweak market parameters and recalculate scenarios using backend model
                       </div>
                       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '10px' }}>
                         <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
                           Interest Rate {whatIfRate}%
                           <input type="range" min="2" max="12" step="0.25" value={whatIfRate}
-                            onChange={e => setWhatIfRate(Number(e.target.value))}
+                            onChange={e => { setWhatIfRate(Number(e.target.value)); setWhatIfResult(null); }}
                             style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
                         </label>
                         <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
                           Rental Yield {whatIfYield}%
                           <input type="range" min="1" max="10" step="0.25" value={whatIfYield}
-                            onChange={e => setWhatIfYield(Number(e.target.value))}
+                            onChange={e => { setWhatIfYield(Number(e.target.value)); setWhatIfResult(null); }}
                             style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
                         </label>
                         <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
                           Vacancy Rate {whatIfVacancy}%
                           <input type="range" min="0" max="15" step="0.5" value={whatIfVacancy}
-                            onChange={e => setWhatIfVacancy(Number(e.target.value))}
+                            onChange={e => { setWhatIfVacancy(Number(e.target.value)); setWhatIfResult(null); }}
                             style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
                         </label>
                       </div>
-                      {(() => {
-                        // Client-side risk estimate formula
-                        const baseRisk = 0.15
-                        const ratePenalty = Math.max(0, (whatIfRate - 5) * 0.05)
-                        const yieldBuffer = Math.max(0, (5 - whatIfYield) * 0.03)
-                        const vacancyPenalty = Math.max(0, (whatIfVacancy - 3) * 0.04)
-                        const simRisk = Math.min(0.95, Math.max(0.02, baseRisk + ratePenalty + yieldBuffer + vacancyPenalty))
-                        const simRating = simRisk < 0.15 ? 'Low' : simRisk < 0.30 ? 'Medium' : 'High'
-                        const simColor = simRating === 'Low' ? '#10b981' : simRating === 'Medium' ? '#eab308' : '#ef4444'
-                        return (
-                          <div style={{ textAlign: 'center', padding: '10px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px' }}>
-                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Projected Risk: </span>
-                            <span style={{ fontWeight: 800, fontSize: '1.1rem', color: simColor }}>{simRating}</span>
-                            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginLeft: '6px' }}>({(simRisk*100).toFixed(0)}% decline probability)</span>
+                      <button
+                        onClick={handleWhatIf}
+                        disabled={whatIfLoading}
+                        style={{
+                          padding: '6px 12px',
+                          background: 'var(--accent-cyan)',
+                          color: '#000',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: whatIfLoading ? 'not-allowed' : 'pointer',
+                          fontWeight: 600,
+                          fontSize: '0.8rem',
+                          marginBottom: '10px',
+                        }}
+                      >
+                        {whatIfLoading ? 'Calculating...' : 'Run Scenario'}
+                      </button>
+                      {whatIfResult && (
+                        <div style={{ textAlign: 'center', padding: '10px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px' }}>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Scenario Risk: </span>
+                          <span style={{ fontWeight: 800, fontSize: '1.1rem', color: whatIfResult.risk_rating === 'Low' ? '#10b981' : whatIfResult.risk_rating === 'Medium' ? '#eab308' : '#ef4444' }}>{whatIfResult.risk_rating}</span>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginLeft: '6px' }}>(~{Math.round((whatIfResult.price_decline_scenario || 0) * 100)}% estimated downside)</span>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                            {whatIfResult.calibration_note || 'Model scenario — not validated against historical outcomes'}
                           </div>
-                        )
-                      })()}
+                        </div>
+                      )}
+                      {!whatIfResult && !whatIfLoading && (
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '8px' }}>
+                          Click "Run Scenario" to calculate using the backend risk model
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
