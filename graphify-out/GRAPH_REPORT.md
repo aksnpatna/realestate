@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-13)
 
 ## Corpus Check
-- 108 files · ~2,223,513 words
+- 109 files · ~2,223,932 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 768 nodes · 1029 edges · 105 communities (69 shown, 36 thin omitted)
+- 771 nodes · 1032 edges · 106 communities (70 shown, 36 thin omitted)
 - Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 157 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9122a43a`
+- Built from commit: `6c66d0d8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -134,7 +134,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (105 total, 36 thin omitted)
+## Communities (106 total, 36 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -161,8 +161,8 @@ Cohesion: 0.29
 Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi
 
 ### Community 6 - "Database Models & Scrapers"
-Cohesion: 0.07
-Nodes (79): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+71 more)
+Cohesion: 0.06
+Nodes (84): ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty() (+76 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -174,7 +174,7 @@ Nodes (10): compute_school_quality_score(), load_location_data(), load_profile_d
 
 ### Community 9 - "Predictive AI Engine"
 Cohesion: 0.27
-Nodes (8): ASXPredictor, calculate_predictive_score(), fetch_environmental_risks(), fetch_infrastructure_zoning_data(), Mock function representing an API call to State Government Planning Portals., Mock function representing an API call to GeoScience Australia or State SES APIs, Algorithm combining leading indicators for Capital Growth:     - Falling Days on, run_predictive_engine()
+Nodes (8): ASXPredictor, calculate_predictive_score(), fetch_environmental_risks(), fetch_infrastructure_zoning_data(), Algorithm combining leading indicators for Capital Growth:     - Falling Days on, Authoritative PostGIS Infrastructure/Zoning Query.     Identifies major construc, Authoritative PostGIS Environmental Risk Query.     Identifies flood (water/rive, run_predictive_engine()
 
 ### Community 10 - "ETL Extract V3 Pipeline"
 Cohesion: 0.27
@@ -305,8 +305,8 @@ Cohesion: 0.13
 Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, BuyFinder, Calculators, CashflowGearing, InstitutionalV3Panel, MyPurchasePlan (+2 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.08
-Nodes (21): get_cached_or_query(), get_news_sentiment(), _get_suburb_or_404(), get_suburbs_v3(), metrics(), _normalize_suburb_id(), Returns V3-enriched suburbs for the institutional dashboard view., Prometheus-compatible metrics endpoint for AI observability. (+13 more)
+Cohesion: 0.09
+Nodes (18): get_news_sentiment(), _get_suburb_or_404(), metrics(), _normalize_suburb_id(), Prometheus-compatible metrics endpoint for AI observability., Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21, Look up a SuburbUIV3 by normalized ID. Raises 404 if not found., On-demand news sentiment for a suburb.     Caching: DB (TTL=AI_CACHE_TTL) → Redi (+10 more)
 
 ### Community 102 - "Community 102"
 Cohesion: 0.50
