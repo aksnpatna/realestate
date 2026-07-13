@@ -451,7 +451,7 @@ function App() {
           className={`tab-btn ${activeTab === 'affordability' ? 'tab-active' : ''}`}
           onClick={() => setActiveTab('affordability')}
         >
-          Affordability &amp; Buy
+          Price Ceiling
         </button>
         <button
           className={`tab-btn ${activeTab === 'gearing' ? 'tab-active' : ''}`}
@@ -801,6 +801,25 @@ function App() {
 
                   {/* Decision Brief — compact evidence-based summary */}
                   <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} />
+
+                  {/* AI Committee — quick access */}
+                  <details style={{ marginTop: '10px', padding: '12px', background: 'rgba(16,185,129,0.04)', border: '1px solid var(--border-glass)', borderRadius: '8px' }}>
+                    <summary style={{ cursor: 'pointer', fontWeight: 600, color: '#10b981', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      🧠 AI Committee
+                    </summary>
+                    <div style={{ marginTop: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      <p>The AI Committee provides Bull, Bear, and Urban Planner perspectives on this suburb. It challenges the deterministic Buyer Fit result without overriding the numeric ranking.</p>
+                      <p>Scroll down to the AI Insight Panel below for full committee views, news analysis, and investment playbook.</p>
+                      <button
+                        onClick={() => {
+                          const aiSection = document.getElementById('ai-insight-panel')
+                          if (aiSection) aiSection.scrollIntoView({ behavior: 'smooth' })
+                        }}
+                        style={{ padding: '6px 12px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', marginTop: '8px' }}>
+                        View AI Committee
+                      </button>
+                    </div>
+                  </details>
 
                     {/* Visuals Grid (Hidden by default to simplify viewport) */}
                     <details className="expandable-section" style={{ marginTop: '20px', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
@@ -1190,7 +1209,7 @@ function App() {
                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
                   <details className="expandable-section" style={{ marginTop: '20px' }}>
                     <summary>🤖 View AI Investment Committee Debate & Sentiment</summary>
-                    <div style={{ padding: '20px' }}>
+                    <div style={{ padding: '20px' }} id="ai-insight-panel">
                       <AIInsightPanel
                         activeSuburb={activeSuburb}
                         setActiveSuburb={setActiveSuburb}
@@ -1397,7 +1416,7 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={setActiveSuburb} setActiveTab={(t: string) => setActiveTab(t as TabName)} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 

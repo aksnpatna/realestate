@@ -11,7 +11,7 @@ interface BuyFinderResponse {
   total_evaluated: number
 }
 
-export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
+export default memo(function BuyFinder({ setActiveSuburb, setActiveTab }: { suburbsData?: SuburbData[]; setActiveSuburb?: (s: SuburbData) => void; setActiveTab?: (t: string) => void }) {
   const [backendResults, setBackendResults] = useState<BuyFinderResponse | null>(null);
   const [backendLoading, setBackendLoading] = useState(false);
   const [backendError, setBackendError] = useState<string | null>(null);
@@ -19,9 +19,16 @@ export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
   const [state, setState] = useState('VIC');
   const [budget, setBudget] = useState(850000);
   const [deposit, setDeposit] = useState(170000);
+  const [annualIncome, setAnnualIncome] = useState(150000);
+  const [monthlyDebt, setMonthlyDebt] = useState(0);
   const [propertyType, setPropertyType] = useState('house');
   const [maxCBDMinutes, setMaxCBDMinutes] = useState(60);
   const [minimumYield, setMinimumYield] = useState<number | null>(null);
+
+  const [interestRate, setInterestRate] = useState(6.2);
+  const [serviceabilityBuffer, setServiceabilityBuffer] = useState(3.0);
+  const [loanTermYears, setLoanTermYears] = useState(30);
+  const [purchaseCostAllowance, setPurchaseCostAllowance] = useState(2.0);
 
   const [wAffordability, setWAffordability] = useState(30);
   const [wIncome, setWIncome] = useState(25);
@@ -41,6 +48,12 @@ export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
           state,
           budget,
           deposit,
+          annual_income: annualIncome,
+          existing_monthly_debt: monthlyDebt,
+          interest_rate: interestRate / 100,
+          serviceability_buffer: serviceabilityBuffer / 100,
+          loan_term_years: loanTermYears,
+          purchase_cost_allowance: purchaseCostAllowance / 100,
           property_type: propertyType,
           maximum_cbd_minutes: maxCBDMinutes,
           minimum_yield: minimumYield,
@@ -64,7 +77,7 @@ export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
     } finally {
       setBackendLoading(false);
     }
-  }, [state, budget, deposit, propertyType, maxCBDMinutes, minimumYield, wAffordability, wIncome, wLivability, wAccess, wEvidence]);
+  }, [state, budget, deposit, annualIncome, monthlyDebt, propertyType, maxCBDMinutes, minimumYield, interestRate, serviceabilityBuffer, loanTermYears, purchaseCostAllowance, wAffordability, wIncome, wLivability, wAccess, wEvidence]);
 
   useEffect(() => {
     const timer = setTimeout(() => fetchRanking(), 300);
@@ -154,9 +167,52 @@ export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
                 <input type="range" className="premium-range" min={0} max={100} value={wEvidence} onChange={e => setWEvidence(Number(e.target.value))} />
               </div>
             </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+
+          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <details>
+              <summary style={{ cursor: 'pointer', fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
+                Financial Assumptions (not lender approval)
+              </summary>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' }}>
+                <div className="control-group" style={{ flex: '1 1 120px' }}>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Annual Income ($)</label>
+                  <input type="number" className="premium-input small" value={annualIncome} onChange={e => setAnnualIncome(Number(e.target.value))} min={0} step={5000} />
+                </div>
+                <div className="control-group" style={{ flex: '1 1 120px' }}>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Monthly Debt ($)</label>
+                  <input type="number" className="premium-input small" value={monthlyDebt} onChange={e => setMonthlyDebt(Number(e.target.value))} min={0} step={500} />
+                </div>
+                <div className="control-group" style={{ flex: '1 1 100px' }}>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Rate ({interestRate}%)</label>
+                  <input type="range" className="premium-range" min={2} max={12} step={0.25} value={interestRate} onChange={e => setInterestRate(Number(e.target.value))} />
+                </div>
+                <div className="control-group" style={{ flex: '1 1 100px' }}>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Buffer (+{serviceabilityBuffer}%)</label>
+                  <input type="range" className="premium-range" min={0} max={5} step={0.5} value={serviceabilityBuffer} onChange={e => setServiceabilityBuffer(Number(e.target.value))} />
+                </div>
+                <div className="control-group" style={{ flex: '1 1 80px' }}>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Term ({loanTermYears}y)</label>
+                  <select className="premium-input small" value={loanTermYears} onChange={e => setLoanTermYears(Number(e.target.value))}>
+                    <option value={15}>15y</option>
+                    <option value={20}>20y</option>
+                    <option value={25}>25y</option>
+                    <option value={30}>30y</option>
+                  </select>
+                </div>
+                <div className="control-group" style={{ flex: '1 1 100px' }}>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Costs ({purchaseCostAllowance}%)</label>
+                  <input type="range" className="premium-range" min={0} max={5} step={0.5} value={purchaseCostAllowance} onChange={e => setPurchaseCostAllowance(Number(e.target.value))} />
+                </div>
+              </div>
+              <div style={{ marginTop: '8px', fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                These are assumptions used by the affordability model, not lender approval criteria.
+                Affordability is an estimate based on your stated income, debt, and borrowing assumptions.
+              </div>
+            </details>
+          </div>
 
       <div className="glass-card search-results-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
@@ -201,7 +257,7 @@ export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
         {backendResults && backendResults.results.length > 0 && (
           <div className="search-results-grid">
             {backendResults.results.map((r: any) => (
-              <BackendResultCard key={r.suburb_id} result={r} />
+              <BackendResultCard key={r.suburb_id} result={r} setActiveSuburb={setActiveSuburb} setActiveTab={setActiveTab} />
             ))}
           </div>
         )}
@@ -230,54 +286,55 @@ export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
   );
 })
 
-const BackendResultCard = memo(function BackendResultCard({ result }: { result: any }) {
-  const fitColor = result.buyer_fit_score >= 70 ? 'growth-high' : result.buyer_fit_score >= 50 ? 'growth-med' : 'growth-low';
+const BackendResultCard = memo(function BackendResultCard({ result, setActiveSuburb, setActiveTab }: { result: any; setActiveSuburb?: (s: any) => void; setActiveTab?: (t: string) => void }) {
+  const [showEvidence, setShowEvidence] = useState(false);
   const confColor = result.confidence_label === 'high' ? '#10b981' : result.confidence_label === 'medium' ? '#eab308' : '#ef4444';
+  const evidenceLabel = result.confidence_label || 'low';
+  const aff = result.affordability || {};
+
+  const handleOpenSuburb = () => {
+    if (setActiveSuburb) {
+      setActiveSuburb({
+        id: result.suburb_id?.toLowerCase(),
+        name: result.name,
+        state: result.state,
+        postcode: result.postcode,
+        growthScore: result.buyer_fit_score,
+        metrics: {
+          medianPrice: aff.purchase_price,
+          rentalYield: result.components?.income?.score ? (result.components.income.score / 10) : undefined,
+        },
+      } as any)
+    }
+    if (setActiveTab) setActiveTab('profile')
+  }
 
   return (
     <div className="result-card glass-card">
       <div className="result-card-header">
         <h4>
           <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '6px' }}>#{result.rank}</span>
-          {result.name}
+          {result.name}, {result.state}
         </h4>
-        <span className="state-badge">{result.state}</span>
       </div>
       <div className="result-card-body">
-        <div className="result-meta">
-          <span>Postcode: {result.postcode}</span>
-          <span>Eligibility: {result.eligibility}</span>
-        </div>
-        <div className="result-metrics">
-          <div className="rmetric">
-            <span className="rmetric-value">{(result.components?.affordability?.score ?? 0).toFixed(0)}</span>
-            <span className="rmetric-label">Affordability</span>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
+          <div style={{ textAlign: 'center', minWidth: '60px' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>{result.buyer_fit_score.toFixed(0)}</div>
+            <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)' }}>Buyer Fit</div>
           </div>
-          <div className="rmetric">
-            <span className="rmetric-value">{(result.components?.income?.score ?? 0).toFixed(0)}</span>
-            <span className="rmetric-label">Income</span>
-          </div>
-          <div className="rmetric" style={{ backgroundColor: 'rgba(0, 255, 128, 0.1)', padding: '5px', borderRadius: '4px' }}>
-            <span className={`rmetric-value ${fitColor}`}>{result.buyer_fit_score.toFixed(1)}</span>
-            <span className="rmetric-label" style={{ color: 'var(--text-primary)' }}>Buyer Fit</span>
+          <div style={{ flex: 1, fontSize: '0.7rem', lineHeight: 1.5 }}>
+            {aff.serviceability_passed !== undefined && (
+              <div style={{ color: aff.serviceability_passed ? '#10b981' : '#ef4444' }}>
+                {aff.serviceability_passed ? '✓ Serviceability passes under stated assumptions' : '✗ Serviceability not met at current rate assumptions'}
+              </div>
+            )}
+            <div style={{ color: 'var(--text-secondary)' }}>
+              Evidence: <span style={{ color: confColor, fontWeight: 600 }}>{evidenceLabel.toUpperCase()}</span>
+            </div>
           </div>
         </div>
-        {result.confidence_label && (
-          <div style={{ marginTop: '6px', fontSize: '0.7rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>Evidence:</span>
-            <span style={{ color: confColor, fontWeight: 600 }}>{result.confidence_label.toUpperCase()}</span>
-            <span style={{ color: 'var(--text-secondary)' }}>({result.components?.evidence?.score?.toFixed(0)}/100)</span>
-          </div>
-        )}
-        <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
-              <span key={k} title={`${k}: ${v.score}/100 x ${v.weight}% = ${v.contribution}`}>
-                {k}: {v.contribution.toFixed(1)}
-              </span>
-            ))}
-          </div>
-        </div>
+
         {result.drivers?.length > 0 && (
           <div style={{ marginTop: '6px' }}>
             {result.drivers.slice(0, 2).map((d: string, i: number) => (
@@ -287,14 +344,38 @@ const BackendResultCard = memo(function BackendResultCard({ result }: { result: 
         )}
         {result.risks?.length > 0 && (
           <div style={{ marginTop: '4px' }}>
-            {result.risks.slice(0, 2).map((r: string, i: number) => (
-              <span key={i} style={{ fontSize: '0.65rem', color: '#ef4444', display: 'block' }}>- {r}</span>
+            {result.risks.slice(0, 1).map((r: string, i: number) => (
+              <span key={i} style={{ fontSize: '0.65rem', color: '#ef4444', display: 'block' }}>− {r}</span>
             ))}
           </div>
         )}
-        {result.unknowns?.length > 0 && (
-          <div style={{ marginTop: '4px', fontSize: '0.6rem', color: 'var(--text-muted)' }}>
-            Unknown: {result.unknowns.join(', ')}
+
+        <div style={{ display: 'flex', gap: '6px', marginTop: '10px', flexWrap: 'wrap' }}>
+          <button onClick={handleOpenSuburb}
+            style={{ padding: '4px 8px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600 }}>
+            Open Suburb
+          </button>
+          <button onClick={() => setShowEvidence(!showEvidence)}
+            style={{ padding: '4px 8px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}>
+            {showEvidence ? 'Hide Evidence' : 'Evidence Details'}
+          </button>
+        </div>
+
+        {showEvidence && (
+          <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px', fontSize: '0.65rem', color: 'var(--text-secondary)', border: '1px solid var(--border-glass)' }}>
+            <div><strong>Evidence ID:</strong> {result.evidence_ids?.[0] || 'N/A'}</div>
+            {result.affordability?.assumptions && (
+              <div style={{ marginTop: '4px' }}>
+                <strong>Assumptions:</strong> Rate {(result.affordability.assumptions.interest_rate * 100).toFixed(1)}%, Buffer +{(result.affordability.assumptions.serviceability_buffer * 100).toFixed(0)}%, {result.affordability.assumptions.loan_term_years}yr term, {(result.affordability.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% costs
+              </div>
+            )}
+            <div style={{ marginTop: '4px' }}><strong>Afford:</strong> Loan ${aff.required_loan?.toLocaleString()}, Capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}</div>
+            <div style={{ marginTop: '4px' }}>
+              <strong>Score breakdown:</strong> {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
+                <span key={k} style={{ marginRight: '8px' }}>{k}: {v.score.toFixed(0)} x {v.weight}%</span>
+              ))}
+            </div>
+            <div style={{ marginTop: '4px' }}><strong>Unknowns:</strong> {(result.unknowns || []).join(', ') || 'None'}</div>
           </div>
         )}
       </div>
