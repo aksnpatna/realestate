@@ -535,8 +535,16 @@ function App() {
                   key={activeSuburb?.id || 'empty'}
                   list="suburb-datalist"
                   className="premium-select"
-                  placeholder="Type to search..."
+                  placeholder="Type or select from list..."
                   defaultValue={activeSuburb ? `${activeSuburb.name} (${activeSuburb.postcode})` : ''}
+                  onFocus={(e) => {
+                    e.target.value = '';
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value && activeSuburb) {
+                      e.target.value = `${activeSuburb.name} (${activeSuburb.postcode})`;
+                    }
+                  }}
                   onChange={(e) => {
                     const val = e.target.value;
                     const target = stateSuburbs.find(s => `${s.name} (${s.postcode})` === val);
@@ -545,6 +553,7 @@ function App() {
                       manualSelectionRef.current = true;
                       loadColdSuburb(target.id);
                       trackActivity('VIEW_SUBURB', target.id);
+                      e.target.blur();
                     }
                   }}
                 />
