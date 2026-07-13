@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783938613.1847208,
-    "ast_hash": "9fea8ebf7ad0cf04eaf3d39ac434b910",
+    "mtime": 1783942643.617736,
+    "ast_hash": "cbf9dab67d6250e2ba530166493deddc",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -57,11 +57,6 @@
   "src/components/CashflowGearing.tsx": {
     "mtime": 1783834611.9951797,
     "ast_hash": "ba86ff02f0ff545dc0d6223b4b78a0d5",
-    "semantic_hash": ""
-  },
-  "src/components/HouseSearch.tsx": {
-    "mtime": 1783834675.118837,
-    "ast_hash": "19c3cf7e014851f043ed7197f81a08d8",
     "semantic_hash": ""
   },
   "src/components/SuburbMap.tsx": {
@@ -305,9 +300,9 @@
     "semantic_hash": ""
   },
   "backend/predictive_ai_engine.py": {
-    "mtime": 1783291827.3835573,
-    "ast_hash": "c3204243693b4d3e4aa889272453c331",
-    "semantic_hash": "c3204243693b4d3e4aa889272453c331"
+    "mtime": 1783943043.1118193,
+    "ast_hash": "8fec5a1ac707b2a3ea6a4bc07b7e686c",
+    "semantic_hash": ""
   },
   "backend/run_unpack.py": {
     "mtime": 1783051517.6323202,
@@ -575,8 +570,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.test.tsx": {
-    "mtime": 1783845911.897933,
-    "ast_hash": "e111e6f0b140a11370199ee9babf8b69",
+    "mtime": 1783942669.0112696,
+    "ast_hash": "c5796093b06fa084530ce53e76cbdc9b",
     "semantic_hash": ""
   },
   "backend/warm_cache.py": {
@@ -612,6 +607,21 @@
   "backend/committee_memory.py": {
     "mtime": 1783893236.210197,
     "ast_hash": "b90bda96fa28ee548629e739820b05eb",
+    "semantic_hash": ""
+  },
+  "src/components/BuyFinder.tsx": {
+    "mtime": 1783942098.7892847,
+    "ast_hash": "7db36323abd7cdb1e8bb2f9c2dc23891",
+    "semantic_hash": ""
+  },
+  "suggestion.md": {
+    "mtime": 1783941552.9686224,
+    "ast_hash": "90ff285ed3d772a43ac54097ab99ca9c",
+    "semantic_hash": ""
+  },
+  "backend/test_osm.py": {
+    "mtime": 1783942945.496994,
+    "ast_hash": "e76ed03c326d56f290d612a092fa55d5",
     "semantic_hash": ""
   }
 }

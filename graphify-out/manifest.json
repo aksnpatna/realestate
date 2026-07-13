@@ -10,8 +10,8 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1783856246.4958954,
-    "ast_hash": "fb3be0af72e5bcb0ab648f50e668c83f",
+    "mtime": 1783943273.1193995,
+    "ast_hash": "5c0825495b951d28834ed6200549a76a",
     "semantic_hash": ""
   },
   "backend/downloader.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783942058.991115,
-    "ast_hash": "c273ac1dce0885e3da0469c4e78d5f7b",
+    "mtime": 1783942643.617736,
+    "ast_hash": "cbf9dab67d6250e2ba530166493deddc",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -285,8 +285,8 @@
     "semantic_hash": "84390dab89b4799da261cbab3a6216ec"
   },
   "backend/models_v3.py": {
-    "mtime": 1783893228.8644037,
-    "ast_hash": "f5d6abd825229f651c6cea562bf3eea5",
+    "mtime": 1783943318.3483372,
+    "ast_hash": "2cbc276fbb24bcf53e969adefaee5432",
     "semantic_hash": ""
   },
   "backend/models_v3_unpacked.py": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "backend/predictive_ai_engine.py": {
-    "mtime": 1783291827.3835573,
-    "ast_hash": "c3204243693b4d3e4aa889272453c331",
-    "semantic_hash": "c3204243693b4d3e4aa889272453c331"
+    "mtime": 1783943043.1118193,
+    "ast_hash": "8fec5a1ac707b2a3ea6a4bc07b7e686c",
+    "semantic_hash": ""
   },
   "backend/run_unpack.py": {
     "mtime": 1783051517.6323202,
@@ -570,8 +570,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.test.tsx": {
-    "mtime": 1783845911.897933,
-    "ast_hash": "e111e6f0b140a11370199ee9babf8b69",
+    "mtime": 1783942669.0112696,
+    "ast_hash": "c5796093b06fa084530ce53e76cbdc9b",
     "semantic_hash": ""
   },
   "backend/warm_cache.py": {
@@ -617,6 +617,11 @@
   "suggestion.md": {
     "mtime": 1783941552.9686224,
     "ast_hash": "90ff285ed3d772a43ac54097ab99ca9c",
+    "semantic_hash": ""
+  },
+  "backend/test_osm.py": {
+    "mtime": 1783942945.496994,
+    "ast_hash": "e76ed03c326d56f290d612a092fa55d5",
     "semantic_hash": ""
   }
 }

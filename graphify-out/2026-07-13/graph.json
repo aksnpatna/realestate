@@ -1688,7 +1688,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "backend_main_get_cached_or_query",
-      "community": 6,
+      "community": 99,
       "norm_label": "get_cached_or_query()"
     },
     {
@@ -2158,7 +2158,7 @@
       "source_location": "L960",
       "_origin": "ast",
       "id": "backend_main_normalize_suburb_id",
-      "community": 6,
+      "community": 99,
       "norm_label": "_normalize_suburb_id()"
     },
     {
@@ -2168,7 +2168,7 @@
       "source_location": "L966",
       "_origin": "ast",
       "id": "backend_main_get_suburb_or_404",
-      "community": 6,
+      "community": 99,
       "norm_label": "_get_suburb_or_404()"
     },
     {
@@ -2178,7 +2178,7 @@
       "source_location": "L981",
       "_origin": "ast",
       "id": "backend_main_get_news_sentiment",
-      "community": 6,
+      "community": 99,
       "norm_label": "get_news_sentiment()"
     },
     {
@@ -2238,7 +2238,7 @@
       "source_location": "L1222",
       "_origin": "ast",
       "id": "backend_main_get_suburbs_v3",
-      "community": 6,
+      "community": 99,
       "norm_label": "get_suburbs_v3()"
     },
     {
@@ -2328,7 +2328,7 @@
       "source_location": "L1514",
       "_origin": "ast",
       "id": "backend_main_metrics",
-      "community": 65,
+      "community": 99,
       "norm_label": "metrics()"
     },
     {
@@ -2438,7 +2438,7 @@
       "source_location": "L961",
       "_origin": "ast",
       "id": "backend_main_rationale_961",
-      "community": 6,
+      "community": 99,
       "norm_label": "convert frontend id format (parramatta-nsw-2150) to db format (nsw_parramatta_21"
     },
     {
@@ -2448,7 +2448,7 @@
       "source_location": "L967",
       "_origin": "ast",
       "id": "backend_main_rationale_967",
-      "community": 6,
+      "community": 99,
       "norm_label": "look up a suburbuiv3 by normalized id. raises 404 if not found."
     },
     {
@@ -2458,7 +2458,7 @@
       "source_location": "L982",
       "_origin": "ast",
       "id": "backend_main_rationale_982",
-      "community": 6,
+      "community": 99,
       "norm_label": "on-demand news sentiment for a suburb.     caching: db (ttl=ai_cache_ttl) \u2192 redi"
     },
     {
@@ -2478,7 +2478,7 @@
       "source_location": "L1223",
       "_origin": "ast",
       "id": "backend_main_rationale_1223",
-      "community": 6,
+      "community": 99,
       "norm_label": "returns v3-enriched suburbs for the institutional dashboard view."
     },
     {
@@ -2538,7 +2538,7 @@
       "source_location": "L1515",
       "_origin": "ast",
       "id": "backend_main_rationale_1515",
-      "community": 65,
+      "community": 99,
       "norm_label": "prometheus-compatible metrics endpoint for ai observability."
     },
     {
@@ -2848,7 +2848,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_observability",
-      "community": 65,
+      "community": 99,
       "norm_label": "observability.py"
     },
     {
@@ -2858,7 +2858,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "backend_observability_record_sentiment_call",
-      "community": 65,
+      "community": 99,
       "norm_label": "record_sentiment_call()"
     },
     {
@@ -2868,7 +2868,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "backend_observability_record_committee_call",
-      "community": 65,
+      "community": 99,
       "norm_label": "record_committee_call()"
     },
     {
@@ -2878,7 +2878,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "backend_observability_record_cache_hit",
-      "community": 65,
+      "community": 99,
       "norm_label": "record_cache_hit()"
     },
     {
@@ -2888,7 +2888,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "backend_observability_record_cache_miss",
-      "community": 6,
+      "community": 99,
       "norm_label": "record_cache_miss()"
     },
     {
@@ -2898,7 +2898,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "backend_observability_get_metrics_text",
-      "community": 65,
+      "community": 99,
       "norm_label": "get_metrics_text()"
     },
     {
@@ -2908,7 +2908,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_observability_rationale_1",
-      "community": 65,
+      "community": 99,
       "norm_label": "observability.py \u2014 prometheus metrics for ai feature monitoring. exposes counter"
     },
     {
@@ -2918,7 +2918,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "backend_observability_rationale_44",
-      "community": 65,
+      "community": 99,
       "norm_label": "return prometheus text format metrics."
     },
     {
@@ -3165,7 +3165,7 @@
       "label": "fetch_environmental_risks()",
       "file_type": "code",
       "source_file": "backend/predictive_ai_engine.py",
-      "source_location": "L74",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "backend_predictive_ai_engine_fetch_environmental_risks",
       "community": 9,
@@ -3175,7 +3175,7 @@
       "label": "calculate_predictive_score()",
       "file_type": "code",
       "source_file": "backend/predictive_ai_engine.py",
-      "source_location": "L90",
+      "source_location": "L110",
       "_origin": "ast",
       "id": "backend_predictive_ai_engine_calculate_predictive_score",
       "community": 9,
@@ -3185,39 +3185,39 @@
       "label": "run_predictive_engine()",
       "file_type": "code",
       "source_file": "backend/predictive_ai_engine.py",
-      "source_location": "L145",
+      "source_location": "L166",
       "_origin": "ast",
       "id": "backend_predictive_ai_engine_run_predictive_engine",
       "community": 9,
       "norm_label": "run_predictive_engine()"
     },
     {
-      "label": "Mock function representing an API call to State Government Planning Portals.",
+      "label": "Authoritative PostGIS Infrastructure/Zoning Query.     Identifies major construc",
       "file_type": "rationale",
       "source_file": "backend/predictive_ai_engine.py",
       "source_location": "L59",
       "_origin": "ast",
       "id": "backend_predictive_ai_engine_rationale_59",
       "community": 9,
-      "norm_label": "mock function representing an api call to state government planning portals."
+      "norm_label": "authoritative postgis infrastructure/zoning query.     identifies major construc"
     },
     {
-      "label": "Mock function representing an API call to GeoScience Australia or State SES APIs",
+      "label": "Authoritative PostGIS Environmental Risk Query.     Identifies flood (water/rive",
       "file_type": "rationale",
       "source_file": "backend/predictive_ai_engine.py",
-      "source_location": "L75",
+      "source_location": "L83",
       "_origin": "ast",
-      "id": "backend_predictive_ai_engine_rationale_75",
+      "id": "backend_predictive_ai_engine_rationale_83",
       "community": 9,
-      "norm_label": "mock function representing an api call to geoscience australia or state ses apis"
+      "norm_label": "authoritative postgis environmental risk query.     identifies flood (water/rive"
     },
     {
       "label": "Algorithm combining leading indicators for Capital Growth:     - Falling Days on",
       "file_type": "rationale",
       "source_file": "backend/predictive_ai_engine.py",
-      "source_location": "L91",
+      "source_location": "L111",
       "_origin": "ast",
-      "id": "backend_predictive_ai_engine_rationale_91",
+      "id": "backend_predictive_ai_engine_rationale_111",
       "community": 9,
       "norm_label": "algorithm combining leading indicators for capital growth:     - falling days on"
     },
@@ -3730,6 +3730,16 @@
       "id": "backend_test_llm",
       "community": 77,
       "norm_label": "test_llm.py"
+    },
+    {
+      "label": "test_osm.py",
+      "file_type": "code",
+      "source_file": "backend/test_osm.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_test_osm",
+      "community": 105,
+      "norm_label": "test_osm.py"
     },
     {
       "label": "test_search.py",
@@ -4710,14 +4720,14 @@
       "norm_label": "affordabilitycalculator"
     },
     {
-      "label": "HouseSearch",
+      "label": "BuyFinder",
       "file_type": "code",
       "source_file": "src/App.tsx",
       "source_location": "L15",
       "_origin": "ast",
-      "id": "src_app_housesearch",
+      "id": "src_app_buyfinder",
       "community": 98,
-      "norm_label": "housesearch"
+      "norm_label": "buyfinder"
     },
     {
       "label": "CashflowGearing",
@@ -4900,6 +4910,26 @@
       "norm_label": "sortkey"
     },
     {
+      "label": "BuyFinder.tsx",
+      "file_type": "code",
+      "source_file": "src/components/BuyFinder.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_buyfinder",
+      "community": 104,
+      "norm_label": "buyfinder.tsx"
+    },
+    {
+      "label": "SearchResultCard",
+      "file_type": "code",
+      "source_file": "src/components/BuyFinder.tsx",
+      "source_location": "L220",
+      "_origin": "ast",
+      "id": "components_buyfinder_searchresultcard",
+      "community": 104,
+      "norm_label": "searchresultcard"
+    },
+    {
       "label": "Calculators.tsx",
       "file_type": "code",
       "source_file": "src/components/Calculators.tsx",
@@ -5058,26 +5088,6 @@
       "id": "components_errorboundary_errorboundary_render",
       "community": 13,
       "norm_label": ".render()"
-    },
-    {
-      "label": "HouseSearch.tsx",
-      "file_type": "code",
-      "source_file": "src/components/HouseSearch.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "components_housesearch",
-      "community": 97,
-      "norm_label": "housesearch.tsx"
-    },
-    {
-      "label": "SearchResultCard",
-      "file_type": "code",
-      "source_file": "src/components/HouseSearch.tsx",
-      "source_location": "L177",
-      "_origin": "ast",
-      "id": "components_housesearch_searchresultcard",
-      "community": 97,
-      "norm_label": "searchresultcard"
     },
     {
       "label": "InstitutionalV3Panel.tsx",
@@ -6544,7 +6554,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "australian_suburbs_data",
-      "community": 19,
+      "community": 95,
       "norm_label": "australian-suburbs-data.md"
     },
     {
@@ -6554,7 +6564,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "australian_suburbs_data_australian_suburbs_comprehensive_data_2025_2026",
-      "community": 19,
+      "community": 95,
       "norm_label": "australian suburbs comprehensive data (2025-2026)"
     },
     {
@@ -6564,7 +6574,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "australian_suburbs_data_act_australian_capital_territory",
-      "community": 19,
+      "community": 96,
       "norm_label": "act (australian capital territory)"
     },
     {
@@ -6574,7 +6584,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "australian_suburbs_data_belconnen_act_2617",
-      "community": 19,
+      "community": 96,
       "norm_label": "belconnen act 2617"
     },
     {
@@ -6584,7 +6594,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "australian_suburbs_data_gungahlin_act_2912",
-      "community": 19,
+      "community": 96,
       "norm_label": "gungahlin act 2912"
     },
     {
@@ -6594,7 +6604,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "australian_suburbs_data_tuggeranong_act_2900",
-      "community": 19,
+      "community": 96,
       "norm_label": "tuggeranong act 2900"
     },
     {
@@ -6604,7 +6614,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "australian_suburbs_data_woden_act_2606",
-      "community": 19,
+      "community": 96,
       "norm_label": "woden act 2606"
     },
     {
@@ -6614,7 +6624,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "australian_suburbs_data_queanbeyan_nsw_2620",
-      "community": 19,
+      "community": 96,
       "norm_label": "queanbeyan nsw 2620"
     },
     {
@@ -6854,7 +6864,7 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "australian_suburbs_data_qld_queensland",
-      "community": 19,
+      "community": 92,
       "norm_label": "qld (queensland)"
     },
     {
@@ -6864,7 +6874,7 @@
       "source_location": "L431",
       "_origin": "ast",
       "id": "australian_suburbs_data_coomera_qld_4209",
-      "community": 19,
+      "community": 92,
       "norm_label": "coomera qld 4209"
     },
     {
@@ -6874,7 +6884,7 @@
       "source_location": "L447",
       "_origin": "ast",
       "id": "australian_suburbs_data_logan_central_qld_4114",
-      "community": 19,
+      "community": 92,
       "norm_label": "logan central qld 4114"
     },
     {
@@ -6884,7 +6894,7 @@
       "source_location": "L463",
       "_origin": "ast",
       "id": "australian_suburbs_data_caboolture_qld_4510",
-      "community": 19,
+      "community": 92,
       "norm_label": "caboolture qld 4510"
     },
     {
@@ -6894,7 +6904,7 @@
       "source_location": "L479",
       "_origin": "ast",
       "id": "australian_suburbs_data_ipswich_qld_4305",
-      "community": 19,
+      "community": 92,
       "norm_label": "ipswich qld 4305"
     },
     {
@@ -6904,7 +6914,7 @@
       "source_location": "L495",
       "_origin": "ast",
       "id": "australian_suburbs_data_chermside_qld_4032",
-      "community": 19,
+      "community": 92,
       "norm_label": "chermside qld 4032"
     },
     {
@@ -6914,7 +6924,7 @@
       "source_location": "L511",
       "_origin": "ast",
       "id": "australian_suburbs_data_springfield_qld_4300",
-      "community": 19,
+      "community": 92,
       "norm_label": "springfield qld 4300"
     },
     {
@@ -6924,7 +6934,7 @@
       "source_location": "L527",
       "_origin": "ast",
       "id": "australian_suburbs_data_surfers_paradise_qld_4217",
-      "community": 19,
+      "community": 92,
       "norm_label": "surfers paradise qld 4217"
     },
     {
@@ -6934,7 +6944,7 @@
       "source_location": "L543",
       "_origin": "ast",
       "id": "australian_suburbs_data_wa_western_australia",
-      "community": 19,
+      "community": 93,
       "norm_label": "wa (western australia)"
     },
     {
@@ -6944,7 +6954,7 @@
       "source_location": "L547",
       "_origin": "ast",
       "id": "australian_suburbs_data_joondalup_wa_6027",
-      "community": 19,
+      "community": 93,
       "norm_label": "joondalup wa 6027"
     },
     {
@@ -6954,7 +6964,7 @@
       "source_location": "L563",
       "_origin": "ast",
       "id": "australian_suburbs_data_fremantle_wa_6160",
-      "community": 19,
+      "community": 93,
       "norm_label": "fremantle wa 6160"
     },
     {
@@ -6964,7 +6974,7 @@
       "source_location": "L579",
       "_origin": "ast",
       "id": "australian_suburbs_data_mandurah_wa_6210",
-      "community": 19,
+      "community": 93,
       "norm_label": "mandurah wa 6210"
     },
     {
@@ -6974,7 +6984,7 @@
       "source_location": "L595",
       "_origin": "ast",
       "id": "australian_suburbs_data_armadale_wa_6112",
-      "community": 19,
+      "community": 93,
       "norm_label": "armadale wa 6112"
     },
     {
@@ -6984,7 +6994,7 @@
       "source_location": "L611",
       "_origin": "ast",
       "id": "australian_suburbs_data_midland_wa_6056",
-      "community": 19,
+      "community": 93,
       "norm_label": "midland wa 6056"
     },
     {
@@ -6994,7 +7004,7 @@
       "source_location": "L627",
       "_origin": "ast",
       "id": "australian_suburbs_data_rockingham_wa_6168",
-      "community": 19,
+      "community": 93,
       "norm_label": "rockingham wa 6168"
     },
     {
@@ -7004,7 +7014,7 @@
       "source_location": "L643",
       "_origin": "ast",
       "id": "australian_suburbs_data_sa_south_australia",
-      "community": 19,
+      "community": 97,
       "norm_label": "sa (south australia)"
     },
     {
@@ -7014,7 +7024,7 @@
       "source_location": "L647",
       "_origin": "ast",
       "id": "australian_suburbs_data_elizabeth_sa_5112",
-      "community": 19,
+      "community": 97,
       "norm_label": "elizabeth sa 5112"
     },
     {
@@ -7024,7 +7034,7 @@
       "source_location": "L663",
       "_origin": "ast",
       "id": "australian_suburbs_data_salisbury_sa_5108",
-      "community": 19,
+      "community": 97,
       "norm_label": "salisbury sa 5108"
     },
     {
@@ -7034,7 +7044,7 @@
       "source_location": "L679",
       "_origin": "ast",
       "id": "australian_suburbs_data_noarlunga_sa_5168",
-      "community": 19,
+      "community": 97,
       "norm_label": "noarlunga sa 5168"
     },
     {
@@ -7044,7 +7054,7 @@
       "source_location": "L695",
       "_origin": "ast",
       "id": "australian_suburbs_data_prospect_sa_5082",
-      "community": 19,
+      "community": 97,
       "norm_label": "prospect sa 5082"
     },
     {
@@ -7054,7 +7064,7 @@
       "source_location": "L710",
       "_origin": "ast",
       "id": "australian_suburbs_data_tas_tasmania",
-      "community": 19,
+      "community": 102,
       "norm_label": "tas (tasmania)"
     },
     {
@@ -7064,7 +7074,7 @@
       "source_location": "L714",
       "_origin": "ast",
       "id": "australian_suburbs_data_hobart_tas_7000",
-      "community": 19,
+      "community": 102,
       "norm_label": "hobart tas 7000"
     },
     {
@@ -7074,7 +7084,7 @@
       "source_location": "L731",
       "_origin": "ast",
       "id": "australian_suburbs_data_launceston_tas_7250",
-      "community": 19,
+      "community": 102,
       "norm_label": "launceston tas 7250"
     },
     {
@@ -7084,7 +7094,7 @@
       "source_location": "L747",
       "_origin": "ast",
       "id": "australian_suburbs_data_devonport_tas_7310",
-      "community": 19,
+      "community": 102,
       "norm_label": "devonport tas 7310"
     },
     {
@@ -7094,7 +7104,7 @@
       "source_location": "L763",
       "_origin": "ast",
       "id": "australian_suburbs_data_nt_northern_territory",
-      "community": 19,
+      "community": 95,
       "norm_label": "nt (northern territory)"
     },
     {
@@ -7104,7 +7114,7 @@
       "source_location": "L767",
       "_origin": "ast",
       "id": "australian_suburbs_data_darwin_nt_0800",
-      "community": 19,
+      "community": 95,
       "norm_label": "darwin nt 0800"
     },
     {
@@ -7114,7 +7124,7 @@
       "source_location": "L784",
       "_origin": "ast",
       "id": "australian_suburbs_data_palmerston_nt_0830",
-      "community": 19,
+      "community": 95,
       "norm_label": "palmerston nt 0830"
     },
     {
@@ -7124,7 +7134,7 @@
       "source_location": "L800",
       "_origin": "ast",
       "id": "australian_suburbs_data_data_sources",
-      "community": 19,
+      "community": 95,
       "norm_label": "data sources"
     },
     {
@@ -7206,6 +7216,356 @@
       "id": "converted_vic_sales_time_series_20yr_latest_5350cb9d_sheet_table_1",
       "community": 34,
       "norm_label": "sheet: table 1"
+    },
+    {
+      "label": "suggestion.md",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "suggestion",
+      "community": 91,
+      "norm_label": "suggestion.md"
+    },
+    {
+      "label": "Real Estate Dashboard and AI Review",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "suggestion_real_estate_dashboard_and_ai_review",
+      "community": 91,
+      "norm_label": "real estate dashboard and ai review"
+    },
+    {
+      "label": "Executive Summary",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "suggestion_executive_summary",
+      "community": 91,
+      "norm_label": "executive summary"
+    },
+    {
+      "label": "Immediate priorities",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "suggestion_immediate_priorities",
+      "community": 91,
+      "norm_label": "immediate priorities"
+    },
+    {
+      "label": "1. Current Capability Assessment",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "suggestion_1_current_capability_assessment",
+      "community": 91,
+      "norm_label": "1. current capability assessment"
+    },
+    {
+      "label": "2. UI and Data Representation Improvements",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "suggestion_2_ui_and_data_representation_improvements",
+      "community": 91,
+      "norm_label": "2. ui and data representation improvements"
+    },
+    {
+      "label": "2.1 Add a Buy Finder tab",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "suggestion_2_1_add_a_buy_finder_tab",
+      "community": 91,
+      "norm_label": "2.1 add a buy finder tab"
+    },
+    {
+      "label": "2.2 Return a shortlist, not one opaque winner",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "suggestion_2_2_return_a_shortlist_not_one_opaque_winner",
+      "community": 91,
+      "norm_label": "2.2 return a shortlist, not one opaque winner"
+    },
+    {
+      "label": "2.3 Use a trade-off visual",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "suggestion_2_3_use_a_trade_off_visual",
+      "community": 91,
+      "norm_label": "2.3 use a trade-off visual"
+    },
+    {
+      "label": "2.4 Simplify the first suburb-profile viewport",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L91",
+      "_origin": "ast",
+      "id": "suggestion_2_4_simplify_the_first_suburb_profile_viewport",
+      "community": 91,
+      "norm_label": "2.4 simplify the first suburb-profile viewport"
+    },
+    {
+      "label": "2.5 Show provenance at metric level",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L103",
+      "_origin": "ast",
+      "id": "suggestion_2_5_show_provenance_at_metric_level",
+      "community": 91,
+      "norm_label": "2.5 show provenance at metric level"
+    },
+    {
+      "label": "3. Deterministic Best-Suburb Model",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L118",
+      "_origin": "ast",
+      "id": "suggestion_3_deterministic_best_suburb_model",
+      "community": 91,
+      "norm_label": "3. deterministic best-suburb model"
+    },
+    {
+      "label": "3.1 Investment Fit Score",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "suggestion_3_1_investment_fit_score",
+      "community": 91,
+      "norm_label": "3.1 investment fit score"
+    },
+    {
+      "label": "3.2 Model rules",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L141",
+      "_origin": "ast",
+      "id": "suggestion_3_2_model_rules",
+      "community": 91,
+      "norm_label": "3.2 model rules"
+    },
+    {
+      "label": "3.3 Remove synthetic production signals",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L151",
+      "_origin": "ast",
+      "id": "suggestion_3_3_remove_synthetic_production_signals",
+      "community": 91,
+      "norm_label": "3.3 remove synthetic production signals"
+    },
+    {
+      "label": "4. Probability and Time-Based Validation",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L165",
+      "_origin": "ast",
+      "id": "suggestion_4_probability_and_time_based_validation",
+      "community": 91,
+      "norm_label": "4. probability and time-based validation"
+    },
+    {
+      "label": "4.1 Define prediction targets first",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L169",
+      "_origin": "ast",
+      "id": "suggestion_4_1_define_prediction_targets_first",
+      "community": 91,
+      "norm_label": "4.1 define prediction targets first"
+    },
+    {
+      "label": "4.2 Use a calibrated probability model",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L179",
+      "_origin": "ast",
+      "id": "suggestion_4_2_use_a_calibrated_probability_model",
+      "community": 91,
+      "norm_label": "4.2 use a calibrated probability model"
+    },
+    {
+      "label": "4.3 Display uncertainty and calibration",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L195",
+      "_origin": "ast",
+      "id": "suggestion_4_3_display_uncertainty_and_calibration",
+      "community": 91,
+      "norm_label": "4.3 display uncertainty and calibration"
+    },
+    {
+      "label": "4.4 Add a Model Diary",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L205",
+      "_origin": "ast",
+      "id": "suggestion_4_4_add_a_model_diary",
+      "community": 91,
+      "norm_label": "4.4 add a model diary"
+    },
+    {
+      "label": "5. AI Process Evaluation and Improvements",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L219",
+      "_origin": "ast",
+      "id": "suggestion_5_ai_process_evaluation_and_improvements",
+      "community": 91,
+      "norm_label": "5. ai process evaluation and improvements"
+    },
+    {
+      "label": "5.1 Separate AI explanation from deterministic scoring",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L223",
+      "_origin": "ast",
+      "id": "suggestion_5_1_separate_ai_explanation_from_deterministic_scoring",
+      "community": 91,
+      "norm_label": "5.1 separate ai explanation from deterministic scoring"
+    },
+    {
+      "label": "5.2 Create a training-quality analysis record",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L239",
+      "_origin": "ast",
+      "id": "suggestion_5_2_create_a_training_quality_analysis_record",
+      "community": 91,
+      "norm_label": "5.2 create a training-quality analysis record"
+    },
+    {
+      "label": "5.3 Use schema-constrained outputs",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L259",
+      "_origin": "ast",
+      "id": "suggestion_5_3_use_schema_constrained_outputs",
+      "community": 91,
+      "norm_label": "5.3 use schema-constrained outputs"
+    },
+    {
+      "label": "5.4 Improve few-shot retrieval",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L278",
+      "_origin": "ast",
+      "id": "suggestion_5_4_improve_few_shot_retrieval",
+      "community": 91,
+      "norm_label": "5.4 improve few-shot retrieval"
+    },
+    {
+      "label": "5.5 Do not fine-tune yet",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L293",
+      "_origin": "ast",
+      "id": "suggestion_5_5_do_not_fine_tune_yet",
+      "community": 91,
+      "norm_label": "5.5 do not fine-tune yet"
+    },
+    {
+      "label": "6. Pre-Mortem",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L304",
+      "_origin": "ast",
+      "id": "suggestion_6_pre_mortem",
+      "community": 91,
+      "norm_label": "6. pre-mortem"
+    },
+    {
+      "label": "7. Recommended Delivery Order",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L323",
+      "_origin": "ast",
+      "id": "suggestion_7_recommended_delivery_order",
+      "community": 91,
+      "norm_label": "7. recommended delivery order"
+    },
+    {
+      "label": "Phase 1: Trust and clarity",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L325",
+      "_origin": "ast",
+      "id": "suggestion_phase_1_trust_and_clarity",
+      "community": 91,
+      "norm_label": "phase 1: trust and clarity"
+    },
+    {
+      "label": "Phase 2: Decision workflow",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L332",
+      "_origin": "ast",
+      "id": "suggestion_phase_2_decision_workflow",
+      "community": 91,
+      "norm_label": "phase 2: decision workflow"
+    },
+    {
+      "label": "Phase 3: Deterministic model",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L339",
+      "_origin": "ast",
+      "id": "suggestion_phase_3_deterministic_model",
+      "community": 91,
+      "norm_label": "phase 3: deterministic model"
+    },
+    {
+      "label": "Phase 4: Empirical probability",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L346",
+      "_origin": "ast",
+      "id": "suggestion_phase_4_empirical_probability",
+      "community": 91,
+      "norm_label": "phase 4: empirical probability"
+    },
+    {
+      "label": "Phase 5: AI hardening",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L353",
+      "_origin": "ast",
+      "id": "suggestion_phase_5_ai_hardening",
+      "community": 91,
+      "norm_label": "phase 5: ai hardening"
+    },
+    {
+      "label": "Phase 6: Model learning",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L360",
+      "_origin": "ast",
+      "id": "suggestion_phase_6_model_learning",
+      "community": 91,
+      "norm_label": "phase 6: model learning"
+    },
+    {
+      "label": "Conclusion",
+      "file_type": "document",
+      "source_file": "suggestion.md",
+      "source_location": "L366",
+      "_origin": "ast",
+      "id": "suggestion_conclusion",
+      "community": 91,
+      "norm_label": "conclusion"
     },
     {
       "label": "scheduler.py",
@@ -8647,9 +9007,9 @@
       "source_file": "backend/committee_memory.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_committee_memory_rationale_67",
-      "target": "backend_committee_memory_retrieve_similar",
-      "confidence_score": 1.0
+      "target": "backend_committee_memory_retrieve_similar"
     },
     {
       "relation": "contains",
@@ -13423,11 +13783,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/predictive_ai_engine.py",
-      "source_location": "L75",
+      "source_location": "L83",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_predictive_ai_engine_rationale_75",
-      "target": "backend_predictive_ai_engine_fetch_environmental_risks"
+      "source": "backend_predictive_ai_engine_rationale_83",
+      "target": "backend_predictive_ai_engine_fetch_environmental_risks",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -13444,11 +13804,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/predictive_ai_engine.py",
-      "source_location": "L91",
+      "source_location": "L111",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_predictive_ai_engine_rationale_91",
-      "target": "backend_predictive_ai_engine_calculate_predictive_score"
+      "source": "backend_predictive_ai_engine_rationale_111",
+      "target": "backend_predictive_ai_engine_calculate_predictive_score",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -15064,17 +15424,6 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "components_housesearch"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
       "source_location": "L9",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -15248,6 +15597,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "src_app_buyfinder"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
       "source_location": "L12",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -15263,16 +15622,6 @@
       "confidence_score": 1.0,
       "source": "src_app",
       "target": "src_app_cashflowgearing"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L14",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "src_app_housesearch"
     },
     {
       "relation": "contains",
@@ -15506,6 +15855,38 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/components/BuyFinder.tsx",
+      "source_location": "L220",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_buyfinder",
+      "target": "components_buyfinder_searchresultcard"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/BuyFinder.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_buyfinder",
+      "target": "data_suburbs"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/BuyFinder.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_buyfinder",
+      "target": "data_suburbs_suburbdata"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/components/Calculators.tsx",
       "source_location": "L6",
       "weight": 1.0,
@@ -15709,38 +16090,6 @@
       "confidence_score": 1.0,
       "source": "components_errorboundary_errorboundary",
       "target": "components_errorboundary_errorboundary_render"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/HouseSearch.tsx",
-      "source_location": "L177",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "components_housesearch",
-      "target": "components_housesearch_searchresultcard"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/HouseSearch.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "components_housesearch",
-      "target": "data_suburbs"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/HouseSearch.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "components_housesearch",
-      "target": "data_suburbs_suburbdata"
     },
     {
       "relation": "contains",
@@ -17705,6 +18054,346 @@
       "target": "converted_vic_sales_time_series_20yr_latest_5350cb9d_sheet_table_1"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion",
+      "target": "suggestion_real_estate_dashboard_and_ai_review"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_1_current_capability_assessment"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_2_ui_and_data_representation_improvements"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_3_deterministic_best_suburb_model"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L165",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_4_probability_and_time_based_validation"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L219",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_5_ai_process_evaluation_and_improvements"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L304",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_6_pre_mortem"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L323",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_7_recommended_delivery_order"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L366",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_conclusion"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_real_estate_dashboard_and_ai_review",
+      "target": "suggestion_executive_summary"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_executive_summary",
+      "target": "suggestion_immediate_priorities"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L45",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_2_ui_and_data_representation_improvements",
+      "target": "suggestion_2_1_add_a_buy_finder_tab"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_2_ui_and_data_representation_improvements",
+      "target": "suggestion_2_2_return_a_shortlist_not_one_opaque_winner"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_2_ui_and_data_representation_improvements",
+      "target": "suggestion_2_3_use_a_trade_off_visual"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L91",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_2_ui_and_data_representation_improvements",
+      "target": "suggestion_2_4_simplify_the_first_suburb_profile_viewport"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L103",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_2_ui_and_data_representation_improvements",
+      "target": "suggestion_2_5_show_provenance_at_metric_level"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L122",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_3_deterministic_best_suburb_model",
+      "target": "suggestion_3_1_investment_fit_score"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L141",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_3_deterministic_best_suburb_model",
+      "target": "suggestion_3_2_model_rules"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L151",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_3_deterministic_best_suburb_model",
+      "target": "suggestion_3_3_remove_synthetic_production_signals"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L169",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_4_probability_and_time_based_validation",
+      "target": "suggestion_4_1_define_prediction_targets_first"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L179",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_4_probability_and_time_based_validation",
+      "target": "suggestion_4_2_use_a_calibrated_probability_model"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L195",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_4_probability_and_time_based_validation",
+      "target": "suggestion_4_3_display_uncertainty_and_calibration"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L205",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_4_probability_and_time_based_validation",
+      "target": "suggestion_4_4_add_a_model_diary"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L223",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_5_ai_process_evaluation_and_improvements",
+      "target": "suggestion_5_1_separate_ai_explanation_from_deterministic_scoring"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L239",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_5_ai_process_evaluation_and_improvements",
+      "target": "suggestion_5_2_create_a_training_quality_analysis_record"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L259",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_5_ai_process_evaluation_and_improvements",
+      "target": "suggestion_5_3_use_schema_constrained_outputs"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L278",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_5_ai_process_evaluation_and_improvements",
+      "target": "suggestion_5_4_improve_few_shot_retrieval"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L293",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_5_ai_process_evaluation_and_improvements",
+      "target": "suggestion_5_5_do_not_fine_tune_yet"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L325",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_7_recommended_delivery_order",
+      "target": "suggestion_phase_1_trust_and_clarity"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L332",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_7_recommended_delivery_order",
+      "target": "suggestion_phase_2_decision_workflow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L339",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_7_recommended_delivery_order",
+      "target": "suggestion_phase_3_deterministic_model"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L346",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_7_recommended_delivery_order",
+      "target": "suggestion_phase_4_empirical_probability"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L353",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_7_recommended_delivery_order",
+      "target": "suggestion_phase_5_ai_hardening"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "suggestion.md",
+      "source_location": "L360",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "suggestion_7_recommended_delivery_order",
+      "target": "suggestion_phase_6_model_learning"
+    },
+    {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -17922,5 +18611,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "8493935fb4145ece75f31936cbf10d3ea56574da"
+  "built_at_commit": "43dea9edf6d30fb8efdef97d24f6f8c5c57970ad"
 }
