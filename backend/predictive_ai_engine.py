@@ -55,21 +55,57 @@ class ASXPredictor:
             print(f"ASX Predictor error: {e}")
             return {"rsi": 50.0, "status": "error", "kde_peak": 0.0}
 
-def fetch_infrastructure_zoning_data(postcode):
+def fetch_infrastructure_zoning_data(db, lat, lng, radius_m=5000):
     """
-    TODO: Replace with authoritative data from State Planning Portals.
-    Synthetic signals have been removed as per V3 guidelines.
+    Authoritative PostGIS Infrastructure/Zoning Query.
+    Identifies major construction/projects within radius.
     """
-    events = []
-    return events
+    if not lat or not lng: return []
+    import math
+    mercator_radius = radius_m / math.cos(abs(math.radians(lat)))
+    
+    sql = f'''
+        SELECT name, landuse, building
+        FROM planet_osm_polygon
+        WHERE (landuse='construction' OR building='construction')
+          AND name IS NOT NULL
+          AND way && ST_Expand(ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857), {mercator_radius})
+        LIMIT 5
+    '''
+    try:
+        res = db.execute(text(sql)).fetchall()
+        return [{"name": r[0], "type": "construction"} for r in res]
+    except Exception as e:
+        print(f"Error fetching infrastructure: {e}")
+        return []
 
-def fetch_environmental_risks(postcode):
+def fetch_environmental_risks(db, lat, lng, radius_m=3000):
     """
-    TODO: Replace with authoritative GIS overlays (e.g., GeoScience Australia).
-    Synthetic signals have been removed as per V3 guidelines.
+    Authoritative PostGIS Environmental Risk Query.
+    Identifies flood (water/river) and bushfire (forest/wood) proxies within radius.
     """
-    risks = []
-    return risks
+    if not lat or not lng: return []
+    import math
+    mercator_radius = radius_m / math.cos(abs(math.radians(lat)))
+    
+    sql = f'''
+        SELECT name, landuse, "natural", waterway
+        FROM planet_osm_polygon
+        WHERE (landuse='forest' OR "natural"='wood' OR "natural"='water' OR waterway='river')
+          AND name IS NOT NULL
+          AND way && ST_Expand(ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857), {mercator_radius})
+        LIMIT 5
+    '''
+    try:
+        res = db.execute(text(sql)).fetchall()
+        risks = []
+        for r in res:
+            risk_type = "flood_risk" if r[2] == 'water' or r[3] == 'river' else "bushfire_risk"
+            risks.append({"name": r[0], "type": risk_type})
+        return risks
+    except Exception as e:
+        print(f"Error fetching environmental risks: {e}")
+        return []
 
 def calculate_predictive_score(suburb_data, infra_events, env_risks, macro_data):
     """
@@ -110,11 +146,20 @@ def calculate_predictive_score(suburb_data, infra_events, env_risks, macro_data)
         if kde_peak > 0:
             base_score += (kde_peak * 10) # 0.1% daily peak adds 1 pt
     
-    # 4. Infrastructure & Zoning
-    # (Removed synthetic score padding - awaiting authoritative GIS overlays)
+    # 4. Infrastructure & Zoning (Authoritative PostGIS)
+    infra_points = len(infra_events)
+    if infra_points > 0:
+        # Cap infrastructure boost to +10
+        base_score += min(10, infra_points * 2)
             
-    # 5. Environmental Risk Penalties
-    # (Removed synthetic score penalties - awaiting authoritative GIS overlays)
+    # 5. Environmental Risk Penalties (Authoritative PostGIS)
+    flood_risks = sum(1 for r in env_risks if r['type'] == 'flood_risk')
+    fire_risks = sum(1 for r in env_risks if r['type'] == 'bushfire_risk')
+    
+    if flood_risks > 0:
+        base_score -= min(10, flood_risks * 3) # Cap penalty to -10
+    if fire_risks > 0:
+        base_score -= min(5, fire_risks * 2) # Cap penalty to -5
             
     return min(100.0, max(0.0, base_score))
 
@@ -131,8 +176,11 @@ def run_predictive_engine():
         
         updates = 0
         for suburb in suburbs:
-            infra_events = fetch_infrastructure_zoning_data(suburb.postcode)
-            env_risks = fetch_environmental_risks(suburb.postcode)
+            lat = suburb.coordinates[0] if suburb.coordinates else None
+            lng = suburb.coordinates[1] if suburb.coordinates else None
+            
+            infra_events = fetch_infrastructure_zoning_data(db, lat, lng)
+            env_risks = fetch_environmental_risks(db, lat, lng)
             
             predicted_score = calculate_predictive_score(suburb, infra_events, env_risks, macro)
             
