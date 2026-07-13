@@ -1,7 +1,7 @@
 import { useState, useMemo, memo } from 'react';
 import type { SuburbData } from '../data/suburbs';
 
-export default memo(function HouseSearch({ suburbsData }: { suburbsData: SuburbData[] }) {
+export default memo(function BuyFinder({ suburbsData }: { suburbsData: SuburbData[] }) {
   const [searchText, setSearchText] = useState('');
   const [selectedStates, setSelectedStates] = useState<Set<string>>(new Set());
   const [minGrowthScore, setMinGrowthScore] = useState(0);
@@ -10,6 +10,12 @@ export default memo(function HouseSearch({ suburbsData }: { suburbsData: SuburbD
   const [minTransit, setMinTransit] = useState(0);
   const [metroOnly, setMetroOnly] = useState(false);
   const [maxCBDMins, setMaxCBDMins] = useState<number | null>(null);
+
+  // Objective Weights
+  const [wGrowth, setWGrowth] = useState(30);
+  const [wYield, setWYield] = useState(30);
+  const [wAffordability, setWAffordability] = useState(20);
+  const [wLivability, setWLivability] = useState(20);
 
   const allStates = useMemo(() => Array.from(new Set(suburbsData.map(s => s.state))).sort(), [suburbsData]);
 
@@ -23,7 +29,22 @@ export default memo(function HouseSearch({ suburbsData }: { suburbsData: SuburbD
   };
 
 const results = useMemo(() => {
-      return suburbsData.filter(suburb => {
+      const scoredSuburbs = suburbsData.map(suburb => {
+        // Normalize metrics to 0-100 scale for scoring
+        const growthNorm = suburb.growthScore ?? 50;
+        const yieldNorm = Math.min(100, Math.max(0, ((suburb.metrics?.rentalYield ?? 3) - 2) * 20)); // e.g. 3% -> 20, 7% -> 100
+        const affordNorm = Math.max(0, 100 - ((suburb.metrics?.medianPrice ?? 1000000) / 30000)); // cheaper is better
+        const liveNorm = ((suburb.metrics?.schoolQuality ?? 5) * 5) + ((suburb.metrics?.transitAccessibility ?? 5) * 5); // 0-100
+
+        const totalWeight = wGrowth + wYield + wAffordability + wLivability;
+        const fitScore = totalWeight > 0 ? 
+          ((growthNorm * wGrowth) + (yieldNorm * wYield) + (affordNorm * wAffordability) + (liveNorm * wLivability)) / totalWeight
+          : 0;
+          
+        return { ...suburb, fitScore: Math.round(fitScore) };
+      });
+
+      return scoredSuburbs.filter(suburb => {
         // Safe text search (ignore case & whitespace)
         const txt = searchText?.trim().toLowerCase();
         if (txt && !(suburb.name?.toLowerCase().includes(txt) || suburb.postcode?.includes(txt))) return false;
@@ -36,15 +57,15 @@ const results = useMemo(() => {
         if (metroOnly && !suburb.isMetro) return false;
         if (maxCBDMins !== null && (suburb.cbdDistanceMins ?? Infinity) > maxCBDMins) return false;
         return true;
-      }).sort((a, b) => (b.growthScore ?? 0) - (a.growthScore ?? 0));
+      }).sort((a, b) => b.fitScore - a.fitScore);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchText, selectedStates, minGrowthScore, maxPrice, minSchoolQuality, minTransit, metroOnly, maxCBDMins]);
+    }, [searchText, selectedStates, minGrowthScore, maxPrice, minSchoolQuality, minTransit, metroOnly, maxCBDMins, wGrowth, wYield, wAffordability, wLivability]);
 
   return (
     <div className="search-container">
       <div className="glass-card search-card">
-        <h2 className="detail-title">Suburb Search</h2>
-        <p className="subtitle">Filter across all Australian suburbs to find your ideal investment</p>
+        <h2 className="detail-title">Buy Finder</h2>
+        <p className="subtitle">Filter and rank suburbs based on your constraints and objective weights</p>
 
         <div className="search-input-row">
           <input
@@ -154,6 +175,28 @@ const results = useMemo(() => {
               </div>
             )}
           </div>
+          
+          <div className="filter-section" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <label className="control-label">Objective Weights (Adjust to compute Fit Score)</label>
+            <div className="filter-row">
+              <div className="control-group">
+                <label className="control-label" style={{ fontSize: '0.75rem' }}>Growth ({wGrowth}%)</label>
+                <input type="range" className="premium-range" min={0} max={100} value={wGrowth} onChange={(e) => setWGrowth(Number(e.target.value))} />
+              </div>
+              <div className="control-group">
+                <label className="control-label" style={{ fontSize: '0.75rem' }}>Yield ({wYield}%)</label>
+                <input type="range" className="premium-range" min={0} max={100} value={wYield} onChange={(e) => setWYield(Number(e.target.value))} />
+              </div>
+              <div className="control-group">
+                <label className="control-label" style={{ fontSize: '0.75rem' }}>Affordability ({wAffordability}%)</label>
+                <input type="range" className="premium-range" min={0} max={100} value={wAffordability} onChange={(e) => setWAffordability(Number(e.target.value))} />
+              </div>
+              <div className="control-group">
+                <label className="control-label" style={{ fontSize: '0.75rem' }}>Livability ({wLivability}%)</label>
+                <input type="range" className="premium-range" min={0} max={100} value={wLivability} onChange={(e) => setWLivability(Number(e.target.value))} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -198,9 +241,9 @@ const SearchResultCard = memo(function SearchResultCard({ suburb }: { suburb: Su
             <span className="rmetric-value">{suburb.metrics?.rentalYield ?? '—'}%</span>
             <span className="rmetric-label" title="Rental yield – annual % of median price">Yield</span>
           </div>
-          <div className="rmetric">
-            <span className={`rmetric-value ${(suburb.growthScore ?? 0) >= 80 ? 'growth-high' : (suburb.growthScore ?? 0) >= 60 ? 'growth-med' : 'growth-low'}`}>{suburb.growthScore ?? '—'}</span>
-            <span className="rmetric-label" title="Growth score – 0‑100 based on internal model">Growth</span>
+          <div className="rmetric" style={{ backgroundColor: 'rgba(0, 255, 128, 0.1)', padding: '5px', borderRadius: '4px' }}>
+            <span className={`rmetric-value ${((suburb as any).fitScore ?? 0) >= 80 ? 'growth-high' : ((suburb as any).fitScore ?? 0) >= 60 ? 'growth-med' : 'growth-low'}`}>{(suburb as any).fitScore ?? '—'}</span>
+            <span className="rmetric-label" style={{ color: 'var(--text-primary)' }} title="Dynamic Fit Score based on your objective weights">Fit Score</span>
           </div>
         </div>
         <div className="result-scores">

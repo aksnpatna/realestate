@@ -12,13 +12,13 @@ import './index.css'
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
-const HouseSearch = lazy(() => import('./components/HouseSearch'))
+const BuyFinder = lazy(() => import('./components/BuyFinder'))
 const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
 const InstitutionalV3Panel = lazy(() => import('./components/InstitutionalV3Panel'))
 const MyPurchasePlan = lazy(() => import('./components/MyPurchasePlan'))
 const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 
-type TabName = 'profile' | 'search' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites';
+type TabName = 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -41,7 +41,7 @@ function App() {
   const [showPrimarySchools, setShowPrimarySchools] = useState(false)
   const [showSecondarySchools, setShowSecondarySchools] = useState(false)
 
-  const [activeTab, setActiveTab] = useState<TabName>('profile')
+  const [activeTab, setActiveTab] = useState<TabName>('buy-finder')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
   // Track if the user manually selected a suburb to prevent auto‑reset
@@ -434,16 +434,16 @@ function App() {
 
       <nav className="tab-nav">
         <button
+          className={`tab-btn ${activeTab === 'buy-finder' ? 'tab-active' : ''}`}
+          onClick={() => setActiveTab('buy-finder')}
+        >
+          Buy Finder
+        </button>
+        <button
           className={`tab-btn ${activeTab === 'profile' ? 'tab-active' : ''}`}
           onClick={() => setActiveTab('profile')}
         >
           Suburb Profile
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'search' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('search')}
-        >
-          House Search
         </button>
         <button
           className={`tab-btn ${activeTab === 'affordability' ? 'tab-active' : ''}`}
@@ -657,7 +657,7 @@ function App() {
                       <div className="main-score-value" title="Formula: (Pop% * 10) + (Infra$B * 3) + (School * 3) + (Transit * 2) + (Yield * 2) - Distance Penalty">
                         {activeSuburb.growthScore}
                       </div>
-                      <div className="main-score-label">Growth Probability</div>
+                      <div className="main-score-label">Investment Fit Score</div>
                       <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
                         Based on yield, population<br/>& infrastructure trends
                       </div>
@@ -1373,7 +1373,7 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'search' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading search...</div>}><HouseSearch suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
