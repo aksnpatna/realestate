@@ -470,7 +470,7 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
                 "state": v3.state,
                 "postcode": v3.postcode,
                 "growthScore": _compute_growth_score(v3)["score"],
-                "isMetro": v3.is_live if v3.is_live is not None else False,
+                "isMetro": bool(v3.metro_cbd),
                 "cbdDistanceMins": v3.cbd_distance_mins,
                 "metroCBD": v3.metro_cbd,
                 "metrics": {
