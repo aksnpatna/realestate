@@ -1,49 +1,35 @@
-import { useState, useMemo, memo, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import type { SuburbData } from '../data/suburbs';
 
 interface BuyFinderResponse {
   model_version: string
   request_id: string
+  dq_threshold: number
   results: any[]
   excluded_count: number
+  excluded: any[]
   total_evaluated: number
 }
 
-export default memo(function BuyFinder({ suburbsData }: { suburbsData: SuburbData[] }) {
-  const [searchText, setSearchText] = useState('');
+export default memo(function BuyFinder({ }: { suburbsData: SuburbData[] }) {
   const [backendResults, setBackendResults] = useState<BuyFinderResponse | null>(null);
   const [backendLoading, setBackendLoading] = useState(false);
   const [backendError, setBackendError] = useState<string | null>(null);
-  
+
+  const [state, setState] = useState('VIC');
   const [budget, setBudget] = useState(850000);
   const [deposit, setDeposit] = useState(170000);
-  const [annualIncome, setAnnualIncome] = useState(150000);
   const [propertyType, setPropertyType] = useState('house');
-  const [minYield, setMinYield] = useState(3.5);
-  const [maxVacancy, setMaxVacancy] = useState(4.0);
-  const [maxCBDMins, setMaxCBDMins] = useState<number | null>(60);
-  
-  const [wGrowth, setWGrowth] = useState(30);
+  const [maxCBDMinutes, setMaxCBDMinutes] = useState(60);
+  const [minimumYield, setMinimumYield] = useState<number | null>(null);
+
+  const [wAffordability, setWAffordability] = useState(30);
   const [wIncome, setWIncome] = useState(25);
-  const [wAffordability, setWAffordability] = useState(20);
-  const [wRisk, setWRisk] = useState(15);
-  const [wLivability, setWLivability] = useState(10);
+  const [wLivability, setWLivability] = useState(20);
+  const [wAccess, setWAccess] = useState(15);
+  const [wEvidence, setWEvidence] = useState(10);
 
-  const [selectedStates, setSelectedStates] = useState<Set<string>>(new Set());
-  const [metroOnly, setMetroOnly] = useState(false);
-
-  const allStates = useMemo(() => Array.from(new Set(suburbsData.map(s => s.state))).sort(), [suburbsData]);
-
-  const toggleState = (s: string) => {
-    setSelectedStates(prev => {
-      const next = new Set(prev);
-      if (next.has(s)) next.delete(s);
-      else next.add(s);
-      return next;
-    });
-  };
-
-  const fetchBackendRanking = useCallback(async () => {
+  const fetchRanking = useCallback(async () => {
     setBackendLoading(true);
     setBackendError(null);
     try {
@@ -51,23 +37,19 @@ export default memo(function BuyFinder({ suburbsData }: { suburbsData: SuburbDat
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          buyer_profile: 'first_home_buyer',
+          state,
           budget,
           deposit,
-          annual_income: annualIncome,
           property_type: propertyType,
-          holding_period_years: 7,
-          objective: 'balanced',
-          minimum_yield: minYield,
-          maximum_vacancy: maxVacancy,
-          maximum_cbd_minutes: maxCBDMins || 120,
-          exclude_flood_risk: true,
-          exclude_bushfire_risk: true,
+          maximum_cbd_minutes: maxCBDMinutes,
+          minimum_yield: minimumYield,
           weights: {
-            growth: wGrowth,
-            income: wIncome,
             affordability: wAffordability,
-            risk: wRisk,
+            income: wIncome,
             livability: wLivability,
+            access: wAccess,
+            evidence: wEvidence,
           },
         }),
       });
@@ -75,76 +57,54 @@ export default memo(function BuyFinder({ suburbsData }: { suburbsData: SuburbDat
         const data = await res.json();
         setBackendResults(data);
       } else {
-        setBackendError(`Server error (${res.status})`);
+        setBackendError(`Server error (${res.status}) — try again`);
       }
     } catch (e: any) {
-      setBackendError(e.message || 'Failed to fetch rankings');
+      setBackendError(e.message || 'Network error — check backend connectivity');
     } finally {
       setBackendLoading(false);
     }
-  }, [budget, deposit, annualIncome, propertyType, minYield, maxVacancy, maxCBDMins, wGrowth, wIncome, wAffordability, wRisk, wLivability]);
+  }, [state, budget, deposit, propertyType, maxCBDMinutes, minimumYield, wAffordability, wIncome, wLivability, wAccess, wEvidence]);
 
   useEffect(() => {
-    const timer = setTimeout(() => fetchBackendRanking(), 300);
+    const timer = setTimeout(() => fetchRanking(), 300);
     return () => clearTimeout(timer);
-  }, [fetchBackendRanking]);
+  }, [fetchRanking]);
 
-  const results = useMemo(() => {
-    const scoredSuburbs = suburbsData.map(suburb => {
-      const growthNorm = suburb.growthScore ?? 50;
-      const yieldNorm = Math.min(100, Math.max(0, ((suburb.metrics?.rentalYield ?? 3) - 2) * 20));
-      const affordNorm = Math.max(0, 100 - ((suburb.metrics?.medianPrice ?? 1000000) / 30000));
-      const liveNorm = ((suburb.metrics?.schoolQuality ?? 5) * 5) + ((suburb.metrics?.transitAccessibility ?? 5) * 5);
+  const handleSearch = () => fetchRanking();
 
-      const totalWeight = wGrowth + wIncome + wAffordability + wLivability;
-      const fitScore = totalWeight > 0 ? 
-        ((growthNorm * wGrowth) + (yieldNorm * wIncome) + (affordNorm * wAffordability) + (liveNorm * wLivability)) / totalWeight
-        : 0;
-        
-      return { ...suburb, fitScore: Math.round(fitScore) };
-    });
-
-    return scoredSuburbs.filter(suburb => {
-      const txt = searchText?.trim().toLowerCase();
-      if (txt && !(suburb.name?.toLowerCase().includes(txt) || suburb.postcode?.includes(txt))) return false;
-      if (selectedStates.size > 0 && !selectedStates.has(suburb.state)) return false;
-      if (metroOnly && !suburb.isMetro) return false;
-      if (maxCBDMins !== null && (suburb.cbdDistanceMins ?? Infinity) > maxCBDMins) return false;
-      return true;
-    }).sort((a, b) => b.fitScore - a.fitScore);
-  }, [searchText, selectedStates, metroOnly, maxCBDMins, wGrowth, wIncome, wAffordability, wLivability, suburbsData]);
+  const states = ['VIC', 'NSW', 'QLD', 'SA', 'TAS'];
 
   return (
     <div className="search-container">
       <div className="glass-card search-card">
         <h2 className="detail-title">Buy Finder</h2>
-        <p className="subtitle">Filter and rank suburbs based on your constraints and objective weights</p>
-
-        <div className="search-input-row">
-          <input
-            type="text"
-            className="premium-search-input"
-            placeholder="Search by suburb name or postcode..."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-        </div>
+        <p className="subtitle">
+          Backend-ranked buyer-fit tool. Results are deterministically scored from the server.
+          {backendResults && (
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '8px' }}>
+              (Model: {backendResults.model_version}, DQ threshold: {backendResults.dq_threshold})
+            </span>
+          )}
+        </p>
 
         <div className="filter-grid">
           <div className="filter-section">
-            <label className="control-label">Buyer Constraints (Backend)</label>
+            <label className="control-label">Buyer Profile & Location</label>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' }}>
               <div className="control-group" style={{ flex: '1 1 150px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Budget</label>
+                <label className="control-label" style={{ fontSize: '0.7rem' }}>State</label>
+                <select className="premium-input small" value={state} onChange={e => setState(e.target.value)}>
+                  {states.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="control-group" style={{ flex: '1 1 150px' }}>
+                <label className="control-label" style={{ fontSize: '0.7rem' }}>Budget ($)</label>
                 <input type="number" className="premium-input small" value={budget} onChange={e => setBudget(Number(e.target.value))} min={100000} step={50000} />
               </div>
               <div className="control-group" style={{ flex: '1 1 150px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Deposit</label>
+                <label className="control-label" style={{ fontSize: '0.7rem' }}>Deposit ($)</label>
                 <input type="number" className="premium-input small" value={deposit} onChange={e => setDeposit(Number(e.target.value))} min={20000} step={10000} />
-              </div>
-              <div className="control-group" style={{ flex: '1 1 150px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Annual Income</label>
-                <input type="number" className="premium-input small" value={annualIncome} onChange={e => setAnnualIncome(Number(e.target.value))} min={30000} step={10000} />
               </div>
               <div className="control-group" style={{ flex: '1 1 120px' }}>
                 <label className="control-label" style={{ fontSize: '0.7rem' }}>Property Type</label>
@@ -153,77 +113,45 @@ export default memo(function BuyFinder({ suburbsData }: { suburbsData: SuburbDat
                   <option value="unit">Unit</option>
                 </select>
               </div>
-              <div className="control-group" style={{ flex: '1 1 100px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Min Yield%</label>
-                <input type="number" className="premium-input small" value={minYield} onChange={e => setMinYield(Number(e.target.value))} min={1} max={10} step={0.5} />
+              <div className="control-group" style={{ flex: '1 1 120px' }}>
+                <label className="control-label" style={{ fontSize: '0.7rem' }}>Max CBD (min)</label>
+                <input type="number" className="premium-input small" value={maxCBDMinutes} onChange={e => setMaxCBDMinutes(Number(e.target.value))} min={5} max={180} />
               </div>
-              <div className="control-group" style={{ flex: '1 1 100px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Max Vacancy%</label>
-                <input type="number" className="premium-input small" value={maxVacancy} onChange={e => setMaxVacancy(Number(e.target.value))} min={1} max={15} step={0.5} />
+              <div className="control-group" style={{ flex: '1 1 120px' }}>
+                <label className="control-label" style={{ fontSize: '0.7rem' }}>Min Yield %</label>
+                <select className="premium-input small" value={minimumYield ?? ''} onChange={e => setMinimumYield(e.target.value ? Number(e.target.value) : null)} style={{ width: '80px' }}>
+                  <option value="">Any</option>
+                  <option value="2">2%</option>
+                  <option value="3">3%</option>
+                  <option value="4">4%</option>
+                  <option value="5">5%</option>
+                </select>
               </div>
             </div>
-          </div>
-
-          <div className="filter-section">
-            <label className="control-label">States (client-side filter)</label>
-            <div className="filter-chips">
-              {allStates.map(s => (
-                <button
-                  key={s}
-                  className={`chip ${selectedStates.has(s) ? 'chip-active' : ''}`}
-                  onClick={() => toggleState(s)}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="filter-row">
-            <div className="control-group">
-              <label className="toggle-label">
-                <input type="checkbox" checked={metroOnly} onChange={(e) => setMetroOnly(e.target.checked)} />
-                <span>Metro suburbs only</span>
-              </label>
-            </div>
-            {metroOnly && (
-              <div className="control-group">
-                <label className="control-label">Max CBD commute (mins)</label>
-                <input
-                  type="number"
-                  className="premium-input small"
-                  value={maxCBDMins ?? ''}
-                  onChange={(e) => setMaxCBDMins(e.target.value ? Number(e.target.value) : null)}
-                  placeholder="No limit"
-                  min={5}
-                  max={120}
-                />
-              </div>
-            )}
           </div>
 
           <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <label className="control-label">Objective Weights (Adjust to compute Fit Score)</label>
+            <label className="control-label">Objective Weights</label>
             <div className="filter-row">
               <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Growth ({wGrowth}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wGrowth} onChange={(e) => setWGrowth(Number(e.target.value))} />
+                <label className="control-label" style={{ fontSize: '0.75rem' }}>Affordability ({wAffordability}%)</label>
+                <input type="range" className="premium-range" min={0} max={100} value={wAffordability} onChange={e => setWAffordability(Number(e.target.value))} />
               </div>
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Income ({wIncome}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wIncome} onChange={(e) => setWIncome(Number(e.target.value))} />
-              </div>
-              <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Affordability ({wAffordability}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wAffordability} onChange={(e) => setWAffordability(Number(e.target.value))} />
-              </div>
-              <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Risk ({wRisk}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wRisk} onChange={(e) => setWRisk(Number(e.target.value))} />
+                <input type="range" className="premium-range" min={0} max={100} value={wIncome} onChange={e => setWIncome(Number(e.target.value))} />
               </div>
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Livability ({wLivability}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wLivability} onChange={(e) => setWLivability(Number(e.target.value))} />
+                <input type="range" className="premium-range" min={0} max={100} value={wLivability} onChange={e => setWLivability(Number(e.target.value))} />
+              </div>
+              <div className="control-group">
+                <label className="control-label" style={{ fontSize: '0.75rem' }}>Access ({wAccess}%)</label>
+                <input type="range" className="premium-range" min={0} max={100} value={wAccess} onChange={e => setWAccess(Number(e.target.value))} />
+              </div>
+              <div className="control-group">
+                <label className="control-label" style={{ fontSize: '0.75rem' }}>Evidence ({wEvidence}%)</label>
+                <input type="range" className="premium-range" min={0} max={100} value={wEvidence} onChange={e => setWEvidence(Number(e.target.value))} />
               </div>
             </div>
           </div>
@@ -233,94 +161,84 @@ export default memo(function BuyFinder({ suburbsData }: { suburbsData: SuburbDat
       <div className="glass-card search-results-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <h3 style={{ margin: 0 }}>
-            Results
-            {backendResults && (
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '8px' }}>
-                ({backendResults.results.length} ranked, {backendResults.excluded_count} excluded)
-              </span>
-            )}
+            {backendResults ? `Results (${backendResults.results.length} eligible${backendResults.excluded_count > 0 ? `, ${backendResults.excluded_count} excluded` : ''})` : 'Results'}
           </h3>
-          {backendResults && (
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
-              Model: {backendResults.model_version}
-            </span>
-          )}
+          <button
+            onClick={handleSearch}
+            disabled={backendLoading}
+            style={{ padding: '8px 16px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '6px', cursor: backendLoading ? 'not-allowed' : 'pointer', fontWeight: 600, fontSize: '0.8rem' }}
+          >
+            {backendLoading ? 'Ranking...' : 'Search'}
+          </button>
         </div>
 
         {backendError && (
-          <div style={{ padding: '10px', background: 'rgba(239,68,68,0.08)', borderRadius: '6px', color: '#ef4444', fontSize: '0.85rem', marginBottom: '10px' }}>
-            {backendError} — showing client-side results
+          <div style={{ padding: '16px', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', marginBottom: '15px' }}>
+            <div style={{ fontSize: '1.5rem', marginBottom: '8px', textAlign: 'center' }}>⚠️</div>
+            <div style={{ color: '#ef4444', fontWeight: 600, marginBottom: '4px', textAlign: 'center' }}>Data Unavailable</div>
+            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textAlign: 'center' }}>{backendError}</div>
+            <div style={{ textAlign: 'center', marginTop: '8px' }}>
+              <button onClick={handleSearch} style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>Retry</button>
+            </div>
           </div>
         )}
 
-        {backendLoading && backendResults === null && (
-          <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <div style={{ width: '24px', height: '24px', border: '2px solid var(--border-glass)', borderTopColor: 'var(--accent-cyan)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 8px' }} />
-            Ranking suburbs...
+        {backendLoading && backendResults === null && !backendError && (
+          <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            <div style={{ width: '32px', height: '32px', border: '3px solid var(--border-glass)', borderTopColor: 'var(--accent-cyan)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+            Ranking eligible suburbs (DQ &ge; 80)...
           </div>
         )}
 
-        {backendResults ? (
+        {backendResults && backendResults.results.length === 0 && (
+          <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🔍</div>
+            <div style={{ fontWeight: 600, marginBottom: '4px' }}>No Eligible Suburbs</div>
+            <div style={{ fontSize: '0.85rem' }}>No suburbs in {state} meet the current DQ threshold ({backendResults.dq_threshold}) and buyer constraints. Try a different state or lower your constraints.</div>
+          </div>
+        )}
+
+        {backendResults && backendResults.results.length > 0 && (
           <div className="search-results-grid">
-            {backendResults.results.map((r, i) => (
-              <BackendResultCard key={r.suburb_id} result={r} rank={i + 1} />
+            {backendResults.results.map((r: any) => (
+              <BackendResultCard key={r.suburb_id} result={r} />
             ))}
           </div>
-        ) : results.length === 0 ? (
-          <p className="text-muted">No suburbs match your criteria. Try broadening your filters.</p>
-        ) : (
-          <div className="search-results-grid">
-            {results.map(suburb => (
-              <SearchResultCard key={suburb.id} suburb={suburb} />
-            ))}
-          </div>
+        )}
+
+        {backendResults && backendResults.excluded.length > 0 && (
+          <details style={{ marginTop: '15px', padding: '10px', background: 'rgba(234,179,8,0.05)', borderRadius: '8px', border: '1px solid rgba(234,179,8,0.15)' }}>
+            <summary style={{ cursor: 'pointer', fontSize: '0.8rem', color: '#eab308', fontWeight: 600 }}>
+              {backendResults.excluded_count} suburb(s) excluded (click to view)
+            </summary>
+            <div style={{ marginTop: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+              {backendResults.excluded.map((e: any) => (
+                <div key={e.suburb_id} style={{ padding: '4px 0' }}>
+                  {e.name}: {e.reason}
+                </div>
+              ))}
+              {backendResults.excluded_count > backendResults.excluded.length && (
+                <div style={{ padding: '4px 0', color: 'var(--text-muted)' }}>
+                  ... and {backendResults.excluded_count - backendResults.excluded.length} more
+                </div>
+              )}
+            </div>
+          </details>
         )}
       </div>
     </div>
   );
 })
 
-const SearchResultCard = memo(function SearchResultCard({ suburb }: { suburb: SuburbData }) {
-  return (
-    <div className="result-card glass-card">
-      <div className="result-card-header">
-        <h4>{suburb.name}</h4>
-        <span className="state-badge">{suburb.state}</span>
-      </div>
-      <div className="result-card-body">
-        <div className="result-meta">
-          <span>Postcode: {suburb.postcode}</span>
-          {suburb.isMetro && suburb.cbdDistanceMins !== null && (
-            <span>{suburb.cbdDistanceMins} min to {suburb.metroCBD}</span>
-          )}
-          {!suburb.isMetro && <span className="text-muted">{suburb.metroCBD}</span>}
-        </div>
-        <div className="result-metrics">
-          <div className="rmetric">
-            <span className="rmetric-value">${suburb.metrics?.medianPrice?.toLocaleString() ?? '—'}</span>
-            <span className="rmetric-label">Median Price</span>
-          </div>
-          <div className="rmetric">
-            <span className="rmetric-value">{suburb.metrics?.rentalYield ?? '—'}%</span>
-            <span className="rmetric-label">Yield</span>
-          </div>
-          <div className="rmetric" style={{ backgroundColor: 'rgba(0, 255, 128, 0.1)', padding: '5px', borderRadius: '4px' }}>
-            <span className={`rmetric-value ${((suburb as any).fitScore ?? 0) >= 80 ? 'growth-high' : ((suburb as any).fitScore ?? 0) >= 60 ? 'growth-med' : 'growth-low'}`}>{(suburb as any).fitScore ?? '—'}</span>
-            <span className="rmetric-label" style={{ color: 'var(--text-primary)' }}>Fit Score</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-});
+const BackendResultCard = memo(function BackendResultCard({ result }: { result: any }) {
+  const fitColor = result.buyer_fit_score >= 70 ? 'growth-high' : result.buyer_fit_score >= 50 ? 'growth-med' : 'growth-low';
+  const confColor = result.confidence_label === 'high' ? '#10b981' : result.confidence_label === 'medium' ? '#eab308' : '#ef4444';
 
-const BackendResultCard = memo(function BackendResultCard({ result, rank }: { result: any; rank: number }) {
-  const fitColor = result.fit_score >= 80 ? 'growth-high' : result.fit_score >= 60 ? 'growth-med' : 'growth-low';
   return (
     <div className="result-card glass-card">
       <div className="result-card-header">
         <h4>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '6px' }}>#{rank}</span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '6px' }}>#{result.rank}</span>
           {result.name}
         </h4>
         <span className="state-badge">{result.state}</span>
@@ -328,32 +246,34 @@ const BackendResultCard = memo(function BackendResultCard({ result, rank }: { re
       <div className="result-card-body">
         <div className="result-meta">
           <span>Postcode: {result.postcode}</span>
-          <span>{result.cbd_mins} min to CBD</span>
+          <span>Eligibility: {result.eligibility}</span>
         </div>
         <div className="result-metrics">
           <div className="rmetric">
-            <span className="rmetric-value">${result.median_price?.toLocaleString() ?? '—'}</span>
-            <span className="rmetric-label">Median Price</span>
+            <span className="rmetric-value">{(result.components?.affordability?.score ?? 0).toFixed(0)}</span>
+            <span className="rmetric-label">Affordability</span>
           </div>
           <div className="rmetric">
-            <span className="rmetric-value">{result.rental_yield?.toFixed(1)}%</span>
-            <span className="rmetric-label">Yield</span>
+            <span className="rmetric-value">{(result.components?.income?.score ?? 0).toFixed(0)}</span>
+            <span className="rmetric-label">Income</span>
           </div>
           <div className="rmetric" style={{ backgroundColor: 'rgba(0, 255, 128, 0.1)', padding: '5px', borderRadius: '4px' }}>
-            <span className={`rmetric-value ${fitColor}`}>{result.fit_score.toFixed(1)}</span>
-            <span className="rmetric-label" style={{ color: 'var(--text-primary)' }}>Fit Score</span>
+            <span className={`rmetric-value ${fitColor}`}>{result.buyer_fit_score.toFixed(1)}</span>
+            <span className="rmetric-label" style={{ color: 'var(--text-primary)' }}>Buyer Fit</span>
           </div>
         </div>
-        {result.confidence && (
-          <div style={{ marginTop: '6px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
-            Confidence: {Math.round(result.confidence * 100)}%  •  Band: {result.confidence_band?.[0]}-{result.confidence_band?.[1]}
+        {result.confidence_label && (
+          <div style={{ marginTop: '6px', fontSize: '0.7rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: 'var(--text-secondary)' }}>Evidence:</span>
+            <span style={{ color: confColor, fontWeight: 600 }}>{result.confidence_label.toUpperCase()}</span>
+            <span style={{ color: 'var(--text-secondary)' }}>({result.components?.evidence?.score?.toFixed(0)}/100)</span>
           </div>
         )}
         <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
             {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
-              <span key={k} style={{ marginRight: '8px' }} title={`${k}: ${v.score}/100, weight: ${v.weight}%, contribution: ${v.contribution}`}>
-                {k.charAt(0).toUpperCase() + k.slice(1)}: {v.contribution.toFixed(1)}
+              <span key={k} title={`${k}: ${v.score}/100 x ${v.weight}% = ${v.contribution}`}>
+                {k}: {v.contribution.toFixed(1)}
               </span>
             ))}
           </div>
@@ -370,6 +290,11 @@ const BackendResultCard = memo(function BackendResultCard({ result, rank }: { re
             {result.risks.slice(0, 2).map((r: string, i: number) => (
               <span key={i} style={{ fontSize: '0.65rem', color: '#ef4444', display: 'block' }}>- {r}</span>
             ))}
+          </div>
+        )}
+        {result.unknowns?.length > 0 && (
+          <div style={{ marginTop: '4px', fontSize: '0.6rem', color: 'var(--text-muted)' }}>
+            Unknown: {result.unknowns.join(', ')}
           </div>
         )}
       </div>

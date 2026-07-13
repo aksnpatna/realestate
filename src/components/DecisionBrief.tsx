@@ -72,7 +72,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab }: Decis
           <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
             {Math.round(s.growthScore ?? 0)}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Investment Fit</div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Growth Score</div>
         </div>
         {riskAssess && (
           <div style={{ flex: '0 0 auto', textAlign: 'center', padding: '10px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
