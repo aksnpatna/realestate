@@ -224,24 +224,62 @@ export function calculateStampDuty(price: number, state: string): number {
   return 0;
 }
 
-export function calculateMaxPurchase(deposit: number, state: string, lvr: number = 0.8): {
+export function calculateMaxPurchase(
+  deposit: number, 
+  state: string, 
+  lvr: number = 0.8,
+  annualIncome: number = 150000,
+  monthlyDebt: number = 0,
+  interestRate: number = 0.062,
+  bufferRate: number = 0.03
+): {
   maxPrice: number;
   maxBorrow: number;
   stampDutyForMax: number;
+  borrowingCapacity: number;
+  limitedBy: 'Deposit/LVR' | 'Serviceability';
 } {
-  const effectiveLvr = Math.min(lvr, 0.8);
+  const effectiveLvr = Math.min(lvr, 0.95); // up to 95% LVR for First Home Buyers
+
+  // 1. Calculate Borrowing Capacity based on Income
+  const grossMonthly = annualIncome / 12;
+  const netMonthly = grossMonthly * 0.75; // Approx net
+  const livingExpenses = Math.max(2500, netMonthly * 0.3); // Simple HEM estimate
+  const availableForRepayment = netMonthly - livingExpenses - monthlyDebt;
+  
+  const assessmentRate = interestRate + bufferRate;
+  const monthlyRate = assessmentRate / 12;
+  const nPer = 30 * 12; // 30 year loan
+  
+  let borrowingCapacity = 0;
+  if (availableForRepayment > 0) {
+     borrowingCapacity = availableForRepayment * ((1 - Math.pow(1 + monthlyRate, -nPer)) / monthlyRate);
+  }
+  borrowingCapacity = Math.max(0, Math.floor(borrowingCapacity));
+
+  // 2. Find max purchase price bounded by BOTH Deposit/LVR and Borrowing Capacity
   let lo = deposit;
-  let hi = deposit * 10;
+  let hi = deposit * 15;
   for (let i = 0; i < 50; i++) {
     const mid = (lo + hi) / 2;
-    const depositNeeded = mid * (1 - effectiveLvr) + calculateStampDuty(mid, state);
+    const loanRequiredForLvr = mid * effectiveLvr;
+    const stampDuty = calculateStampDuty(mid, state);
+    
+    // The actual loan we can get is the minimum of what LVR allows and what the bank approves
+    const actualLoan = Math.min(loanRequiredForLvr, borrowingCapacity);
+    const depositNeeded = mid - actualLoan + stampDuty;
+    
     if (depositNeeded <= deposit) lo = mid;
     else hi = mid;
   }
+  
   const maxPrice = Math.floor(lo);
-  const maxBorrow = Math.floor(maxPrice * effectiveLvr);
   const stampDutyForMax = Math.floor(calculateStampDuty(maxPrice, state));
-  return { maxPrice, maxBorrow, stampDutyForMax };
+  const maxBorrow = Math.min(Math.floor(maxPrice * effectiveLvr), borrowingCapacity);
+  
+  const limitedBy = maxBorrow >= borrowingCapacity - 1000 ? 'Serviceability' : 'Deposit/LVR';
+
+  return { maxPrice, maxBorrow, stampDutyForMax, borrowingCapacity, limitedBy };
 }
 
 export const FHOG: Record<string, { established: number; new_home: number; vacant_land: number; cap_new: number; cap_established: number }> = {
