@@ -6,6 +6,7 @@ import TermsOfUseModal from './components/TermsOfUseModal'
 import UserFavoritesTab from './components/UserFavoritesTab'
 import AIInsightPanel from './components/AIInsightPanel'
 import DecisionBrief from './components/DecisionBrief'
+import type { BuyerFitResult } from './data/buyerFitTypes'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -44,6 +45,8 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabName>('buy-finder')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
+  const [selectedBuyerFitResult, setSelectedBuyerFitResult] = useState<BuyerFitResult | null>(null)
+  const [selectedRequestMeta, setSelectedRequestMeta] = useState<{ request_id: string; model_version: string } | null>(null)
   // Track if the user manually selected a suburb to prevent auto‑reset
   const manualSelectionRef = useRef(false)
   const [regionMode, setRegionMode] = useState<'metro' | 'national'>('metro')
@@ -800,7 +803,7 @@ function App() {
                   </div>
 
                   {/* Decision Brief — compact evidence-based summary */}
-                  <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} />
+                  <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
 
                   {/* AI Committee — quick access */}
                   <details style={{ marginTop: '10px', padding: '12px', background: 'rgba(16,185,129,0.04)', border: '1px solid var(--border-glass)', borderRadius: '8px' }}>
@@ -1416,7 +1419,7 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={setActiveSuburb} setActiveTab={(t: string) => setActiveTab(t as TabName)} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={setActiveSuburb} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); }} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
