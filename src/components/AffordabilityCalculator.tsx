@@ -50,7 +50,7 @@ export default memo(function AffordabilityCalculator({ setActiveTab }: { suburbs
             </div>
           </div>
           <div className="control-group">
-            <label className="control-label">Combined Annual Income</label>
+            <label className="control-label">Combined Gross Income (Before Tax)</label>
             <input type="number" className="premium-input" value={annualIncome}
               onChange={(e) => setAnnualIncome(Number(e.target.value) || 0)} min={50000} step={5000} placeholder="e.g. 150000" />
           </div>
