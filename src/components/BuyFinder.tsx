@@ -193,7 +193,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
       <div className="glass-card search-results-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <h3 style={{ margin: 0 }}>
-            {backendResults ? `Results (${backendResults.results.length} eligible${backendResults.excluded_count > 0 ? `, ${backendResults.excluded_count} excluded` : ''})` : 'Results'}
+            {backendResults ? `Results (${backendResults.results.length} eligible)` : 'Results'}
           </h3>
           <button
             onClick={handleSearch}
@@ -238,25 +238,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           </div>
         )}
 
-        {backendResults && backendResults.excluded.length > 0 && (
-          <details style={{ marginTop: '15px', padding: '10px', background: 'rgba(234,179,8,0.05)', borderRadius: '8px', border: '1px solid rgba(234,179,8,0.15)' }}>
-            <summary style={{ cursor: 'pointer', fontSize: '0.8rem', color: '#eab308', fontWeight: 600 }}>
-              {backendResults.excluded_count} suburb(s) excluded (click to view)
-            </summary>
-            <div style={{ marginTop: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-              {backendResults.excluded.map((e: any) => (
-                <div key={e.suburb_id} style={{ padding: '4px 0' }}>
-                  {e.name}: {e.reason}
-                </div>
-              ))}
-              {backendResults.excluded_count > backendResults.excluded.length && (
-                <div style={{ padding: '4px 0', color: 'var(--text-muted)' }}>
-                  ... and {backendResults.excluded_count - backendResults.excluded.length} more
-                </div>
-              )}
-            </div>
-          </details>
-        )}
+
       </div>
     </div>
   </div>
