@@ -1861,8 +1861,32 @@ def get_model_diary_summary(db: Session = Depends(get_db)):
 
 @app.post("/api/buy-finder/rank")
 def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
-    """Versioned backend ranking endpoint for the POC Buyer Fit Score.
-    Enforces DQ threshold, excludes synthetic inputs, enforces minimum yield."""
+    """Versioned backend ranking endpoint for the POC Buyer Fit Score."""
+    import math
+    if request.budget <= 0:
+        raise HTTPException(422, "budget must be greater than zero")
+    if request.deposit < 0:
+        raise HTTPException(422, "deposit must be non-negative")
+    if request.annual_income < 0:
+        raise HTTPException(422, "annual_income must be non-negative")
+    if request.existing_monthly_debt < 0:
+        raise HTTPException(422, "existing_monthly_debt must be non-negative")
+    if request.interest_rate <= 0 or request.interest_rate > 0.20:
+        raise HTTPException(422, "interest_rate out of range (0, 0.20]")
+    if request.serviceability_buffer < 0:
+        raise HTTPException(422, "serviceability_buffer must be non-negative")
+    if request.loan_term_years < 1 or request.loan_term_years > 40:
+        raise HTTPException(422, "loan_term_years out of range [1, 40]")
+    if request.purchase_cost_allowance < 0:
+        raise HTTPException(422, "purchase_cost_allowance must be non-negative")
+    if request.minimum_yield is not None and (request.minimum_yield < 0 or request.minimum_yield > 50):
+        raise HTTPException(422, "minimum_yield out of range [0, 50]")
+    if not math.isfinite(request.budget) or not math.isfinite(request.deposit) or not math.isfinite(request.annual_income):
+        raise HTTPException(422, "non-finite numeric value in request")
+    if request.weights:
+        for fname, fval in request.weights.dict().items():
+            if fval < 0 or not math.isfinite(fval):
+                raise HTTPException(422, f"weight {fname} must be non-negative and finite")
     from buyfinder import rank_suburbs, BuyFinderRequest as BFR, BuyFinderWeights
 
     weights = request.weights if request.weights else BuyFinderWeights()

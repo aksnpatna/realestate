@@ -181,8 +181,6 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
     if borrowing_capacity > 0:
         loan_ratio = required_loan / borrowing_capacity
         affordability_fit = clamp(100 - loan_ratio * 100, 0, 100)
-    elif price <= req.budget:
-        affordability_fit = 100
     else:
         affordability_fit = 0
 

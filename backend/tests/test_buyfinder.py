@@ -251,12 +251,91 @@ class TestRiskEndpoint:
         assert result["risk_rating"] in ("Low", "Medium", "High", "Unavailable")
 
 
-class TestModelDiary:
-    """Section 6.5 — Model Diary tests"""
+class TestAffordabilitySafety:
+    """Section 9 / Phase 6 — affordability safety and input validation"""
 
-    def test_immutable_snapshot_concept(self):
-        """Validate that prediction snapshots are designed immutably."""
-        assert True
+    def _mock_v3(self, **override):
+        m = MagicMock()
+        m.id = "VIC_TEST_3000"
+        m.name = "Test Suburb"
+        m.state = "VIC"
+        m.postcode = "3000"
+        m.is_enriched = True
+        m.dq_score = 85
+        m.house_median_price = 800000
+        m.house_gross_rental_yield = 4.0
+        m.house_median_rent = 520
+        m.unit_median_price = 600000
+        m.unit_gross_rental_yield = 4.5
+        m.unit_median_rent = 480
+        m.vacancy_rate = 3.0
+        m.school_quality = 7.0
+        m.transit_accessibility = 6.0
+        m.safety_score = 70
+        m.parks_count = 3
+        m.owner_occupier_rate = 68
+        m.cbd_distance_mins = 30
+        m.avg_icsea = 1050
+        m.school_count = 3
+        m.price_to_income_ratio = 6.5
+        m.typical_mortgage_band = "$2000-$2500"
+        m.house_days_on_market = 30
+        m.unit_days_on_market = 25
+        m.house_auction_clearance_rate = 65
+        m.predominant_occupation = "Professional"
+        m.population_2021 = 15000
+        m.population_2016 = 14000
+        m.population = 15000
+        m.population_cagr = 1.4
+        m.abs_demographics_sourced = True
+        m.abs_sourced_fields = ["population", "median_age"]
+        m.dq_issues = {}
+        m.source_raw_id = "RAW_TEST_001"
+        m.transform_run_id = "TRANSFORM_RUN_001"
+        m.last_updated = None
+        m.parks_coverage_pct = 5.0
+        m.coordinates = [-37.81, 144.96]
+        for k, v in override.items():
+            setattr(m, k, v)
+        return m
+
+    def test_zero_income_zero_capacity_zero_affordability(self):
+        """Zero borrowing capacity must produce affordability=0, not 100."""
+        from buyfinder import BuyFinderRequest, compute_buyer_fit
+        v3 = self._mock_v3(house_median_price=800000)
+        req = BuyFinderRequest(state="VIC", annual_income=0, existing_monthly_debt=0, budget=850000, deposit=200000)
+        result = compute_buyer_fit(v3, req)
+        aff = result["affordability"]
+        assert aff["score"] == 0, f"Zero capacity must give score 0, got {aff['score']}"
+        assert aff["serviceability_passed"] is False
+
+    def test_price_below_budget_still_zero_if_no_capacity(self):
+        """Price below budget does not override zero borrowing capacity."""
+        from buyfinder import BuyFinderRequest, compute_buyer_fit
+        v3 = self._mock_v3(house_median_price=500000)
+        req = BuyFinderRequest(state="VIC", annual_income=0, existing_monthly_debt=0, budget=850000, deposit=200000)
+        result = compute_buyer_fit(v3, req)
+        assert result["affordability"]["score"] == 0
+
+    def test_increasing_rate_reduces_affordability_or_keeps_equal(self):
+        from buyfinder import BuyFinderRequest, compute_buyer_fit
+        v3 = self._mock_v3()
+        r1 = compute_buyer_fit(v3, BuyFinderRequest(state="VIC", interest_rate=0.05))
+        r2 = compute_buyer_fit(v3, BuyFinderRequest(state="VIC", interest_rate=0.08))
+        assert r2["affordability"]["score"] <= r1["affordability"]["score"]
+
+    def test_increasing_debt_does_not_improve_affordability(self):
+        from buyfinder import BuyFinderRequest, compute_buyer_fit
+        v3 = self._mock_v3()
+        r1 = compute_buyer_fit(v3, BuyFinderRequest(state="VIC", existing_monthly_debt=0))
+        r2 = compute_buyer_fit(v3, BuyFinderRequest(state="VIC", existing_monthly_debt=3000))
+        assert r2["affordability"]["estimated_borrowing_capacity"] <= r1["affordability"]["estimated_borrowing_capacity"]
+        assert r2["affordability"]["score"] <= r1["affordability"]["score"]
+
+
+class TestInputValidation:
+    """Server-side input validation for Buyer Fit"""
+    pass
 
 
 class TestPOCConfig:

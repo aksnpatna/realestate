@@ -1420,7 +1420,7 @@ function App() {
       )}
 
       {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={setActiveSuburb} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); }} /></Suspense>}
-      {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
         defaultSuburbId={activeSuburb?.id}

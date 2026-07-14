@@ -97,7 +97,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           Backend-ranked buyer-fit tool. Results are deterministically scored from the server.
           {backendResults && (
             <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '8px' }}>
-              (Model: {backendResults.model_version}, DQ threshold: {backendResults.dq_threshold})
+              (Model: {backendResults.model_version})
             </span>
           )}
         </p>
@@ -243,7 +243,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
         {backendLoading && backendResults === null && !backendError && (
           <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             <div style={{ width: '32px', height: '32px', border: '3px solid var(--border-glass)', borderTopColor: 'var(--accent-cyan)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-            Ranking eligible suburbs (DQ &ge; 80)...
+            Ranking eligible suburbs...
           </div>
         )}
 
@@ -251,7 +251,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🔍</div>
             <div style={{ fontWeight: 600, marginBottom: '4px' }}>No Eligible Suburbs</div>
-            <div style={{ fontSize: '0.85rem' }}>No suburbs in {state} meet the current DQ threshold ({backendResults.dq_threshold}) and buyer constraints. Try a different state or lower your constraints.</div>
+            <div style={{ fontSize: '0.85rem' }}>No suburbs in {state} meet the current eligibility criteria and your stated constraints. Try a different state or adjust your assumptions.</div>
           </div>
         )}
 
