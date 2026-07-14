@@ -684,15 +684,15 @@ def _calibrate_dq(v3) -> float:
             
     # Secondary metrics (light penalty if missing)
     minor_checks = [
-        v3.house_days_on_market, v3.unit_days_on_market,
-        v3.house_auction_clearance_rate, v3.avg_icsea, 
-        v3.school_count, v3.typical_mortgage_band
+        v3.avg_icsea, 
+        v3.school_count, 
+        v3.typical_mortgage_band
     ]
     for c in minor_checks:
         if c is None or c == 0:
             penalties += 3
             
-    return max(5, min(95, raw - penalties))
+    return max(5, min(100, raw - penalties))
 
 def _compute_growth_score(v3: SuburbUIV3) -> dict:
     """
@@ -1528,7 +1528,7 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
             "historyRent10yr": r.history_rent_10yr,
             "demographicsDetail": r.demographics_detail,
             "salesSummary": r.sales_summary,
-            "dqScore": _calibrate_dq(r) if hasattr(r, 'dq_score') else min(95, max(5, r.dq_score or 100)),
+            "dqScore": _calibrate_dq(r) if hasattr(r, 'dq_score') else min(100, max(5, r.dq_score or 100)),
             "dqIssues": r.dq_issues,
             "lastUpdated": str(r.last_updated) if r.last_updated else None,
         }
@@ -1661,7 +1661,7 @@ def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
         "demographicsDetail": r.demographics_detail,
         "salesSummary": r.sales_summary,
         "nearbySuburbs": r.nearby_suburbs,
-        "dqScore": _calibrate_dq(r) if hasattr(r, 'dq_score') else min(95, max(5, r.dq_score or 100)),
+        "dqScore": _calibrate_dq(r) if hasattr(r, 'dq_score') else min(100, max(5, r.dq_score or 100)),
         "dqIssues": r.dq_issues,
         "lastUpdated": str(r.last_updated) if r.last_updated else None,
     }

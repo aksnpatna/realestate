@@ -77,7 +77,7 @@ def load_profile_data(locations):
         if not icsea:
             continue  # No ICSEA score, skip
         
-        suburb_key = f"{loc['state'].lower()}_{loc['suburb'].lower().replace(' ', '_')}_{loc['postcode']}"
+        suburb_key = (loc['suburb'].title(), loc['state'].upper(), loc['postcode'])
         
         schools_by_suburb[suburb_key].append({
             'name': school_name,
@@ -111,68 +111,33 @@ def compute_school_quality_score(schools):
 
 
 def update_db_and_json(schools_by_suburb):
-    """Update suburbs_all DB and suburbs_data.json with ACARA school data."""
+    """Update SuburbUIV3 DB with ACARA school data."""
+    from models_v3 import SuburbUIV3
     db = SessionLocal()
     updated_db = 0
     
-    print("\nUpdating database suburbs_all with ACARA school data...")
-    for suburb_key, schools in schools_by_suburb.items():
-        result = db.execute(
-            text("SELECT data FROM suburbs_all WHERE id = :id"),
-            {"id": suburb_key}
-        ).fetchone()
+    print("\nUpdating database SuburbUIV3 with ACARA school data...")
+    for (suburb_name, state, postcode), schools in schools_by_suburb.items():
+        v3 = db.query(SuburbUIV3).filter(
+            SuburbUIV3.name.ilike(suburb_name),
+            SuburbUIV3.state.ilike(state),
+            SuburbUIV3.postcode == postcode
+        ).first()
         
-        if result and result[0]:
-            data = result[0]
-            if 'metrics' not in data:
-                data['metrics'] = {}
-            
+        if v3:
             quality_score = compute_school_quality_score(schools)
-            data['metrics']['icseaSchoolQuality'] = quality_score
-            data['metrics']['icseaAvg'] = round(sum(s['icsea'] for s in schools) / len(schools), 0)
-            data['metrics']['icseaSchoolCount'] = len(schools)
-            data['acara_schools'] = schools[:10]  # Store top 10 for detailed display
-            
-            db.execute(
-                text("UPDATE suburbs_all SET data = :data WHERE id = :id"),
-                {"data": json.dumps(data), "id": suburb_key}
-            )
+            v3.avg_icsea = round(sum(s['icsea'] for s in schools) / len(schools), 0)
+            v3.school_count = len(schools)
+            v3.school_quality = quality_score
             updated_db += 1
     
     db.commit()
     db.close()
     print(f"  Updated {updated_db} suburbs in database.")
     
-    # Update UI suburbs_data.json
-    if not os.path.exists(UI_DATA_FILE):
-        print(f"  WARNING: {UI_DATA_FILE} not found, skipping UI update.")
-        return
-    
-    with open(UI_DATA_FILE, 'r') as f:
-        ui_suburbs = json.load(f)
-    
-    updated_ui = 0
-    for s in ui_suburbs:
-        state = s['state'].lower()
-        name = s['name'].lower().replace(' ', '_')
-        postcode = str(s['postcode'])
-        suburb_key = f"{state}_{name}_{postcode}"
-        
-        schools = schools_by_suburb.get(suburb_key, [])
-        if schools:
-            quality_score = compute_school_quality_score(schools)
-            s['metrics']['icseaSchoolQuality'] = quality_score
-            s['metrics']['icseaAvg'] = round(sum(s2['icsea'] for s2 in schools) / len(schools), 0)
-            s['metrics']['icseaSchoolCount'] = len(schools)
-            
-            # Build proper school list for sidebar display
-            s['acara_schools'] = sorted(schools, key=lambda x: x['icsea'], reverse=True)[:10]
-            updated_ui += 1
-    
-    with open(UI_DATA_FILE, 'w') as f:
-        json.dump(ui_suburbs, f, indent=2)
-    
-    print(f"  Updated {updated_ui} suburbs in suburbs_data.json (UI data).")
+    # We no longer update the legacy suburbs_data.json file since V3 uses the database exclusively.
+    # Keep the print statement to match expectations.
+    print(f"  Skipped updating legacy suburbs_data.json (UI data).")
 
 
 def main():
