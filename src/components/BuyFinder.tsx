@@ -292,6 +292,7 @@ const BackendResultCard = memo(function BackendResultCard({ result, setActiveSub
   const confColor = result.confidence_label === 'high' ? '#10b981' : result.confidence_label === 'medium' ? '#eab308' : '#ef4444';
   const evidenceLabel = result.confidence_label || 'low';
   const aff = result.affordability || {};
+  const serviceabilityPassed = aff.serviceability_passed !== undefined ? aff.serviceability_passed : true;
 
   const handleOpenSuburb = () => {
     if (onSelectResult && requestMeta) {
@@ -314,75 +315,87 @@ const BackendResultCard = memo(function BackendResultCard({ result, setActiveSub
   }
 
   return (
-    <div className="result-card glass-card">
-      <div className="result-card-header">
-        <h4>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '6px' }}>#{result.rank}</span>
+    <div className="result-card glass-card" style={{ display: 'flex', flexDirection: 'column', padding: '0' }}>
+      {/* Header Area */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#fff' }}>
+          <span style={{ color: 'var(--text-secondary)', marginRight: '8px', fontSize: '0.9rem' }}>#{result.rank}</span>
           {result.name}, {result.state}
         </h4>
-      </div>
-      <div className="result-card-body">
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
-          <div style={{ textAlign: 'center', minWidth: '60px' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>{result.buyer_fit_score.toFixed(0)}</div>
-            <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)' }}>Buyer Fit</div>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 600, background: serviceabilityPassed ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: serviceabilityPassed ? '#10b981' : '#ef4444', border: `1px solid ${serviceabilityPassed ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
+            {serviceabilityPassed ? '✓ Serviceability Passed' : '✗ Serviceability Failed'}
           </div>
-          <div style={{ flex: 1, fontSize: '0.7rem', lineHeight: 1.5 }}>
-            {aff.serviceability_passed !== undefined && (
-              <div style={{ color: aff.serviceability_passed ? '#10b981' : '#ef4444' }}>
-                {aff.serviceability_passed ? '✓ Serviceability passes under stated assumptions' : '✗ Serviceability not met at current rate assumptions'}
-              </div>
-            )}
-            <div style={{ color: 'var(--text-secondary)' }}>
-              Evidence: <span style={{ color: confColor, fontWeight: 600 }}>{evidenceLabel.toUpperCase()}</span>
+          <div style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: confColor, border: '1px solid rgba(255,255,255,0.1)' }}>
+            📊 Evidence: {evidenceLabel.toUpperCase()}
+          </div>
+        </div>
+      </div>
+
+      {/* Body Area */}
+      <div style={{ padding: '20px', display: 'flex', gap: '20px', flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(14,165,233,0.05)', padding: '15px', borderRadius: '12px', minWidth: '90px', border: '1px solid rgba(14,165,233,0.1)' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-cyan)', lineHeight: 1 }}>{result.buyer_fit_score.toFixed(0)}</div>
+          <div style={{ fontSize: '0.65rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px', fontWeight: 600 }}>Buyer Fit</div>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            <div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>Top Supports</div>
+              {result.drivers?.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {result.drivers.slice(0, 3).map((d: string, i: number) => (
+                    <div key={i} style={{ fontSize: '0.75rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                      <span style={{ color: '#10b981', marginTop: '1px' }}>✓</span> {d}
+                    </div>
+                  ))}
+                </div>
+              ) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No strong supports</div>}
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>Risks to Verify</div>
+              {result.risks?.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {result.risks.slice(0, 2).map((r: string, i: number) => (
+                    <div key={i} style={{ fontSize: '0.75rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                      <span style={{ color: '#ef4444', marginTop: '1px' }}>⚠️</span> {r}
+                    </div>
+                  ))}
+                </div>
+              ) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No major risks identified</div>}
             </div>
           </div>
         </div>
+      </div>
 
-        {result.drivers?.length > 0 && (
+      {/* Footer Area */}
+      <div style={{ padding: '15px 20px', background: 'rgba(0,0,0,0.2)', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button onClick={() => setShowEvidence(!showEvidence)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-secondary)', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem' }}>
+          {showEvidence ? 'Hide Model Evidence' : 'Inspect Model Evidence'}
+        </button>
+        <button onClick={handleOpenSuburb} style={{ padding: '8px 20px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, boxShadow: '0 4px 12px rgba(14,165,233,0.3)' }}>
+          Open Decision Brief →
+        </button>
+      </div>
+
+      {showEvidence && (
+        <div style={{ padding: '15px 20px', background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+          <div><strong>Evidence ID:</strong> {result.evidence_ids?.[0] || 'N/A'}</div>
+          {result.affordability?.assumptions && (
+            <div style={{ marginTop: '6px' }}>
+              <strong>Assumptions used:</strong> Rate {(result.affordability.assumptions.interest_rate * 100).toFixed(1)}%, Buffer +{(result.affordability.assumptions.serviceability_buffer * 100).toFixed(0)}%, {result.affordability.assumptions.loan_term_years}yr term, {(result.affordability.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% costs
+            </div>
+          )}
+          <div style={{ marginTop: '6px' }}><strong>Serviceability math:</strong> Loan required ${aff.required_loan?.toLocaleString()} vs Bank borrowing capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}</div>
           <div style={{ marginTop: '6px' }}>
-            {result.drivers.slice(0, 2).map((d: string, i: number) => (
-              <span key={i} style={{ fontSize: '0.65rem', color: '#10b981', display: 'block' }}>+ {d}</span>
+            <strong>Component score weights:</strong> {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
+              <span key={k} style={{ marginRight: '12px' }}>{k}: {v.score.toFixed(0)} (x{v.weight}%)</span>
             ))}
           </div>
-        )}
-        {result.risks?.length > 0 && (
-          <div style={{ marginTop: '4px' }}>
-            {result.risks.slice(0, 1).map((r: string, i: number) => (
-              <span key={i} style={{ fontSize: '0.65rem', color: '#ef4444', display: 'block' }}>− {r}</span>
-            ))}
-          </div>
-        )}
-
-        <div style={{ display: 'flex', gap: '6px', marginTop: '10px', flexWrap: 'wrap' }}>
-          <button onClick={handleOpenSuburb}
-            style={{ padding: '4px 8px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600 }}>
-            View decision
-          </button>
-          <button onClick={() => setShowEvidence(!showEvidence)}
-            style={{ padding: '4px 8px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}>
-            {showEvidence ? 'Hide Evidence' : 'Evidence Details'}
-          </button>
+          <div style={{ marginTop: '6px' }}><strong>Unknown variables:</strong> {(result.unknowns || []).join(', ') || 'None'}</div>
         </div>
-
-        {showEvidence && (
-          <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px', fontSize: '0.65rem', color: 'var(--text-secondary)', border: '1px solid var(--border-glass)' }}>
-            <div><strong>Evidence ID:</strong> {result.evidence_ids?.[0] || 'N/A'}</div>
-            {result.affordability?.assumptions && (
-              <div style={{ marginTop: '4px' }}>
-                <strong>Assumptions:</strong> Rate {(result.affordability.assumptions.interest_rate * 100).toFixed(1)}%, Buffer +{(result.affordability.assumptions.serviceability_buffer * 100).toFixed(0)}%, {result.affordability.assumptions.loan_term_years}yr term, {(result.affordability.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% costs
-              </div>
-            )}
-            <div style={{ marginTop: '4px' }}><strong>Afford:</strong> Loan ${aff.required_loan?.toLocaleString()}, Capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}</div>
-            <div style={{ marginTop: '4px' }}>
-              <strong>Score breakdown:</strong> {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
-                <span key={k} style={{ marginRight: '8px' }}>{k}: {v.score.toFixed(0)} x {v.weight}%</span>
-              ))}
-            </div>
-            <div style={{ marginTop: '4px' }}><strong>Unknowns:</strong> {(result.unknowns || []).join(', ') || 'None'}</div>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 });
