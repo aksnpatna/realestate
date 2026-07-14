@@ -12,24 +12,30 @@ interface BuyFinderLocalResponse {
   total_evaluated: number
 }
 
-export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelectResult }: { suburbsData?: SuburbData[]; setActiveSuburb?: (s: SuburbData) => void; setActiveTab?: (t: string) => void; onSelectResult?: (result: BuyerFitResult, requestMeta: { request_id: string; model_version: string }) => void }) {
+export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelectResult, financialProfile, setFinancialProfile }: { suburbsData?: SuburbData[]; setActiveSuburb?: (s: SuburbData) => void; setActiveTab?: (t: string) => void; onSelectResult?: (result: BuyerFitResult, requestMeta: { request_id: string; model_version: string }) => void; financialProfile?: any; setFinancialProfile?: any }) {
   const [backendResults, setBackendResults] = useState<BuyFinderLocalResponse | null>(null);
   const [backendLoading, setBackendLoading] = useState(false);
   const [backendError, setBackendError] = useState<string | null>(null);
 
   const [state, setState] = useState('VIC');
-  const [budget, setBudget] = useState(850000);
-  const [deposit, setDeposit] = useState(170000);
-  const [annualIncome, setAnnualIncome] = useState(150000);
-  const [monthlyDebt, setMonthlyDebt] = useState(0);
-  const [propertyType, setPropertyType] = useState('house');
-  const [maxCBDMinutes, setMaxCBDMinutes] = useState(60);
-  const [minimumYield, setMinimumYield] = useState<number | null>(null);
+  const budget = financialProfile?.budget ?? 850000;
+  const deposit = financialProfile?.deposit ?? 170000;
+  const annualIncome = financialProfile?.annualIncome ?? 150000;
+  const monthlyDebt = financialProfile?.monthlyDebt ?? 0;
+  const propertyType = financialProfile?.propertyType ?? 'house';
+  const maxCBDMinutes = financialProfile?.maxCBDMinutes ?? 60;
+  const minimumYield = financialProfile?.minimumYield ?? null;
 
-  const [interestRate, setInterestRate] = useState(6.2);
-  const [serviceabilityBuffer, setServiceabilityBuffer] = useState(3.0);
-  const [loanTermYears, setLoanTermYears] = useState(30);
-  const [purchaseCostAllowance, setPurchaseCostAllowance] = useState(2.0);
+  const interestRate = financialProfile?.interestRate ?? 6.2;
+  const serviceabilityBuffer = financialProfile?.serviceabilityBuffer ?? 3.0;
+  const loanTermYears = financialProfile?.loanTermYears ?? 30;
+  const purchaseCostAllowance = financialProfile?.purchaseCostAllowance ?? 5.0;
+
+  const updateProfile = (key: string, value: any) => {
+    if (setFinancialProfile) {
+      setFinancialProfile((prev: any) => ({ ...prev, [key]: value }));
+    }
+  };
 
   const [wAffordability, setWAffordability] = useState(30);
   const [wIncome, setWIncome] = useState(25);
@@ -112,28 +118,29 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                   {states.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
-              <div className="control-group" style={{ flex: '1 1 150px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Budget ($)</label>
-                <input type="number" className="premium-input small" value={budget} onChange={e => setBudget(Number(e.target.value))} min={100000} step={50000} />
+              <div className="control-group">
+                <label className="control-label">Budget ($)</label>
+                <input type="number" className="premium-input" value={budget} onChange={e => updateProfile('budget', Number(e.target.value))} min={100000} step={10000} />
               </div>
-              <div className="control-group" style={{ flex: '1 1 150px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Deposit ($)</label>
-                <input type="number" className="premium-input small" value={deposit} onChange={e => setDeposit(Number(e.target.value))} min={20000} step={10000} />
+              <div className="control-group">
+                <label className="control-label">Deposit ($)</label>
+                <input type="number" className="premium-input" value={deposit} onChange={e => updateProfile('deposit', Number(e.target.value))} min={10000} step={10000} />
               </div>
-              <div className="control-group" style={{ flex: '1 1 120px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Property Type</label>
-                <select className="premium-input small" value={propertyType} onChange={e => setPropertyType(e.target.value)}>
+              <div className="control-group">
+                <label className="control-label">Property Type</label>
+                <select className="premium-input" value={propertyType} onChange={e => updateProfile('propertyType', e.target.value)}>
                   <option value="house">House</option>
                   <option value="unit">Unit</option>
+                  <option value="any">Any</option>
                 </select>
               </div>
-              <div className="control-group" style={{ flex: '1 1 120px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Max CBD (min)</label>
-                <input type="number" className="premium-input small" value={maxCBDMinutes} onChange={e => setMaxCBDMinutes(Number(e.target.value))} min={5} max={180} />
+              <div className="control-group">
+                <label className="control-label">Max CBD (min)</label>
+                <input type="number" className="premium-input" value={maxCBDMinutes} onChange={e => updateProfile('maxCBDMinutes', Number(e.target.value))} min={10} step={5} />
               </div>
-              <div className="control-group" style={{ flex: '1 1 120px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>Min Yield %</label>
-                <select className="premium-input small" value={minimumYield ?? ''} onChange={e => setMinimumYield(e.target.value ? Number(e.target.value) : null)} style={{ width: '80px' }}>
+              <div className="control-group">
+                <label className="control-label">Min Yield %</label>
+                <select className="premium-input" value={minimumYield ?? ''} onChange={e => updateProfile('minimumYield', e.target.value === '' ? null : Number(e.target.value))}>
                   <option value="">Any</option>
                   <option value="2">2%</option>
                   <option value="3">3%</option>
@@ -168,53 +175,21 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                 <input type="range" className="premium-range" min={0} max={100} value={wEvidence} onChange={e => setWEvidence(Number(e.target.value))} />
               </div>
             </div>
+          </div>
+          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ background: 'rgba(14,165,233,0.08)', color: 'var(--accent-cyan)', padding: '10px 15px', borderRadius: '6px', fontSize: '0.85rem', border: '1px solid rgba(14,165,233,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <strong>Using your financial profile:</strong> ${Math.round(annualIncome/1000)}k Gross Income, ${Math.round(deposit/1000)}k Deposit.
               </div>
+              <button 
+                onClick={() => { if(setActiveTab) setActiveTab('affordability'); }}
+                style={{ background: 'transparent', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}
+              >
+                Edit in Price Ceiling
+              </button>
             </div>
           </div>
-
-          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <details>
-              <summary style={{ cursor: 'pointer', fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
-                Financial Assumptions (not lender approval)
-              </summary>
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' }}>
-                <div className="control-group" style={{ flex: '1 1 120px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Gross Income ($)</label>
-                  <input type="number" className="premium-input small" value={annualIncome} onChange={e => setAnnualIncome(Number(e.target.value))} min={0} step={5000} />
-                </div>
-                <div className="control-group" style={{ flex: '1 1 120px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }} title="Exclude new loan.">Existing Debt ($/mo)</label>
-                  <input type="number" className="premium-input small" value={monthlyDebt} onChange={e => setMonthlyDebt(Number(e.target.value))} min={0} step={500} />
-                </div>
-                <div className="control-group" style={{ flex: '1 1 100px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Rate ({interestRate}%)</label>
-                  <input type="range" className="premium-range" min={2} max={12} step={0.25} value={interestRate} onChange={e => setInterestRate(Number(e.target.value))} />
-                </div>
-                <div className="control-group" style={{ flex: '1 1 100px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Buffer (+{serviceabilityBuffer}%)</label>
-                  <input type="range" className="premium-range" min={0} max={5} step={0.5} value={serviceabilityBuffer} onChange={e => setServiceabilityBuffer(Number(e.target.value))} />
-                </div>
-                <div className="control-group" style={{ flex: '1 1 80px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Term ({loanTermYears}y)</label>
-                  <select className="premium-input small" value={loanTermYears} onChange={e => setLoanTermYears(Number(e.target.value))}>
-                    <option value={15}>15y</option>
-                    <option value={20}>20y</option>
-                    <option value={25}>25y</option>
-                    <option value={30}>30y</option>
-                  </select>
-                </div>
-                <div className="control-group" style={{ flex: '1 1 100px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Costs ({purchaseCostAllowance}%)</label>
-                  <input type="range" className="premium-range" min={0} max={5} step={0.5} value={purchaseCostAllowance} onChange={e => setPurchaseCostAllowance(Number(e.target.value))} />
-                </div>
-              </div>
-              <div style={{ marginTop: '8px', fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-                These are assumptions used by the affordability model, not lender approval criteria.
-                Affordability is an estimate based on your stated income, debt, and borrowing assumptions.
-              </div>
-            </details>
-          </div>
-
+        </div>
       <div className="glass-card search-results-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <h3 style={{ margin: 0 }}>
@@ -284,6 +259,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
         )}
       </div>
     </div>
+  </div>
   );
 })
 
