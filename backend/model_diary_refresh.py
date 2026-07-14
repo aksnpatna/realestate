@@ -53,9 +53,12 @@ def refresh_outcomes():
 
             if realized_price and baseline_price and baseline_price > 0:
                 price_return = (realized_price - baseline_price) / baseline_price
-                pred.realized_price_6m = realized_price if age_months >= 6 else None
-                pred.realized_price_12m = realized_price if age_months >= 12 else None
-                pred.realized_price_36m = realized_price if age_months >= 36 else None
+                if age_months >= 36:
+                    pred.realized_price_36m = realized_price
+                if age_months >= 12:
+                    pred.realized_price_12m = realized_price
+                if age_months >= 6:
+                    pred.realized_price_6m = realized_price
 
                 if age_months >= 36:
                     if price_return > 0.10:
@@ -64,6 +67,10 @@ def refresh_outcomes():
                         pred.outcome_rating = "underperformed"
                     else:
                         pred.outcome_rating = "neutral"
+                elif age_months >= 12:
+                    pred.outcome_rating = "rated_12m"
+                elif age_months >= 6:
+                    pred.outcome_rating = "rated_6m"
                 else:
                     pred.outcome_rating = None
             else:
