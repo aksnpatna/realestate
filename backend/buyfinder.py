@@ -63,15 +63,15 @@ def calibrate_dq(v3) -> float:
             
     # Secondary metrics (light penalty if missing)
     minor_checks = [
-        v3.house_days_on_market, v3.unit_days_on_market,
-        v3.house_auction_clearance_rate, v3.avg_icsea, 
-        v3.school_count, v3.typical_mortgage_band
+        v3.avg_icsea, 
+        v3.school_count, 
+        v3.typical_mortgage_band
     ]
     for c in minor_checks:
         if c is None or c == 0:
             penalties += 3
             
-    return max(5, min(95, raw - penalties))
+    return max(5, min(100, raw - penalties))
 
 
 def clamp(val, lo, hi):
