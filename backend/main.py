@@ -1889,7 +1889,7 @@ def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
                 raise HTTPException(422, f"weight {fname} must be non-negative and finite")
     from buyfinder import rank_suburbs, BuyFinderRequest as BFR, BuyFinderWeights
 
-    weights = request.weights if request.weights else BuyFinderWeights()
+    weights_dict = request.weights.dict() if request.weights else {}
 
     bf_request = BFR(
         buyer_profile=request.buyer_profile,
@@ -1905,6 +1905,6 @@ def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
         property_type=request.property_type,
         maximum_cbd_minutes=request.maximum_cbd_minutes,
         minimum_yield=request.minimum_yield,
-        weights=weights,
+        weights=weights_dict,
     )
     return rank_suburbs(bf_request, db)
