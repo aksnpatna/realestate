@@ -183,7 +183,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                   <input type="number" className="premium-input small" value={annualIncome} onChange={e => setAnnualIncome(Number(e.target.value))} min={0} step={5000} />
                 </div>
                 <div className="control-group" style={{ flex: '1 1 120px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Monthly Debt ($)</label>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }} title="Exclude new loan.">Existing Debt ($/mo)</label>
                   <input type="number" className="premium-input small" value={monthlyDebt} onChange={e => setMonthlyDebt(Number(e.target.value))} min={0} step={500} />
                 </div>
                 <div className="control-group" style={{ flex: '1 1 100px' }}>

@@ -92,8 +92,11 @@ def calculate_stamp_duty(state: str, price: float) -> float:
 def compute_borrowing_capacity(annual_income: float, monthly_debt: float,
                                 interest_rate: float, serviceability_buffer: float,
                                 loan_term_years: int) -> float:
-    monthly_income = annual_income / 12
-    max_repayment = monthly_income * 0.30 - monthly_debt
+    gross_monthly = annual_income / 12
+    net_monthly = gross_monthly * 0.75
+    living_expenses = max(2500, net_monthly * 0.3)
+    max_repayment = net_monthly - living_expenses - monthly_debt
+    
     if max_repayment <= 0:
         return 0.0
     effective_rate = interest_rate + serviceability_buffer
