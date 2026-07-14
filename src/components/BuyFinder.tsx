@@ -179,7 +179,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
               </summary>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' }}>
                 <div className="control-group" style={{ flex: '1 1 120px' }}>
-                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Annual Income ($)</label>
+                  <label className="control-label" style={{ fontSize: '0.7rem' }}>Gross Income ($)</label>
                   <input type="number" className="premium-input small" value={annualIncome} onChange={e => setAnnualIncome(Number(e.target.value))} min={0} step={5000} />
                 </div>
                 <div className="control-group" style={{ flex: '1 1 120px' }}>
