@@ -42,7 +42,7 @@ function MetricCard({ label, value, suffix, trend }: {
 }
 
 function DQBadge({ score }: { score: number }) {
-  const color = score >= 90 ? '#10b981' : score >= 70 ? '#f59e0b' : '#ef4444';
+  const color = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444';
   return (
     <span title={`Data Quality: ${score}/100`} style={{ background: `${color}20`, color, border: `1px solid ${color}40`, padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>
       DQ {score.toFixed(0)}

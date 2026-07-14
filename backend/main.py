@@ -669,21 +669,29 @@ def _calibrate_dq(v3) -> float:
     """Recalibrate DQ Score: subtract points for NULL critical fields."""
     raw = float(v3.dq_score or 100)
     penalties = 0
-    # Critical data points — subtract 3 pts each if NULL
-    checks = [
-        v3.house_days_on_market,
-        v3.unit_days_on_market,
-        v3.house_auction_clearance_rate,
+    
+    # Critical institutional metrics (heavy penalty if missing)
+    critical_checks = [
+        v3.vacancy_rate, 
+        v3.price_to_income_ratio, 
         v3.predominant_occupation,
-        v3.avg_icsea,
-        v3.school_count,
-        v3.price_to_income_ratio,
-        v3.typical_mortgage_band,
-        v3.vacancy_rate,
+        v3.population_cagr,
+        v3.rental_stock
     ]
-    for c in checks:
+    for c in critical_checks:
+        if c is None or c == 0:
+            penalties += 15
+            
+    # Secondary metrics (light penalty if missing)
+    minor_checks = [
+        v3.house_days_on_market, v3.unit_days_on_market,
+        v3.house_auction_clearance_rate, v3.avg_icsea, 
+        v3.school_count, v3.typical_mortgage_band
+    ]
+    for c in minor_checks:
         if c is None or c == 0:
             penalties += 3
+            
     return max(5, min(95, raw - penalties))
 
 def _compute_growth_score(v3: SuburbUIV3) -> dict:
