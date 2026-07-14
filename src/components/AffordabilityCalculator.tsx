@@ -55,7 +55,9 @@ export default memo(function AffordabilityCalculator({ setActiveTab }: { suburbs
               onChange={(e) => setAnnualIncome(Number(e.target.value) || 0)} min={50000} step={5000} placeholder="e.g. 150000" />
           </div>
           <div className="control-group">
-            <label className="control-label">Other Monthly Debt (Credit Cards, Loans)</label>
+            <label className="control-label" title="Do not include the new mortgage repayment here. This is for existing obligations only.">
+              Other Monthly Debt (Exclude New Loan)
+            </label>
             <input type="number" className="premium-input" value={monthlyDebt}
               onChange={(e) => setMonthlyDebt(Number(e.target.value) || 0)} min={0} step={100} placeholder="e.g. 0" />
           </div>
