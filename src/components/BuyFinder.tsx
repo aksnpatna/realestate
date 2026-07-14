@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import type { SuburbData } from '../data/suburbs';
+import type { BuyerFitResult } from '../data/buyerFitTypes';
 
-interface BuyFinderResponse {
+interface BuyFinderLocalResponse {
   model_version: string
   request_id: string
   dq_threshold: number
@@ -11,8 +12,8 @@ interface BuyFinderResponse {
   total_evaluated: number
 }
 
-export default memo(function BuyFinder({ setActiveSuburb, setActiveTab }: { suburbsData?: SuburbData[]; setActiveSuburb?: (s: SuburbData) => void; setActiveTab?: (t: string) => void }) {
-  const [backendResults, setBackendResults] = useState<BuyFinderResponse | null>(null);
+export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelectResult }: { suburbsData?: SuburbData[]; setActiveSuburb?: (s: SuburbData) => void; setActiveTab?: (t: string) => void; onSelectResult?: (result: BuyerFitResult, requestMeta: { request_id: string; model_version: string }) => void }) {
+  const [backendResults, setBackendResults] = useState<BuyFinderLocalResponse | null>(null);
   const [backendLoading, setBackendLoading] = useState(false);
   const [backendError, setBackendError] = useState<string | null>(null);
 
@@ -257,7 +258,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab }: { subu
         {backendResults && backendResults.results.length > 0 && (
           <div className="search-results-grid">
             {backendResults.results.map((r: any) => (
-              <BackendResultCard key={r.suburb_id} result={r} setActiveSuburb={setActiveSuburb} setActiveTab={setActiveTab} />
+              <BackendResultCard key={r.suburb_id} result={r} setActiveSuburb={setActiveSuburb} setActiveTab={setActiveTab} onSelectResult={onSelectResult} requestMeta={{ request_id: backendResults.request_id, model_version: backendResults.model_version }} />
             ))}
           </div>
         )}
@@ -286,13 +287,16 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab }: { subu
   );
 })
 
-const BackendResultCard = memo(function BackendResultCard({ result, setActiveSuburb, setActiveTab }: { result: any; setActiveSuburb?: (s: any) => void; setActiveTab?: (t: string) => void }) {
+const BackendResultCard = memo(function BackendResultCard({ result, setActiveSuburb, setActiveTab, onSelectResult, requestMeta }: { result: any; setActiveSuburb?: (s: any) => void; setActiveTab?: (t: string) => void; onSelectResult?: (result: BuyerFitResult, meta: { request_id: string; model_version: string }) => void; requestMeta?: { request_id: string; model_version: string } }) {
   const [showEvidence, setShowEvidence] = useState(false);
   const confColor = result.confidence_label === 'high' ? '#10b981' : result.confidence_label === 'medium' ? '#eab308' : '#ef4444';
   const evidenceLabel = result.confidence_label || 'low';
   const aff = result.affordability || {};
 
   const handleOpenSuburb = () => {
+    if (onSelectResult && requestMeta) {
+      onSelectResult(result as BuyerFitResult, requestMeta)
+    }
     if (setActiveSuburb) {
       setActiveSuburb({
         id: result.suburb_id?.toLowerCase(),
@@ -353,7 +357,7 @@ const BackendResultCard = memo(function BackendResultCard({ result, setActiveSub
         <div style={{ display: 'flex', gap: '6px', marginTop: '10px', flexWrap: 'wrap' }}>
           <button onClick={handleOpenSuburb}
             style={{ padding: '4px 8px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600 }}>
-            Open Suburb
+            View decision
           </button>
           <button onClick={() => setShowEvidence(!showEvidence)}
             style={{ padding: '4px 8px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}>
