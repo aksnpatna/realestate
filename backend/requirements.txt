@@ -29,3 +29,5 @@ headroom-ai[all]
 ddgs
 redis
 httpx
+pytest
+pytest-env
