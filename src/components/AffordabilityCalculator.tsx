@@ -1,13 +1,19 @@
-import { useState, useMemo, memo } from 'react';
+import { useMemo, memo } from 'react';
 import { calculateMaxPurchase } from '../data/suburbs';
 
-export default memo(function AffordabilityCalculator({ setActiveTab }: { suburbsData?: any[]; setActiveTab?: (t: string) => void }) {
-  const [deposit, setDeposit] = useState<number>(150000);
-  const [lvrPct, setLvrPct] = useState<number>(90);
-  const [annualIncome, setAnnualIncome] = useState<number>(150000);
-  const [monthlyDebt, setMonthlyDebt] = useState<number>(0);
-  const [interestRate, setInterestRate] = useState<number>(6.2);
-  const [bufferRate, setBufferRate] = useState<number>(3.0);
+export default memo(function AffordabilityCalculator({ setActiveTab, financialProfile, setFinancialProfile }: { suburbsData?: any[]; setActiveTab?: (t: string) => void; financialProfile?: any; setFinancialProfile?: any }) {
+  const deposit = financialProfile?.deposit ?? 150000;
+  const lvrPct = financialProfile?.lvrPct ?? 90;
+  const annualIncome = financialProfile?.annualIncome ?? 150000;
+  const monthlyDebt = financialProfile?.monthlyDebt ?? 0;
+  const interestRate = financialProfile?.interestRate ?? 6.2;
+  const bufferRate = financialProfile?.bufferRate ?? 3.0;
+
+  const updateProfile = (key: string, value: number) => {
+    if (setFinancialProfile) {
+      setFinancialProfile((prev: any) => ({ ...prev, [key]: value }));
+    }
+  };
 
   const lvr = lvrPct / 100;
 
@@ -40,36 +46,36 @@ export default memo(function AffordabilityCalculator({ setActiveTab }: { suburbs
           <div className="control-group">
             <label className="control-label">Your Deposit (AUD)</label>
             <input type="number" className="premium-input" value={deposit}
-              onChange={(e) => setDeposit(Number(e.target.value) || 0)} min={10000} step={10000} placeholder="e.g. 150000" />
+              onChange={(e) => updateProfile('deposit', Number(e.target.value) || 0)} min={10000} step={10000} placeholder="e.g. 150000" />
           </div>
           <div className="control-group">
             <label className="control-label">Max LVR ({lvrPct}%)</label>
             <div className="range-with-value">
-              <input type="range" className="premium-range" min={50} max={95} step={5} value={lvrPct} onChange={(e) => setLvrPct(Number(e.target.value))} />
+              <input type="range" className="premium-range" min={50} max={95} step={5} value={lvrPct} onChange={(e) => updateProfile('lvrPct', Number(e.target.value))} />
               <span className="range-value">{lvrPct}%</span>
             </div>
           </div>
           <div className="control-group">
             <label className="control-label">Combined Gross Income (Before Tax)</label>
             <input type="number" className="premium-input" value={annualIncome}
-              onChange={(e) => setAnnualIncome(Number(e.target.value) || 0)} min={50000} step={5000} placeholder="e.g. 150000" />
+              onChange={(e) => updateProfile('annualIncome', Number(e.target.value) || 0)} min={50000} step={5000} placeholder="e.g. 150000" />
           </div>
           <div className="control-group">
             <label className="control-label" title="Do not include the new mortgage repayment here. This is for existing obligations only.">
               Other Monthly Debt (Exclude New Loan)
             </label>
             <input type="number" className="premium-input" value={monthlyDebt}
-              onChange={(e) => setMonthlyDebt(Number(e.target.value) || 0)} min={0} step={100} placeholder="e.g. 0" />
+              onChange={(e) => updateProfile('monthlyDebt', Number(e.target.value) || 0)} min={0} step={100} placeholder="e.g. 0" />
           </div>
           <div className="control-group">
             <label className="control-label">Interest Rate ({interestRate}%)</label>
             <input type="number" className="premium-input" value={interestRate}
-              onChange={(e) => setInterestRate(Number(e.target.value) || 0)} min={1} max={15} step={0.1} />
+              onChange={(e) => updateProfile('interestRate', Number(e.target.value) || 0)} min={1} max={15} step={0.1} />
           </div>
           <div className="control-group">
-            <label className="control-label">Serviceability Buffer ({bufferRate}%)</label>
+            <label className="control-label">Serviceability Buffer (+{bufferRate}%)</label>
             <input type="number" className="premium-input" value={bufferRate}
-              onChange={(e) => setBufferRate(Number(e.target.value) || 0)} min={0} max={5} step={0.5} />
+              onChange={(e) => updateProfile('bufferRate', Number(e.target.value) || 0)} min={0} max={5} step={0.5} />
           </div>
         </div>
 

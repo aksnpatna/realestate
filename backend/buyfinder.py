@@ -118,21 +118,20 @@ def compute_repayment(loan: float, interest_rate: float, serviceability_buffer: 
 
 
 def unified_eligibility(v3) -> dict:
-    raw_dq = v3.dq_score or 100
     eligibility_dq = calibrate_dq(v3)
     synthetic = has_synthetic_recommendation_inputs(v3)
     reasons = []
     if not v3.is_enriched:
         reasons.append("not_enriched")
-    if raw_dq is None or raw_dq < poc_config.public_poc_min_dq_score:
-        reasons.append("dq_below_threshold")
+    if eligibility_dq < poc_config.public_poc_min_dq_score:
+        reasons.append(f"dq_below_threshold ({eligibility_dq:.1f} < {poc_config.public_poc_min_dq_score})")
     if synthetic:
         reasons.append("synthetic_recommendation_inputs")
     eligible = len(reasons) == 0
     return {
         "eligible": eligible,
         "reasons": reasons,
-        "raw_dq_score": raw_dq,
+        "raw_dq_score": v3.dq_score,
         "eligibility_dq_score": eligibility_dq,
         "threshold": poc_config.public_poc_min_dq_score,
         "has_synthetic_inputs": synthetic,
