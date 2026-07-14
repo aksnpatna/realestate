@@ -1,7 +1,8 @@
 """
 model_diary_refresh.py — Idempotent Model Diary outcome evaluation.
 
-Finds predictions due at 6, 12, and 36 months, captures realized metrics,
+Uses the canonical ModelDiary model (same as /api/model-diary/* endpoints).
+Finds due predictions at 6, 12, and 36 months, captures realized metrics,
 and stores outcomes. Never overwrites original prediction snapshots.
 
 Run: python backend/model_diary_refresh.py
@@ -13,7 +14,7 @@ from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from models_v3 import SessionLocal, SuburbUIV3, CommitteeMemory
+from models_v3 import SessionLocal, SuburbUIV3, ModelDiary
 from poc_config import poc_config
 
 logger = logging.getLogger("model_diary_refresh")
@@ -23,9 +24,9 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message
 def refresh_outcomes():
     db = SessionLocal()
     try:
-        predictions = db.query(CommitteeMemory).filter(
-            CommitteeMemory.outcome_status == "pending",
-            CommitteeMemory.created_at.isnot(None),
+        predictions = db.query(ModelDiary).filter(
+            ModelDiary.outcome_rating.is_(None),
+            ModelDiary.prediction_date.isnot(None),
         ).all()
 
         now = datetime.utcnow()
@@ -33,60 +34,55 @@ def refresh_outcomes():
         unavailable = 0
 
         for pred in predictions:
-            age_months = (now - pred.created_at).days / 30.44 if pred.created_at else 0
+            age_months = (now - pred.prediction_date).days / 30.44 if pred.prediction_date else 0
 
             if age_months < 6:
                 continue
 
             suburb = db.query(SuburbUIV3).filter(
-                SuburbUIV3.id == pred.suburb.upper()
+                SuburbUIV3.id == pred.suburb_id.upper()
             ).first()
 
             if not suburb:
-                pred.outcome_status = "unavailable"
-                pred.verified_at = now
+                pred.outcome_rating = "unavailable"
                 unavailable += 1
                 continue
 
             realized_price = suburb.house_median_price
-            realized_yield = suburb.house_gross_rental_yield
-            realized_vacancy = suburb.vacancy_rate
+            baseline_price = pred.baseline_median_price or 0
 
-            if realized_price and pred.median_price and pred.median_price > 0:
-                price_return = (realized_price - pred.median_price) / pred.median_price
-            else:
-                price_return = None
+            if realized_price and baseline_price and baseline_price > 0:
+                price_return = (realized_price - baseline_price) / baseline_price
+                pred.realized_price_6m = realized_price if age_months >= 6 else None
+                pred.realized_price_12m = realized_price if age_months >= 12 else None
+                pred.realized_price_36m = realized_price if age_months >= 36 else None
 
-            if price_return is not None:
                 if age_months >= 36:
                     if price_return > 0.10:
-                        pred.outcome_status = "outperformed"
+                        pred.outcome_rating = "outperformed"
                     elif price_return < -0.05:
-                        pred.outcome_status = "underperformed"
+                        pred.outcome_rating = "underperformed"
                     else:
-                        pred.outcome_status = "neutral"
+                        pred.outcome_rating = "neutral"
                 else:
-                    pred.outcome_status = "pending_partial"
-
-                pred.outcome_score = round(price_return * 100, 2)
+                    pred.outcome_rating = None
             else:
-                pred.outcome_status = "unavailable"
+                pred.outcome_rating = "unavailable"
 
-            pred.benchmark_return = realized_yield or 0
-            pred.verified_at = now
             updated += 1
 
         db.commit()
 
-        total = db.query(CommitteeMemory).count()
-        rated = db.query(CommitteeMemory).filter(
-            CommitteeMemory.outcome_status.in_(["outperformed", "underperformed", "neutral"])
+        total = db.query(ModelDiary).count()
+        rated = db.query(ModelDiary).filter(
+            ModelDiary.outcome_rating.isnot(None),
+            ModelDiary.outcome_rating != "unavailable",
         ).count()
 
-        logger.info(f"Outcome refresh: {updated} updated ({unavailable} unavailable)")
-        logger.info(f"Model Diary: {rated}/{total} rated outcomes (sample size for calibration: {rated})")
+        logger.info(f"Outcome refresh: {updated} evaluated ({unavailable} unavailable)")
+        logger.info(f"Model Diary: {rated}/{total} rated outcomes")
         if rated < 10:
-            logger.info("Insufficient outcome data for statistical calibration. Do not treat as calibrated model.")
+            logger.info("Insufficient outcome data for calibration. Status: incomplete.")
 
     except Exception as e:
         logger.error(f"Outcome refresh failed: {e}")
