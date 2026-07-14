@@ -1,48 +1,56 @@
-Your authoritative implementation specification is:
-realestate_poc_gap_closure_and_test_plan.md
+Your authoritative specification is:
+`realestate_backend_integration_test_closure_plan.md`
 
-Implement the plan end to end. This is behaviour and contract work, not a visual-only task.
+Complete the backend verification work that remained unproven after the Buyer Fit POC changes. This task is focused on creating a reproducible test environment and proving existing behaviour; do not make unrelated product or UI changes.
 
-Operating rules:
-1. Read the plan and inspect the owning frontend/backend paths before each change.
-2. Complete Phase 1 first: preserve the exact personalised Buyer Fit result when a user opens a shortlist result and enters the Decision Brief/profile flow.
-3. Immediately run focused tests after the first substantive Phase 1 edit. Do not continue into later phases until that validation passes.
-4. Keep Buyer Fit ranking, affordability and eligibility deterministic and backend-owned. Do not calculate/re-rank results in the browser.
-5. Do not replace a buyer’s selected result with a default BuyFinderRequest or generic suburb decision.
-6. Do not leave Price Ceiling as a second suburb finder/ranking flow.
-7. Do not present raw DQ as a primary buyer-facing metric. Use Evidence labels with technical detail behind progressive disclosure.
-8. Do not use forecast, expected return, probability, or estimated-downside language for uncalibrated scenarios.
-9. Choose one canonical Model Diary persistence model; ensure refresh scripts and API endpoints use that same model.
-10. Do not mark a phase complete based on UI appearance. Implement backend semantics, API contracts, UI behaviour, and automated tests.
+First inspect the repository’s dependency configuration, database settings, migrations, Docker setup, pytest conventions, ModelDiary model, `model_diary_refresh.py`, evidence registry, and backend test suite.
 
-For every phase in the plan:
-- make the smallest coherent implementation;
-- add or update the specified backend, frontend, integration and regression tests;
-- run the phase’s focused validation command;
-- fix failures before expanding scope;
-- preserve existing public API compatibility unless the plan explicitly requires an API contract change.
+Implement the smallest coherent solution that satisfies the plan.
 
-Required final validation:
-- npm run build
-- npm run test
-- npm run lint
-- python -m compileall backend
-- python -m pytest backend/tests -q
+Rules:
+1. Install and configure `pytest` through the repository’s dependency configuration. Do not rely on a machine-global installation.
+2. Create or document an isolated test database path using `TEST_DATABASE_URL` or an equivalent explicit test-only configuration.
+3. Add a guard that fails fast if integration tests target a database not clearly identified as a test database.
+4. Never execute automated tests against a shared, production, development, or POC database.
+5. Keep pure Buyer Fit calculations database-free where the existing design allows it.
+6. Add real database-backed Model Diary tests. Do not mock persistence for tests intended to prove persistence, refresh lifecycle, or idempotency.
+7. Seed only deterministic minimal fixtures. Tests must not scrape, call external APIs, or depend on live data.
+8. Complete runtime evidence-ID validation against the canonical registry. Unknown required evidence must become `INSUFFICIENT_EVIDENCE` or be removed under a documented rule.
+9. Test eligibility behaviour using both `PUBLIC_POC_MIN_DQ_SCORE=80` and `PUBLIC_POC_MIN_DQ_SCORE=90`.
+10. Do not report completion if `pytest`, the test database, or any required test remains unavailable.
 
-Run relevant eligibility checks using:
+Required backend behaviours to prove:
+- zero borrowing capacity returns affordability score `0`, failed serviceability, and a capacity/serviceability risk;
+- invalid/non-finite/negative Buyer Fit inputs return documented `4xx` responses;
+- higher interest rate cannot improve affordability;
+- higher debt cannot improve capacity or affordability;
+- all-zero weights return finite, documented behaviour;
+- Model Diary records created by API are updated by refresh in the same canonical `ModelDiary` storage;
+- refresh is idempotent;
+- missing realised data remains null and becomes `unavailable`, never zero;
+- insufficient Model Diary outcomes do not produce a calibration/probability claim;
+- valid evidence resolves to real sources; invalid evidence is downgraded safely.
+
+Run and report exact results for:
+
+```powershell
+python -m pytest backend/tests/test_buyfinder.py -q
+python -m pytest backend/tests/test_model_diary_refresh.py -q
+python -m pytest backend/tests -q
+python -m compileall backend
+
+Run applicable tests twice, with:
 PUBLIC_POC_MODE=true
 PUBLIC_POC_MIN_DQ_SCORE=80
 DEMO_MODE=false
 ALLOW_MOCK_SUBURBS=false
-
-Then repeat eligibility-related tests with:
+and then:
 PUBLIC_POC_MIN_DQ_SCORE=90
+At completion provide:
 
-At completion, provide:
-1. Files changed and why.
-2. The decision-snapshot/request contract selected and its limitations.
-3. Tests run, with pass/fail results.
-4. Any remaining known limitations, clearly separated from completed work.
-5. A concise walkthrough proving the final showcase acceptance script in the plan can be demonstrated.
-
-Do not claim completion if any required validation fails or is not run.
+Files changed and why.
+Exact test-environment setup commands.
+The isolation mechanism proving tests cannot point to a shared database.
+Test files added/updated and the behaviour each proves.
+Full command results, including failures or skips.
+Remaining limitations stated as incomplete work, not as passed work
