@@ -137,6 +137,37 @@ export interface SuburbData {
   unemploymentRate?: number;
   buildingApprovals12m?: number;
   infrastructureInvestment?: string;
+  // --- ABS Census sourced fields ---
+  absDemographicsSourced?: boolean;
+  absSourcedFields?: string[];
+  medianAnnualIncome?: number;
+  predominantIncomeBand?: string;
+  // --- Social housing (ABS G37) ---
+  socialHousingPct?: number;
+  publicHousingDwellings?: number;
+  communityHousingDwellings?: number;
+  renterStateHousingPct?: number;
+  renterCommunityHousingPct?: number;
+  absG37Sourced?: boolean;
+  // --- Social infrastructure (OSM) ---
+  worshipTotal?: number;
+  worshipChristian?: number;
+  worshipMuslim?: number;
+  worshipBuddhist?: number;
+  worshipHindu?: number;
+  worshipSikh?: number;
+  worshipJewish?: number;
+  worshipOther?: number;
+  worshipDetail?: { name: string; dist_m: number; amenity: string; religion: string }[];
+  shelterCount?: number;
+  communityCentreCount?: number;
+  retirementHomeCount?: number;
+  socialInfraDetail?: any[];
+  // --- Development indicators (OSM) ---
+  constructionSqkm?: number;
+  greenfieldSqkm?: number;
+  brownfieldSqkm?: number;
+  buildingConstructionCount?: number;
 }
 
 export interface StampDutyRates {
