@@ -959,6 +959,13 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "renterCommunityHousingPct": v3.renter_community_housing_pct,
         "socialHousingPct": v3.social_housing_pct,
         "absG37Sourced": v3.abs_g37_sourced,
+        # Subdivision potential heuristic
+        "avgBlockSqm": round((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties, 1) if v3.area_sqkm and v3.total_properties and v3.total_properties > 0 else None,
+        "subdivisionPotential": (
+            "High" if (v3.area_sqkm and v3.total_properties and v3.total_properties > 0 and ((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties) > 600)
+            else "Medium" if (v3.area_sqkm and v3.total_properties and v3.total_properties > 0 and ((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties) > 400)
+            else "Low"
+        ),
         # ABS data provenance
         "absDemographicsSourced": v3.abs_demographics_sourced,
         "absSourcedFields": v3.abs_sourced_fields,
