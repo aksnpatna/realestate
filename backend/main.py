@@ -930,7 +930,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "topSchoolName": v3.top_school_name,
         # Transit & safety
         "transitAccessibility": v3.transit_accessibility or 5.0,
-        "cbdDistance": v3.cbd_distance_mins or 30,
+        "cbdDistance": v3.cbd_distance_mins,
         "metroCBD": v3.metro_cbd or (f"{v3.state} CBD" if v3.state else ""),
         "safetyScore": v3.safety_score or 60.0,
         "crimeRate": v3.crime_rate or 5000.0,
