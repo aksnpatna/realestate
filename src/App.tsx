@@ -1258,11 +1258,31 @@ function App() {
                             const brown = s.brownfieldSqkm || 0
                             const total = constr + green + brown
                             const bldCount = s.buildingConstructionCount
-                            if (total === 0 && bldCount == null)
-                              return <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center' }}>No data</span>
+                            const subdiv = s.subdivisionPotential || 'Low'
+                            
                             return (
                               <>
-                                {total > 0 && (
+                                {s.avgBlockSqm != null && (
+                                  <div style={{ paddingBottom: '10px', marginBottom: '10px', borderBottom: '1px solid var(--border-glass)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                      <span style={{ color: 'var(--text-secondary)' }}>📐 Avg Block Size</span>
+                                      <span style={{ fontWeight: 600 }}>{s.avgBlockSqm} sqm</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                                      <span style={{ color: 'var(--text-secondary)' }}>✂️ Subdivision Potential</span>
+                                      <span style={{ 
+                                        fontWeight: 600, 
+                                        color: subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-primary)'
+                                      }}>{subdiv}</span>
+                                      </div>
+                                    </div>
+                                  )}
+                                  
+                                  {total === 0 && bldCount == null && (
+                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center', display: 'block' }}>No development data</span>
+                                  )}
+                                  
+                                  {total > 0 && (
                                   <div>
                                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>
                                       Land Use Within 2.5km ({total.toFixed(3)} km²)
