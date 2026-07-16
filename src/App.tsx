@@ -45,8 +45,12 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabName>('buy-finder')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
-  const [selectedBuyerFitResult, setSelectedBuyerFitResult] = useState<BuyerFitResult | null>(null)
-  const [selectedRequestMeta, setSelectedRequestMeta] = useState<{ request_id: string; model_version: string } | null>(null)
+  const [selectedBuyerFitResult, setSelectedBuyerFitResult] = useState<BuyerFitResult | null>(() => {
+    try { const s = sessionStorage.getItem('bf_result'); return s ? JSON.parse(s) : null } catch { return null }
+  })
+  const [selectedRequestMeta, setSelectedRequestMeta] = useState<{ request_id: string; model_version: string } | null>(() => {
+    try { const s = sessionStorage.getItem('bf_meta'); return s ? JSON.parse(s) : null } catch { return null }
+  })
   // Track if the user manually selected a suburb to prevent auto‑reset
   const manualSelectionRef = useRef(false)
   const [regionMode, setRegionMode] = useState<'metro' | 'national'>('metro')
@@ -697,6 +701,15 @@ function App() {
                           <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Data Quality</div>
                         </div>
 
+                        {/* ABS Verified Badge */}
+                        {(activeSuburb as any).absDemographicsSourced && (
+                          <div className="main-score" style={{ textAlign: 'center', background: 'rgba(16,185,129,0.08)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
+                            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#10b981', marginBottom: '5px' }}>Demographics</div>
+                            <div style={{ fontSize: '1.2rem', color: '#10b981', fontWeight: 'bold' }}>✓ ABS 2021</div>
+                            <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Census Verified</div>
+                          </div>
+                        )}
+
                         {/* Growth Score */}
                         <div className="main-score">
                           <div className="main-score-value" title="Growth Score: composite of yield, population trends, and data quality">
@@ -944,7 +957,8 @@ function App() {
                             { label:'Prof. Occupation', value: (s as any).ownerOccupierRate + '%' || '—', icon:'👔' },
                           ]},
                           { label: 'Income & Jobs', items: [
-                            { label:'Predominant Income', value: demo.predominant_income_band || '—', icon:'💵' },
+                            { label:'Median Annual Income', value: (s as any).demographics?.median_annual_income_abs ? '$' + Number((s as any).demographics.median_annual_income_abs).toLocaleString() + '/yr' : '—', icon:'💵' },
+                            { label:'Predominant Band', value: demo.predominant_income_band || '—', icon:'📊' },
                             { label:'Population CAGR', value: (s as any).populationCagr?.toFixed(1) + '%' || '—', icon:'👥' },
                             { label:'Median Age', value: s.medianAge || '—', icon:'🎂' },
                             { label:'Unemployment (est)', value: (s as any).unemploymentRate ? `${(s as any).unemploymentRate}% (est.)` : '—', icon:'📉' },
@@ -1177,6 +1191,127 @@ function App() {
                               {activeSuburb.infrastructureInvestment || 'No major projects identified'}
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      {/* 🏛️ Social Infrastructure */}
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>🏛️ Social Infrastructure</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.8rem' }}>
+                          {(() => {
+                            const s = activeSuburb as any
+                            const worshipTotal = s.worshipTotal || 0
+                            const religions = [
+                              { label: 'Christian', color: '#6366f1', val: s.worshipChristian || 0 },
+                              { label: 'Muslim', color: '#10b981', val: s.worshipMuslim || 0 },
+                              { label: 'Buddhist', color: '#f59e0b', val: s.worshipBuddhist || 0 },
+                              { label: 'Hindu', color: '#ef4444', val: s.worshipHindu || 0 },
+                              { label: 'Sikh', color: '#a855f7', val: s.worshipSikh || 0 },
+                              { label: 'Jewish', color: '#3b82f6', val: s.worshipJewish || 0 },
+                            ].filter(r => r.val > 0)
+                            const social = [
+                              { label: 'Shelters', icon: '🏠', value: s.shelterCount },
+                              { label: 'Community Centres', icon: '🏫', value: s.communityCentreCount },
+                              { label: 'Retirement Homes', icon: '🧓', value: s.retirementHomeCount },
+                            ].filter(item => item.value != null)
+                            if ((worshipTotal === 0 || worshipTotal == null) && social.length === 0)
+                              return <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center' }}>No data</span>
+                            return (
+                              <>
+                                {worshipTotal > 0 && (
+                                  <div style={{ marginBottom: '8px' }}>
+                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                                      ⛪ Places of Worship ({worshipTotal})
+                                    </div>
+                                    <div style={{ display: 'flex', height: '14px', borderRadius: '7px', overflow: 'hidden' }}>
+                                      {religions.map(r => (
+                                        <div key={r.label} title={`${r.label}: ${r.val}`}
+                                          style={{ flex: r.val, backgroundColor: r.color, minWidth: '2px' }} />
+                                      ))}
+                                    </div>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '4px' }}>
+                                      {religions.map(r => (
+                                        <span key={r.label} style={{ fontSize: '0.65rem', color: r.color }}>
+                                          {r.label} {r.val}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                {social.map(item => (
+                                  <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{item.icon} {item.label}</span>
+                                    <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.8rem' }}>{item.value}</span>
+                                  </div>
+                                ))}
+                                {(s.socialHousingPct != null && s.socialHousingPct > 0) && (
+                                  <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px solid var(--border-glass)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                      <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🏘️ Social Housing</span>
+                                      <span style={{ color: s.socialHousingPct > 10 ? '#ef4444' : 'var(--text-primary)', fontWeight: 600, fontSize: '0.8rem' }}>
+                                        {s.socialHousingPct.toFixed(1)}%
+                                      </span>
+                                    </div>
+                                    {s.publicHousingDwellings != null && (
+                                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                        {s.publicHousingDwellings} public · {s.communityHousingDwellings || 0} community
+                                      </div>
+                                    )}
+                                    {s.absG37Sourced && (
+                                      <div style={{ fontSize: '0.6rem', color: '#10b981', marginTop: '2px' }}>✓ ABS Census</div>
+                                    )}
+                                  </div>
+                                )}
+                              </>
+                            )
+                          })()}
+                        </div>
+                      </div>
+                      {/* 🏗️ Development Activity */}
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>🏗️ Development Activity</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.8rem' }}>
+                          {(() => {
+                            const s = activeSuburb as any
+                            const constr = s.constructionSqkm || 0
+                            const green = s.greenfieldSqkm || 0
+                            const brown = s.brownfieldSqkm || 0
+                            const total = constr + green + brown
+                            const bldCount = s.buildingConstructionCount
+                            if (total === 0 && bldCount == null)
+                              return <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center' }}>No data</span>
+                            return (
+                              <>
+                                {total > 0 && (
+                                  <div>
+                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                                      Land Use Within 2.5km ({total.toFixed(3)} km²)
+                                    </div>
+                                    <div style={{ display: 'flex', height: '16px', borderRadius: '8px', overflow: 'hidden' }}>
+                                      {constr > 0 && <div title={`Construction: ${constr.toFixed(3)} km²`} style={{ flex: constr, backgroundColor: '#ef4444', minWidth: '2px' }} />}
+                                      {brown > 0 && <div title={`Brownfield: ${brown.toFixed(3)} km²`} style={{ flex: brown, backgroundColor: '#f59e0b', minWidth: '2px' }} />}
+                                      {green > 0 && <div title={`Greenfield: ${green.toFixed(3)} km²`} style={{ flex: green, backgroundColor: '#10b981', minWidth: '2px' }} />}
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+                                      {constr > 0 && <span style={{ fontSize: '0.65rem', color: '#ef4444' }}>🔴 Construction {constr.toFixed(3)}</span>}
+                                      {brown > 0 && <span style={{ fontSize: '0.65rem', color: '#f59e0b' }}>🟡 Brownfield {brown.toFixed(3)}</span>}
+                                      {green > 0 && <span style={{ fontSize: '0.65rem', color: '#10b981' }}>🟢 Greenfield {green.toFixed(3)}</span>}
+                                    </div>
+                                  </div>
+                                )}
+                                {bldCount != null && bldCount > 0 && (
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🔨 Buildings Under Construction</span>
+                                    <span style={{ color: 'var(--warning)', fontWeight: 600, fontSize: '1.1rem' }}>{bldCount}</span>
+                                  </div>
+                                )}
+                                {bldCount != null && bldCount === 0 && total > 0 && (
+                                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'center' }}>
+                                    No active building construction detected
+                                  </div>
+                                )}
+                              </>
+                            )
+                          })()}
                         </div>
                       </div>
                     </div>
@@ -1430,12 +1565,12 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
         defaultSuburbId={activeSuburb?.id}
-        defaultPrice={(activeSuburb as any)?.houseMedianPrice || (activeSuburb as any)?.medianPrice || undefined}
+        defaultPrice={selectedBuyerFitResult?.affordability?.purchase_price || (activeSuburb as any)?.houseMedianPrice || (activeSuburb as any)?.medianPrice || undefined}
         defaultRent={(activeSuburb as any)?.houseMedianRent || (activeSuburb as any)?.weeklyRent || undefined}
       /></Suspense>}
       {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
