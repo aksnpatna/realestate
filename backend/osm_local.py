@@ -22,6 +22,10 @@ CATEGORIES = {
     "shopping":   ("shop",    ("mall", "supermarket", "department_store", "convenience", "bakery", "butcher")),
     "hospital":   ("amenity", ("hospital", "clinic", "pharmacy", "doctors", "dentist")),
     "sports":     ("leisure", ("sports_centre", "fitness_centre", "stadium", "pitch", "golf_course", "swimming_pool")),
+    "worship":    ("amenity", ("place_of_worship", "church", "mosque", "temple", "synagogue")),
+    "shelter":    ("amenity", ("shelter",)),
+    "community_centre": ("amenity", ("community_centre",)),
+    "retirement_home":  ("amenity", ("retirement_home",)),
 }
 
 # Transit: needs special handling — multiple key/value combos
@@ -187,6 +191,9 @@ def compute_scores(pois):
 
     Same scoring logic as the frontend osmApi.ts for consistency.
     Scores are 0-100.
+
+    Added worship_diversity, social_infra density, and community amenities
+    to the liveability formula (v2).
     """
     def diminishing_score(count, max_count, max_score):
         if count == 0:
@@ -199,26 +206,52 @@ def compute_scores(pois):
     parks = len(pois.get("park", []))
     transit = len(pois.get("transit", []))
     schools = len(pois.get("school", []))
+    shops = len(pois.get("shopping", []))
+    hospitals = len(pois.get("hospital", []))
+    sports = len(pois.get("sports", []))
+
+    worship = len(pois.get("worship", []))
+    shelters = len(pois.get("shelter", []))
+    community_centres = len(pois.get("community_centre", []))
+    retirement_homes = len(pois.get("retirement_home", []))
 
     walk = min(100,
                diminishing_score(dining, 30, 40) +
                diminishing_score(parks, 15, 20) +
                diminishing_score(transit, 20, 30) +
-               diminishing_score(schools, 5, 10))
+               diminishing_score(schools, 5, 10) +
+               diminishing_score(shops, 10, 5) +
+               diminishing_score(hospitals, 10, 5))
 
     transit_score = min(100, transit * 4)
 
-    liveability = round(0.5 * walk + 0.3 * transit_score + 2 * schools)
+    # Social infra: community_centres + retirement_homes signal established community
+    social_infra = community_centres + retirement_homes + shelters
+    social_score = min(15, social_infra * 3)
+
+    # Worship diversity: more religious options = more culturally diverse area
+    worship_score = min(10, worship * 2)
+
+    liveability = round(0.5 * walk + 0.3 * transit_score + 1.5 * schools + social_score + worship_score)
 
     return {
         "walkScore": walk,
         "transitScore": transit_score,
         "liveabilityScore": min(100, liveability),
+        "socialInfraScore": social_score,
+        "worshipDiversityScore": worship_score,
         "counts": {
             "cafes": dining,
             "parks": parks,
             "transit": transit,
             "schools": schools,
+            "shops": shops,
+            "hospitals": hospitals,
+            "sports": sports,
+            "worship": worship,
+            "shelters": shelters,
+            "communityCentres": community_centres,
+            "retirementHomes": retirement_homes,
         },
         "topAmenities": _top_unique_names(pois, min(dining, 5)),
     }

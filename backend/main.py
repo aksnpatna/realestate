@@ -663,6 +663,27 @@ def _provenanced_metrics(v3) -> dict:
             "transformed", "Internal data quality metric",
             f"{now}-01", loaded, "derived"
         ),
+        "socialHousingPct": _provenance(
+            v3.social_housing_pct,
+            "government" if v3.abs_g37_sourced else "derived",
+            "ABS Census 2021 G37" if v3.abs_g37_sourced else "Derived from census tenure data",
+            "2021-08-09" if v3.abs_g37_sourced else None,
+            loaded,
+            "verified" if v3.abs_g37_sourced else "estimated"
+        ),
+        "socialInfra": _provenance(
+            {
+                "worship_total": v3.worship_total,
+                "shelter_count": v3.shelter_count,
+                "community_centre_count": v3.community_centre_count,
+                "retirement_home_count": v3.retirement_home_count,
+                "construction_sqkm": v3.construction_sqkm,
+            },
+            "open_data", "OpenStreetMap via PostGIS",
+            str(v3.osm_enriched_at)[:10] if v3.osm_enriched_at else None,
+            loaded,
+            "estimated"
+        ),
     }
 
 def _calibrate_dq(v3) -> float:
@@ -882,6 +903,25 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         # Geo & infrastructure
         "areaSqkm": v3.area_sqkm, "sqkm": v3.area_sqkm,
         "parksCount": v3.parks_count, "parksCoveragePct": v3.parks_coverage_pct,
+        # Social infrastructure (OSM)
+        "worshipTotal": v3.worship_total,
+        "worshipChristian": v3.worship_christian,
+        "worshipMuslim": v3.worship_muslim,
+        "worshipBuddhist": v3.worship_buddhist,
+        "worshipHindu": v3.worship_hindu,
+        "worshipSikh": v3.worship_sikh,
+        "worshipJewish": v3.worship_jewish,
+        "worshipOther": v3.worship_other,
+        "worshipDetail": v3.worship_detail,
+        "shelterCount": v3.shelter_count,
+        "communityCentreCount": v3.community_centre_count,
+        "retirementHomeCount": v3.retirement_home_count,
+        "socialInfraDetail": v3.social_infra_detail,
+        # Development indicators (OSM landuse)
+        "constructionSqkm": v3.construction_sqkm,
+        "greenfieldSqkm": v3.greenfield_sqkm,
+        "brownfieldSqkm": v3.brownfield_sqkm,
+        "buildingConstructionCount": v3.building_construction_count,
         # Schools
         "schoolQuality": v3.school_quality or 5.0,
         "schools": v3.schools or [],
@@ -912,6 +952,16 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "unemploymentRate": v3.unemployment_rate,
         "buildingApprovals12m": v3.building_approvals_12m,
         "infrastructureInvestment": v3.infrastructure_investment,
+        # Social housing (ABS Census G37)
+        "publicHousingDwellings": v3.public_housing_dwellings,
+        "communityHousingDwellings": v3.community_housing_dwellings,
+        "renterStateHousingPct": v3.renter_state_housing_pct,
+        "renterCommunityHousingPct": v3.renter_community_housing_pct,
+        "socialHousingPct": v3.social_housing_pct,
+        "absG37Sourced": v3.abs_g37_sourced,
+        # ABS data provenance
+        "absDemographicsSourced": v3.abs_demographics_sourced,
+        "absSourcedFields": v3.abs_sourced_fields,
         # Growth Score
         "growthScore": growth["score"],
         "growthFactors": growth["factors"],
@@ -1668,11 +1718,15 @@ def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
 
 
 @app.get("/api/osm/livability")
-def get_osm_livability(lat: float, lng: float, radius: int = 2500):
+def get_osm_livability(lat: float, lng: float, radius: int = 2500, suburb_id: str = None):
     """Returns local POI data and livability scores from PostGIS OSM tables.
     Replaces direct Overpass API calls.
+
+    If suburb_id is provided, also returns pre-computed aggregate columns
+    (worship_total, shelter_count, construction_sqkm, etc.) from suburbs_ui_v3.
     """
-    from osm_local import get_livability
+    from osm_local import get_livability, get_boundary
+    from sqlalchemy import func, text as sqla_text
     data = get_livability(lat, lng, radius)
 
     def _format_pois(category):
@@ -1685,16 +1739,54 @@ def get_osm_livability(lat: float, lng: float, radius: int = 2500):
             "lon": p.get("lng", lng),
         } for i, p in enumerate(items)]
 
-    return {
+    response = {
         "cafes": _format_pois("cafe"),
         "parks": _format_pois("park"),
         "transit": _format_pois("transit"),
         "train_stations": _format_pois("train_station"),
         "schools": _format_pois("school"),
+        "shops": _format_pois("shopping"),
+        "hospitals": _format_pois("hospital"),
+        "sports": _format_pois("sports"),
+        "worship": _format_pois("worship"),
+        "shelters": _format_pois("shelter"),
+        "community_centres": _format_pois("community_centre"),
+        "retirement_homes": _format_pois("retirement_home"),
         "walkabilityScore": data["walkScore"],
         "transitScoreStandalone": data["transitScore"],
         "liveabilityScore": data["liveabilityScore"],
+        "socialInfraScore": data.get("socialInfraScore", 0),
+        "worshipDiversityScore": data.get("worshipDiversityScore", 0),
+        "counts": data.get("counts", {}),
     }
+
+    # Optionally enrich with pre-computed suburb-level aggregate data
+    db = SessionLocal()
+    try:
+        if suburb_id:
+            row = db.query(SuburbUIV3).filter(SuburbUIV3.id == suburb_id.upper()).first()
+        else:
+            row = None
+        if row and row.osm_enriched_at:
+            response["aggregate"] = {
+                "worship_total": row.worship_total,
+                "worship_christian": row.worship_christian,
+                "worship_muslim": row.worship_muslim,
+                "worship_buddhist": row.worship_buddhist,
+                "worship_hindu": row.worship_hindu,
+                "worship_other": row.worship_other,
+                "shelter_count": row.shelter_count,
+                "community_centre_count": row.community_centre_count,
+                "retirement_home_count": row.retirement_home_count,
+                "construction_sqkm": row.construction_sqkm,
+                "greenfield_sqkm": row.greenfield_sqkm,
+                "brownfield_sqkm": row.brownfield_sqkm,
+                "building_construction_count": row.building_construction_count,
+            }
+    finally:
+        db.close()
+
+    return response
 
 @app.get("/api/osm/boundary")
 def get_osm_boundary(suburb: str, state: str = ""):

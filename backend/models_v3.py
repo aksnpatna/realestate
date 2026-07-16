@@ -146,6 +146,45 @@ class SuburbUIV3(Base):
     building_approvals_12m = Column(Integer)
     infrastructure_investment = Column(String)
 
+    # ---- SOCIAL INFRASTRUCTURE & FUTURE-GROWTH INDICATORS (new) ----
+    # Places of worship (from OSM planet_osm_* — amenity=place_of_worship)
+    worship_total = Column(Integer)
+    worship_christian = Column(Integer)
+    worship_muslim = Column(Integer)
+    worship_buddhist = Column(Integer)
+    worship_hindu = Column(Integer)
+    worship_sikh = Column(Integer)
+    worship_jewish = Column(Integer)
+    worship_other = Column(Integer)
+    worship_detail = Column(JSON)
+
+    # Social infrastructure (from OSM — shelter/community_centre/retirement_home)
+    shelter_count = Column(Integer)
+    community_centre_count = Column(Integer)
+    retirement_home_count = Column(Integer)
+    social_infra_detail = Column(JSON)
+
+    # Development / growth indicators (from OSM landuse & building)
+    construction_sqkm = Column(Float)
+    greenfield_sqkm = Column(Float)
+    brownfield_sqkm = Column(Float)
+    building_construction_count = Column(Integer)
+    osm_enriched_at = Column(DateTime)
+    osm_enrich_radius_m = Column(Integer)
+
+    # Social housing (from ABS Census 2021 G37 — tenure & landlord type)
+    public_housing_dwellings = Column(Integer)        # landlord type 4 (state/territory housing authority)
+    community_housing_dwellings = Column(Integer)     # landlord type 5 (community housing provider)
+    renter_state_housing_pct = Column(Float)
+    renter_community_housing_pct = Column(Float)
+    social_housing_pct = Column(Float)                # combined 4+5 as % of total dwellings
+    abs_g37_sourced = Column(Boolean, default=False)
+    abs_g37_run_date = Column(DateTime)
+
+    # Cadastral / subdivision signal (from state land registries via data.gov.au)
+    cadastral_source = Column(String)
+    cadastral_last_synced = Column(DateTime)
+
     # ---- DATA PROVENANCE (legal defensibility) ----
     abs_demographics_sourced = Column(Boolean, default=False)  # True = ABS Census 2021 is the source for demographics fields
     abs_sourced_fields = Column(JSON)                          # List of field names confirmed from ABS e.g. ["population_2021", "median_age"]

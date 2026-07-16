@@ -223,19 +223,27 @@ class V3Scheduler:
             print(f"[{datetime.now()}] QUARTERLY: Full National Refresh (13,150 suburbs)")
             print(f"{'='*60}")
 
-            print("\n  [Step 1/4] Seeding pending raw (all suburbs, >{COUNTRY_REFRESH_AGE_DAYS}d old)...")
+            print(f"\n  [Step 1/6] Seeding pending raw (all suburbs, >{COUNTRY_REFRESH_AGE_DAYS}d old)...")
             seed_pending_raw(COUNTRY_REFRESH_AGE_DAYS, live_only=False)
 
-            print(f"\n  [Step 2/4] Extracting (full, max {COUNTRY_BATCH}/run)...")
+            print(f"\n  [Step 2/6] Extracting (full, max {COUNTRY_BATCH}/run)...")
             _python("run_v3_extract.py", f"--limit={COUNTRY_BATCH}")
 
-            print("\n  [Step 3/4] Unpacking changed raw → columnar...")
+            print("\n  [Step 3/6] Unpacking changed raw → columnar...")
             mark_changed_for_unpack(live_only=False)
             _python("run_unpack.py")
 
-            print("\n  [Step 4/4] Enriching changed unpacked → target...")
+            print("\n  [Step 4/6] Enriching changed unpacked → target...")
             mark_changed_for_enrich(live_only=False)
             _python("enrich_from_unpacked.py")
+
+            print("\n  [Step 5/6] OSM social-infra + growth indicators (worship/shelter/"
+                   "community_centre/retirement/construction/greenfield/brownfield)...")
+            _python("etl_osm_enrich.py")
+
+            print("\n  [Step 6/6] ABS Census 2021 G37 social housing + cadastre catalogue survey...")
+            _python("etl_abs_social_housing.py")
+            _python("etl_cadastre_discovery.py")
 
             self.last_quarterly = datetime.now()
             print(f"\n  ✓ Quarterly full refresh complete")
