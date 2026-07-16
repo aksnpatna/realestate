@@ -732,8 +732,15 @@ function App() {
                   <div className="metrics-grid">
                     <div className="metric-box">
                       <div className="metric-label">Median Price</div>
-                      <div className="metric-value">
+                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                         {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : (activeSuburb as any).medianPrice ? `$${(activeSuburb as any).medianPrice.toLocaleString()}` : activeSuburb.metrics?.medianPrice ? `$${activeSuburb.metrics.medianPrice.toLocaleString()}` : 'No data'}
+                        {(() => {
+                          const change = Number((activeSuburb as any).houseMedianPrice12mChangePct) || 0;
+                          if (change) {
+                            return <span style={{ fontSize: '1rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
+                          }
+                          return null;
+                        })()}
                       </div>
                     </div>
                     <div className="metric-box">
