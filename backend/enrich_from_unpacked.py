@@ -85,11 +85,17 @@ SELECT
 
     u.current_off_market_count AS total_properties,
 
-    -- Derived: vacancy rate = rental listings / total properties
+    -- Derived: vacancy rate = rental listings / estimated rental pool
+    -- HEURISTIC: Multiply OnTheHouse rental listing count by 3 to approximate real-world listings 
+    -- as OnTheHouse significantly undercounts compared to Domain/REA. (TODO: Build Domain scraper)
     CASE WHEN u.current_rental_listing_count IS NOT NULL
               AND u.current_off_market_count IS NOT NULL
               AND u.current_off_market_count > 0
-         THEN ROUND(u.current_rental_listing_count::numeric / u.current_off_market_count::numeric * 100, 2)
+         THEN ROUND(
+             (u.current_rental_listing_count::numeric * 3) / 
+             (u.current_off_market_count::numeric * COALESCE(u.investor_rate, 30.0) / 100.0)
+             * 100, 2
+         )
          ELSE NULL
     END AS vacancy_rate,
 

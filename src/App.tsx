@@ -53,7 +53,7 @@ function App() {
   })
   // Track if the user manually selected a suburb to prevent auto‑reset
   const manualSelectionRef = useRef(false)
-  const [regionMode, setRegionMode] = useState<'metro' | 'national'>('metro')
+
   const [isClustering, setIsClustering] = useState(false)
   const [showAmenitiesOnMap, setShowAmenitiesOnMap] = useState(false)
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
@@ -203,8 +203,8 @@ function App() {
   }, []);
 
   const filteredSuburbsData = useMemo(() => {
-    return suburbsData.filter(s => regionMode === 'metro' ? (s as any).isMetro : !(s as any).isMetro);
-  }, [suburbsData, regionMode]);
+    return suburbsData;
+  }, [suburbsData]);
 
   const states = useMemo(() => Array.from(new Set(filteredSuburbsData.map(s => s.state))).sort(), [filteredSuburbsData])
   const stateSuburbs = useMemo(() =>
@@ -520,32 +520,6 @@ function App() {
               </div>
             ) : (
               <>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-                  <button
-                    onClick={() => setRegionMode('metro')}
-                    style={{ flex: 1, padding: '8px 12px', fontSize: '0.85rem', borderRadius: '8px', cursor: 'pointer', border: '1px solid',
-                      background: regionMode === 'metro' ? 'var(--accent-cyan)' : 'var(--bg-card)',
-                      color: regionMode === 'metro' ? '#fff' : 'var(--text-secondary)',
-                      borderColor: regionMode === 'metro' ? 'var(--accent-cyan)' : 'var(--border-glass)',
-                      fontWeight: regionMode === 'metro' ? 'bold' : 'normal',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    Live Metro
-                  </button>
-                  <button
-                    onClick={() => setRegionMode('national')}
-                    style={{ flex: 1, padding: '8px 12px', fontSize: '0.85rem', borderRadius: '8px', cursor: 'pointer', border: '1px solid',
-                      background: regionMode === 'national' ? 'var(--accent-purple)' : 'var(--bg-card)',
-                      color: regionMode === 'national' ? '#fff' : 'var(--text-secondary)',
-                      borderColor: regionMode === 'national' ? 'var(--accent-purple)' : 'var(--border-glass)',
-                      fontWeight: regionMode === 'national' ? 'bold' : 'normal',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    National (Cold)
-                  </button>
-                </div>
 
                 <div className="control-group">
                   <label className="control-label">Region / State</label>
