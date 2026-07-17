@@ -1534,15 +1534,23 @@ def calculate_roi(req: ROICalcRequest):
 
 @app.get("/api/mortgage-rate")
 def get_mortgage_rate():
+    """
+    Default indicative mortgage rate.
+    Not connected to a live rate feed — this is a static default for POC use.
+    The frontend uses this as a starting point; users adjust via slider.
+    """
+    from datetime import datetime, timezone
     return {
         "status": "success",
         "base_cash_rate": 4.35,
         "retail_margin": 1.85,
         "effective_mortgage_rate": 6.20,
-        "source": "Simulated (indicative only; not live RBA data)",
-        "last_updated": "Today",
-        "data_status": "simulated",
-        "disclaimer": "This rate is indicative only and simulated. Always verify with your lender for actual rates. Not for production decision-making."
+        "source": "static_default",
+        "source_detail": "RBA cash-rate target (current cycle). No live feed integrated.",
+        "last_checked": datetime.now(timezone.utc).isoformat() + "Z",
+        "data_status": "static_default",
+        "stale_indicator": True,
+        "disclaimer": "This rate is a static default. Always verify with your lender for actual rates. Not for production decision-making."
     }
 
 # =============================================================================
@@ -2004,11 +2012,10 @@ def get_suburb_properties(suburb_id: str, db: Session = Depends(get_db)):
             "priceDisplay": item.price_display or "",
             "imgUrl": item.images_json[0] if item.images_json and len(item.images_json) > 0 else None,
             "crawlSource": item.crawl_source,
-            # Placeholder distances (will be computed on frontend or dynamically later)
-            "schoolDistanceM": 0,
-            "schoolName": "Local School",
-            "stationDistanceM": 0,
-            "stationName": "Local Station",
+            "schoolDistanceM": None,
+            "schoolName": None,
+            "stationDistanceM": None,
+            "stationName": None,
             "tags": [item.listing_type.capitalize()]
         })
         

@@ -65,13 +65,14 @@ def engine(test_db_url):
 @pytest.fixture(scope="session")
 def tables(engine):
     from models_v3 import Base
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
 
 
 @pytest.fixture
-def db_session():
+def db_session(tables):
     from models_v3 import SessionLocal
     session = SessionLocal()
     try:

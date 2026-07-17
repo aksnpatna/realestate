@@ -67,20 +67,12 @@ def fetch_major_infrastructure_projects():
 
 def fetch_zoning_changes():
     """
-    Mock function representing an integration with State Planning APIs 
-    (e.g., NSW ePlanning API or Victoria Spatial Data).
+    State planning portal integration (NSW ePlanning, VIC SPEAR).
+    Not yet integrated — returns empty list to avoid fabricated data.
+    When live API keys are provisioned, replace with WFS/GeoJSON fetch.
     """
-    print(f"  -> Fetching Zoning updates from State Planning Portals...")
-    # Real-world endpoints require API keys and return complex GeoJSON/WFS data
-    # Example NSW WFS: https://mapprod3.environment.nsw.gov.au/arcgis/services/...
-    
-    time.sleep(1) # Simulate network call
-    
-    # Mocked structured response from a Planning Portal
-    return [
-        {"title": "Transit Oriented Development (TOD) Rezoning", "type": "Zoning", "state": "NSW", "target_suburbs": ["Crows Nest", "Marrickville", "Bankstown"]},
-        {"title": "Suburban Rail Loop (SRL) High-Density Zone", "type": "Zoning", "state": "VIC", "target_suburbs": ["Box Hill", "Glen Waverley", "Clayton"]},
-    ]
+    print("  -> Skipping zoning changes (no live planning-portal integration)")
+    return []
 
 def map_projects_to_suburbs(db, infra_projects, zoning_changes):
     """
