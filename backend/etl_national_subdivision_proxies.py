@@ -70,14 +70,12 @@ def run_pipeline():
                 
                 if result and result.p10_sqm and result.p10_sqm > 50:
                     est_lot_size = int(result.p10_sqm / 0.6)
-                    da_count = 25 if result.b_count > 50 else 5
                     
                     db.execute(text("""
                         UPDATE suburbs_ui_v3 
-                        SET min_approved_subdivision_sqm = :est_lot_size,
-                            approved_subdivisions_12m = :da_count
+                        SET min_approved_subdivision_sqm = :est_lot_size
                         WHERE id = :suburb_id
-                    """), {"est_lot_size": est_lot_size, "da_count": da_count, "suburb_id": suburb_id})
+                    """), {"est_lot_size": est_lot_size, "suburb_id": suburb_id})
                     
                     updates += 1
             except Exception as e:
