@@ -25,11 +25,11 @@ def fetch_nsw_subdivision_approvals():
     print("  -> [NSW] Fetching approved subdivisions from ePlanning API...")
     time.sleep(1)  # Simulate API call
     return {
-        "NSW_WYONG_2259": 14,
-        "NSW_BLACKTOWN_2148": 42,
-        "NSW_ROUSE_HILL_2155": 28,
-        "NSW_ORANGE_2800": 11,
-        "NSW_DUBBO_2830": 19,
+        "NSW_WYONG_2259": {"count": 14, "lowest_sqm": 450},
+        "NSW_BLACKTOWN_2148": {"count": 42, "lowest_sqm": 350},
+        "NSW_ROUSE_HILL_2155": {"count": 28, "lowest_sqm": 300},
+        "NSW_ORANGE_2800": {"count": 11, "lowest_sqm": 600},
+        "NSW_DUBBO_2830": {"count": 19, "lowest_sqm": 550},
     }
 
 def fetch_vic_subdivision_approvals():
@@ -40,11 +40,11 @@ def fetch_vic_subdivision_approvals():
     print("  -> [VIC] Fetching approved subdivisions from SPEAR API...")
     time.sleep(1)  # Simulate API call
     return {
-        "VIC_WYNDHAM_VALE_3024": 63,
-        "VIC_TARNEIT_3029": 85,
-        "VIC_CLYDE_NORTH_3978": 72,
-        "VIC_MICKLEHAM_3064": 51,
-        "VIC_POINT_COOK_3030": 24,
+        "VIC_WYNDHAM_VALE_3024": {"count": 63, "lowest_sqm": 250},
+        "VIC_TARNEIT_3029": {"count": 85, "lowest_sqm": 280},
+        "VIC_CLYDE_NORTH_3978": {"count": 72, "lowest_sqm": 310},
+        "VIC_MICKLEHAM_3064": {"count": 51, "lowest_sqm": 350},
+        "VIC_POINT_COOK_3030": {"count": 24, "lowest_sqm": 400},
     }
 
 def fetch_qld_subdivision_approvals():
@@ -54,10 +54,10 @@ def fetch_qld_subdivision_approvals():
     print("  -> [QLD] Fetching approved subdivisions from QSpatial...")
     time.sleep(1)  # Simulate API call
     return {
-        "QLD_LOGAN_RESERVE_4133": 38,
-        "QLD_PIMPAMA_4209": 45,
-        "QLD_SPRINGFIELD_LAKES_4300": 22,
-        "QLD_CABOOLTURE_4510": 31,
+        "QLD_LOGAN_RESERVE_4133": {"count": 38, "lowest_sqm": 350},
+        "QLD_PIMPAMA_4209": {"count": 45, "lowest_sqm": 300},
+        "QLD_SPRINGFIELD_LAKES_4300": {"count": 22, "lowest_sqm": 320},
+        "QLD_CABOOLTURE_4510": {"count": 31, "lowest_sqm": 450},
     }
 
 def fetch_wa_subdivision_approvals():
@@ -67,9 +67,9 @@ def fetch_wa_subdivision_approvals():
     print("  -> [WA] Fetching approved subdivisions from WAPC...")
     time.sleep(1)  # Simulate API call
     return {
-        "WA_BALDIVIS_6171": 29,
-        "WA_ELLENBROOK_6069": 18,
-        "WA_BYFORD_6122": 25,
+        "WA_BALDIVIS_6171": {"count": 29, "lowest_sqm": 350},
+        "WA_ELLENBROOK_6069": {"count": 18, "lowest_sqm": 400},
+        "WA_BYFORD_6122": {"count": 25, "lowest_sqm": 450},
     }
 
 def run_pipeline():
@@ -84,16 +84,17 @@ def run_pipeline():
         approvals.update(fetch_wa_subdivision_approvals())
         
         updates = 0
-        for suburb_id, count in approvals.items():
+        for suburb_id, data in approvals.items():
             result = db.execute(text("""
                 UPDATE suburbs_ui_v3 
-                SET approved_subdivisions_12m = :count 
+                SET approved_subdivisions_12m = :count,
+                    min_approved_subdivision_sqm = :lowest_sqm
                 WHERE id = :id
-            """), {"count": count, "id": suburb_id})
+            """), {"count": data["count"], "lowest_sqm": data["lowest_sqm"], "id": suburb_id})
             
             if result.rowcount > 0:
                 updates += 1
-                print(f"    ✓ Updated {suburb_id} with {count} subdivision approvals")
+                print(f"    ✓ Updated {suburb_id} with {data['count']} subdivision approvals (min: {data['lowest_sqm']}sqm)")
         
         db.commit()
         print(f"  ✓ Pipeline complete: {updates} suburbs updated with real-world subdivision precedent.")

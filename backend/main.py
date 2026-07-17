@@ -967,6 +967,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
             else "Low"
         ),
         "approvedSubdivisions12m": v3.approved_subdivisions_12m,
+        "minApprovedSubdivisionSqm": v3.min_approved_subdivision_sqm,
         # ABS data provenance
         "absDemographicsSourced": v3.abs_demographics_sourced,
         "absSourcedFields": v3.abs_sourced_fields,
