@@ -1306,34 +1306,39 @@ function App() {
                             
                             return (
                               <>
-                                {s.avgBlockSqm != null && (
-                                  <div style={{ paddingBottom: '10px', marginBottom: '10px', borderBottom: '1px solid var(--border-glass)' }}>
+                                <div style={{ paddingBottom: '10px', marginBottom: '10px', borderBottom: '1px solid var(--border-glass)' }}>
+                                  {s.avgBlockSqm != null && (
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                       <span style={{ color: 'var(--text-secondary)' }}>📐 Avg Block Size</span>
                                       <span style={{ fontWeight: 600 }}>{s.avgBlockSqm} sqm</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
-                                      <span style={{ color: 'var(--text-secondary)' }}>✂️ Subdivision Potential</span>
-                                      <span style={{ 
-                                        fontWeight: 600, 
-                                        color: subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-primary)'
-                                      }}>{subdiv}</span>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
-                                      <span style={{ color: 'var(--text-secondary)' }}>✅ Real-World Precedent</span>
-                                      {s.approvedSubdivisions12m > 0 ? (
-                                        <div style={{ textAlign: 'right' }}>
-                                          <span style={{ fontWeight: 600, color: '#10b981', display: 'block' }}>Proven ({s.approvedSubdivisions12m} DAs)</span>
-                                          {s.minApprovedSubdivisionSqm && (
-                                            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Lowest Block: {s.minApprovedSubdivisionSqm} sqm</span>
-                                          )}
-                                        </div>
-                                      ) : (
-                                        <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>Theoretical</span>
-                                      )}
-                                    </div>
+                                  )}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: s.avgBlockSqm != null ? '4px' : '0' }}>
+                                    <span style={{ color: 'var(--text-secondary)' }}>✂️ Subdivision Potential</span>
+                                    <span style={{ 
+                                      fontWeight: 600, 
+                                      color: subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-primary)'
+                                    }}>{subdiv}</span>
                                   </div>
-                                )}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                                    <span style={{ color: 'var(--text-secondary)' }}>✅ DA Precedent</span>
+                                    {s.approvedSubdivisions12m > 0 ? (
+                                      <div style={{ textAlign: 'right' }}>
+                                        <span style={{ fontWeight: 600, color: '#10b981', display: 'block' }}>{s.approvedSubdivisions12m} approved (last 12 mo)</span>
+                                        {s.minApprovedSubdivisionSqm && (
+                                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Min lot: {s.minApprovedSubdivisionSqm} sqm</span>
+                                        )}
+                                      </div>
+                                    ) : s.minApprovedSubdivisionSqm ? (
+                                      <div style={{ textAlign: 'right' }}>
+                                        <span style={{ fontWeight: 600, color: '#f59e0b', display: 'block' }}>Proxy only</span>
+                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Min observed: {s.minApprovedSubdivisionSqm} sqm</span>
+                                      </div>
+                                    ) : (
+                                      <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>No data</span>
+                                    )}
+                                  </div>
+                                </div>
                                   
                                   {total === 0 && bldCount == null && (
                                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center', display: 'block' }}>No development data</span>

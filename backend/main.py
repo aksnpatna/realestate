@@ -971,11 +971,11 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "renterCommunityHousingPct": v3.renter_community_housing_pct,
         "socialHousingPct": v3.social_housing_pct,
         "absG37Sourced": v3.abs_g37_sourced,
-        # Subdivision potential heuristic
-        "avgBlockSqm": round((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties, 1) if v3.area_sqkm and v3.total_properties and v3.total_properties > 0 else None,
+        # Subdivision potential: derived from real min lot size where available
+        "avgBlockSqm": None,  # Not available without OSM lot-size analysis; values shown came from a 40%-area heuristic now retired
         "subdivisionPotential": (
-            "High" if (v3.area_sqkm and v3.total_properties and v3.total_properties > 0 and ((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties) > 600)
-            else "Medium" if (v3.area_sqkm and v3.total_properties and v3.total_properties > 0 and ((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties) > 400)
+            "High" if v3.min_approved_subdivision_sqm is not None and v3.min_approved_subdivision_sqm < 300
+            else "Medium" if v3.min_approved_subdivision_sqm is not None and v3.min_approved_subdivision_sqm < 600
             else "Low"
         ),
         "approvedSubdivisions12m": v3.approved_subdivisions_12m,
@@ -1924,28 +1924,28 @@ def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
         },
     })
 
-    # Cadastral / density signal
-    avg_block = (
-        round((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties, 1)
-        if v3.area_sqkm and v3.total_properties and v3.total_properties > 0
-        else None
-    )
+    # Cadastral / density signal — uses real min lot size from gov/OSM analysis
+    min_lot = v3.min_approved_subdivision_sqm
     features.append({
         "type": "Feature",
         "id": f"{suburb_id}_cadastral",
         "properties": {
             "layer": "cadastral",
             "label": "Block Density",
-            "value": f"{avg_block} sqm avg" if avg_block else "No data",
+            "value": f"Min lot: {min_lot} sqm" if min_lot else "No data",
             "severity": "low",
-            "impact": f"Average block size: {avg_block} sqm. {'Large blocks may have subdivision potential.' if (avg_block or 0) > 600 else 'Tighter density.' if avg_block else ''}",
-            "source": "OSM building footprints + state cadastre",
+            "impact": (
+                f"Minimum observed lot size: {min_lot} sqm. "
+                f"{'Small lots indicate active subdivision precedent.' if min_lot and min_lot < 300 else 'Moderate density.' if min_lot else 'No lot-size data available.'}"
+            ),
+            "source": "NSW Planning (real) / OSM footprint proxy (non-NSW)",
+            "precision": "suburb",
             "detail": {
                 "approved_subdivisions_12m": v3.approved_subdivisions_12m,
-                "min_approved_subdivision_sqm": v3.min_approved_subdivision_sqm,
+                "min_approved_subdivision_sqm": min_lot,
                 "subdivision_potential": (
-                    "High" if avg_block and avg_block > 600
-                    else "Medium" if avg_block and avg_block > 400
+                    "High" if min_lot is not None and min_lot < 300
+                    else "Medium" if min_lot is not None and min_lot < 600
                     else "Low"
                 ),
             },

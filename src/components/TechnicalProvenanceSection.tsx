@@ -105,23 +105,23 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
     {
       key: 'approved_subdivisions_12m',
       label: 'Approved Subdivisions (12m)',
-      value: s.approvedSubdivisions12m ?? null,
-      impact: 'Real-world precedent for subdivision approval in this suburb.',
-      source: 'State planning APIs / OSM building footprint proxy',
+      value: s.approvedSubdivisions12m != null && s.approvedSubdivisions12m > 0 ? s.approvedSubdivisions12m : null,
+      impact: 'Real council DAs approved in this suburb — zero means no real feed integrated for this state.',
+      source: 'State planning APIs (NSW only) / no feed for other states',
     },
     {
       key: 'min_approved_subdivision_sqm',
-      label: 'Min Approved Lot (sqm)',
+      label: 'Min Observed Lot (sqm)',
       value: s.minApprovedSubdivisionSqm != null ? `${s.minApprovedSubdivisionSqm} sqm` : null,
-      impact: 'Smallest approved lot — lower = denser subdivision possible.',
-      source: 'State planning rules / OSM proxy',
+      impact: 'Smallest lot observed — from NSW planning rules or OSM building-footprint proxy for other states.',
+      source: 'NSW ePlanning (real) / OSM P10 footprint proxy (non-NSW)',
     },
     {
       key: 'subdivision_potential',
       label: 'Subdivision Potential',
       value: s.subdivisionPotential ?? null,
-      impact: 'Heuristic based on avg block size vs state minimum lot thresholds.',
-      source: 'Derived: area/total_properties > min_lot size',
+      impact: 'Derived from min observed lot size. <300 sqm = High, <600 = Medium, else Low.',
+      source: 'Derived: min_approved_subdivision_sqm thresholds',
     },
   ]
 
