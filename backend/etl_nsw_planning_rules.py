@@ -109,13 +109,10 @@ def run_pipeline():
             min_size = fetch_min_lot_size_for_bbox(xmin, ymin, xmax, ymax)
             
             if min_size:
-                # We also simulate a DA count if it's currently 0 so the UI flag turns green.
-                # In a full system, DA count comes from the DA API.
                 result = db.execute(text("""
                     UPDATE suburbs_ui_v3 
                     SET 
-                        min_approved_subdivision_sqm = :min_size,
-                        approved_subdivisions_12m = CASE WHEN approved_subdivisions_12m = 0 THEN 12 ELSE approved_subdivisions_12m END
+                        min_approved_subdivision_sqm = :min_size
                     WHERE id = :id
                 """), {"min_size": int(min_size), "id": suburb_id})
                 

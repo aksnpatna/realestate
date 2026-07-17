@@ -51,7 +51,7 @@ SELECT
     u.house_rent_change_pct AS house_median_rent_12m_change,
     u.house_gross_rental_yield,
 
-    -- Yield trend: difference between current and previous period
+    -- Yield trend: preserve existing value if this pipeline cannot compute one
     NULL AS house_gross_rental_yield_trend,
 
     u.house_sold_12m,
@@ -80,7 +80,7 @@ SELECT
          ELSE NULL
     END AS price_to_rent_ratio,
 
-    -- Derived: price-to-income (from predominant income band)
+    -- price_to_income_ratio: not computed by this pipeline; preserve existing value
     NULL AS price_to_income_ratio,
 
     u.current_off_market_count AS total_properties,
@@ -175,24 +175,41 @@ ON CONFLICT (id) DO UPDATE SET
     house_median_rent = EXCLUDED.house_median_rent,
     house_median_rent_12m_change = EXCLUDED.house_median_rent_12m_change,
     house_gross_rental_yield = EXCLUDED.house_gross_rental_yield,
+    house_gross_rental_yield_trend = COALESCE(EXCLUDED.house_gross_rental_yield_trend, suburbs_ui_v3.house_gross_rental_yield_trend),
     house_sold_12m = EXCLUDED.house_sold_12m,
     house_stock_on_market = EXCLUDED.house_stock_on_market,
     unit_median_price = EXCLUDED.unit_median_price,
     unit_median_price_12m_change_pct = EXCLUDED.unit_median_price_12m_change_pct,
     unit_median_rent = EXCLUDED.unit_median_rent,
     unit_gross_rental_yield = EXCLUDED.unit_gross_rental_yield,
+    unit_gross_rental_yield_trend = COALESCE(EXCLUDED.unit_gross_rental_yield_trend, suburbs_ui_v3.unit_gross_rental_yield_trend),
     supply_demand_ratio = EXCLUDED.supply_demand_ratio,
     price_to_rent_ratio = EXCLUDED.price_to_rent_ratio,
+    price_to_income_ratio = COALESCE(EXCLUDED.price_to_income_ratio, suburbs_ui_v3.price_to_income_ratio),
     total_properties = EXCLUDED.total_properties,
     vacancy_rate = EXCLUDED.vacancy_rate,
     population_density = EXCLUDED.population_density,
-    population_2021 = EXCLUDED.population_2021,
-    population_2016 = EXCLUDED.population_2016,
-    population_cagr = EXCLUDED.population_cagr,
-    owner_occupier_rate = EXCLUDED.owner_occupier_rate,
-    investor_rate = EXCLUDED.investor_rate,
-    median_age = EXCLUDED.median_age,
-    predominant_age_group = EXCLUDED.predominant_age_group,
+    population_2021 = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
+                           THEN suburbs_ui_v3.population_2021
+                           ELSE EXCLUDED.population_2021 END,
+    population_2016 = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
+                           THEN suburbs_ui_v3.population_2016
+                           ELSE EXCLUDED.population_2016 END,
+    population_cagr = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
+                           THEN suburbs_ui_v3.population_cagr
+                           ELSE EXCLUDED.population_cagr END,
+    owner_occupier_rate = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
+                               THEN suburbs_ui_v3.owner_occupier_rate
+                               ELSE EXCLUDED.owner_occupier_rate END,
+    investor_rate = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
+                         THEN suburbs_ui_v3.investor_rate
+                         ELSE EXCLUDED.investor_rate END,
+    median_age = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
+                      THEN suburbs_ui_v3.median_age
+                      ELSE EXCLUDED.median_age END,
+    predominant_age_group = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
+                                 THEN suburbs_ui_v3.predominant_age_group
+                                 ELSE EXCLUDED.predominant_age_group END,
     predominant_occupation = EXCLUDED.predominant_occupation,
     area_sqkm = EXCLUDED.area_sqkm,
     parks_count = EXCLUDED.parks_count,
@@ -203,8 +220,10 @@ ON CONFLICT (id) DO UPDATE SET
     demographics_detail = EXCLUDED.demographics_detail,
     nearby_suburbs = EXCLUDED.nearby_suburbs,
     sales_summary = EXCLUDED.sales_summary,
-    dq_issues = EXCLUDED.dq_issues,
-    dq_score = EXCLUDED.dq_score,
+    dq_issues = CASE WHEN EXCLUDED.dq_issues IS NOT NULL
+                     THEN COALESCE(suburbs_ui_v3.dq_issues, '[]'::jsonb) || EXCLUDED.dq_issues
+                     ELSE suburbs_ui_v3.dq_issues END,
+    dq_score = LEAST(COALESCE(EXCLUDED.dq_score, suburbs_ui_v3.dq_score), suburbs_ui_v3.dq_score),
     transform_version = 3,
     last_updated = NOW()
 """

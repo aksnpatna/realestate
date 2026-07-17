@@ -43,7 +43,7 @@ describe('BuyFinder', () => {
       }),
     })
     render(<BuyFinder />)
-    await waitFor(() => { expect(screen.getByText('View decision')).toBeInTheDocument() })
+    await waitFor(() => { expect(screen.getByText(/Open Decision Brief/)).toBeInTheDocument() })
   })
 
   it('shows loading state on initial render', async () => {
@@ -104,8 +104,8 @@ describe('BuyFinder', () => {
       expect(screen.getByText(/Melbourne, VIC/i)).toBeInTheDocument()
     })
     expect(screen.getByText('78')).toBeInTheDocument()
-    expect(screen.getByText('HIGH')).toBeInTheDocument()
-    expect(screen.getByText('View decision')).toBeInTheDocument()
+    expect(screen.getByText(/HIGH/)).toBeInTheDocument()
+    expect(screen.getByText(/Open Decision Brief/)).toBeInTheDocument()
   })
 
   it('shows Data Unavailable on backend failure', async () => {

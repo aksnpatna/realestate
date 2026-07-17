@@ -635,10 +635,16 @@ def compute_derived_indicators():
                 elif parks is not None:
                     infra = 'Limited'
                 
-                db.query(SuburbUIV3).filter(SuburbUIV3.id == uid).update({
-                    'unemployment_rate': unemp, 'building_approvals_12m': approvals,
-                    'infrastructure_investment': infra
-                }, synchronize_session=False)
+                # Update only if existing value is NULL — preserves ABS data or prior runs
+                from sqlalchemy import text
+                db.execute(text("""
+                    UPDATE suburbs_ui_v3 
+                    SET unemployment_rate = COALESCE(suburbs_ui_v3.unemployment_rate, :unemp),
+                        building_approvals_12m = COALESCE(suburbs_ui_v3.building_approvals_12m, :approvals),
+                        infrastructure_investment = COALESCE(suburbs_ui_v3.infrastructure_investment, :infra)
+                    WHERE id = :uid
+                """), {"unemp": unemp, "approvals": int(approvals) if approvals else None, 
+                       "infra": infra, "uid": uid})
                 updated += 1
             except: pass
         db.commit()

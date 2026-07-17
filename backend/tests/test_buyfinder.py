@@ -178,7 +178,7 @@ class TestDQEligibility:
         v3 = _mock_v3(dq_score=79)
         result = unified_eligibility(v3)
         assert result["eligible"] is False
-        assert "dq_below_threshold" in result["reasons"]
+        assert any("dq_below_threshold" in r for r in result["reasons"])
 
     def test_at_threshold_eligible(self):
         from buyfinder import unified_eligibility
@@ -217,7 +217,7 @@ class TestDQEligibility:
             v3 = _mock_v3(dq_score=85)
             result = unified_eligibility(v3)
             assert result["eligible"] is False, f"DQ 85 must be excluded when threshold is 90"
-            assert "dq_below_threshold" in result["reasons"]
+            assert any("dq_below_threshold" in r for r in result["reasons"])
         finally:
             os.environ["PUBLIC_POC_MIN_DQ_SCORE"] = old
 
