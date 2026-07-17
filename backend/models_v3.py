@@ -168,6 +168,7 @@ class SuburbUIV3(Base):
     # Real-world subdivision precedent
     approved_subdivisions_12m = Column(Integer, default=0)
     min_approved_subdivision_sqm = Column(Integer)  # To track the smallest lot size approved
+    avg_block_sqm = Column(Integer)                  # Median residential lot size from OSM buildings
 
     # ---- DERIVED INDICATORS (from OSM landuse & building) ----
     construction_sqkm = Column(Float)

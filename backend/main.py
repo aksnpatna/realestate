@@ -972,7 +972,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "socialHousingPct": v3.social_housing_pct,
         "absG37Sourced": v3.abs_g37_sourced,
         # Subdivision potential: derived from real min lot size where available
-        "avgBlockSqm": None,  # Not available without OSM lot-size analysis; values shown came from a 40%-area heuristic now retired
+        "avgBlockSqm": v3.avg_block_sqm,
         "subdivisionPotential": (
             "High" if v3.min_approved_subdivision_sqm is not None and v3.min_approved_subdivision_sqm < 300
             else "Medium" if v3.min_approved_subdivision_sqm is not None and v3.min_approved_subdivision_sqm < 600
@@ -1926,19 +1926,25 @@ def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
 
     # Cadastral / density signal — uses real min lot size from gov/OSM analysis
     min_lot = v3.min_approved_subdivision_sqm
+    avg_lot = v3.avg_block_sqm
     features.append({
         "type": "Feature",
         "id": f"{suburb_id}_cadastral",
         "properties": {
             "layer": "cadastral",
             "label": "Block Density",
-            "value": f"Min lot: {min_lot} sqm" if min_lot else "No data",
+            "value": f"Min: {min_lot} sqm / Avg: {avg_lot} sqm" if min_lot and avg_lot
+                else f"Avg block: {avg_lot} sqm" if avg_lot
+                else f"Min lot: {min_lot} sqm" if min_lot
+                else "No data",
             "severity": "low",
             "impact": (
-                f"Minimum observed lot size: {min_lot} sqm. "
-                f"{'Small lots indicate active subdivision precedent.' if min_lot and min_lot < 300 else 'Moderate density.' if min_lot else 'No lot-size data available.'}"
-            ),
-            "source": "NSW Planning (real) / OSM footprint proxy (non-NSW)",
+                f"Avg block size: {avg_lot} sqm (OSM). "
+                f"Min observed lot: {min_lot} sqm. "
+                f"{'Small lots indicate active subdivision precedent.' if min_lot and min_lot < 300 else 'Moderate density.' if min_lot else ''}"
+            ) if avg_lot or min_lot
+            else "No lot-size data available.",
+            "source": "OSM building footprints (real) / NSW Planning (real)" if min_lot else "OSM building footprints",
             "precision": "suburb",
             "detail": {
                 "approved_subdivisions_12m": v3.approved_subdivisions_12m,
