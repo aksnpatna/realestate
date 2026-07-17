@@ -360,8 +360,8 @@ def run(radius_m=DEFAULT_RADIUS_M, state_filter=None, limit=None,
         log.info(f"OSM Enrichment complete — {done:,} suburbs refreshed")
         log.info("=" * 64)
 
-        # After OSM enrichment, compute avg block sizes from real building footprints
-        compute_avg_block_sqm(session, state_filter)
+        # avg block size is opt-in — too expensive for automatic enrichment runs
+        # see: --compute-blocks flag and compute_avg_block_sqm()
 
     finally:
         session.close()
@@ -374,7 +374,30 @@ def compute_avg_block_sqm(session, state_filter=None):
     Only residential buildings are counted; non-residential excluded.
 
     Batch-processes suburbs 50 at a time to avoid blowing out the spatial join.
+    Each batch has a 30s statement_timeout to prevent runaway queries.
+
+    Safe-guards:
+      - Administrative advisory lock prevents concurrent execution
+      - statement_timeout = 30s per batch
+      - max_parallel_workers_per_gather = 2
+      - LIMIT 5000 buildings per suburb (handles dense CBD areas)
     """
+    # Prevent two instances running at once
+    lock_id = 7253941  # unique arbitrary lock id for this function
+    result = session.execute(text("SELECT pg_try_advisory_lock(:id)"), {"id": lock_id})
+    got_lock = result.scalar()
+    if not got_lock:
+        log.warning("  avg block size: skipping — another instance is already running")
+        return
+
+    try:
+        _compute_avg_block_sqm_impl(session, state_filter)
+    finally:
+        session.execute(text("SELECT pg_advisory_unlock(:id)"), {"id": lock_id})
+        session.commit()
+
+
+def _compute_avg_block_sqm_impl(session, state_filter=None):
     state_clause = "AND suburbs_ui_v3.id LIKE :state_prefix" if state_filter else ""
     params = {}
     if state_filter:
@@ -382,7 +405,6 @@ def compute_avg_block_sqm(session, state_filter=None):
 
     log.info("  Computing avg block sizes from OSM building footprints...")
 
-    # Get all eligible suburb IDs
     rows = session.execute(text("""
         SELECT id FROM suburbs_ui_v3
         WHERE geom IS NOT NULL AND is_enriched = TRUE
@@ -397,18 +419,20 @@ def compute_avg_block_sqm(session, state_filter=None):
         placeholders = ','.join(f"'{sid}'" for sid in batch)
         try:
             result = session.execute(text(f"""
+                SET LOCAL statement_timeout = '30s';
+                SET LOCAL max_parallel_workers_per_gather = 2;
                 WITH blds AS (
                     SELECT s.id AS suburb_id, ST_Area(b.way) AS footprint_sqm
                     FROM suburbs_ui_v3 s
-                    INNER JOIN planet_osm_polygon b ON ST_DWithin(
-                        b.way,
-                        ST_Transform(s.geom, 3857),
-                        1500
-                    )
+                    INNER JOIN LATERAL (
+                        SELECT way FROM planet_osm_polygon
+                        WHERE building IN ('yes','house','residential','detached',
+                                           'apartments','terrace','semidetached_house')
+                          AND ST_Area(way) > 20
+                          AND ST_DWithin(way, ST_Transform(s.geom, 3857), 1500)
+                        LIMIT 5000
+                    ) b ON TRUE
                     WHERE s.id IN ({placeholders})
-                      AND b.building IN ('yes','house','residential','detached',
-                                         'apartments','terrace','semidetached_house')
-                      AND ST_Area(b.way) > 20
                 ),
                 stats AS (
                     SELECT suburb_id,
@@ -441,14 +465,23 @@ def main():
     p.add_argument("--batch", type=int, default=BATCH_SIZE, help="Alias for --limit")
     p.add_argument("--skip-detail", action="store_true",
                    help="Skip the JSONB nearest-15 detail lists (faster)")
+    p.add_argument("--compute-blocks", action="store_true",
+                   help="Compute avg_block_sqm from OSM building footprints (expensive — 30s timeout per batch)")
     args = p.parse_args()
-    run(
-        radius_m=args.radius,
-        state_filter=args.state,
-        limit=args.limit or args.batch,
-        batch_size=args.limit or args.batch,
-        skip_detail=args.skip_detail,
-    )
+    if args.compute_blocks:
+        db = SessionLocal()
+        try:
+            compute_avg_block_sqm(db, args.state)
+        finally:
+            db.close()
+    else:
+        run(
+            radius_m=args.radius,
+            state_filter=args.state,
+            limit=args.limit or args.batch,
+            batch_size=args.limit or args.batch,
+            skip_detail=args.skip_detail,
+        )
 
 
 if __name__ == "__main__":
