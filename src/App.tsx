@@ -1274,9 +1274,17 @@ function App() {
                                         fontWeight: 600, 
                                         color: subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-primary)'
                                       }}>{subdiv}</span>
-                                      </div>
                                     </div>
-                                  )}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                                      <span style={{ color: 'var(--text-secondary)' }}>✅ Real-World Precedent</span>
+                                      {s.approvedSubdivisions12m > 0 ? (
+                                        <span style={{ fontWeight: 600, color: '#10b981' }}>Proven ({s.approvedSubdivisions12m} DAs)</span>
+                                      ) : (
+                                        <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>Theoretical</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
                                   
                                   {total === 0 && bldCount == null && (
                                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center', display: 'block' }}>No development data</span>

@@ -164,7 +164,11 @@ class SuburbUIV3(Base):
     retirement_home_count = Column(Integer)
     social_infra_detail = Column(JSON)
 
-    # Development / growth indicators (from OSM landuse & building)
+    # ---- SUBDIVISION PRECEDENT ----
+    # Real-world subdivision precedent
+    approved_subdivisions_12m = Column(Integer, default=0)
+
+    # ---- DERIVED INDICATORS (from OSM landuse & building) ----
     construction_sqkm = Column(Float)
     greenfield_sqkm = Column(Float)
     brownfield_sqkm = Column(Float)
