@@ -1,5 +1,13 @@
 /** Shared contract types for the Buyer Fit decision flow. */
 
+export interface BuyerFitWeights {
+  affordability: number
+  income: number
+  livability: number
+  access: number
+  evidence: number
+}
+
 export interface BuyerFitAffordability {
   score: number
   purchase_price: number

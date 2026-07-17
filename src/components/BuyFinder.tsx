@@ -195,6 +195,11 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           <h3 style={{ margin: 0 }}>
             {backendResults ? `Results (${backendResults.results.length} eligible)` : 'Results'}
           </h3>
+          {backendResults && backendResults.results.length > 0 && (
+            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textAlign: 'right' }}>
+              Others excluded for insufficient data quality or constraints
+            </div>
+          )}
           <button
             onClick={handleSearch}
             disabled={backendLoading}
@@ -225,8 +230,15 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
         {backendResults && backendResults.results.length === 0 && (
           <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🔍</div>
-            <div style={{ fontWeight: 600, marginBottom: '4px' }}>No Eligible Suburbs</div>
-            <div style={{ fontSize: '0.85rem' }}>No suburbs in {state} meet the current eligibility criteria and your stated constraints. Try a different state or adjust your assumptions.</div>
+            <div style={{ fontWeight: 600, marginBottom: '4px' }}>No Eligible Suburbs Found</div>
+            <div style={{ fontSize: '0.85rem', marginBottom: '12px' }}>No suburbs in {state} meet all of your current criteria.</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'left', maxWidth: '380px', margin: '0 auto', lineHeight: 1.7 }}>
+              <div>Try one of these adjustments:</div>
+              <div>• Reduce your minimum yield requirement (or set it to <em>Any</em>)</div>
+              <div>• Increase your budget to access more eligible suburbs</div>
+              <div>• Extend your max CBD distance to include outer suburbs</div>
+              <div>• Try a different state (NSW or QLD may have more results)</div>
+            </div>
           </div>
         )}
 
@@ -284,7 +296,9 @@ const BackendResultCard = memo(function BackendResultCard({ result, setActiveSub
           <div style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 600, background: serviceabilityPassed ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: serviceabilityPassed ? '#10b981' : '#ef4444', border: `1px solid ${serviceabilityPassed ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
             {serviceabilityPassed ? '✓ Serviceability Passed' : '✗ Serviceability Failed'}
           </div>
-          <div style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: confColor, border: '1px solid rgba(255,255,255,0.1)' }}>
+          <div 
+            title="HIGH = good data coverage. Buyer Fit = your personal match score. They measure different things."
+            style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: confColor, border: '1px solid rgba(255,255,255,0.1)', cursor: 'help' }}>
             📊 Evidence: {evidenceLabel.toUpperCase()}
           </div>
         </div>

@@ -72,9 +72,10 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
     if (selectedSuburbId) {
       const sub = suburbsData.find(s => s.id === selectedSuburbId);
       if (sub) {
-        const price = (sub as any).houseMedianPrice ?? sub.metrics?.medianPrice ?? 0;
+        const isDefault = selectedSuburbId === defaultSuburbId;
+        const price = (isDefault && defaultPrice) ? defaultPrice : ((sub as any).houseMedianPrice ?? sub.metrics?.medianPrice ?? 0);
         setPurchasePrice(price);
-        const rent = (sub as any).houseMedianRent ?? (sub as any).weeklyRent ?? sub.metrics?.weeklyRent ?? Math.round(price * ((sub as any).rentalYield ?? sub.metrics?.rentalYield ?? 0) / 100 / 52);
+        const rent = (isDefault && defaultRent) ? defaultRent : ((sub as any).houseMedianRent ?? (sub as any).weeklyRent ?? sub.metrics?.weeklyRent ?? Math.round(price * ((sub as any).rentalYield ?? sub.metrics?.rentalYield ?? 0) / 100 / 52));
         setWeeklyRent(rent || 0);
         // Auto-set vacancy from real V3 vacancy rate
         const vacRate = (sub as any).vacancyRate ?? (sub as any).metrics?.vacancyRate;
@@ -85,7 +86,7 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
         }
       }
     }
-  }, [selectedSuburbId, suburbsData]);
+  }, [selectedSuburbId, suburbsData, defaultSuburbId, defaultPrice, defaultRent]);
 
   // Handle SMSF mode defaults
   useEffect(() => {

@@ -7,6 +7,14 @@ import UserFavoritesTab from './components/UserFavoritesTab'
 import AIInsightPanel from './components/AIInsightPanel'
 import DecisionBrief from './components/DecisionBrief'
 import type { BuyerFitResult } from './data/buyerFitTypes'
+import { ScoreInlineHint, ScoreLegendPanel, type GrowthFactorLabeled } from './components/ScoreLegend'
+import PersonaSwitcher from './components/PersonaSwitcher'
+import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
+import TechnicalProvenanceSection from './components/TechnicalProvenanceSection'
+import MarketIndicatorsSection from './components/MarketIndicatorsSection'
+import PocketRiskMap from './components/PocketRiskMap'
+import type { PersonaId } from './data/personas'
+import { loadStoredPersona, getPersona } from './data/personas'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -44,6 +52,7 @@ function App() {
 
   const [activeTab, setActiveTab] = useState<TabName>('buy-finder')
   const [activeState, setActiveState] = useState<string>('VIC')
+  const [persona, setPersona] = useState<PersonaId>(loadStoredPersona)
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
   const [selectedBuyerFitResult, setSelectedBuyerFitResult] = useState<BuyerFitResult | null>(() => {
     try { const s = sessionStorage.getItem('bf_result'); return s ? JSON.parse(s) : null } catch { return null }
@@ -100,6 +109,26 @@ function App() {
           if (cached) {
             const aiResult = JSON.parse(cached)
             setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }))
+          }
+        } catch {}
+        // If no session result exists for this suburb, try loading a saved snapshot
+        try {
+          const sessResult = sessionStorage.getItem('bf_result')
+          if (!sessResult && isAuthenticated) {
+            fetch(`/api/buy-finder/snapshots?suburb_id=${id}`)
+              .then(r => r.json())
+              .then(snapshots => {
+                if (snapshots && snapshots.length > 0) {
+                  fetch(`/api/buy-finder/snapshots/${snapshots[0].id}`)
+                    .then(r => r.json())
+                    .then(s => {
+                      if (s?.result) setSelectedBuyerFitResult(s.result)
+                      if (s?.request_meta) setSelectedRequestMeta(s.request_meta)
+                    })
+                    .catch(() => {})
+                }
+              })
+              .catch(() => {})
           }
         } catch {}
       }
@@ -503,6 +532,10 @@ function App() {
         </button>
       </nav>
 
+      <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
+        <PersonaSwitcher activePersona={persona} onChange={setPersona} />
+      </div>
+
       {activeTab === 'profile' && (
         <div className="main-grid">
           <aside className="sidebar glass-card">
@@ -609,7 +642,7 @@ function App() {
           <main className="main-content">
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
-                <div className="glass-card">
+                <div className="glass-card" {...{ [SECTION_ATTR]: 'overview' }}>
                     <div className="detail-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -665,7 +698,10 @@ function App() {
                       <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
                         {/* Confidence Band (Data Quality) */}
                         <div className="main-score" style={{ textAlign: 'center', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)', marginBottom: '5px' }}>Confidence</div>
+                          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)', marginBottom: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            Data Confidence
+                            <ScoreInlineHint scoreKey="dq" value={(activeSuburb as any).dqScore ?? null} />
+                          </div>
                           {(()=>{
                             const dq = (activeSuburb as any).dqScore;
                             if (dq == null) return <div style={{ fontSize: '1.2rem', color: '#f59e0b', fontWeight: 'bold' }}>⚠️ Low</div>;
@@ -684,14 +720,17 @@ function App() {
                           </div>
                         )}
 
-                        {/* Growth Score */}
+                        {/* Growth Score — relabeled "Market Momentum" for clarity */}
                         <div className="main-score">
-                          <div className="main-score-value" title="Growth Score: composite of yield, population trends, and data quality">
+                          <div className="main-score-value" title="Market Momentum: deterministic composite of price growth, population, yield, demand/supply, vacancy and sentiment. Not a price forecast.">
                             {activeSuburb.growthScore}
                           </div>
-                          <div className="main-score-label">Growth Score</div>
+                          <div className="main-score-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            Market Momentum
+                            <ScoreInlineHint scoreKey="growth" value={activeSuburb.growthScore} />
+                          </div>
                           <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
-                            Composite score, not a<br/>calibrated probability
+                            Deterministic momentum,<br/>not a price forecast
                           </div>
                           <button
                             onClick={() => setActiveTab('gearing')}
@@ -749,6 +788,9 @@ function App() {
                     </div>
                    </div>
 
+                   {/* Score Legend — explains the three numbers a user sees on this page */}
+                   <ScoreLegendPanel growthFactors={((activeSuburb as any).growthFactorsLabeled) as GrowthFactorLabeled[] | undefined} />
+
                    {/* MACRO MARKET PULSE */}
                   {macroEtf && typeof macroEtf.current_price === 'number' && (
                     <div className="highlights-section" style={{ marginTop: '20px', background: 'linear-gradient(145deg, rgba(30,30,40,0.8) 0%, rgba(20,20,30,0.9) 100%)', border: '1px solid var(--accent-purple)' }}>
@@ -777,10 +819,12 @@ function App() {
                         Baseline: {macroEtf.name}. Use this to determine if local growth is genuine alpha or just riding the national tide.
                       </div>
                     </div>
-                  )}
+                   )}
 
-                  {/* PANEL A: Market Snapshot */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                   <ProfileSectionNav activePersona={persona} />
+
+                   {/* PANEL A: Market Snapshot */}
+                   <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'market' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
                       Panel A: Market Snapshot
                     </h3>
@@ -1006,7 +1050,7 @@ function App() {
                     </div>
 
                   {/* NEW LIVABILITY SECTION */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                   <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'infrastructure' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h3>Livability & Amenities</h3>
                       {livabilityData && (
@@ -1108,7 +1152,7 @@ function App() {
                   </div>
 
                   {/* PANEL B: Demographics */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                  <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'people' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
@@ -1332,7 +1376,7 @@ function App() {
                   </div>
 
                   {/* PANEL C: Live Listings Feed */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }}>
+                  <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'listings' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel C: Live Listings Feed</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
@@ -1372,7 +1416,7 @@ function App() {
                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
                   <details className="expandable-section" style={{ marginTop: '20px' }}>
                     <summary>🤖 View AI Investment Committee Debate & Sentiment</summary>
-                    <div style={{ padding: '20px' }} id="ai-insight-panel">
+                    <div style={{ padding: '20px' }} id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>
                       <AIInsightPanel
                         activeSuburb={activeSuburb}
                         setActiveSuburb={setActiveSuburb}
@@ -1442,7 +1486,7 @@ function App() {
                   </div>
 
                    {/* INVESTMENT CATALYSTS — moved below AI Committee */}
-                   <div className="highlights-section" style={{ marginTop: '20px' }}>
+                   <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'risk' }}>
                      <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Investment Catalysts</h3>
                      <ul className="highlights-list">
                        {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) ? (
@@ -1561,6 +1605,15 @@ function App() {
                   )}
                 </div>
 
+                {/* Persona-gated sections */}
+                {getPersona(persona).show_technical && (
+                  <TechnicalProvenanceSection suburb={activeSuburb as any} />
+                )}
+                {(persona !== 'first_home_buyer') && !getPersona(persona).show_technical && (
+                  <MarketIndicatorsSection suburb={activeSuburb as any} />
+                )}
+                <PocketRiskMap suburbId={activeSuburb.id} />
+
                 <SuburbMap
                   center={activeSuburb.coordinates || [-25.2744, 133.7751]}
                   pois={mappedPois}
@@ -1579,7 +1632,7 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 

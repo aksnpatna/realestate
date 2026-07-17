@@ -59,6 +59,9 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
             <label className="control-label">Combined Gross Income (Before Tax)</label>
             <input type="number" className="premium-input" value={annualIncome}
               onChange={(e) => updateProfile('annualIncome', Number(e.target.value) || 0)} min={50000} step={5000} placeholder="e.g. 150000" />
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+              Estimated take-home: ~${Math.round((annualIncome * 0.75) / 12).toLocaleString()}/mo (used in serviceability calc)
+            </div>
           </div>
           <div className="control-group">
             <label className="control-label" title="Do not include the new mortgage repayment here. This is for existing obligations only.">

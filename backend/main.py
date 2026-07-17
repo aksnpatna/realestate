@@ -23,6 +23,7 @@ REQUIRE_EMAIL_VERIFICATION = False
 from dotenv import load_dotenv
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
 from poc_config import poc_config
+from score_meta import enrich_growth_factors, all_score_meta
 
 Base = declarative_base()
 
@@ -153,6 +154,17 @@ class UserConsent(Base):
     user_agent = Column(String, nullable=True)
     consent_type = Column(String)
     timestamp = Column(String, default=lambda: datetime.now().isoformat())
+
+class UserDecisionSnapshot(Base):
+    """Persist a Buyer Fit decision so it survives browser refresh."""
+    __tablename__ = "user_decision_snapshots"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, index=True)
+    suburb_id = Column(String, index=True)
+    request_meta = Column(JSON)   # {request_id, model_version, persona, ...}
+    result = Column(JSON)          # full BuyerFitResult from /api/buy-finder/rank
+    label = Column(String, nullable=True)
+    created_at = Column(String, default=lambda: datetime.now().isoformat())
 
 # Ensure tables are created
 Base.metadata.create_all(bind=engine)
@@ -974,6 +986,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         # Growth Score
         "growthScore": growth["score"],
         "growthFactors": growth["factors"],
+        "growthFactorsLabeled": enrich_growth_factors(growth["factors"]),
         "confidenceNotes": growth.get("confidence_notes", []),
         "lastUpdated": str(v3.last_updated) if v3.last_updated else None,
         "_provenance": _provenanced_metrics(v3),
@@ -981,7 +994,20 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
     return response
 
 
-@app.get("/api/suburbs/{suburb_id}/evidence")
+@app.get("/api/scores/meta")
+def get_scores_meta():
+    """Plain-English metadata (name, range, meaning, caveat) for the scores
+    surfaced to users. Supports the frontend Score Legend component."""
+    return {"scores": all_score_meta()}
+
+
+@app.get("/api/personas")
+def get_personas():
+    """Persona presets (weights + visible profile sections + meta).
+    Frontend uses this as the single source of truth for which persona shows
+    which data depth."""
+    from persona_presets import public_persona_payload, DEFAULT_PERSONA
+    return {"default": DEFAULT_PERSONA, "personas": public_persona_payload()}
 def get_suburb_evidence(suburb_id: str, db: Session = Depends(get_db)):
     """Evidence contract: trace every material metric to its source.
     Returns null observed_at when source timestamp is unavailable."""
@@ -1806,6 +1832,137 @@ def get_osm_boundary(suburb: str, state: str = ""):
         raise HTTPException(status_code=404, detail="Boundary not found")
     return data
 
+
+@app.get("/api/suburbs/{suburb_id}/pockets")
+def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
+    """Pocket risk layer geojson with per-suburb risk signals.
+    
+    Currently uses suburb-level approximation (SA1 mesh-block data not yet
+    ingested). The precision field discloses this honestly so users are never
+    misled into treating these as street-level risk indicators.
+    """
+    v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id.ilike(suburb_id)).first()
+    if not v3:
+        raise HTTPException(status_code=404, detail="Suburb not found")
+
+    # Suburb-level risk signals from ingested data
+    features = []
+
+    # Crime signal
+    crime_val = v3.crime_rate
+    crime_severity = (
+        "high" if crime_val and crime_val > 8000
+        else "medium" if crime_val and crime_val > 5000
+        else "low"
+    )
+    features.append({
+        "type": "Feature",
+        "id": f"{suburb_id}_crime",
+        "properties": {
+            "layer": "crime",
+            "label": "Crime Rate",
+            "value": f"{round(crime_val)}/100k" if crime_val else "No data",
+            "severity": crime_severity,
+            "impact": "Incidents per 100k persons. Higher = more reported incidents in the area.",
+            "source": "SA CRIME STAT (via realestate.com.au proxy)",
+        },
+    })
+
+    # Social housing signal
+    sh_pct = v3.social_housing_pct
+    sh_severity = (
+        "high" if sh_pct and sh_pct > 10
+        else "medium" if sh_pct and sh_pct > 5
+        else "low"
+    )
+    features.append({
+        "type": "Feature",
+        "id": f"{suburb_id}_social_housing",
+        "properties": {
+            "layer": "social_housing",
+            "label": "Social Housing",
+            "value": f"{sh_pct:.1f}%" if sh_pct else "No data",
+            "severity": sh_severity,
+            "impact": "Higher concentration may indicate lower property value growth in adjacent pockets. G37 tenure data from ABS Census 2021.",
+            "source": "ABS Census 2021 G37",
+            "detail": {
+                "public_housing_dwellings": v3.public_housing_dwellings,
+                "community_housing_dwellings": v3.community_housing_dwellings,
+            },
+        },
+    })
+
+    # Development / construction signal
+    dev_val = v3.construction_sqkm
+    dev_severity = (
+        "high" if dev_val and dev_val > 0.5
+        else "medium" if dev_val and dev_val > 0.1
+        else "low"
+    )
+    features.append({
+        "type": "Feature",
+        "id": f"{suburb_id}_development",
+        "properties": {
+            "layer": "development",
+            "label": "Development Activity",
+            "value": f"{dev_val:.2f} km²" if dev_val else "No data",
+            "severity": dev_severity,
+            "impact": "Active construction area from OSM. May indicate future supply increase or neighbourhood disruption.",
+            "source": "OpenStreetMap landuse=construction",
+            "detail": {
+                "greenfield_sqkm": v3.greenfield_sqkm,
+                "brownfield_sqkm": v3.brownfield_sqkm,
+            },
+        },
+    })
+
+    # Cadastral / density signal
+    avg_block = (
+        round((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties, 1)
+        if v3.area_sqkm and v3.total_properties and v3.total_properties > 0
+        else None
+    )
+    features.append({
+        "type": "Feature",
+        "id": f"{suburb_id}_cadastral",
+        "properties": {
+            "layer": "cadastral",
+            "label": "Block Density",
+            "value": f"{avg_block} sqm avg" if avg_block else "No data",
+            "severity": "low",
+            "impact": f"Average block size: {avg_block} sqm. {'Large blocks may have subdivision potential.' if (avg_block or 0) > 600 else 'Tighter density.' if avg_block else ''}",
+            "source": "OSM building footprints + state cadastre",
+            "detail": {
+                "approved_subdivisions_12m": v3.approved_subdivisions_12m,
+                "min_approved_subdivision_sqm": v3.min_approved_subdivision_sqm,
+                "subdivision_potential": (
+                    "High" if avg_block and avg_block > 600
+                    else "Medium" if avg_block and avg_block > 400
+                    else "Low"
+                ),
+            },
+        },
+    })
+
+    # Avoid-advisory: aggregate top-3 highest-risk signals
+    avoid_list = sorted(
+        [f for f in features if f["properties"]["severity"] == "high"],
+        key=lambda f: 0,
+    )
+    avoid_advisories = [
+        f"{f['properties']['label']}: {f['properties']['value']} ({f['properties']['severity'].upper()})"
+        for f in avoid_list[:3]
+    ] if avoid_list else ["No high-risk signals detected at suburb level"]
+
+    return {
+        "suburb_id": suburb_id,
+        "suburb_name": v3.name,
+        "precision": "suburb",
+        "precision_note": "Suburb-level approximation. Street-precise risk data requires SA1/mesh-block ingestion (not yet available). This is decision-aiding due-diligence guidance, not a property-level verdict.",
+        "features": features,
+        "avoid_advisory": avoid_advisories,
+    }
+
 @app.get("/api/suburbs/{suburb_id}/properties")
 def get_suburb_properties(suburb_id: str, db: Session = Depends(get_db)):
     """
@@ -1997,8 +2154,16 @@ def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
             if fval < 0 or not math.isfinite(fval):
                 raise HTTPException(422, f"weight {fname} must be non-negative and finite")
     from buyfinder import rank_suburbs, BuyFinderRequest as BFR, BuyFinderWeights
+    from persona_presets import get_persona
 
-    weights_dict = request.weights.dict() if request.weights else {}
+    # Persona default weights applied ONLY when client omits weights entirely.
+    # Backward compatible: a client that sends explicit weights always wins.
+    persona_id = request.buyer_profile if request.buyer_profile else "first_home_buyer"
+    persona = get_persona(persona_id)
+    if request.weights is None:
+        weights_dict = dict(persona["weights"])
+    else:
+        weights_dict = request.weights.dict()
 
     bf_request = BFR(
         buyer_profile=request.buyer_profile,
@@ -2017,3 +2182,82 @@ def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
         weights=weights_dict,
     )
     return rank_suburbs(bf_request, db)
+
+
+# =============================================================================
+# Durable Buyer Fit Snapshots (persist decision across page refresh)
+# =============================================================================
+
+class SaveSnapshotRequest(BaseModel):
+    suburb_id: str
+    request_meta: dict
+    result: dict
+    label: Optional[str] = None
+
+
+@app.post("/api/buy-finder/snapshots")
+def save_decision_snapshot(
+    body: SaveSnapshotRequest,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    snapshot = UserDecisionSnapshot(
+        user_id=user.id,
+        suburb_id=body.suburb_id,
+        request_meta=body.request_meta,
+        result=body.result,
+        label=body.label,
+    )
+    db.add(snapshot)
+    db.commit()
+    db.refresh(snapshot)
+    return {
+        "status": "saved",
+        "snapshot_id": snapshot.id,
+        "created_at": str(snapshot.created_at) if snapshot.created_at else None,
+    }
+
+
+@app.get("/api/buy-finder/snapshots")
+def list_decision_snapshots(
+    suburb_id: Optional[str] = None,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    query = db.query(UserDecisionSnapshot).filter(
+        UserDecisionSnapshot.user_id == user.id,
+    )
+    if suburb_id:
+        query = query.filter(UserDecisionSnapshot.suburb_id == suburb_id)
+    snapshots = query.order_by(UserDecisionSnapshot.created_at.desc()).limit(50).all()
+    return [
+        {
+            "id": s.id,
+            "suburb_id": s.suburb_id,
+            "label": s.label,
+            "created_at": str(s.created_at) if s.created_at else None,
+        }
+        for s in snapshots
+    ]
+
+
+@app.get("/api/buy-finder/snapshots/{snapshot_id}")
+def get_decision_snapshot(
+    snapshot_id: int,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    snapshot = db.query(UserDecisionSnapshot).filter(
+        UserDecisionSnapshot.id == snapshot_id,
+        UserDecisionSnapshot.user_id == user.id,
+    ).first()
+    if not snapshot:
+        raise HTTPException(status_code=404, detail="Snapshot not found")
+    return {
+        "id": snapshot.id,
+        "suburb_id": snapshot.suburb_id,
+        "request_meta": snapshot.request_meta,
+        "result": snapshot.result,
+        "label": snapshot.label,
+        "created_at": str(snapshot.created_at) if snapshot.created_at else None,
+    }
