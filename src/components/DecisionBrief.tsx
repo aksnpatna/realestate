@@ -1,6 +1,7 @@
 import { useState, useEffect, memo } from 'react'
 import type { SuburbData } from '../data/suburbs'
 import type { BuyerFitResult } from '../data/buyerFitTypes'
+import { ScoreInlineHint } from './ScoreLegend'
 
 interface DecisionSnapshot {
   decision_snapshot_id: string
@@ -67,8 +68,13 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
           <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
             Decision Brief
           </h3>
-          <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)' }}>
-            Based on your latest Buy Finder assumptions
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)' }}>
+              Based on your latest Buy Finder assumptions
+            </div>
+            <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+              ℹ️ Logged in — decision is saved and will persist across sessions
+            </div>
           </div>
         </div>
 
@@ -77,7 +83,10 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
               {Math.round(score)}
             </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Buyer Fit Score</div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              Fit For Your Inputs
+              <ScoreInlineHint scoreKey="buyer_fit" value={score} />
+            </div>
           </div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             {aff && (
@@ -90,9 +99,15 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
                 </div>
               </div>
             )}
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
-              Evidence: <span style={{ color: confColor, fontWeight: 600 }}>{selectedResult.confidence_label.toUpperCase()}</span>
-              <span style={{ marginLeft: '8px' }}>· {requestMeta?.model_version || ''}</span>
+            <div 
+              style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', cursor: 'help' }}
+              title="HIGH = good data coverage. Buyer Fit = your personal match score. They measure different things."
+            >
+              <span style={{ borderBottom: '1px dashed var(--text-muted)' }}>
+                Evidence:
+              </span>{' '}
+              <span style={{ color: confColor, fontWeight: 600 }}>{selectedResult.confidence_label.toUpperCase()}</span>
+              <span style={{ marginLeft: '8px', cursor: 'default' }} title="">· {requestMeta?.model_version || ''}</span>
             </div>
             {selectedResult.drivers.length > 0 && (
               <div style={{ marginTop: '6px' }}>
@@ -143,6 +158,26 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
             View Cashflow
           </button>
         </div>
+
+        {/* Responsible Next Steps — Journey 7 */}
+        <div style={{
+          marginTop: '16px', padding: '12px 14px',
+          background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '8px'
+        }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#eab308', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            📋 Responsible Next Steps — outside this app
+          </div>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            <div>1. Obtain a formal serviceability assessment from a licensed broker or lender.</div>
+            <div>2. Inspect actual listings and compare recent sales prices in this suburb.</div>
+            <div>3. Arrange strata, building, planning, flood and bushfire checks as relevant.</div>
+            <div>4. Verify current rent, vacancy rates and outgoings with local property managers.</div>
+            <div>5. Seek legal, tax and financial advice appropriate to your circumstances.</div>
+          </div>
+          <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+            This tool is a decision-support aid. It is not lender approval, financial advice, a property valuation or a price forecast.
+          </div>
+        </div>
       </div>
     )
   }
@@ -183,7 +218,10 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
           <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-secondary)' }}>
             {Math.round(snapshot.score)}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Buyer Fit (default)</div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            Fit (default assumptions)
+            <ScoreInlineHint scoreKey="buyer_fit" value={snapshot.score} />
+          </div>
         </div>
         <div style={{ flex: 1, minWidth: '200px' }}>
           {snapshot.drivers.length > 0 && (
@@ -209,6 +247,26 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
         >
           View Cashflow
         </button>
+      </div>
+
+      {/* Responsible Next Steps — Journey 7 */}
+      <div style={{
+        marginTop: '16px', padding: '12px 14px',
+        background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '8px'
+      }}>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#eab308', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          📋 Responsible Next Steps — outside this app
+        </div>
+        <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div>1. Obtain a formal serviceability assessment from a licensed broker or lender.</div>
+          <div>2. Inspect actual listings and compare recent sales prices in this suburb.</div>
+          <div>3. Arrange strata, building, planning, flood and bushfire checks as relevant.</div>
+          <div>4. Verify current rent, vacancy rates and outgoings with local property managers.</div>
+          <div>5. Seek legal, tax and financial advice appropriate to your circumstances.</div>
+        </div>
+        <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+          This tool is a decision-support aid. It is not lender approval, financial advice, a property valuation or a price forecast.
+        </div>
       </div>
     </div>
   )
