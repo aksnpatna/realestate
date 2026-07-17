@@ -966,6 +966,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
             else "Medium" if (v3.area_sqkm and v3.total_properties and v3.total_properties > 0 and ((v3.area_sqkm * 1000000 * 0.4) / v3.total_properties) > 400)
             else "Low"
         ),
+        "approvedSubdivisions12m": v3.approved_subdivisions_12m,
         # ABS data provenance
         "absDemographicsSourced": v3.abs_demographics_sourced,
         "absSourcedFields": v3.abs_sourced_fields,
