@@ -167,6 +167,7 @@ class SuburbUIV3(Base):
     # ---- SUBDIVISION PRECEDENT ----
     # Real-world subdivision precedent
     approved_subdivisions_12m = Column(Integer, default=0)
+    min_approved_subdivision_sqm = Column(Integer)  # To track the smallest lot size approved
 
     # ---- DERIVED INDICATORS (from OSM landuse & building) ----
     construction_sqkm = Column(Float)

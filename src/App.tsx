@@ -1278,7 +1278,12 @@ function App() {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
                                       <span style={{ color: 'var(--text-secondary)' }}>✅ Real-World Precedent</span>
                                       {s.approvedSubdivisions12m > 0 ? (
-                                        <span style={{ fontWeight: 600, color: '#10b981' }}>Proven ({s.approvedSubdivisions12m} DAs)</span>
+                                        <div style={{ textAlign: 'right' }}>
+                                          <span style={{ fontWeight: 600, color: '#10b981', display: 'block' }}>Proven ({s.approvedSubdivisions12m} DAs)</span>
+                                          {s.minApprovedSubdivisionSqm && (
+                                            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Lowest Block: {s.minApprovedSubdivisionSqm} sqm</span>
+                                          )}
+                                        </div>
                                       ) : (
                                         <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>Theoretical</span>
                                       )}
