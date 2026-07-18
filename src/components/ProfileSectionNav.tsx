@@ -1,11 +1,10 @@
 /**
- * ProfileSectionNav.tsx — Sticky horizontal rail with IntersectionObserver scroll-spy.
+ * ProfileSectionNav.tsx — Tabbed navigation for suburb profile sections.
  *
- * Anchors on section ids within the suburb profile. Highlights active section
- * on scroll; clicking a nav item smooth-scrolls to that section without losing
- * the sidebar context (the profile still renders as a single scrollable page).
+ * Replaces the scroll-spy approach with clean tabbed cards (like Domain/REA).
+ * Click a tab to show that section; only one section renders at a time.
  */
-import { useState, useEffect, useMemo, memo, useCallback } from 'react'
+import { useMemo, memo } from 'react'
 import type { ProfileSectionId, PersonaId } from '../data/personas'
 import { getPersona } from '../data/personas'
 
@@ -15,7 +14,7 @@ interface Section {
   icon: string
 }
 
-const ALL_SECTIONS: Section[] = [
+export const ALL_SECTIONS: Section[] = [
   { id: 'overview', label: 'Overview', icon: '📊' },
   { id: 'market', label: 'Market', icon: '📈' },
   { id: 'people', label: 'People', icon: '👥' },
@@ -27,15 +26,19 @@ const ALL_SECTIONS: Section[] = [
   { id: 'technical', label: 'Technical', icon: '📋' },
 ]
 
+export const SECTION_ATTR = 'data-profile-section'
+
 interface Props {
   activePersona: PersonaId
+  activeSection: ProfileSectionId | null
+  onSectionChange: (id: ProfileSectionId) => void
 }
 
-const SECTION_ATTR = 'data-profile-section'
-
-const ProfileSectionNav = memo(function ProfileSectionNav({ activePersona }: Props) {
-  const [activeSection, setActiveSection] = useState<ProfileSectionId | null>(null)
-
+const ProfileSectionNav = memo(function ProfileSectionNav({
+  activePersona,
+  activeSection,
+  onSectionChange,
+}: Props) {
   const persona = useMemo(() => getPersona(activePersona), [activePersona])
 
   const visibleSections = useMemo(
@@ -43,80 +46,47 @@ const ProfileSectionNav = memo(function ProfileSectionNav({ activePersona }: Pro
     [persona],
   )
 
-  useEffect(() => {
-    const elements = Array.from(document.querySelectorAll(`[${SECTION_ATTR}]`)) as HTMLElement[]
-    if (elements.length === 0) return
-
-    const observer = new IntersectionObserver(
-      entries => {
-        const visible = entries.filter(e => e.isIntersecting)
-        if (visible.length > 0) {
-          visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-          const id = visible[0].target.getAttribute(SECTION_ATTR) as ProfileSectionId | null
-          if (id) setActiveSection(id)
-        }
-      },
-      { rootMargin: '-80px 0px -60% 0px', threshold: 0.1 },
-    )
-
-    elements.forEach(el => observer.observe(el))
-    return () => observer.disconnect()
-  }, [visibleSections])
-
-  const handleClick = useCallback((id: ProfileSectionId) => {
-    const el = document.querySelector(`[${SECTION_ATTR}="${id}"]`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }, [])
-
   if (visibleSections.length <= 1) return null
 
   return (
     <nav
       style={{
-        position: 'sticky',
-        top: '0',
-        zIndex: 10,
         display: 'flex',
-        gap: '2px',
+        gap: '0',
+        padding: '0',
+        marginBottom: '20px',
+        borderBottom: '2px solid var(--border-glass)',
         overflowX: 'auto',
-        padding: '6px 8px',
+        whiteSpace: 'nowrap',
         background: 'var(--bg-card)',
-        borderBottom: '1px solid var(--border-glass)',
-        marginBottom: '12px',
-        borderRadius: '0 0 8px 8px',
-        scrollbarWidth: 'none',
+        borderRadius: 'var(--radius-md) var(--radius-md) 0 0',
       }}
     >
-      {visibleSections.map(section => {
-        const active = activeSection === section.id
-        return (
-          <button
-            key={section.id}
-            type="button"
-            onClick={() => handleClick(section.id)}
-            style={{
-              padding: '6px 12px',
-              fontSize: '0.72rem',
-              fontWeight: active ? 600 : 400,
-              border: 'none',
-              borderRadius: '6px',
-              background: active ? 'rgba(59,130,246,0.12)' : 'transparent',
-              color: active ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              transition: 'all 0.15s',
-              flexShrink: 0,
-            }}
-          >
-            {section.icon} {section.label}
-          </button>
-        )
-      })}
+      {visibleSections.map(s => (
+        <button
+          key={s.id}
+          onClick={() => onSectionChange(s.id)}
+          style={{
+            padding: '12px 20px',
+            background: 'transparent',
+            border: 'none',
+            borderBottom: activeSection === s.id ? '3px solid var(--accent-cyan)' : '3px solid transparent',
+            color: activeSection === s.id ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+            fontWeight: activeSection === s.id ? 700 : 500,
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            fontFamily: 'inherit',
+            letterSpacing: '-0.3px',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <span style={{ marginRight: '6px' }}>{s.icon}</span>
+          {s.label}
+        </button>
+      ))}
     </nav>
   )
 })
 
 export default ProfileSectionNav
-export { SECTION_ATTR }

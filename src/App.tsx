@@ -13,7 +13,7 @@ import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
 import TechnicalProvenanceSection from './components/TechnicalProvenanceSection'
 import MarketIndicatorsSection from './components/MarketIndicatorsSection'
 import PocketRiskMap from './components/PocketRiskMap'
-import type { PersonaId } from './data/personas'
+import type { PersonaId, ProfileSectionId } from './data/personas'
 import { loadStoredPersona, getPersona } from './data/personas'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
@@ -58,6 +58,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabName>('buy-finder')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [persona, setPersona] = useState<PersonaId>(loadStoredPersona)
+  const [activeProfileSection, setActiveProfileSection] = useState<ProfileSectionId>('overview')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
   const [selectedBuyerFitResult, setSelectedBuyerFitResult] = useState<BuyerFitResult | null>(() => {
     try { const s = sessionStorage.getItem('bf_result'); return s ? JSON.parse(s) : null } catch { return null }
@@ -100,6 +101,7 @@ function App() {
         const data = await res.json()
         data.id = id  // Preserve frontend ID format for dropdown match
         setActiveSuburb(data)
+        setActiveProfileSection('overview')
         // Re-fetch livability with real coordinates if they changed from null
         if (data.coordinates?.[0] && data.coordinates?.[1]) {
           setLoadingLivability(true)
@@ -391,6 +393,7 @@ function App() {
         if (loginRes.ok) {
           setIsAuthenticated(true)
           setLoginError('')
+          localStorage.setItem('terms_accepted', 'true')
         } else if (loginRes.status === 403) {
           setIsRegistering(false)
           setVerificationMessage('Registration successful! Please check your email to verify your account.')
@@ -882,7 +885,7 @@ function App() {
                     </div>
                    )}
 
-                   <ProfileSectionNav activePersona={persona} />
+                    <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
                    {/* PANEL A: Market Snapshot */}
                    <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'market' }}>
@@ -935,7 +938,7 @@ function App() {
                   </details>
 
                     {/* Visuals Grid (Hidden by default to simplify viewport) */}
-                    <details className="expandable-section" style={{ marginTop: '20px', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
+                    <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'market' ? 'block' : 'none', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
                       <summary style={{ cursor: 'pointer', fontWeight: 'bold', color: 'var(--accent-cyan)', padding: '10px', outline: 'none' }}>
                         📊 View Detailed Demographics & Charts
                       </summary>
@@ -1213,7 +1216,7 @@ function App() {
                   </div>
 
                   {/* PANEL B: Demographics */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'people' }}>
+                  <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'people' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
@@ -1442,7 +1445,7 @@ function App() {
                   </div>
 
                   {/* PANEL C: Live Listings Feed */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'listings' }}>
+                  <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'people' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'listings' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel C: Live Listings Feed</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
@@ -1480,7 +1483,7 @@ function App() {
                   </details>
 
                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
-                  <details className="expandable-section" style={{ marginTop: '20px' }}>
+                  <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'listings' ? 'block' : 'none' }}>
                     <summary>🤖 View AI Investment Committee Debate & Sentiment</summary>
                     <div style={{ padding: '20px' }} id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>
                       <AIInsightPanel
@@ -1491,7 +1494,7 @@ function App() {
                   </details>
 
                   {/* PANEL E: Quick ROI Calculator */}
-                  <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
+                  <Suspense fallback={<div style={{ padding: '20px', display: activeProfileSection === 'ai' ? 'block' : 'none', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
                   <QuickRoiCalculator 
                     medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
                     medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
@@ -1552,7 +1555,7 @@ function App() {
                   </div>
 
                    {/* INVESTMENT CATALYSTS — moved below AI Committee */}
-                   <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'risk' }}>
+                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'risk' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'risk' }}>
                      <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Investment Catalysts</h3>
                      <ul className="highlights-list">
                        {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) ? (
