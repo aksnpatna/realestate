@@ -1660,22 +1660,30 @@ function App() {
                 </div>
 
                 {/* Persona-gated sections */}
-                {getPersona(persona).show_technical && (
-                  <TechnicalProvenanceSection suburb={activeSuburb as any} />
-                )}
-                {(persona !== 'first_home_buyer') && !getPersona(persona).show_technical && (
-                  <MarketIndicatorsSection suburb={activeSuburb as any} />
-                )}
-                <PocketRiskMap suburbId={activeSuburb.id} />
+                <div style={{ display: activeProfileSection === 'technical' ? 'block' : 'none' }}>
+                  {getPersona(persona).show_technical && (
+                    <TechnicalProvenanceSection suburb={activeSuburb as any} />
+                  )}
+                </div>
+                <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
+                  {(persona !== 'first_home_buyer') && !getPersona(persona).show_technical && (
+                    <MarketIndicatorsSection suburb={activeSuburb as any} />
+                  )}
+                </div>
+                <div style={{ display: activeProfileSection === 'pockets' ? 'block' : 'none' }}>
+                  <PocketRiskMap suburbId={activeSuburb.id} />
+                </div>
 
-                <SuburbMap
-                  center={activeSuburb.coordinates || [-25.2744, 133.7751]}
-                  pois={mappedPois}
-                  schools={mappedSchools}
-                  suburbName={activeSuburb.name}
-                  stateName={activeSuburb.state}
-                  postcode={activeSuburb.postcode}
-                />
+                <div style={{ display: activeProfileSection === 'overview' ? 'block' : 'none' }}>
+                  <SuburbMap
+                    center={activeSuburb.coordinates || [-25.2744, 133.7751]}
+                    pois={mappedPois}
+                    schools={mappedSchools}
+                    suburbName={activeSuburb.name}
+                    stateName={activeSuburb.state}
+                    postcode={activeSuburb.postcode}
+                  />
+                </div>
               </div>
             ) : (
               <div className="glass-card empty-state">
