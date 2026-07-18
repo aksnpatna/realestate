@@ -1095,9 +1095,11 @@ function App() {
                         </div>
                       </div>
                     </div>
+                  </div>
+                  </details>
 
                   {/* NEW LIVABILITY SECTION */}
-                   <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'infrastructure' }}>
+                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'infrastructure' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h3>Livability & Amenities</h3>
                       {livabilityData && (
@@ -1461,9 +1463,6 @@ function App() {
                       </div>
                     </div>
                   </div>
-
-                  </div>
-                  </details>
 
                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
                   <div style={{ marginTop: '20px', display: activeProfileSection === 'ai' ? 'block' : 'none' }}>
