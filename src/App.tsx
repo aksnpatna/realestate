@@ -18,6 +18,9 @@ import { loadStoredPersona, getPersona } from './data/personas'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
+import LandingPage from './components/LandingPage'
+import PromoBanner from './components/PromoBanner'
+import ShareReport from './components/ShareReport'
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
@@ -39,6 +42,9 @@ function App() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [userType, setUserType] = useState('First Home Buyer')
+  const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register'>('landing')
+  const [marketingConsent, setMarketingConsent] = useState(false)
+  const [privacyConsent, setPrivacyConsent] = useState(false)
   const [verificationMessage, setVerificationMessage] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
   
@@ -46,7 +52,6 @@ function App() {
   const [loadingData, setLoadingData] = useState(true)
   const [livabilityData, setLivabilityData] = useState<LivabilityData | null>(null)
   const [loadingLivability, setLoadingLivability] = useState(false)
-  const [livabilityError, setLivabilityError] = useState<string | null>(null)
   const [showPrimarySchools, setShowPrimarySchools] = useState(false)
   const [showSecondarySchools, setShowSecondarySchools] = useState(false)
 
@@ -271,7 +276,6 @@ function App() {
     if (currentId !== prevSuburbId.current) {
       prevSuburbId.current = currentId;
       setLivabilityData(null);
-      setLivabilityError(null);
       setClusteringResults(null);
       setShowAmenitiesOnMap(false);
     }
@@ -290,8 +294,7 @@ function App() {
           setLivabilityData(data);
         })
         .catch((err) => {
-          console.error("Failed to load livability data:", err);
-          setLivabilityError(err.message || "Failed to load");
+          console.error("Livability Error:", err.message);
         })
         .finally(() => setLoadingLivability(false));
     }
@@ -354,6 +357,13 @@ function App() {
       setLoginError('Passwords do not match')
       return
     }
+    if (!privacyConsent) {
+      setLoginError('You must agree to the Privacy Policy and Terms of Use')
+      return
+    }
+    
+    // Capture UTM params from URL
+    const urlParams = new URLSearchParams(window.location.search)
     
     try {
       const res = await fetch('/api/register', {
@@ -364,7 +374,12 @@ function App() {
           password: cleanPassword,
           first_name: firstName,
           last_name: lastName,
-          user_type: userType
+          user_type: userType,
+          marketing_consent: marketingConsent,
+          utm_source: urlParams.get('utm_source'),
+          utm_medium: urlParams.get('utm_medium'),
+          utm_campaign: urlParams.get('utm_campaign'),
+          referrer_url: document.referrer
         })
       })
       if (res.ok) {
@@ -390,80 +405,107 @@ function App() {
   }
 
   if (!isAuthenticated) {
+    if (authMode === 'landing') {
+      return (
+        <LandingPage 
+          onLoginClick={() => { setAuthMode('login'); setIsRegistering(false); }} 
+          onRegisterClick={() => { setAuthMode('register'); setIsRegistering(true); }} 
+        />
+      )
+    }
+
     const passwordStrength = password.length >= 12 ? 'Strong' : password.length >= 8 ? 'Medium' : password.length > 0 ? 'Weak' : ''
     const strengthColor = passwordStrength === 'Strong' ? 'var(--success)' : passwordStrength === 'Medium' ? 'var(--warning)' : 'var(--danger)'
     
     return (
-      <div className="dashboard-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div className="glass-card" style={{ padding: '40px', maxWidth: '420px', width: '100%' }}>
-          <h1 className="title-glow" style={{ textAlign: 'center', marginBottom: '10px' }}>Real Estate Engine</h1>
-          <p className="subtitle" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            {isRegistering ? 'Create Account' : 'Login to Dashboard'}
+      <div className="dashboard-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
+        <div className="glass-card" style={{ padding: '40px', maxWidth: '460px', width: '100%', background: 'var(--bg-card)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h1 className="title-glow" style={{ fontSize: '1.8rem', margin: 0, fontWeight: 800 }}>PropertyIQ</h1>
+            <button onClick={() => setAuthMode('landing')} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>Back</button>
+          </div>
+          <p className="subtitle" style={{ marginBottom: '24px' }}>
+            {isRegistering ? 'Create your professional account' : 'Welcome back'}
           </p>
           <form onSubmit={isRegistering ? handleRegister : handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {isRegistering && (
               <div style={{ display: 'flex', gap: '10px' }}>
                 <div className="control-group" style={{ flex: 1 }}>
                   <label className="control-label">First Name</label>
-                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required />
+                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} className="premium-input" required />
                 </div>
                 <div className="control-group" style={{ flex: 1 }}>
                   <label className="control-label">Last Name</label>
-                  <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required />
+                  <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} className="premium-input" required />
                 </div>
               </div>
             )}
             
             <div className="control-group">
               <label className="control-label">Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required autoComplete="email" />
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="premium-input" required autoComplete="email" />
             </div>
+            
             <div className="control-group">
               <label className="control-label">Password</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required autoComplete={isRegistering ? 'new-password' : 'current-password'} />
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="premium-input" required autoComplete={isRegistering ? 'new-password' : 'current-password'} />
               {isRegistering && password.length > 0 && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                  <div style={{ flex: 1, height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px' }}>
+                  <div style={{ flex: 1, height: '4px', background: 'rgba(0,0,0,0.1)', borderRadius: '2px' }}>
                     <div style={{ height: '100%', width: Math.min(100, password.length * 8) + '%', background: strengthColor, borderRadius: '2px', transition: 'width 0.2s' }} />
                   </div>
                   <span style={{ fontSize: '0.7rem', color: strengthColor, fontWeight: 600 }}>{passwordStrength}</span>
                 </div>
-                    )}
-                    {livabilityError && <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', color: '#ef4444', fontSize: '0.9rem' }}>⚠ Failed to load amenities: {livabilityError}</div>}
-                  </div>
+              )}
+            </div>
+
             {isRegistering && (
               <>
                 <div className="control-group">
                   <label className="control-label">Confirm Password</label>
-                  <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }} required autoComplete="new-password" />
+                  <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="premium-input" required autoComplete="new-password" />
                 </div>
                 <div className="control-group">
                   <label className="control-label">I am a...</label>
-                  <select value={userType} onChange={e => setUserType(e.target.value)} className="premium-select" style={{ width: '100%', padding: '10px', boxSizing: 'border-box' }}>
+                  <select value={userType} onChange={e => setUserType(e.target.value)} className="premium-input" style={{ appearance: 'auto' }}>
                     <option value="First Home Buyer">First Home Buyer</option>
                     <option value="Investor">Investor</option>
-                    <option value="Owner Occupier">Owner Occupier Upgrading</option>
-                    <option value="Other">Other</option>
+                    <option value="Buyer's Agent">Buyer's Agent</option>
+                    <option value="Mortgage Broker">Mortgage Broker</option>
                   </select>
+                </div>
+                
+                <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    <input type="checkbox" checked={privacyConsent} onChange={e => setPrivacyConsent(e.target.checked)} style={{ marginTop: '3px' }} />
+                    <span>I agree to the <a href="#" style={{ color: 'var(--accent-cyan)' }}>Privacy Policy</a> and <a href="#" style={{ color: 'var(--accent-cyan)' }}>Terms of Use</a>. *</span>
+                  </label>
+                  <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    <input type="checkbox" checked={marketingConsent} onChange={e => setMarketingConsent(e.target.checked)} style={{ marginTop: '3px' }} />
+                    <span>I'd like to receive product updates and market insights.</span>
+                  </label>
                 </div>
               </>
             )}
+            
             {verificationMessage && (
-              <div style={{ padding: '10px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '6px', color: 'var(--success)', fontSize: '13px', textAlign: 'center' }}>
+              <div style={{ padding: '10px', background: '#D1FAE5', border: '1px solid #10B981', borderRadius: '6px', color: '#047857', fontSize: '13px', textAlign: 'center' }}>
                 {verificationMessage}
               </div>
             )}
             {loginError && (
-              <div style={{ padding: '10px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', color: 'var(--danger)', fontSize: '13px', textAlign: 'center' }}>
+              <div style={{ padding: '10px', background: '#FEE2E2', border: '1px solid #EF4444', borderRadius: '6px', color: '#B91C1C', fontSize: '13px', textAlign: 'center' }}>
                 {loginError}
               </div>
             )}
-            <button type="submit" className="tab-btn tab-active" style={{ width: '100%', marginTop: '4px' }}>
-              {isRegistering ? 'Create Account' : 'Login'}
+            
+            <button type="submit" style={{ width: '100%', marginTop: '10px', padding: '12px', background: 'var(--accent-cyan)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', fontSize: '1rem' }}>
+              {isRegistering ? 'Create Account' : 'Log In'}
             </button>
-            <div style={{ textAlign: 'center', marginTop: '8px' }}>
-              <button type="button" onClick={() => { setIsRegistering(!isRegistering); setLoginError(''); setConfirmPassword(''); }} style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', fontSize: '0.85rem', textDecoration: 'underline' }}>
-                {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
+            
+            <div style={{ textAlign: 'center', marginTop: '12px' }}>
+              <button type="button" onClick={() => { setIsRegistering(!isRegistering); setLoginError(''); setConfirmPassword(''); }} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 }}>
+                {isRegistering ? 'Already have an account? Log in' : "Don't have an account? Start Free Trial"}
               </button>
             </div>
           </form>
@@ -473,68 +515,80 @@ function App() {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" style={{ background: 'var(--bg-dark)', minHeight: '100vh', padding: 0 }}>
+      <PromoBanner />
       <TermsOfUseModal />
       <OnboardingTour />
-      <header>
-        <h1 className="title-glow">Real Estate Engine</h1>
-        <p className="subtitle">Algorithmic Suburb Profiling & Growth Potential</p>
+      
+      <header style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        padding: '20px 40px',
+        background: 'var(--bg-card)',
+        borderBottom: '1px solid var(--border-glass)',
+        marginBottom: '30px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '40px', height: '40px', background: 'var(--accent-cyan)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '1.2rem' }}>
+            IQ
+          </div>
+          <div>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>PropertyIQ</h1>
+          </div>
+        </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <PersonaSwitcher activePersona={persona} onChange={setPersona} />
+          <button 
+            onClick={() => { setIsAuthenticated(false); setAuthMode('landing'); }} 
+            style={{ background: 'none', border: '1px solid var(--border-glass)', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 600, transition: 'all 0.2s' }}
+            onMouseOver={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--text-secondary)' }}
+            onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-glass)' }}
+          >
+            Log Out
+          </button>
+        </div>
       </header>
 
-      <nav className="tab-nav">
-        <button
-          className={`tab-btn ${activeTab === 'buy-finder' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('buy-finder')}
-        >
-          Buy Finder
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'profile' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          Suburb Profile
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'affordability' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('affordability')}
-        >
-          Price Ceiling
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'gearing' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('gearing')}
-        >
-          Cashflow &amp; Gearing
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'purchase-plan' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('purchase-plan')}
-        >
-          My Purchase Plan
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'institutional' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('institutional')}
-        >
-          Institutional
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'calculators' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('calculators')}
-        >
-          Calculators
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'favorites' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('favorites')}
-        >
-          ❤️ My Favorites
-        </button>
-      </nav>
-
-      <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'center', marginTop: '8px' }}>
-        <PersonaSwitcher activePersona={persona} onChange={setPersona} />
-      </div>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
+        <nav className="tab-nav" style={{ gap: '20px', marginBottom: '30px', borderBottom: '2px solid var(--border-glass)' }}>
+          <button
+            className={`tab-btn ${activeTab === 'buy-finder' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('buy-finder')}
+            style={{ fontSize: '1.1rem' }}
+          >
+            Dashboard
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'profile' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('profile')}
+            style={{ fontSize: '1.1rem' }}
+          >
+            Suburb Profile
+          </button>
+          
+          <div style={{ display: 'flex', gap: '20px', marginLeft: 'auto', alignItems: 'center' }}>
+            <select 
+              value={['gearing', 'affordability', 'purchase-plan', 'calculators'].includes(activeTab) ? activeTab : ''} 
+              onChange={(e) => { if (e.target.value) setActiveTab(e.target.value as TabName) }}
+              style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '1.05rem', cursor: 'pointer', outline: 'none' }}
+            >
+              <option value="" disabled>Tools ▼</option>
+              <option value="gearing">Cashflow & Gearing</option>
+              <option value="affordability">Price Ceiling</option>
+              <option value="purchase-plan">My Purchase Plan</option>
+              <option value="calculators">Calculators</option>
+            </select>
+            <button
+              className={`tab-btn ${activeTab === 'favorites' ? 'tab-active' : ''}`}
+              onClick={() => setActiveTab('favorites')}
+              style={{ fontSize: '1.05rem', border: 'none' }}
+            >
+              ❤ Saved
+            </button>
+          </div>
+        </nav>
 
       {activeTab === 'profile' && (
         <div className="main-grid">
@@ -643,30 +697,37 @@ function App() {
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card" {...{ [SECTION_ATTR]: 'overview' }}>
-                    <div className="detail-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div className="detail-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '20px' }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                          <h2 className="detail-title" style={{ margin: 0 }}>{activeSuburb.name}, {activeSuburb.state}</h2>
-                          <button
-                            className="favorite-btn"
-                            onClick={() => toggleFavorite(activeSuburb.id)}
-                            style={{
-                              background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.8rem',
-                              color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-secondary)',
-                              transition: 'all 0.2s', padding: 0, lineHeight: 1
-                            }}
-                            title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
-                          >
-                            {favorites.includes(activeSuburb.id) ? '♥' : '♡'}
-                          </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                          <h2 className="detail-title" style={{ margin: 0, fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {activeSuburb.name}, {activeSuburb.state}
+                          </h2>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <button
+                              className="favorite-btn"
+                              onClick={() => toggleFavorite(activeSuburb.id)}
+                              style={{
+                                background: 'var(--bg-card)', border: '1px solid var(--border-glass)', cursor: 'pointer', fontSize: '1.2rem',
+                                color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-secondary)',
+                                transition: 'all 0.2s', padding: '6px 12px', borderRadius: '8px', boxShadow: 'var(--shadow-sm)'
+                              }}
+                              title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
+                            >
+                              {favorites.includes(activeSuburb.id) ? '♥ Saved' : '♡ Save'}
+                            </button>
+                            <ShareReport suburbName={`${activeSuburb.name}, ${activeSuburb.state}`} suburbId={activeSuburb.id} />
+                          </div>
                         </div>
-                        <p className="subtitle" style={{ marginTop: '5px' }}>
+                        <p className="subtitle" style={{ marginTop: '8px', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
                           {(activeSuburb as any).cbdDistance
                             ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
                             : activeSuburb.metroCBD || 'Regional'}
+                          <span style={{ margin: '0 10px', color: 'var(--border-glass)' }}>|</span>
+                          {activeSuburb.postcode}
                         </p>
                         {(activeSuburb as any).lastUpdated && (
-                          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
                             Data Last Updated: {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
                           </p>
                         )}
@@ -1657,6 +1718,8 @@ function App() {
           }} 
         />
       )}
+
+      </div>
 
       <footer style={{ marginTop: '40px', padding: '20px', fontSize: '0.75rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border)', textAlign: 'center', lineHeight: '1.5' }}>
         <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational purposes only and does not constitute financial, investment, or real estate advice. Forecasts are statistical models based on historical data and do not guarantee future performance.</p>
