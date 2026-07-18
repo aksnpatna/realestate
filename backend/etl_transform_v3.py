@@ -595,59 +595,8 @@ if __name__ == "__main__":
 
 
 def compute_derived_indicators():
-    """Run after ETL to refresh estimated columns from scraped data.
-    Called after every etl_transform batch to keep estimates fresh."""
-    from models_v3 import SessionLocal, SuburbUIV3
-    db = SessionLocal()
-    try:
-        rows = db.query(SuburbUIV3.id, SuburbUIV3.demographics_detail,
-                        SuburbUIV3.house_sold_12m, SuburbUIV3.supply_demand_ratio,
-                        SuburbUIV3.parks_coverage_pct).filter(
-            SuburbUIV3.is_enriched == True
-        ).all()
-        updated = 0
-        for uid, demo_json, sold, sdr, parks in rows:
-            try:
-                demo = demo_json if isinstance(demo_json, dict) else {}
-                inc = demo.get('income_distribution', {}) or {}
-                low1 = float(str(inc.get('0-15.6K', 0) or 0))
-                low2 = float(str(inc.get('15.6-33.8K', 0) or 0))
-                unemp = round(low1 * 0.55 + low2 * 0.25, 1) if (low1 > 0 or low2 > 0) else None
-                
-                # Greenfield suburbs (high sold volume, low price, high SDR) use 0.45 ratio
-                is_greenfield = any(kw in (uid or '').lower() for kw in 
-                    ['point_cook','tarneit','truganina','werribee','craigieburn',
-                     'clyde','melton','wyndham','pakenham','officer','wallan','beveridge',
-                     'donnybrook','kalkallo','mickleham','rockbank','fraser_rise','deanside'])
-                ratio = 0.45 if is_greenfield else 0.15
-                approvals = round(sold * sdr * ratio) if (sold and sdr and sold > 0 and sdr > 0) else None
-                
-                # Infrastructure tier from real data
-                infra = None
-                if approvals and approvals > 200:
-                    infra = 'High'
-                elif parks and parks > 20:
-                    infra = 'High (>20% parkland, active council investment)'
-                elif approvals and approvals > 50:
-                    infra = 'Moderate'
-                elif parks and parks > 10:
-                    infra = 'Moderate (developing area)'
-                elif parks is not None:
-                    infra = 'Limited'
-                
-                # Update only if existing value is NULL — preserves ABS data or prior runs
-                from sqlalchemy import text
-                db.execute(text("""
-                    UPDATE suburbs_ui_v3 
-                    SET unemployment_rate = COALESCE(suburbs_ui_v3.unemployment_rate, :unemp),
-                        building_approvals_12m = COALESCE(suburbs_ui_v3.building_approvals_12m, :approvals),
-                        infrastructure_investment = COALESCE(suburbs_ui_v3.infrastructure_investment, :infra)
-                    WHERE id = :uid
-                """), {"unemp": unemp, "approvals": int(approvals) if approvals else None, 
-                       "infra": infra, "uid": uid})
-                updated += 1
-            except: pass
-        db.commit()
-        print(f"[ETL] Refreshed derived indicators for {updated} suburbs")
-    finally:
-        db.close()
+    """[DEPRECATED] Migrated to etl_abs_building.py.
+    The ABS Building Approvals pipeline now handles building_approvals_12m and
+    infrastructure_investment. This function is kept as a no-op for backward
+    compatibility."""
+    print("[etl_transform_v3] compute_derived_indicators: migrated to etl_abs_building.py, skipping")

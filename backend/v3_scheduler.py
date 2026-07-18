@@ -241,9 +241,12 @@ class V3Scheduler:
                    "community_centre/retirement/construction/greenfield/brownfield)...")
             _python("etl_osm_enrich.py")
 
-            print("\n  [Step 6/6] ABS Census 2021 G37 social housing + cadastre catalogue survey...")
+            print("\n  [Step 6/7] ABS Census 2021 G37 social housing + cadastre catalogue survey...")
             _python("etl_abs_social_housing.py")
             _python("etl_cadastre_discovery.py")
+
+            print("\n  [Step 7/7] ABS Building Approvals (8731.0) for LGA-mapped suburbs...")
+            _python("etl_abs_building.py")
 
             self.last_quarterly = datetime.now()
             print(f"\n  ✓ Quarterly full refresh complete")
