@@ -888,7 +888,7 @@ function App() {
                     <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
                    {/* PANEL A: Market Snapshot */}
-                   <div className="highlights-section" style={{ marginTop: '20px' }} {...{ [SECTION_ATTR]: 'market' }}>
+                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'overview' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'overview' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
                       Panel A: Market Snapshot
                     </h3>
@@ -913,13 +913,14 @@ function App() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                   </div>
 
                   {/* Decision Brief — compact evidence-based summary */}
+                  <div style={{ display: activeProfileSection === 'overview' ? 'block' : 'none' }}>
                   <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
+                  </div>
 
-
-                    {/* Visuals Grid (Hidden by default to simplify viewport) */}
+                    {/* Visuals Grid (Charts) */}
                     <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'market' ? 'block' : 'none', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
                       <summary style={{ cursor: 'pointer', fontWeight: 'bold', color: 'var(--accent-cyan)', padding: '10px', outline: 'none' }}>
                         📊 View Detailed Demographics & Charts
@@ -1197,11 +1198,11 @@ function App() {
                     )}
                   </div>
 
-                  {/* PANEL B: Demographics */}
-                  <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'people' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel B: Demographics</h3>
+                  {/* PANEL B: Demographics (People & Infrastructure) */}
+                  <div className="highlights-section" style={{ marginTop: '20px', display: (activeProfileSection === 'people' || activeProfileSection === 'infrastructure') ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'people' }}>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & People'}</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                      <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                      <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Age Distribution</h4>
                         <div style={{ height: '200px' }}>
                           <ResponsiveContainer width="100%" height="100%">
@@ -1220,7 +1221,7 @@ function App() {
                           </ResponsiveContainer>
                         </div>
                       </div>
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Owner vs Renter Ratio</h4>
                         <div style={{ height: '180px' }}>
                           <ResponsiveContainer width="100%" height="100%">
@@ -1241,7 +1242,7 @@ function App() {
                           <span style={{ color: 'var(--accent-cyan)' }}>Renter: {(100 - (activeSuburb.ownerOccupierRate || 65.5)).toFixed(2)}%</span>
                         </div>
                       </div>
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Macro Indicators (ABS)</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px', padding: '0 10px' }}>
                           <div>
@@ -1265,7 +1266,7 @@ function App() {
                         </div>
                       </div>
                       {/* 🏛️ Social Infrastructure */}
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>🏛️ Social Infrastructure</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.8rem' }}>
                           {(() => {
@@ -1338,7 +1339,7 @@ function App() {
                         </div>
                       </div>
                       {/* 🏗️ Development Activity */}
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
+                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>🏗️ Development Activity</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.8rem' }}>
                           {(() => {
@@ -1427,8 +1428,8 @@ function App() {
                   </div>
 
                   {/* PANEL C: Live Listings Feed */}
-                  <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'people' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'listings' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Panel C: Live Listings Feed</h3>
+                  <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'listings' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'listings' }}>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Live Listings Feed</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
                         <h4 style={{ color: 'var(--accent-purple)', marginBottom: '10px' }}>💰 Recently Sold</h4>
@@ -1465,18 +1466,19 @@ function App() {
                   </details>
 
                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
-                  <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'listings' ? 'block' : 'none' }}>
-                    <summary style={{ cursor: 'pointer', fontWeight: 'bold', color: 'var(--accent-cyan)', padding: '10px', outline: 'none' }}>🧠 AI Committee (Debate & Sentiment)</summary>
+                  <div style={{ marginTop: '20px', display: activeProfileSection === 'ai' ? 'block' : 'none' }}>
+                    <h3 style={{ marginBottom: '15px', color: 'var(--accent-cyan)' }}>🧠 AI Committee (Debate & Sentiment)</h3>
                     <div style={{ padding: '20px' }} id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>
                       <AIInsightPanel
                         activeSuburb={activeSuburb}
                         setActiveSuburb={setActiveSuburb}
                       />
                     </div>
-                  </details>
+                  </div>
 
                   {/* PANEL E: Quick ROI Calculator */}
-                  <Suspense fallback={<div style={{ padding: '20px', display: activeProfileSection === 'ai' ? 'block' : 'none', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
+                  <div style={{ display: activeProfileSection === 'overview' || activeProfileSection === 'market' ? 'block' : 'none' }}>
+                  <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
                   <QuickRoiCalculator 
                     medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
                     medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
@@ -1484,9 +1486,10 @@ function App() {
                     onAdvancedClick={() => setActiveTab('gearing')}
                   />
                   </Suspense>
+                  </div>
 
                   {/* K-Means Clustering: Similar Suburbs */}
-                  <div style={{ marginTop: '20px' }}>
+                  <div style={{ marginTop: '20px', display: activeProfileSection === 'pockets' ? 'block' : 'none' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                       <h4 style={{ fontSize: '0.95rem', color: 'var(--accent-cyan)' }}>🔍 Find Similar Suburbs (K-Means Clustering)</h4>
                       <button
@@ -1559,7 +1562,7 @@ function App() {
                   )}
 
                   {activeSuburb.schools && activeSuburb.schools.length > 0 && (
-                    <div className="schools-section">
+                    <div className="schools-section" style={{ display: activeProfileSection === 'infrastructure' ? 'block' : 'none', marginTop: '20px' }}>
                       {((() => {
                         const primaries = activeSuburb.schools!.filter(s => ['primary', 'combined'].includes(s.type.toLowerCase()));
                         const secondaries = activeSuburb.schools!.filter(s => ['secondary', 'combined'].includes(s.type.toLowerCase()));
