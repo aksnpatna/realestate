@@ -128,6 +128,11 @@ class UserModel(Base):
     verification_token = Column(String, nullable=True)
     password_hash = Column(String)
     salt = Column(String)
+    marketing_consent = Column(Boolean, default=False)
+    utm_source = Column(String, nullable=True)
+    utm_medium = Column(String, nullable=True)
+    utm_campaign = Column(String, nullable=True)
+    referrer_url = Column(String, nullable=True)
     created_at = Column(String)
 
 class UserFavorite(Base):
@@ -202,10 +207,22 @@ class RegisterRequest(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     user_type: Optional[str] = None
+    marketing_consent: Optional[bool] = False
+    utm_source: Optional[str] = None
+    utm_medium: Optional[str] = None
+    utm_campaign: Optional[str] = None
+    referrer_url: Optional[str] = None
 
 class ActivityRequest(BaseModel):
     action_type: str
     target_id: Optional[str] = None
+
+class AnalyticsEventRequest(BaseModel):
+    event: str
+    properties: Optional[dict] = None
+    timestamp: Optional[int] = None
+    url: Optional[str] = None
+    path: Optional[str] = None
 
 class BuyFinderWeights(BaseModel):
     affordability: float = 30
@@ -331,6 +348,11 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
         verification_token=verification_token,
         password_hash=hashed,
         salt="",
+        marketing_consent=request.marketing_consent,
+        utm_source=request.utm_source,
+        utm_medium=request.utm_medium,
+        utm_campaign=request.utm_campaign,
+        referrer_url=request.referrer_url,
         created_at=datetime.now().isoformat()
     )
     db.add(new_user)
@@ -341,6 +363,13 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
     threading.Thread(target=send_verification_email, args=(clean_email, verification_token)).start()
     
     return {"status": "success", "message": "Registration successful. Please check your email to verify your account."}
+
+@app.post("/api/analytics/event")
+def track_analytics_event(request: AnalyticsEventRequest, req: Request):
+    # In production, this would go to PostHog/Mixpanel or a dedicated DB table
+    # For now, just logging the privacy-compliant event
+    logging.info(f"Analytics Event: {request.event} | Props: {request.properties} | Path: {request.path}")
+    return {"status": "success"}
 
 @app.post("/api/login")
 def login(request: LoginRequest, response: Response, req: Request, db: Session = Depends(get_db)):
