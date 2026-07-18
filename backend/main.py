@@ -365,10 +365,31 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
     return {"status": "success", "message": "Registration successful. Please check your email to verify your account."}
 
 @app.post("/api/analytics/event")
-def track_analytics_event(request: AnalyticsEventRequest, req: Request):
-    # In production, this would go to PostHog/Mixpanel or a dedicated DB table
-    # For now, just logging the privacy-compliant event
-    logging.info(f"Analytics Event: {request.event} | Props: {request.properties} | Path: {request.path}")
+def track_analytics_event(request: AnalyticsEventRequest, req: Request, db: Session = Depends(get_db)):
+    """Privacy-compliant analytics event tracking. Persists to user_activities."""
+    import json
+    user_id = None
+    auth_header = req.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:]
+        try:
+            decoded = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            user_id = decoded.get("user_id")
+        except Exception:
+            pass
+
+    activity = UserActivity(
+        user_id=user_id,
+        action_type=request.event,
+        target_id=json.dumps({
+            "properties": request.properties or {},
+            "url": request.url,
+            "path": request.path,
+            "timestamp": request.timestamp,
+        }),
+    )
+    db.add(activity)
+    db.commit()
     return {"status": "success"}
 
 @app.post("/api/login")
