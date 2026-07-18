@@ -22,17 +22,17 @@ that have already undergone their own QA.
 
 ## Pipeline Inventory
 
-### TIER 1: SCHEDULED (via `v3_scheduler.py`)
+### TIER 1: SCHEDULED (via `v3_scheduler.py` — monthly)
 
-| # | Pipeline | Target | Schedule | Runtime | Depends On |
-|---|----------|--------|----------|---------|------------|
-| 1 | `run_v3_extract.py` | `suburbs_raw_v3` | Monthly (500) + Quarterly (2000) | ~2min/100 suburbs | `suburbs_all` seed |
-| 2 | `run_unpack.py` | `suburbs_unpacked_v3` | Monthly + Quarterly | ~40s/200 suburbs | Pipeline 1 |
-| 3 | `enrich_from_unpacked.py` | `suburbs_ui_v3` | Monthly + Quarterly | 2-5s | Pipeline 2 |
-| 4 | `etl_osm_enrich.py` | `suburbs_ui_v3` (OSM cols) | Quarterly | 2-5min | Pipeline 3 |
-| 5 | `etl_abs_social_housing.py` | `suburbs_ui_v3` (G37) | Quarterly | 3-5min | ABS DataPack ZIP |
-| 6 | `etl_abs_building.py` | `suburbs_ui_v3` (building_approvals) | Quarterly | 10-30s | ABS API 8731.0 |
-| 7 | `etl_cadastre_discovery.py` | `data_sources` | Quarterly | 30-60s | None |
+| # | Pipeline | Target | Runtime | Depends On |
+|---|----------|--------|---------|------------|
+| 1 | `run_v3_extract.py` | `suburbs_raw_v3` | ~30-60 min | `suburbs_all` seed |
+| 2 | `run_unpack.py` | `suburbs_unpacked_v3` | ~5-10 min | Pipeline 1 |
+| 3 | `enrich_from_unpacked.py` | `suburbs_ui_v3` | 2-5s | Pipeline 2 |
+| 4 | `etl_osm_enrich.py` | `suburbs_ui_v3` (OSM cols) | 2-5 min | Pipeline 3 |
+| 5 | `etl_abs_social_housing.py` | `suburbs_ui_v3` (G37) | 3-5 min | ABS DataPack |
+| 6 | `etl_abs_building.py` | `suburbs_ui_v3` (building_approvals) | 10-30s | ABS API 8731.0 |
+| 7 | `etl_cadastre_discovery.py` | `data_sources` | 30-60s | None |
 
 ### TIER 2: SCHEDULED (separate cron)
 
@@ -113,24 +113,45 @@ External data sources:
 
 ---
 
-## SCHEDULE TIMELINE (typical quarter)
+## SCHEDULE TIMELINE (monthly)
 
 ```
-Week 1, Day 1:
-  ├─ 02:00  Monthly metro refresh (pipelines 1-2-3, ~30min)
-  ├─ 03:00  Nightly compute: VIC (pipeline 8, ~3min)
-  
-Week 1, Day 7:
-  ├─ 02:00  Quarterly full refresh (pipelines 1-2-3-4-5-6-7, ~2-3 hours)
-  ├─ 05:00  Nightly compute: all states (pipeline 8, ~20min)
+Day 1, 02:00:
+  ├─ Full monthly cycle (all 13,150 suburbs)
+  │   ├─ [Step 1/7] Seed pending raw (>25d old)        ~10 sec
+  │   ├─ [Step 2/7] Extract (Playwright, 2000/batch)    ~30-60 min
+  │   ├─ [Step 3/7] Unpack raw → columnar               ~5-10 min
+  │   ├─ [Step 4/7] Enrich columnar → suburbs_ui_v3     ~2-5 sec
+  │   ├─ [Step 5/7] OSM social-infra enrichment         ~2-5 min
+  │   ├─ [Step 6/7] ABS social housing + building       ~5-10 min
+  │   └─ [Step 7/7] Cadastre catalogue survey           ~30-60 sec
+  │   Total: ~1-1.5 hours
+  │
+  └─ 04:00 Nightly compute: that day's state (pipeline 8, ~3 min)
 
-Every night:
-  ├─ 03:00  Nightly compute: one state (pipeline 8, ~3min)
+Every night, 03:00:
+  └─ Nightly compute: one state (pipeline 8, ~3 min)
+     Boundary geom populated automatically on first run
 
 Manual (when needed):
   ├─ etl_abs_census.py         (new Census release)
   ├─ etl_nsw_cadastre.py        (cadastral updates)
   └─ etl_nsw_planning_rules.py  (NSW planning changes)
+```
+
+---
+
+## SCHEDULE (v3_scheduler.py)
+
+Single monthly cycle replaces the old monthly-metro + quarterly-national split.
+All 13,150 suburbs are processed every 30 days. Change detection ensures only
+actually-stale data is re-processed at each layer.
+
+```
+Interval: 30 days (configurable via CYCLE_INTERVAL)
+Re-extract age: 25 days (REFRSH_AGE_DAYS)
+Extract batch: 2000 suburbs per run
+CLI: python v3_scheduler.py --run | --daemon
 ```
 
 ---
@@ -177,18 +198,19 @@ function used crude heuristics (`sold * SDR * 0.15`). **Deprecated.**
 
 ## TIME ESTIMATES
 
-| Operation | Estimated | Actual (last run) |
-|---|---|---|
-| Monthly metro extract (500 suburbs) | 10-15 min | N/A |
-| Monthly unpack + enrich | 2-3 min | N/A |
-| Quarterly full extract (2000/batch) | 30-60 min | N/A |
-| Quarterly OSM enrich | 2-5 min | N/A |
-| Quarterly ABS social housing | 3-5 min | N/A |
-| Quarterly ABS building approvals | 10-30 sec | N/A |
-| Nightly compute (one state) | 2-3 min | 3 min |
-| Nightly compute (all states) | 15-20 min | 6 sec (full batch) |
-| ABS census (all states) | 10-15 min | Manual |
-| Full quarter cycle | 2-3 hours | N/A |
+| Operation | Estimated |
+|---|---|
+| Full monthly cycle | 1-1.5 hours |
+| Extract (2000 suburbs) | 30-60 min |
+| Unpack + Enrich | 5-10 min |
+| OSM enrichment | 2-5 min |
+| ABS social housing | 3-5 min |
+| ABS building approvals | 10-30 sec |
+| Cadastre catalogue | 30-60 sec |
+| Nightly compute (one state) | 2-3 min |
+| Nightly compute (all states, fresh) | 15-20 min |
+| Nightly compute (incremental) | <1 min |
+| ABS census (all states) | 10-15 min |
 
 ---
 
