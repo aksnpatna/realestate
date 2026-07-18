@@ -857,7 +857,7 @@ function App() {
 
                    {/* MACRO MARKET PULSE */}
                   {macroEtf && typeof macroEtf.current_price === 'number' && (
-                    <div className="highlights-section" style={{ marginTop: '20px', background: 'linear-gradient(145deg, rgba(30,30,40,0.8) 0%, rgba(20,20,30,0.9) 100%)', border: '1px solid var(--accent-purple)' }}>
+                    <div className="highlights-section" style={{ marginTop: '20px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', padding: '16px' }}>
                       <h3 style={{ marginBottom: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         📈 Macro Market Pulse (National Benchmark)
                       </h3>
@@ -918,24 +918,6 @@ function App() {
                   {/* Decision Brief — compact evidence-based summary */}
                   <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
 
-                  {/* AI Committee — quick access */}
-                  <details style={{ marginTop: '10px', padding: '12px', background: 'rgba(16,185,129,0.04)', border: '1px solid var(--border-glass)', borderRadius: '8px' }}>
-                    <summary style={{ cursor: 'pointer', fontWeight: 600, color: '#10b981', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      🧠 AI Committee
-                    </summary>
-                    <div style={{ marginTop: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                      <p>The AI Committee provides Bull, Bear, and Urban Planner perspectives on this suburb. It challenges the deterministic Buyer Fit result without overriding the numeric ranking.</p>
-                      <p>Scroll down to the AI Insight Panel below for full committee views, news analysis, and investment playbook.</p>
-                      <button
-                        onClick={() => {
-                          const aiSection = document.getElementById('ai-insight-panel')
-                          if (aiSection) aiSection.scrollIntoView({ behavior: 'smooth' })
-                        }}
-                        style={{ padding: '6px 12px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', marginTop: '8px' }}>
-                        View AI Committee
-                      </button>
-                    </div>
-                  </details>
 
                     {/* Visuals Grid (Hidden by default to simplify viewport) */}
                     <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'market' ? 'block' : 'none', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
@@ -1484,7 +1466,7 @@ function App() {
 
                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
                   <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'listings' ? 'block' : 'none' }}>
-                    <summary>🤖 View AI Investment Committee Debate & Sentiment</summary>
+                    <summary style={{ cursor: 'pointer', fontWeight: 'bold', color: 'var(--accent-cyan)', padding: '10px', outline: 'none' }}>🧠 AI Committee (Debate & Sentiment)</summary>
                     <div style={{ padding: '20px' }} id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>
                       <AIInsightPanel
                         activeSuburb={activeSuburb}
