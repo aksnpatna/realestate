@@ -1194,35 +1194,33 @@ function App() {
                           <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>10-Year Historical Median Price</h4>
                           <div style={{ height: '220px' }}>
                             <ResponsiveContainer width="100%" height="100%">
-                              <LineChart data={[...(activeSuburb.history as any[]).map((pt: any) => ({
+                              <LineChart data={(activeSuburb.history as any[]).map((pt: any) => ({
                                 year: typeof pt.date === 'string' ? pt.date.substring(0, 4) : String(pt.date || ''),
                                 price: typeof pt.value === 'number' ? pt.value : 0
-                              })), ...((activeSuburb.forecast as any[]) || []).map((pt: any) => ({
-                                year: typeof pt.date === 'string' ? pt.date.substring(0, 4) : String(pt.date || ''),
-                                forecastPrice: typeof pt.price === 'number' ? pt.price : 0
-                              }))]} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                              }))} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
                                 <XAxis dataKey="year" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
                                 <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `$${Math.round(val / 1000)}k`} />
-                                <RechartsTooltip formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, name === 'price' ? 'Historical' : 'Forecast']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                                <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Price']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
                                 <Line type="monotone" dataKey="price" stroke="var(--accent-cyan)" strokeWidth={3} dot={false} />
-                                <Line type="monotone" dataKey="forecastPrice" stroke="var(--warning)" strokeWidth={3} strokeDasharray="5 5" dot={false} />
                               </LineChart>
                             </ResponsiveContainer>
                           </div>
                         </div>
                       )}
-                      {/* 10-Year Projection — POC ENABLED */}
+                      {/* 10-Year Projection — NOT AVAILABLE in POC */}
                       <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <div style={{ textAlign: 'center', padding: '20px' }}>
-                          <h4 style={{ marginBottom: '10px', color: 'var(--warning)' }}>3-Year AI Forecast (POC)</h4>
-                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '300px', lineHeight: 1.5, marginBottom: '15px' }}>
-                            A Linear Regression time-series model (Scikit-Learn) has been run on the 10-year dataset. 
-                            It applies a synthetic momentum factor based on the Suburb's current Demand/Supply Ratio.
+                          <h4 style={{ marginBottom: '10px', color: 'var(--text-secondary)' }}>Long-Horizon Forecast Unavailable</h4>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '300px', lineHeight: 1.5 }}>
+                            The POC does not yet produce calibrated long-horizon forecasts.
+                            Return after sufficient observation history is accumulated to enable
+                            empirical backtesting and calibration.
                           </p>
-                          <div style={{ fontSize: '0.75rem', padding: '8px 12px', background: 'rgba(217,119,6,0.1)', color: 'var(--warning)', borderRadius: '4px', display: 'inline-block' }}>
-                            Note: The dotted yellow line on the left chart shows the 3-year projection.
-                          </div>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+                            Scenario illustration only. This is not an empirical probability,
+                            calibrated forecast, or financial prediction.
+                          </p>
                         </div>
                       </div>
                     </div>
