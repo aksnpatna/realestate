@@ -78,6 +78,7 @@
   .glass-card {
     max-width: 100% !important;
     box-sizing: border-box !important;
+    padding: 20px !important;
   }
   
   .highlights-section > div {
@@ -88,5 +89,36 @@
   }
   .metric-box div {
     word-break: break-all;
+  }
+
+  /* Make tab nav horizontally scrollable to prevent wrapping layout breaks */
+  .tab-nav {
+    display: flex !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 12px !important;
+    padding-bottom: 8px !important;
+  }
+  
+  .tab-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  .tab-nav > div {
+    margin-left: 0 !important;
+  }
+}
+
+/* Base class for main wrapper to replace inline padding */
+.main-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+@media (max-width: 768px) {
+  .main-wrapper {
+    padding: 0 16px !important;
   }
 }
