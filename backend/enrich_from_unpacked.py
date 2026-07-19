@@ -9,20 +9,19 @@ No Python per-record loops — runs in 1-2 SQL statements total.
 """
 import sys
 from sqlalchemy import text
-from models_v3 import SessionLocal
+from models_v3 import SessionLocal, DEFAULT_MORTGAGE_RATE
 
-
-ENRICH_SQL = """
+ENRICH_SQL = f"""
 INSERT INTO suburbs_ui_v3 (
     id, state, name, postcode, is_enriched,
     house_median_price, house_median_price_12m_change_pct,
     house_median_price_12m_change, house_median_rent,
     house_median_rent_12m_change, house_gross_rental_yield,
     house_gross_rental_yield_trend, house_sold_12m,
-    house_stock_on_market,
+    house_stock_on_market, house_days_on_market,
     unit_median_price, unit_median_price_12m_change_pct,
     unit_median_rent, unit_gross_rental_yield,
-    unit_gross_rental_yield_trend,
+    unit_gross_rental_yield_trend, unit_days_on_market,
     supply_demand_ratio, price_to_rent_ratio,
     price_to_income_ratio,
     total_properties, vacancy_rate, population_density,
@@ -32,9 +31,12 @@ INSERT INTO suburbs_ui_v3 (
     predominant_occupation,
     area_sqkm, parks_count, parks_coverage_pct,
     typical_mortgage_band,
+    estimated_mortgage_repayment,
     history_10yr, history_rent_10yr,
     demographics_detail,
     nearby_suburbs, sales_summary,
+    external_dom_house, external_dom_unit, external_median_price,
+    external_source, external_fetched_at, external_validation, metric_provenance,
     dq_issues, dq_score, transform_version, last_updated
 )
 SELECT
@@ -57,12 +59,31 @@ SELECT
     u.house_sold_12m,
     u.current_sale_listing_count AS house_stock_on_market,
 
+    -- Derived: approximate days on market from inventory turnover
+    CASE WHEN u.current_sale_listing_count IS NOT NULL
+              AND u.house_sold_12m IS NOT NULL
+              AND u.house_sold_12m > 0
+         THEN ROUND(365.0 * u.current_sale_listing_count::numeric / u.house_sold_12m::numeric)
+         ELSE NULL
+    END AS house_days_on_market,
+
     -- Unit
     COALESCE(u.unit_sale_price, u.unit_median_value) AS unit_median_price,
     u.unit_change_12m_pct AS unit_median_price_12m_change_pct,
     u.unit_median_rent,
     u.unit_gross_rental_yield,
     NULL AS unit_gross_rental_yield_trend,
+
+    -- Derived: approximate unit days on market from inventory turnover (using recent sales ratio as proxy for split)
+    CASE WHEN u.current_sale_listing_count IS NOT NULL
+              AND u.unit_sold_12m IS NOT NULL
+              AND u.unit_sold_12m > 0
+              AND u.current_recent_sales_count_unit IS NOT NULL
+              AND u.current_recent_sales_count_house IS NOT NULL
+              AND (u.current_recent_sales_count_unit + u.current_recent_sales_count_house) > 0
+         THEN ROUND(365.0 * (u.current_sale_listing_count::numeric * (u.current_recent_sales_count_unit::numeric / (u.current_recent_sales_count_unit + u.current_recent_sales_count_house)::numeric)) / u.unit_sold_12m::numeric)
+         ELSE NULL
+    END AS unit_days_on_market,
 
     -- Derived: supply/demand
     CASE WHEN u.current_sale_listing_count IS NOT NULL
@@ -118,6 +139,19 @@ SELECT
     u.parks_coverage_pct,
     u.typical_mortgage_band,
 
+    -- Computed mortgage repayment from median house price (80% LVR, env configured rate, 30yr P&I)
+    CASE
+        WHEN COALESCE(u.house_sale_price, u.house_median_value) IS NOT NULL
+            AND COALESCE(u.house_sale_price, u.house_median_value) > 0
+        THEN ROUND(
+            (COALESCE(u.house_sale_price, u.house_median_value) * 0.8)
+            * ({DEFAULT_MORTGAGE_RATE}/12)
+            * POWER(1 + ({DEFAULT_MORTGAGE_RATE}/12), 30*12)
+            / (POWER(1 + ({DEFAULT_MORTGAGE_RATE}/12), 30*12) - 1)
+        )
+        ELSE NULL
+    END AS estimated_mortgage_repayment,
+
     u.house_price_history AS history_10yr,
     u.house_rent_history AS history_rent_10yr,
 
@@ -144,6 +178,18 @@ SELECT
 
     u.nearby_suburbs,
     u.sales_summary,
+
+    -- External Columns (will be populated by etl_external_market.py)
+    NULL AS external_dom_house,
+    NULL AS external_dom_unit,
+    NULL AS external_median_price,
+    NULL AS external_source,
+    NULL AS external_fetched_at,
+    NULL AS external_validation,
+    jsonb_build_object(
+        'house_days_on_market', jsonb_build_object('source', 'computed_inventory_turnover'),
+        'unit_days_on_market', jsonb_build_object('source', 'computed_inventory_turnover')
+    ) AS metric_provenance,
 
     -- DQ issues (computed inline)
     CASE
@@ -178,11 +224,13 @@ ON CONFLICT (id) DO UPDATE SET
     house_gross_rental_yield_trend = COALESCE(EXCLUDED.house_gross_rental_yield_trend, suburbs_ui_v3.house_gross_rental_yield_trend),
     house_sold_12m = EXCLUDED.house_sold_12m,
     house_stock_on_market = EXCLUDED.house_stock_on_market,
+    house_days_on_market = EXCLUDED.house_days_on_market,
     unit_median_price = EXCLUDED.unit_median_price,
     unit_median_price_12m_change_pct = EXCLUDED.unit_median_price_12m_change_pct,
     unit_median_rent = EXCLUDED.unit_median_rent,
     unit_gross_rental_yield = EXCLUDED.unit_gross_rental_yield,
     unit_gross_rental_yield_trend = COALESCE(EXCLUDED.unit_gross_rental_yield_trend, suburbs_ui_v3.unit_gross_rental_yield_trend),
+    unit_days_on_market = EXCLUDED.unit_days_on_market,
     supply_demand_ratio = EXCLUDED.supply_demand_ratio,
     price_to_rent_ratio = EXCLUDED.price_to_rent_ratio,
     price_to_income_ratio = COALESCE(EXCLUDED.price_to_income_ratio, suburbs_ui_v3.price_to_income_ratio),
@@ -215,13 +263,21 @@ ON CONFLICT (id) DO UPDATE SET
     parks_count = EXCLUDED.parks_count,
     parks_coverage_pct = EXCLUDED.parks_coverage_pct,
     typical_mortgage_band = EXCLUDED.typical_mortgage_band,
+    estimated_mortgage_repayment = EXCLUDED.estimated_mortgage_repayment,
     history_10yr = EXCLUDED.history_10yr,
     history_rent_10yr = EXCLUDED.history_rent_10yr,
     demographics_detail = EXCLUDED.demographics_detail,
     nearby_suburbs = EXCLUDED.nearby_suburbs,
     sales_summary = EXCLUDED.sales_summary,
+    external_dom_house = COALESCE(EXCLUDED.external_dom_house, suburbs_ui_v3.external_dom_house),
+    external_dom_unit = COALESCE(EXCLUDED.external_dom_unit, suburbs_ui_v3.external_dom_unit),
+    external_median_price = COALESCE(EXCLUDED.external_median_price, suburbs_ui_v3.external_median_price),
+    external_source = COALESCE(EXCLUDED.external_source, suburbs_ui_v3.external_source),
+    external_fetched_at = COALESCE(EXCLUDED.external_fetched_at, suburbs_ui_v3.external_fetched_at),
+    external_validation = COALESCE(EXCLUDED.external_validation, suburbs_ui_v3.external_validation),
+    metric_provenance = EXCLUDED.metric_provenance,
     dq_issues = CASE WHEN EXCLUDED.dq_issues IS NOT NULL
-                     THEN COALESCE(suburbs_ui_v3.dq_issues, '[]'::jsonb) || EXCLUDED.dq_issues
+                     THEN (COALESCE(suburbs_ui_v3.dq_issues::jsonb, '[]'::jsonb) || EXCLUDED.dq_issues::jsonb)::json
                      ELSE suburbs_ui_v3.dq_issues END,
     dq_score = LEAST(COALESCE(EXCLUDED.dq_score, suburbs_ui_v3.dq_score), suburbs_ui_v3.dq_score),
     transform_version = 3,

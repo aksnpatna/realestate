@@ -637,44 +637,72 @@ def get_poc_config():
     """Returns active POC configuration so the showcase can be verified."""
     return poc_config.to_dict()
 
-_cache_etf_data = None
-_cache_etf_time = 0
+_cache_benchmarks_data = None
+_cache_benchmarks_time = 0
 
-@app.get("/api/etf/vap")
-def get_vap_etf():
-    """Fetches Vanguard Australian Property ETF performance (macro benchmark). Cached 24h."""
-    global _cache_etf_data, _cache_etf_time
+@app.get("/api/benchmarks")
+def get_benchmarks(db: Session = Depends(get_db)):
+    """Fetches benchmark performance (VAS, AAA, and National Residential Average). Cached 24h."""
+    global _cache_benchmarks_data, _cache_benchmarks_time
     now = time.time()
     
-    if _cache_etf_data and (now - _cache_etf_time) < 86400:  # 24h
-        return _cache_etf_data
+    if _cache_benchmarks_data and (now - _cache_benchmarks_time) < 86400:  # 24h
+        return _cache_benchmarks_data
         
     try:
         import yfinance as yf
-        ticker = yf.Ticker("VAP.AX")
-        hist = ticker.history(period="1y")
-        if hist.empty:
-            raise HTTPException(status_code=500, detail="Empty ETF history")
-            
-        current = float(hist['Close'].iloc[-1])
-        year_ago = float(hist['Close'].iloc[0])
-        month_ago = float(hist['Close'].iloc[-21]) if len(hist) >= 21 else year_ago
+        results = []
         
-        result = {
-            "symbol": "VAP.AX",
-            "name": "Vanguard Australian Property Securities Index ETF",
-            "note": "A-REIT ETF benchmark, not a residential property proxy. Holds commercial/retail/industrial REITs. Leverage, land value appreciation, and tax treatment excluded from comparison.",
-            "current_price": current,
-            "growth_1y_pct": round(((current - year_ago) / year_ago) * 100, 2),
-            "growth_1m_pct": round(((current - month_ago) / month_ago) * 100, 2),
-            "last_updated": str(datetime.now())
-        }
-        _cache_etf_data = result
-        _cache_etf_time = now
-        return result
+        # 1. Broad Stock Market (Opportunity Cost)
+        vas = yf.Ticker("VAS.AX")
+        hist_vas = vas.history(period="1y")
+        if not hist_vas.empty:
+            c_vas = float(hist_vas['Close'].iloc[-1])
+            y_vas = float(hist_vas['Close'].iloc[0])
+            results.append({
+                "symbol": "VAS.AX",
+                "name": "Vanguard Australian Shares Index",
+                "note": "Broad stock market index (ASX 300). The gold standard for measuring pure opportunity cost without property leverage.",
+                "current_price": c_vas,
+                "growth_1y_pct": round(((c_vas - y_vas) / y_vas) * 100, 2),
+                "type": "opportunity"
+            })
+            
+        # 2. Risk-Free Cash (High-Interest Baseline)
+        aaa = yf.Ticker("AAA.AX")
+        hist_aaa = aaa.history(period="1y")
+        if not hist_aaa.empty:
+            c_aaa = float(hist_aaa['Close'].iloc[-1])
+            y_aaa = float(hist_aaa['Close'].iloc[0])
+            # For AAA, the yield is distributed. The RBA cash rate is a better approx for total return of this ETF.
+            # But the adjusted close handles it. Let's use the adjusted return.
+            results.append({
+                "symbol": "AAA.AX",
+                "name": "Betashares High Interest Cash ETF",
+                "note": "Represents the risk-free rate of leaving your deposit in a high-yield savings account.",
+                "current_price": c_aaa,
+                "growth_1y_pct": round(((c_aaa - y_aaa) / y_aaa) * 100, 2),
+                "type": "risk-free"
+            })
+            
+        # 3. National Residential Average (Actual DB Data)
+        avg_house_growth = db.query(func.avg(SuburbUIV3.house_median_price_12m_change_pct)).filter(SuburbUIV3.house_median_price_12m_change_pct.isnot(None)).scalar()
+        if avg_house_growth is not None:
+            results.append({
+                "symbol": "NAT.HOUSES",
+                "name": "National Average House Growth",
+                "note": "Actual average capital growth of all houses nationwide over the last 12 months based on our enriched dataset.",
+                "current_price": 0,  # N/A for index
+                "growth_1y_pct": round(avg_house_growth, 2),
+                "type": "residential"
+            })
+            
+        _cache_benchmarks_data = results
+        _cache_benchmarks_time = now
+        return results
     except Exception as e:
         ref = str(uuid.uuid4())[:12]
-        logging.getLogger("uvicorn").error(json.dumps({"type": "etf_error", "ref": ref, "error_class": type(e).__name__}, default=str), exc_info=True)
+        logging.getLogger("uvicorn").error(json.dumps({"type": "benchmark_error", "ref": ref, "error_class": type(e).__name__}, default=str), exc_info=True)
         raise HTTPException(status_code=500, detail=f"internal_error (ref: {ref})")
 
 _cache_suburbs_data = {}
@@ -1800,6 +1828,8 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
                 "totalProperties": r.total_properties,
                 "vacancyRate": r.vacancy_rate,
                 "supplyDemandRatio": r.supply_demand_ratio,
+                "approvedSubdivisions12m": r.approved_subdivisions_12m,
+                "minApprovedSubdivisionSqm": r.min_approved_subdivision_sqm,
             },
             "demographics": {
                 "population2021": r.population_2021,
@@ -1810,6 +1840,9 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
                 "predominantAgeGroup": r.predominant_age_group,
                 "predominantOccupation": r.predominant_occupation,
                 "averageHouseholdSize": r.average_household_size,
+                "socialHousingPct": r.social_housing_pct,
+                "publicHousingDwellings": r.public_housing_dwellings,
+                "communityHousingDwellings": r.community_housing_dwellings,
             },
             "financial": {
                 "typicalMortgageBand": r.typical_mortgage_band,
@@ -1845,6 +1878,26 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
 from fastapi.responses import StreamingResponse
 import io
 import csv
+
+@app.get("/api/v3/school_zone")
+def api_get_school_zone(name: str, state: str):
+    from sqlalchemy import text
+    from models_v3 import engine
+    import json
+    
+    with engine.connect() as conn:
+        res = conn.execute(text("""
+            SELECT ST_AsGeoJSON(geom) as geojson, school_type
+            FROM school_zones 
+            WHERE school_name ILIKE :name 
+            AND state = :state 
+            ORDER BY ST_Area(geom) DESC
+            LIMIT 1
+        """), {"name": f"%{name}%", "state": state.upper()}).first()
+        
+    if res and res[0]:
+        return {"geojson": json.loads(res[0]), "type": res[1]}
+    return {"geojson": None}
 
 @app.get("/api/v3/export")
 def export_suburbs_csv(state: Optional[str] = None, limit: int = 1000, db: Session = Depends(get_db), user=Depends(get_current_user)):
@@ -1940,6 +1993,8 @@ def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
             "totalProperties": r.total_properties,
             "vacancyRate": r.vacancy_rate,
             "supplyDemandRatio": r.supply_demand_ratio,
+            "approvedSubdivisions12m": r.approved_subdivisions_12m,
+            "minApprovedSubdivisionSqm": r.min_approved_subdivision_sqm,
         },
         "demographics": {
             "population2021": r.population_2021,
@@ -1950,6 +2005,9 @@ def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
             "predominantAgeGroup": r.predominant_age_group,
             "predominantOccupation": r.predominant_occupation,
             "averageHouseholdSize": r.average_household_size,
+            "socialHousingPct": r.social_housing_pct,
+            "publicHousingDwellings": r.public_housing_dwellings,
+            "communityHousingDwellings": r.community_housing_dwellings,
         },
         "financial": {
             "typicalMortgageBand": r.typical_mortgage_band,

@@ -72,7 +72,7 @@ function App() {
   const [isClustering, setIsClustering] = useState(false)
   const [showAmenitiesOnMap, setShowAmenitiesOnMap] = useState(false)
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
-  const [macroEtf, setMacroEtf] = useState<any>(null)
+  const [benchmarks, setBenchmarks] = useState<any[] | null>(null)
 
   // Restore auth state from httpOnly cookie on page load
   useEffect(() => {
@@ -170,10 +170,10 @@ function App() {
           setLoadingData(false)
         })
       
-      fetch('/api/etf/vap')
+      fetch('/api/benchmarks')
         .then(res => res.json())
-        .then(data => setMacroEtf(data))
-        .catch(err => console.error("ETF fetch error:", err))
+        .then(data => setBenchmarks(data))
+        .catch(err => console.error("Benchmarks fetch error:", err))
 
       fetch('/api/favorites', { credentials: 'include' })
         .then(res => res.json())
@@ -893,39 +893,53 @@ function App() {
                      <div style={{ padding: '0 16px 16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                        <ScoreLegendPanel growthFactors={((activeSuburb as any).growthFactorsLabeled) as GrowthFactorLabeled[] | undefined} />
                      </div>
-                   </details>
-
-                   {/* MACRO MARKET PULSE */}
-                  {macroEtf && typeof macroEtf.current_price === 'number' && (
-                    <details className="highlights-section" style={{ marginTop: '15px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px' }}>
-                      <summary style={{ padding: '12px 16px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', outline: 'none' }}>
-                        📈 Macro Market Pulse (National Benchmark)
-                      </summary>
-                      <div style={{ padding: '0 16px 16px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
-                          <div>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>{macroEtf.symbol} ETF</div>
-                            <div style={{ fontSize: '1.4rem', color: 'var(--text-primary)', fontWeight: 'bold' }}>${macroEtf.current_price.toFixed(2)}</div>
-                          </div>
-                          <div>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>12M Growth</div>
-                            <div style={{ fontSize: '1.4rem', color: macroEtf.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
-                              {macroEtf.growth_1y_pct >= 0 ? '+' : ''}{macroEtf.growth_1y_pct}%
+                     {benchmarks && benchmarks.length > 0 && (
+                    <div className="card" style={{ padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px' }}>
+                      <h4 style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        📈 Market Baselines
+                      </h4>
+                      <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                        Use these actual market baselines to determine if the local growth is genuine alpha or just riding the tide.
+                      </p>
+                      
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                        {benchmarks.map((bm, i) => (
+                          <div key={i} style={{ 
+                            padding: '1rem', 
+                            background: 'var(--bg)', 
+                            borderRadius: '8px',
+                            borderLeft: `4px solid ${
+                              (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct 
+                                ? 'var(--accent-cyan)' 
+                                : 'var(--warning)'
+                            }`
+                          }}>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>{bm.symbol}</div>
+                            <div style={{ fontSize: '1.1rem', color: 'var(--text-primary)', fontWeight: 'bold', margin: '0.25rem 0' }}>{bm.name}</div>
+                            
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                              <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>1Y Return</span>
+                              <span style={{ 
+                                fontSize: '1.2rem', 
+                                color: bm.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', 
+                                fontWeight: 'bold' 
+                              }}>
+                                {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
+                              </span>
+                            </div>
+                            
+                            <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)' }}>
+                              {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'Property Outperforming' : 'Property Underperforming'}
+                            </div>
+                            <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
+                              {bm.note}
                             </div>
                           </div>
-                          <div>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>Local vs Macro (12M)</div>
-                            <div style={{ fontSize: '1.4rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)', fontWeight: 'bold' }}>
-                              {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'Outperforming' : 'Underperforming'}
-                            </div>
-                          </div>
-                        </div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '10px' }}>
-                          Baseline: {macroEtf.name}. Use this to determine if local growth is genuine alpha or just riding the national tide.
-                        </div>
+                        ))}
                       </div>
-                    </details>
-                   )}
+                    </div>
+                  )}
+                   </details>
 
                     <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
@@ -1575,36 +1589,50 @@ function App() {
                     </div>
                   </div>
 
-                  {/* PANEL C: Live Listings Feed */}
+                  {/* PANEL C: Live Listings Feed & Development Potential */}
                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'listings' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'listings' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Live Listings Feed</h3>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Evidence Feed & Development Potential</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                      <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
-                        <h4 style={{ color: 'var(--accent-purple)', marginBottom: '10px' }}>💰 Recently Sold</h4>
-                        {activeSuburb && (activeSuburb as any).salesSummaryV3 && ((activeSuburb as any).salesSummaryV3 as any[]).length > 0 ? (
-                          ((activeSuburb as any).salesSummaryV3 as any[]).slice(0, 4).map((s: any, i: number) => (
-                            <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '6px', marginBottom: '6px' }}>
-                              <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{s.address || `Sample ${i+1}`}</div>
-                              <div style={{ color: '#10b981', fontWeight: 'bold' }}>{s.salePrice ? `$${s.salePrice.toLocaleString()}` : 'Price N/A'}</div>
-                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{s.beds ? `${s.beds} Bed` : ''}{s.baths ? ` / ${s.baths} Bath` : ''}{s.type ? ` • ${s.type}` : ''}</div>
+                      <div style={{ flex: '2 1 400px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto' }}>
+                        <h4 style={{ color: 'var(--accent-purple)', marginBottom: '10px' }}>💰 Recent Comparable Sales</h4>
+                        {activeSuburb && (activeSuburb as any).salesSummary && ((activeSuburb as any).salesSummary as any[]).length > 0 ? (
+                          ((activeSuburb as any).salesSummary as any[]).map((s: any, i: number) => (
+                            <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '8px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div>
+                                <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{s.address || `Comparable Sale ${i+1}`}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                                  {s.beds ? `${s.beds} Bed` : ''}{s.baths ? ` / ${s.baths} Bath` : ''}{s.type ? ` • ${s.type}` : ''} 
+                                  <span style={{ margin: '0 8px', color: 'var(--text-tertiary)' }}>|</span> 
+                                  Sold {s.saleDate || 'Recently'}
+                                </div>
+                              </div>
+                              <div style={{ color: '#10b981', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                                {s.salePrice ? `$${s.salePrice.toLocaleString()}` : 'Price N/A'}
+                              </div>
                             </div>
                           ))
                         ) : (
-                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No recent sales data available</div>
-                      )}
-                    </div>
-                      <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
-                        <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '10px' }}>🏷️ Market Stats</h4>
-                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
-                          <div>For Sale: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).houseStockOnMarket || '—'}</strong></div>
-                          <div>Sold (12m): <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).houseSold12m?.toLocaleString() || '—'}</strong></div>
-                          <div>Rental Stock: <strong style={{ color: 'var(--text-primary)' }}>{activeSuburb.metrics?.rentalStock || (activeSuburb as any).rentalStock || '—'}</strong></div>
-                          <div>Supply/Demand: <strong style={{ color: 'var(--text-primary)' }}>{(activeSuburb as any).supplyDemandRatio?.toFixed(2) || '—'}</strong></div>
-                        </div>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No recent sales evidence available in database</div>
+                        )}
                       </div>
-                      <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                          {(activeSuburb as any).houseSold12m ? `${(activeSuburb as any).houseSold12m} sales in past 12 months` : 'Market data loading...'}
+                      <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
+                          <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '10px' }}>🏷️ Market Inventory</h4>
+                          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+                            <div>For Sale (Est.): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).house?.stockOnMarket) || ((activeSuburb as any).houseStockOnMarket) || '—'}</strong></div>
+                            <div>Sold (12m): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).house?.sold12m)?.toLocaleString() || ((activeSuburb as any).houseSold12m)?.toLocaleString() || '—'}</strong></div>
+                            <div>Supply/Demand: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.supplyDemandRatio)?.toFixed(2) || ((activeSuburb as any).supplyDemandRatio)?.toFixed(2) || '—'}</strong></div>
+                          </div>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
+                          <h4 style={{ color: 'var(--warning)', marginBottom: '10px' }}>🏗️ Development & Social Context</h4>
+                          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+                            <div>Social Housing Density: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).demographics?.socialHousingPct) !== undefined ? `${((activeSuburb as any).demographics?.socialHousingPct)}%` : '—'}</strong></div>
+                            <div>Public Housing Dwellings: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).demographics?.publicHousingDwellings) !== undefined ? ((activeSuburb as any).demographics?.publicHousingDwellings)?.toLocaleString() : '—'}</strong></div>
+                            <hr style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '10px 0' }} />
+                            <div>Approved Subdivisions (12m): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.approvedSubdivisions12m) !== undefined ? ((activeSuburb as any).market?.approvedSubdivisions12m) : '—'}</strong></div>
+                            <div>Min Lot Size for Subdivision: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.minApprovedSubdivisionSqm) ? `${((activeSuburb as any).market?.minApprovedSubdivisionSqm)} sqm` : '—'}</strong></div>
+                          </div>
                         </div>
                       </div>
                     </div>

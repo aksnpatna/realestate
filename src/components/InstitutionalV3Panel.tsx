@@ -17,7 +17,7 @@ interface V3SuburbData {
   unit: { medianPrice: number | null; medianPrice12mChangePct: number | null; medianRent: number | null; grossRentalYield: number | null; grossRentalYieldTrend: number | null; daysOnMarket: number | null };
   market: { totalProperties: number | null; vacancyRate: number | null; supplyDemandRatio: number | null };
   demographics: { population2021: number | null; populationCagr: number | null; ownerOccupierRate: number | null; investorRate: number | null; medianAge: number | null; predominantAgeGroup: string | null; predominantOccupation: string | null; averageHouseholdSize: number | null };
-  financial: { typicalMortgageBand: string | null; priceToIncomeRatio: number | null; priceToRentRatio: number | null };
+  financial: { typicalMortgageBand: string | null; estimatedMortgageRepayment: number | null; priceToIncomeRatio: number | null; priceToRentRatio: number | null };
   environment: { parksCount: number | null; parksCoveragePct: number | null; areaSqkm: number | null };
   demographicsDetail: any; salesSummary: any[] | null; nearbySuburbs: any[] | null;
   history10yr: any[] | null; historyRent10yr: any[] | null;
@@ -177,7 +177,7 @@ export default memo(function InstitutionalV3Panel() {
               <div className="glass-card" style={{ padding: '14px', marginBottom: '12px' }}>
                 <h4 style={{ margin: '0 0 8px 0', fontSize: '0.9rem' }}>Financial & Demographic Deep Dive</h4>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  <MetricCard label="Mortgage Band" value={detail.financial.typicalMortgageBand} />
+                  <MetricCard label="Monthly Mortgage" value={detail.financial.estimatedMortgageRepayment != null ? '$' + detail.financial.estimatedMortgageRepayment.toLocaleString(undefined, {maximumFractionDigits: 0}) + '/mo' : (detail.financial.typicalMortgageBand ?? '—')} />
                   <MetricCard label="Price/Income" value={detail.financial.priceToIncomeRatio?.toFixed(2) ?? '—'} />
                   <MetricCard label="Price/Rent" value={detail.financial.priceToRentRatio?.toFixed(2) ?? '—'} />
                   <MetricCard label="Occupation" value={detail.demographics.predominantOccupation} />
