@@ -119,19 +119,22 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
         <strong>Interactive Vector Heatmap:</strong> A live nationwide overlay of all 13,000+ suburbs is rendered dynamically via PostGIS. Zoom out to see the national yield distribution, and click on any coloured point to inspect its live data. Use the layer control (top right) to toggle base maps and overlays.
       </p>
       
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
         <button 
           onClick={() => setHeatmapMode('yield')}
-          style={{ padding: '6px 12px', background: heatmapMode === 'yield' ? 'var(--accent-purple)' : 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+          style={{ padding: '6px 12px', background: heatmapMode === 'yield' ? 'var(--accent-purple)' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'yield' ? '#fff' : 'var(--text-primary, #334155)', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
         >
           💰 Rental Yield Hotspots
         </button>
         <button 
           onClick={() => setHeatmapMode('growth')}
-          style={{ padding: '6px 12px', background: heatmapMode === 'growth' ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, color: heatmapMode === 'growth' ? '#000' : '#fff' }}
+          style={{ padding: '6px 12px', background: heatmapMode === 'growth' ? 'var(--accent-cyan)' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'growth' ? '#000' : 'var(--text-primary, #334155)', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
         >
           📈 Capital Growth Outliers
         </button>
+        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary, #64748b)', marginLeft: '10px', fontWeight: 500 }}>
+          💡 Click on any school marker (🎓/🎒/🧸) to see its official catchment zone.
+        </span>
       </div>
 
       <div className="map-container-inner" style={{ background: '#e5e5e5' }}>
