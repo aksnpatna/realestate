@@ -589,7 +589,7 @@ function App() {
         </div>
       </header>
 
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }}>
+      <div className="main-wrapper">
         <nav className="tab-nav" style={{ gap: '20px', marginBottom: '30px', borderBottom: '2px solid var(--border-glass)' }}>
           <button
             className={`tab-btn ${activeTab === 'buy-finder' ? 'tab-active' : ''}`}
