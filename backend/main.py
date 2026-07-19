@@ -1085,6 +1085,63 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
     formatted_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_price} for r in history_records if r.median_price]
     formatted_rent_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_rent} for r in history_records if r.median_rent]
     
+    # Generate a POC ML Forecast
+    hist_for_model = formatted_history if formatted_history else (v3.history_10yr or [])
+    forecast_data = []
+    try:
+        if hist_for_model and len(hist_for_model) > 5:
+            import numpy as np
+            from sklearn.linear_model import LinearRegression
+            from datetime import datetime
+            
+            X = []
+            y = []
+            start_date = datetime.strptime(str(hist_for_model[0]['date'])[:7], "%Y-%m")
+            
+            for pt in hist_for_model:
+                try:
+                    d = datetime.strptime(str(pt['date'])[:7], "%Y-%m")
+                    months_diff = (d.year - start_date.year) * 12 + d.month - start_date.month
+                    X.append([months_diff])
+                    y.append(pt['value'])
+                except Exception:
+                    pass
+                    
+            if len(X) > 5:
+                model = LinearRegression()
+                model.fit(X, y)
+                
+                last_pt = hist_for_model[-1]
+                last_date = datetime.strptime(str(last_pt['date'])[:7], "%Y-%m")
+                last_months_diff = (last_date.year - start_date.year) * 12 + last_date.month - start_date.month
+                
+                # Predict next 3 years (36 months) in quarterly steps
+                for i in range(3, 39, 3):
+                    future_months = last_months_diff + i
+                    pred_val = model.predict([[future_months]])[0]
+                    
+                    # Synthetic momentum factor using our derived indicators
+                    momentum_factor = 1.0
+                    if v3.supply_demand_ratio and v3.supply_demand_ratio < 0.5:
+                        momentum_factor = 1.03
+                    elif v3.supply_demand_ratio and v3.supply_demand_ratio > 1.0:
+                        momentum_factor = 0.97
+                        
+                    pred_val = max(pred_val * momentum_factor, 0)
+                    
+                    f_year = last_date.year + (last_date.month - 1 + i) // 12
+                    f_month = (last_date.month - 1 + i) % 12 + 1
+                    future_date_str = f"{f_year}-{f_month:02d}"
+                    
+                    forecast_data.append({
+                        "year": future_date_str[:4],
+                        "date": future_date_str,
+                        "price": round(pred_val),
+                        "isForecast": True
+                    })
+    except Exception as e:
+        print(f"POC Forecast error: {e}")
+
     response = {
         "id": v3.id.lower(),
         "name": v3.name, "state": v3.state, "postcode": v3.postcode,
@@ -1171,63 +1228,6 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "safetyScore": v3.safety_score or 60.0,
         "crimeRate": v3.crime_rate or 5000.0,
         # Content
-        # Generate a POC ML Forecast
-        hist_for_model = formatted_history if formatted_history else (v3.history_10yr or [])
-        forecast_data = []
-        try:
-            if hist_for_model and len(hist_for_model) > 5:
-                import numpy as np
-                from sklearn.linear_model import LinearRegression
-                from datetime import datetime
-                
-                X = []
-                y = []
-                start_date = datetime.strptime(str(hist_for_model[0]['date'])[:7], "%Y-%m")
-                
-                for pt in hist_for_model:
-                    try:
-                        d = datetime.strptime(str(pt['date'])[:7], "%Y-%m")
-                        months_diff = (d.year - start_date.year) * 12 + d.month - start_date.month
-                        X.append([months_diff])
-                        y.append(pt['value'])
-                    except Exception:
-                        pass
-                        
-                if len(X) > 5:
-                    model = LinearRegression()
-                    model.fit(X, y)
-                    
-                    last_pt = hist_for_model[-1]
-                    last_date = datetime.strptime(str(last_pt['date'])[:7], "%Y-%m")
-                    last_months_diff = (last_date.year - start_date.year) * 12 + last_date.month - start_date.month
-                    
-                    # Predict next 3 years (36 months) in quarterly steps
-                    for i in range(3, 39, 3):
-                        future_months = last_months_diff + i
-                        pred_val = model.predict([[future_months]])[0]
-                        
-                        # Synthetic momentum factor using our derived indicators
-                        momentum_factor = 1.0
-                        if v3.supply_demand_ratio and v3.supply_demand_ratio < 0.5:
-                            momentum_factor = 1.03
-                        elif v3.supply_demand_ratio and v3.supply_demand_ratio > 1.0:
-                            momentum_factor = 0.97
-                            
-                        pred_val = max(pred_val * momentum_factor, 0)
-                        
-                        f_year = last_date.year + (last_date.month - 1 + i) // 12
-                        f_month = (last_date.month - 1 + i) % 12 + 1
-                        future_date_str = f"{f_year}-{f_month:02d}"
-                        
-                        forecast_data.append({
-                            "year": future_date_str[:4],
-                            "date": future_date_str,
-                            "price": round(pred_val),
-                            "isForecast": True
-                        })
-        except Exception as e:
-            print(f"POC Forecast error: {e}")
-
         "highlights": v3.highlights or [],
         "history": formatted_history if formatted_history else (v3.history_10yr or []),
         "historyRent": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
