@@ -59,6 +59,7 @@ export interface SuburbData {
     propertiesSold?: number;
     supplyDemandRatio?: number;
     mortgageBand?: string;
+    estimatedMortgageRepayment?: number;
     truePopulationCAGR?: number;
     truePopulationGrowth?: number;
     populationDensity?: number;
@@ -130,6 +131,7 @@ export interface SuburbData {
   predominantOccupation?: string;
   averageHouseholdSize?: number;
   typicalMortgageBand?: string;
+  estimatedMortgageRepayment?: number;
   avgIcsea?: number;
   topSchoolName?: string;
   schoolCount?: number;

@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-07-14)
+# Graph Report - realestate  (2026-07-18)
 
 ## Corpus Check
-- 119 files · ~2,250,017 words
+- 175 files · ~2,288,239 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1149 nodes · 1566 edges · 148 communities (112 shown, 36 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 257 edges (avg confidence: 0.57)
+- 1612 nodes · 2158 edges · 202 communities (158 shown, 44 thin omitted)
+- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 328 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `86a450f7`
+- Built from commit: `c2cab3a0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -137,18 +137,57 @@
 - [[_COMMUNITY_Community 144|Community 144]]
 - [[_COMMUNITY_Community 145|Community 145]]
 - [[_COMMUNITY_Community 146|Community 146]]
+- [[_COMMUNITY_Community 148|Community 148]]
+- [[_COMMUNITY_Community 149|Community 149]]
+- [[_COMMUNITY_Community 150|Community 150]]
+- [[_COMMUNITY_Community 151|Community 151]]
+- [[_COMMUNITY_Community 153|Community 153]]
+- [[_COMMUNITY_Community 154|Community 154]]
+- [[_COMMUNITY_Community 155|Community 155]]
+- [[_COMMUNITY_Community 156|Community 156]]
+- [[_COMMUNITY_Community 157|Community 157]]
+- [[_COMMUNITY_Community 158|Community 158]]
+- [[_COMMUNITY_Community 160|Community 160]]
+- [[_COMMUNITY_Community 173|Community 173]]
+- [[_COMMUNITY_Community 174|Community 174]]
+- [[_COMMUNITY_Community 175|Community 175]]
+- [[_COMMUNITY_Community 176|Community 176]]
+- [[_COMMUNITY_Community 177|Community 177]]
+- [[_COMMUNITY_Community 178|Community 178]]
+- [[_COMMUNITY_Community 179|Community 179]]
+- [[_COMMUNITY_Community 180|Community 180]]
+- [[_COMMUNITY_Community 181|Community 181]]
+- [[_COMMUNITY_Community 182|Community 182]]
+- [[_COMMUNITY_Community 183|Community 183]]
+- [[_COMMUNITY_Community 184|Community 184]]
+- [[_COMMUNITY_Community 185|Community 185]]
+- [[_COMMUNITY_Community 186|Community 186]]
+- [[_COMMUNITY_Community 187|Community 187]]
+- [[_COMMUNITY_Community 188|Community 188]]
+- [[_COMMUNITY_Community 189|Community 189]]
+- [[_COMMUNITY_Community 190|Community 190]]
+- [[_COMMUNITY_Community 191|Community 191]]
+- [[_COMMUNITY_Community 192|Community 192]]
+- [[_COMMUNITY_Community 193|Community 193]]
+- [[_COMMUNITY_Community 194|Community 194]]
+- [[_COMMUNITY_Community 196|Community 196]]
+- [[_COMMUNITY_Community 197|Community 197]]
+- [[_COMMUNITY_Community 198|Community 198]]
+- [[_COMMUNITY_Community 199|Community 199]]
+- [[_COMMUNITY_Community 200|Community 200]]
+- [[_COMMUNITY_Community 201|Community 201]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Session` - 38 edges
-2. `Real Estate POC: Affordable Data Ingestion and Cleansing Playbook` - 34 edges
-3. `BuyFinderRequest` - 29 edges
-4. `BuyFinderWeights` - 27 edges
-5. `SuburbUIV3` - 25 edges
-6. `Real Estate GitHub Remediation and Test Plan` - 25 edges
-7. `SuburbRawV3` - 23 edges
-8. `SuburbPriceHistory` - 23 edges
-9. `ModelDiary` - 22 edges
-10. `PropertyListing` - 21 edges
+1. `Session` - 43 edges
+2. `BuyFinderRequest` - 36 edges
+3. `Real Estate POC: Affordable Data Ingestion and Cleansing Playbook` - 34 edges
+4. `BuyFinderWeights` - 33 edges
+5. `SuburbUIV3` - 33 edges
+6. `ModelDiary` - 33 edges
+7. `compute_buyer_fit()` - 26 edges
+8. `SuburbRawV3` - 26 edges
+9. `SuburbPriceHistory` - 26 edges
+10. `Real Estate GitHub Remediation and Test Plan` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `analyze_sentiment()` --calls--> `record_sentiment_call()`  [INFERRED]
@@ -159,8 +198,8 @@
   backend/etl_abs_census.py → backend/models_v3.py
 - `warmup()` --calls--> `Session`  [INFERRED]
   backend/warm_cache.py → backend/main.py
-- `get_news_sentiment()` --calls--> `analyze_sentiment()`  [INFERRED]
-  backend/ai_agent.py → backend/ai_sentiment.py
+- `get_news_sentiment()` --calls--> `record_cache_miss()`  [INFERRED]
+  backend/main.py → backend/observability.py
 
 ## Import Cycles
 - None detected.
@@ -176,7 +215,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (148 total, 36 thin omitted)
+## Communities (202 total, 44 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -187,8 +226,8 @@ Cohesion: 0.20
 Nodes (16): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+8 more)
 
 ### Community 2 - "V3 Scheduler Orchestration"
-Cohesion: 0.15
-Nodes (15): _acquire_lock(), mark_changed_for_enrich(), mark_changed_for_unpack(), _python(), v3_scheduler.py — Tiered Update Scheduler with Change Detection ================, Find raw records where data has changed since last unpack.     Sets is_unpacked=, Find unpacked records newer than their enriched counterparts.     Sets is_enrich, Tiered update scheduler for the V3 pipeline. (+7 more)
+Cohesion: 0.17
+Nodes (11): _acquire_lock(), mark_changed_for_enrich(), mark_changed_for_unpack(), _python(), v3_scheduler.py — Monthly Full-Refresh Scheduler with Change Detection =========, Set is_enriched=FALSE for rows where unpacked is newer than enriched., Mark suburbs_raw_v3.status = 'pending' for rows older than threshold., Set is_unpacked='pending' for rows where raw data changed since last unpack. (+3 more)
 
 ### Community 3 - "ETL Runbook Documentation"
 Cohesion: 0.11
@@ -199,12 +238,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 5 - "Frontend Property Calculators"
-Cohesion: 0.29
-Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi
+Cohesion: 0.50
+Nodes (3): ShareReport(), ShareReportProps, trackEvent()
 
 ### Community 6 - "Database Models & Scrapers"
-Cohesion: 0.05
-Nodes (115): BuyFinderRequest, BuyFinderWeights, ActivityRequest, analyze_suburb(), AnalyzeRequest, _annualize_cagr(), BoundedRateLimitStore, bust_suburbs_cache() (+107 more)
+Cohesion: 0.06
+Nodes (63): analyze_suburb(), _annualize_cagr(), buy_finder_rank(), calculate_roi(), calculate_stamp_duty(), _calibrate_dq(), _cap_yield(), _check_rate_limit() (+55 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -212,7 +251,7 @@ Nodes (13): models_v3_unpacked.py — Layer 1a: UNPACKED COLUMNAR TABLE ========
 
 ### Community 8 - "ACARA School Import"
 Cohesion: 0.25
-Nodes (10): compute_school_quality_score(), load_location_data(), load_profile_data(), main(), ACARA School ICSEA Import Script Merges School Profile 2025 (ICSEA scores) + Sch, Update suburbs_all DB and suburbs_data.json with ACARA school data., Load school lat/lon keyed by ACARA SML ID., Load school profiles with ICSEA, merging location data. (+2 more)
+Nodes (10): compute_school_quality_score(), load_location_data(), load_profile_data(), main(), ACARA School ICSEA Import Script Merges School Profile 2025 (ICSEA scores) + Sch, Update SuburbUIV3 DB with ACARA school data., Load school lat/lon keyed by ACARA SML ID., Load school profiles with ICSEA, merging location data. (+2 more)
 
 ### Community 9 - "Predictive AI Engine"
 Cohesion: 0.31
@@ -228,23 +267,23 @@ Nodes (9): compute_derived_indicators(), enrich_from_unpacked.py, etl_extract_v3
 
 ### Community 12 - "Infra & Zoning Pipeline"
 Cohesion: 0.36
-Nodes (7): fetch_major_infrastructure_projects(), fetch_zoning_changes(), map_projects_to_suburbs(), Queries data.vic.gov.au CKAN API for major infrastructure projects.     Returns, Mock function representing an integration with State Planning APIs      (e.g., N, Matches the extracted government data to our suburbs_ui_v3 table., run_infra_zoning_pipeline()
+Nodes (7): fetch_major_infrastructure_projects(), fetch_zoning_changes(), map_projects_to_suburbs(), Queries data.vic.gov.au CKAN API for major infrastructure projects.     Returns, State planning portal integration (NSW ePlanning, VIC SPEAR).     Not yet integr, Matches the extracted government data to our suburbs_ui_v3 table., run_infra_zoning_pipeline()
 
 ### Community 13 - "Frontend Core Infrastructure"
 Cohesion: 0.15
 Nodes (7): baseSuburb, mockFetch, mockSetActiveSuburb, renderPanel(), ErrorBoundary, Props, State
 
 ### Community 14 - "ABS Building Approvals"
-Cohesion: 0.38
-Nodes (6): estimate_approvals_from_surrounding(), fetch_abs_building_approvals(), ABS Building Approvals Pipeline — Real estate v3. Fetches monthly LGA-level buil, Fetches monthly building approvals from ABS.     Returns dict of LGA → total_12m, When ABS API fails, fall back to statistical estimates from nearby known data., run_abs_building_pipeline()
+Cohesion: 0.10
+Nodes (19): Add to backend/main.py, Create ETL Script for CKAN States, Growth Impact Data - Implementation Guide, Issue: CKAN API returns 404, Issue: No religious institutions found, Issue: planet_osm_point table doesn't exist, Next Steps After Implementation, Part 1: Religious Institutions (Already Available) (+11 more)
 
 ### Community 15 - "Data Quality Report V3"
 Cohesion: 0.33
 Nodes (5): detail_report(), dq_summary(), etl_dq_report_v3.py — Data Quality Report ======================================, High-level DQ summary across the entire dataset., Detailed DQ report showing per-suburb issues.
 
 ### Community 16 - "Micro Scraper V4"
-Cohesion: 0.47
-Nodes (5): get_shortlisted_suburbs(), Fetch suburbs that are currently trending or shortlisted for high-frequency upda, Mock function representing a fast, targeted Playwright or API call     that ONLY, run_micro_scraper(), scrape_volatile_metrics()
+Cohesion: 0.50
+Nodes (4): get_shortlisted_suburbs(), Fetch suburbs that are currently trending or shortlisted for high-frequency upda, Placeholder scheduler target.  No live scraping is performed because there is, run_micro_scraper()
 
 ### Community 17 - "Oxlint Configuration"
 Cohesion: 0.33
@@ -263,8 +302,8 @@ Cohesion: 0.83
 Nodes (3): download_file_playwright(), fetch_latest_from_ckan(), run_downloader()
 
 ### Community 21 - "ABS Census Integration"
-Cohesion: 0.23
-Nodes (12): build_sal_postcode_map(), _download(), parse_census_tables(), etl_abs_census.py — ABS Census 2021 Demographics Pipeline ======================, Opens the ABS DataPack ZIP in-memory and parses:       - G01: Total persons, age, Main entry point.     Downloads ABS data, matches to suburbs_ui_v3 by postcode+n, Download a file with progress logging. Skips if already cached., Reads ABS SAL→POA concordance.     Returns dict: sal_code (str) → postcode (str) (+4 more)
+Cohesion: 0.09
+Nodes (30): estimate_approvals_from_surrounding(), fetch_abs_building_approvals(), ABS Building Approvals Pipeline — Real estate v3. Fetches monthly LGA-level buil, Fetches monthly building approvals from ABS.     Returns dict of LGA → total_12m, When ABS API fails, fall back to statistical estimates from nearby known data., run_abs_building_pipeline(), build_sal_postcode_map(), _download() (+22 more)
 
 ### Community 22 - "README Documentation"
 Cohesion: 0.18
@@ -279,8 +318,8 @@ Cohesion: 0.06
 Nodes (33): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+25 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.05
-Nodes (42): Any, agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict (+34 more)
+Cohesion: 0.06
+Nodes (41): agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict, _evaluate_policy_rules() (+33 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
@@ -303,20 +342,20 @@ Cohesion: 0.15
 Nodes (13): Bankstown NSW 2200, Blacktown NSW 2148, Bondi Junction NSW 2022, Campbelltown NSW 2560, Castle Hill NSW 2154, Chatswood NSW 2067, Hurstville NSW 2220, Liverpool NSW 2170 (+5 more)
 
 ### Community 86 - "Community 86"
-Cohesion: 0.15
-Nodes (15): SortKey, CashflowGearingProps, GearingResult, calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase(), calculateStampDuty() (+7 more)
+Cohesion: 0.12
+Nodes (16): CalcType, CHART_COLORS, PropertyType, STATE_OPTIONS, calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase() (+8 more)
 
 ### Community 87 - "Community 87"
 Cohesion: 0.17
-Nodes (9): AIInsightPanelProps, AnalysisStep, AnalysisTab, DecisionBriefProps, DecisionSnapshot, BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps (+1 more)
+Nodes (9): AIInsightPanelProps, AnalysisStep, AnalysisTab, CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, UserFavoritesTabProps (+1 more)
 
 ### Community 88 - "Community 88"
 Cohesion: 0.07
 Nodes (24): analyze_sentiment(), _call_remote_llm(), _detect_non_english(), _extract_keywords(), _keyword_sentiment(), ai_sentiment.py — Sentiment analysis via remote LLM (Ollama / llama.cpp GGUF). C, Call the remote Qwen model over HTTP for sentiment classification.     Supports, Keyword-based sentiment scoring as fallback. Returns 1-10 score. (+16 more)
 
 ### Community 90 - "Community 90"
-Cohesion: 0.33
-Nodes (4): CalcType, CHART_COLORS, PropertyType, STATE_OPTIONS
+Cohesion: 0.14
+Nodes (17): icons, PersonaSwitcher, Props, Props, ALL_SECTIONS, ProfileSectionNav, Props, Section (+9 more)
 
 ### Community 91 - "Community 91"
 Cohesion: 0.06
@@ -343,20 +382,20 @@ Cohesion: 0.40
 Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Australia), Salisbury SA 5108
 
 ### Community 98 - "Community 98"
-Cohesion: 0.13
-Nodes (10): OnboardingTour(), QuickRoiCalculatorProps, AffordabilityCalculator, BuyFinder, Calculators, CashflowGearing, InstitutionalV3Panel, MyPurchasePlan (+2 more)
+Cohesion: 0.08
+Nodes (18): TabName, LandingPageProps, OnboardingTour(), QuickRoiCalculatorProps, getPersona(), mockSuburbsData, fetchLivabilityData(), LivabilityData (+10 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.07
-Nodes (31): _build_evidence_ids(), calculate_stamp_duty(), calibrate_dq(), clamp(), compute_borrowing_capacity(), compute_buyer_fit(), compute_repayment(), _excluded_result() (+23 more)
+Cohesion: 0.05
+Nodes (35): _build_evidence_ids(), calculate_stamp_duty(), calibrate_dq(), clamp(), compute_borrowing_capacity(), compute_buyer_fit(), compute_repayment(), _excluded_result() (+27 more)
 
 ### Community 102 - "Community 102"
 Cohesion: 0.50
 Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasmania)
 
 ### Community 104 - "Community 104"
-Cohesion: 0.40
-Nodes (3): BackendResultCard, BuyFinderResponse, mockFetch
+Cohesion: 0.09
+Nodes (19): BackendResultCard, BuyFinderLocalResponse, mockFetch, DecisionBriefProps, DecisionSnapshot, mockFetch, mockResult, mockSuburb (+11 more)
 
 ### Community 105 - "Community 105"
 Cohesion: 0.05
@@ -367,8 +406,8 @@ Cohesion: 0.09
 Nodes (22): Affordable Source Strategy, AI Role in the POC, Canonical Data Model, Challenge to the Previous Recommendation, Commercial Data Decision Gate, Data Quality Gates, Definition of Done for the POC, Executive Decision (+14 more)
 
 ### Community 107 - "Community 107"
-Cohesion: 0.17
-Nodes (4): _env_bool(), _env_int(), POCConfig, poc_config.py — Centralized POC configuration for the buyer-fit demonstration.
+Cohesion: 0.05
+Nodes (42): App experience, App experience, App experience, App experience, App experience, App experience, App experience, Direct profile visits (+34 more)
 
 ### Community 108 - "Community 108"
 Cohesion: 0.15
@@ -478,6 +517,10 @@ Nodes (4): Inputs available from the user, Outputs the product can support witho
 Cohesion: 0.50
 Nodes (4): Stage A: Snapshot POC, Stage B: Accumulated history, Stage C: Outcome validation, Three-Stage Data Plan When History Is Unavailable
 
+### Community 135 - "Community 135"
+Cohesion: 0.22
+Nodes (8): model_diary_refresh.py — Idempotent Model Diary outcome evaluation.  Uses the ca, refresh_outcomes(), _make_diary_predictions(), _make_suburb(), Model Diary persistence, refresh lifecycle, and idempotency tests.  Uses the can, Seed minimal diary fixtures with 400-day-old predictions., Proves refresh lifecycle, idempotency, and outcome rules., TestModelDiaryRefresh
+
 ### Community 136 - "Community 136"
 Cohesion: 0.67
 Nodes (3): 4.2 Enforce minimum yield and other declared constraints, Required fix, What is not right
@@ -522,25 +565,145 @@ Nodes (3): Do not use DQ as a cosmetic badge, Recommended initial threshold, Wor
 Cohesion: 0.67
 Nodes (3): Rebalanced Principle: Ship the Useful Thing, The score should be a decision-fit score, Three score modes
 
+### Community 148 - "Community 148"
+Cohesion: 0.05
+Nodes (38): 10. Phase 7: Evidence And AI Contract Hardening, 11. Required Test Files And Build Gates, 12. Final Showcase Acceptance Script, 13. Definition Of Done, 1. Outcome Required, 2. Execution Contract For Coding Agents, 3. Current Verified State, 4.1 Required behaviour (+30 more)
+
+### Community 149 - "Community 149"
+Cohesion: 0.05
+Nodes (38): 10. Phase 7: Evidence And AI Contract Hardening, 11. Required Test Files And Build Gates, 12. Final Showcase Acceptance Script, 13. Definition Of Done, 1. Outcome Required, 2. Execution Contract For Coding Agents, 3. Current Verified State, 4.1 Required behaviour (+30 more)
+
+### Community 150 - "Community 150"
+Cohesion: 0.16
+Nodes (7): downgrade_if_evidence_unknown(), EvidenceResolver, evidence_registry.py — Canonical evidence-ID resolution for Buyer Fit and AI cla, resolve_evidence(), validate_evidence_ids(), Evidence registry tests: resolution, validation, downgrade on unknown IDs., TestEvidenceResolution
+
+### Community 151 - "Community 151"
+Cohesion: 0.29
+Nodes (3): _is_test_database(), pytest_configure(), conftest.py — Pytest configuration and fixtures for the Buyer Fit POC test suite
+
+### Community 153 - "Community 153"
+Cohesion: 0.21
+Nodes (46): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyFinderRequest, BuyFinderWeights, ConsentRequest (+38 more)
+
+### Community 154 - "Community 154"
+Cohesion: 0.11
+Nodes (18): Architecture Principles, COLUMN OWNERSHIP (who writes what), DATA LINEAGE MAP, ETL Pipeline Architecture — Real Estate Suburb Data Platform, Merge: `compute_avg_block_sqm()` → `nightly_compute.py`, Merge: `compute_derived_indicators()` → `etl_abs_building.py`, Merge: `etl_national_subdivision_proxies.py` → `nightly_compute.py`, MERGED PIPELINE DETAILS (+10 more)
+
+### Community 155 - "Community 155"
+Cohesion: 0.33
+Nodes (3): CommitteeMemory, models_v3.py — Clean ETL Architecture v3 =======================================, Store committee analyses for similarity-based few-shot retrieval.
+
+### Community 158 - "Community 158"
+Cohesion: 0.13
+Nodes (14): Confirmed decisions, Current state (from code inspection), Definition of done, Implementation tasks (ordered), Multi-Faceted Suburb Profile Plan, Open questions for implementer, Phase 1 — Scoring clarity (low risk, high value), Phase 2 — Persona system (+6 more)
+
+### Community 173 - "Community 173"
+Cohesion: 0.19
+Nodes (14): ensure_cadastral_table(), fetch_suburb_envelope(), _geom_wkt_to_bbox(), get_suburbs(), etl_nsw_cadastre.py — NSW Cadastral Parcel Fetcher =============================, Extract bounding box as 'xmin,ymin,xmax,ymax' for ArcGIS esriGeometryEnvelope., Return list of (suburb_id, name, geom_wkt) for candidate suburbs.     Geom is th, Fetch parcel polygons for a single suburb via ArcGIS REST.      Uses the suburb (+6 more)
+
+### Community 174 - "Community 174"
+Cohesion: 0.20
+Nodes (10): 1. Religious Institutions Data, ABS Census - Religious Affiliation, Count by Suburb (For Ranking), Growth Impact Analysis, Implementation: Add to osm_local.py, National Church Life Survey (NCLS), OSM Tags for Religious Institutions, Primary Source: OpenStreetMap (Already Integrated ✅) (+2 more)
+
+### Community 175 - "Community 175"
+Cohesion: 0.25
+Nodes (8): Australian Capital Territory ✅ API Available, New South Wales ✅ API Available, Queensland ⚠️ Limited API, South Australia ✅ API Available, State-by-State Data Sources, Tasmania ⚠️ Limited, Victoria ✅ API Available, Western Australia ✅ API Available
+
+### Community 176 - "Community 176"
+Cohesion: 0.29
+Nodes (7): 1. Construction Activity, 2. New Residential Areas, 3. Building Count Increase, 3. Property Subdivision Data, Alternative: Local Council DA Registers, Overview, Proxy Indicators (Available in Your System NOW)
+
+### Community 177 - "Community 177"
+Cohesion: 0.53
+Nodes (5): _classify_format(), main(), _package_search(), etl_cadastre_discovery.py — Survey open cadastral / parcel datasets via CKAN ===, run()
+
+### Community 178 - "Community 178"
+Cohesion: 0.47
+Nodes (5): build_sql(), main(), etl_osm_enrich.py — OSM-based social infrastructure & growth indicator enrichmen, Assemble the bulk enrichment SQL with optional detail CTEs., run()
+
+### Community 179 - "Community 179"
+Cohesion: 0.33
+Nodes (5): 1. Suburb Detail API (`GET /api/suburbs/{id}`), 2. OSM Livability API (`GET /api/osm/livability`), 3. Cadastral Parcels, 4. UI Integration Checklist, New Data Fields Available in API (Post-Fix)
+
+### Community 180 - "Community 180"
+Cohesion: 0.33
+Nodes (5): 5. Data Model for Growth Impact Module, ✅ Available NOW (Existing Infrastructure), Executive Summary, Growth Impact Data Sources Research Report, ⚠️ Requires Integration (Government APIs)
+
+### Community 181 - "Community 181"
+Cohesion: 0.33
+Nodes (6): New South Wales ⚠️ Paid, Primary Sources (State Land Registries), Queensland ✅ API Available, South Australia ⚠️ Limited API, Victoria ✅ Mixed (Free + Paid), Western Australia ✅ API Available
+
+### Community 182 - "Community 182"
+Cohesion: 0.40
+Nodes (5): 2. Social Housing Data, Australian Institute of Health and Welfare (AIHW), National Aggregator, Overview, Recommended Integration Strategy
+
+### Community 183 - "Community 183"
+Cohesion: 0.40
+Nodes (5): 4. Integration Recommendations, Priority 1: Religious Institutions (Easy - Already Available), Priority 2: Construction Proxies (Easy - Already Available), Priority 3: Social Housing (Medium - State APIs), Priority 4: Subdivision Data (Hard - Mixed Sources)
+
+### Community 184 - "Community 184"
+Cohesion: 0.40
+Nodes (5): 6. API Endpoints to Implement, Composite Growth Score, Religious Institutions, Social Housing, Subdivision Activity
+
+### Community 185 - "Community 185"
+Cohesion: 0.40
+Nodes (5): 7. Next Steps, Immediate (1-2 hours):, Long-term (1-2 months):, Medium-term (1-2 weeks):, Short-term (1-2 days):
+
+### Community 186 - "Community 186"
+Cohesion: 0.40
+Nodes (5): 8. Key URLs Reference, Data Portals (CKAN), OSM / Overpass, Planning / Subdivision, Social Housing
+
+### Community 190 - "Community 190"
+Cohesion: 0.22
+Nodes (8): get_personas(), Persona presets (weights + visible profile sections + meta).     Frontend uses t, get_persona(), persona_weights(), public_persona_payload(), Any, persona_presets.py — Persona-driven default weights and configuration.  Personas, Frontend-facing payload (weights + section visibility + meta).
+
+### Community 191 - "Community 191"
+Cohesion: 0.40
+Nodes (6): _check_auth_rate(), hash_password(), login(), register(), send_verification_email(), verify_password()
+
+### Community 192 - "Community 192"
+Cohesion: 0.28
+Nodes (8): get_scores_meta(), Plain-English metadata (name, range, meaning, caveat) for the scores     surface, all_score_meta(), enrich_growth_factors(), get_score_meta(), Any, score_meta.py — Plain-English metadata for the scores surfaced to users.  Centra, Attach label/impact/max to raw growth-score factors.
+
+### Community 193 - "Community 193"
+Cohesion: 0.31
+Nodes (8): _batch_update(), compute_metric(), populate_boundaries(), nightly_compute.py — Nightly spatial computation using OSM boundary polygons  Pr, One-time: populate boundary_geom from planet_osm_polygon., Run one batch of spatial updates using pre-stored boundary_geom., Compute one metric for all NULL suburbs in a state., run_nightly()
+
+### Community 194 - "Community 194"
+Cohesion: 0.50
+Nodes (4): fetch_min_lot_size_for_bbox(), etl_nsw_planning_rules.py — NSW Real-World Minimum Lot Size Fetcher ============, Queries the ArcGIS REST API for the minimum lot size polygons intersecting the b, run_pipeline()
+
+### Community 196 - "Community 196"
+Cohesion: 0.33
+Nodes (5): PocketFeature, PocketResponse, PocketRiskMap, Props, severityColors
+
+### Community 197 - "Community 197"
+Cohesion: 0.40
+Nodes (3): Indicator, Props, TechnicalProvenanceSection
+
+### Community 198 - "Community 198"
+Cohesion: 0.50
+Nodes (3): IndicatorCard, MarketIndicatorsSection, Props
+
 ## Knowledge Gaps
-- **460 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `TabName` (+455 more)
+- **671 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+666 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **44 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session` connect `Database Models & Scrapers` to `Community 89`, `ETL Extract V3 Pipeline`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
-- **Why does `BuyFinderRequest` connect `Database Models & Scrapers` to `Community 65`, `Community 99`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
-- **Why does `analyze_sentiment()` connect `Community 88` to `Community 65`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+- **Why does `Session` connect `Database Models & Scrapers` to `Community 89`, `Community 153`, `ETL Extract V3 Pipeline`, `Community 191`?**
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+- **Why does `SuburbUIV3` connect `Community 153` to `Community 99`, `Database Models & Scrapers`, `Community 135`, `Predictive AI Engine`, `ABS Census Integration`, `Community 155`, `Community 156`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `BuyFinderRequest` connect `Community 153` to `Community 99`, `Community 156`, `Database Models & Scrapers`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Are the 12 inferred relationships involving `Session` (e.g. with `worker()` and `warmup()`) actually correct?**
   _`Session` has 12 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 25 inferred relationships involving `BuyFinderRequest` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
-  _`BuyFinderRequest` has 25 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 25 inferred relationships involving `BuyFinderWeights` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
-  _`BuyFinderWeights` has 25 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 23 inferred relationships involving `SuburbUIV3` (e.g. with `BuyFinderRequest` and `BuyFinderWeights`) actually correct?**
-  _`SuburbUIV3` has 23 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 31 inferred relationships involving `BuyFinderRequest` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
+  _`BuyFinderRequest` has 31 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 31 inferred relationships involving `BuyFinderWeights` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
+  _`BuyFinderWeights` has 31 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 29 inferred relationships involving `SuburbUIV3` (e.g. with `BuyFinderRequest` and `BuyFinderWeights`) actually correct?**
+  _`SuburbUIV3` has 29 INFERRED edges - model-reasoned connections that need verification._

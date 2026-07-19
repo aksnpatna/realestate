@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1783952206.0296075,
-    "ast_hash": "699d570b2efa4e846f62ec4e111ba5b3",
+    "mtime": 1784348996.4548368,
+    "ast_hash": "8b6eb495f626eed7fa3c83dafd4900bd",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,18 +45,18 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1783984616.1336794,
-    "ast_hash": "6894e288baa8518cde6db1d88f589efe",
+    "mtime": 1784419787.6851375,
+    "ast_hash": "ff20fa5806fcf3ad371b791957244cda",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
-    "mtime": 1783984392.7374198,
-    "ast_hash": "90157f06a138d3eb3000a3bfa2bb45f4",
+    "mtime": 1784288345.1532092,
+    "ast_hash": "8390466c6708b74d3ce590df1f4d7c9c",
     "semantic_hash": ""
   },
   "src/components/CashflowGearing.tsx": {
-    "mtime": 1783984938.6446295,
-    "ast_hash": "0a1c78521169db0555ff412659f23d09",
+    "mtime": 1784288345.1535103,
+    "ast_hash": "6df302407c68f0a0edfed49c93e8e897",
     "semantic_hash": ""
   },
   "src/components/SuburbMap.tsx": {
@@ -70,8 +70,8 @@
     "semantic_hash": "36943070f28dabdec6c9b061b039b286"
   },
   "src/data/suburbs.ts": {
-    "mtime": 1783832430.5436082,
-    "ast_hash": "464ca4273b00180b532bb0e5304e75be",
+    "mtime": 1784205471.8805773,
+    "ast_hash": "abf071f4bc0867e74dca8108bef1825a",
     "semantic_hash": ""
   },
   "src/data/suburbs_generated.json": {
@@ -135,13 +135,13 @@
     "semantic_hash": "3903fdd09ac66228d8137b28f7ec7dd9"
   },
   "backend/requirements.txt": {
-    "mtime": 1783854409.9954045,
-    "ast_hash": "e85f25f021aca2a688795adfb6bf5e10",
+    "mtime": 1783994307.4300432,
+    "ast_hash": "5d184a9bac9cd828da3360f57455d955",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1783933458.007332,
-    "ast_hash": "b6d6e9203ac9ab14e946e787ebb7fe7a",
+    "mtime": 1784292004.4968944,
+    "ast_hash": "78c7d32645733e999cfe2bc320fd15d3",
     "semantic_hash": ""
   },
   "graphify-out/converted/vic_sales_time_series_20yr_latest_5350cb9d.md": {
@@ -150,9 +150,9 @@
     "semantic_hash": "5b484283dd2ee6e4058586aad8c06ea1"
   },
   "index.html": {
-    "mtime": 1782563394.7114735,
-    "ast_hash": "fd6680bbf8b1246edf96f5f93c36ca1d",
-    "semantic_hash": "fd6680bbf8b1246edf96f5f93c36ca1d"
+    "mtime": 1784351026.8121371,
+    "ast_hash": "a826e5e712f35084f26496a9f8379b59",
+    "semantic_hash": ""
   },
   "public/favicon.svg": {
     "mtime": 1782529570.4826305,
@@ -200,9 +200,9 @@
     "semantic_hash": "5fd2dfd6787044da719ed823be5132b8"
   },
   "backend/import_acara.py": {
-    "mtime": 1782798910.3606718,
-    "ast_hash": "1e86dd5aea006ca2c678ae9a38b3d3b1",
-    "semantic_hash": "1e86dd5aea006ca2c678ae9a38b3d3b1"
+    "mtime": 1784014737.559931,
+    "ast_hash": "6e70f27ee1f9c78c2c520c7d7e943b4e",
+    "semantic_hash": ""
   },
   "backend/parallel_scraper.py": {
     "mtime": 1783054185.8870363,
@@ -240,13 +240,13 @@
     "semantic_hash": "935d0b00c6f6a66b0922338761e9c317"
   },
   "backend/enrich_from_unpacked.py": {
-    "mtime": 1783054942.4419844,
-    "ast_hash": "3d71e945b4f4986c6350a1ef36e5ec23",
-    "semantic_hash": "3d71e945b4f4986c6350a1ef36e5ec23"
+    "mtime": 1784290956.3716874,
+    "ast_hash": "26bcb48e9675f59d7b0b5c7bfd297ef7",
+    "semantic_hash": ""
   },
   "backend/etl_abs_census.py": {
-    "mtime": 1783750502.5683436,
-    "ast_hash": "579b0a16bcbddb38ba66eafe13aba33f",
+    "mtime": 1784204456.2864513,
+    "ast_hash": "f877c4571cabe950e562e04208464d67",
     "semantic_hash": ""
   },
   "backend/etl_dq_report_v3.py": {
@@ -260,14 +260,14 @@
     "semantic_hash": ""
   },
   "backend/etl_infra_zoning.py": {
-    "mtime": 1783251075.785069,
-    "ast_hash": "e87c0300134a1319d5394d410fe77d67",
-    "semantic_hash": "e87c0300134a1319d5394d410fe77d67"
+    "mtime": 1784290586.9907787,
+    "ast_hash": "9d658711eea2b09e1a550153e61d143a",
+    "semantic_hash": ""
   },
   "backend/etl_transform_v3.py": {
-    "mtime": 1783431670.3735907,
-    "ast_hash": "2ae9a514580935123dc807887d9c0e74",
-    "semantic_hash": "2ae9a514580935123dc807887d9c0e74"
+    "mtime": 1784344039.7523367,
+    "ast_hash": "cf747b49e8acb662aaba87e7107906e3",
+    "semantic_hash": ""
   },
   "backend/fix_desc_sql.sql": {
     "mtime": 1783049326.5466194,
@@ -275,9 +275,9 @@
     "semantic_hash": "d73adcc46b6dabef3343fc4c7ce79a87"
   },
   "backend/micro_scraper_v4.py": {
-    "mtime": 1783250165.7328584,
-    "ast_hash": "ca7defb02649c10e63e95254e9024920",
-    "semantic_hash": "ca7defb02649c10e63e95254e9024920"
+    "mtime": 1784290567.8036292,
+    "ast_hash": "2ffe5d5cfed728a39e823767df400e03",
+    "semantic_hash": ""
   },
   "backend/models_v2.py": {
     "mtime": 1782983664.4095056,
@@ -285,8 +285,8 @@
     "semantic_hash": "84390dab89b4799da261cbab3a6216ec"
   },
   "backend/models_v3.py": {
-    "mtime": 1783946229.8616967,
-    "ast_hash": "3bf656099cb0850076fc597827e57703",
+    "mtime": 1784335970.4115398,
+    "ast_hash": "309e59124cd2286afe0ce3304f8f3da2",
     "semantic_hash": ""
   },
   "backend/models_v3_unpacked.py": {
@@ -295,8 +295,8 @@
     "semantic_hash": "34e4979ef97f6ab6a98e1bc9a8aad942"
   },
   "backend/osm_local.py": {
-    "mtime": 1783932971.28973,
-    "ast_hash": "d538ceae940fa0ac11e2f2cadd99dc8b",
+    "mtime": 1784203577.271011,
+    "ast_hash": "e71a77d17dcf24a3d185f57e8564ee38",
     "semantic_hash": ""
   },
   "backend/predictive_ai_engine.py": {
@@ -330,13 +330,13 @@
     "semantic_hash": ""
   },
   "backend/v3_scheduler.py": {
-    "mtime": 1783834562.7675264,
-    "ast_hash": "4b85442e20504ccf90df2037ec74bf00",
+    "mtime": 1784344408.474132,
+    "ast_hash": "ed5981174f8c0e085871cea863c34416",
     "semantic_hash": ""
   },
   "src/components/InstitutionalV3Panel.tsx": {
-    "mtime": 1783834611.9959798,
-    "ast_hash": "d2f61416cc49851f465cc69eba21ad62",
+    "mtime": 1784014337.4239156,
+    "ast_hash": "9cc125eccf9f545f29513f14e340860d",
     "semantic_hash": ""
   },
   "script_data.txt": {
@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1783984846.0952952,
-    "ast_hash": "432ee9c43b0cf7c765c37442a67f0048",
+    "mtime": 1783992521.6721232,
+    "ast_hash": "9e716bc6bb5700e6551d9521c9811ec6",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "src/components/BuyFinder.tsx": {
-    "mtime": 1783984601.6189706,
-    "ast_hash": "42ba7ae92a9c990480da0eeed7233e2d",
+    "mtime": 1784288345.153354,
+    "ast_hash": "5ac10ae79cf7afd5c16b686b725f13b6",
     "semantic_hash": ""
   },
   "suggestion.md": {
@@ -620,13 +620,13 @@
     "semantic_hash": ""
   },
   "backend/buyfinder.py": {
-    "mtime": 1783952088.9919312,
-    "ast_hash": "5cbf595725a8384174c2b9222a2a93d6",
+    "mtime": 1784014919.5052545,
+    "ast_hash": "b88dd9062ae5f9122951c4c507544d26",
     "semantic_hash": ""
   },
   "backend/model_diary_refresh.py": {
-    "mtime": 1783984950.8354135,
-    "ast_hash": "39b2b2a8cf3c71981ba67ec366046fe1",
+    "mtime": 1783994786.5246203,
+    "ast_hash": "aaa6045416014c45b725c95f05770c86",
     "semantic_hash": ""
   },
   "backend/poc_config.py": {
@@ -635,23 +635,23 @@
     "semantic_hash": ""
   },
   "backend/tests/test_buyfinder.py": {
-    "mtime": 1783952272.3162184,
-    "ast_hash": "2be332654cae936fe314d156d3ffb14f",
+    "mtime": 1784290203.699248,
+    "ast_hash": "2e4a5226b157385c2be6f8a1c7d28ec6",
     "semantic_hash": ""
   },
   "src/components/BuyFinder.test.tsx": {
-    "mtime": 1783984773.9286292,
-    "ast_hash": "219aa739069315067cd9cb5ece64d486",
+    "mtime": 1784290463.1976945,
+    "ast_hash": "0f107f5d62ebebc77d752ff8969043e0",
     "semantic_hash": ""
   },
   "src/components/DecisionBrief.tsx": {
-    "mtime": 1783952228.7549927,
-    "ast_hash": "7ab9fb5640983990f8426c1198c807fd",
+    "mtime": 1784289491.9842582,
+    "ast_hash": "33c3da227d965709b23252eb6188045f",
     "semantic_hash": ""
   },
   "prompt.md": {
-    "mtime": 1783984272.3285341,
-    "ast_hash": "781eaa19cf0c5c5f1fd3a2f868ecd3da",
+    "mtime": 1783994166.324226,
+    "ast_hash": "23013f54e7253ca335670810be60cad8",
     "semantic_hash": ""
   },
   "review_latest_withtest.md": {
@@ -672,6 +672,286 @@
   "suggestion_review.md": {
     "mtime": 1783945869.4024353,
     "ast_hash": "449bec6ea54e5dbf89988a808aaf1457",
+    "semantic_hash": ""
+  },
+  "backend/conftest.py": {
+    "mtime": 1784290221.0205405,
+    "ast_hash": "fb29c173381ac2227f02209ba3b60d4d",
+    "semantic_hash": ""
+  },
+  "backend/evidence_registry.py": {
+    "mtime": 1783994503.0081892,
+    "ast_hash": "f42f1efe0968c64297a575702ceb2481",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_evidence_registry.py": {
+    "mtime": 1783994517.50734,
+    "ast_hash": "17d37bdca76fca2ad5bc86ba1546b179",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_model_diary_refresh.py": {
+    "mtime": 1783994795.4266222,
+    "ast_hash": "d88a197459078c92286fdb793ae8279e",
+    "semantic_hash": ""
+  },
+  "src/components/AffordabilityCalculator.test.tsx": {
+    "mtime": 1783992637.7542956,
+    "ast_hash": "92f243c9d9d70224a18901b4a1882228",
+    "semantic_hash": ""
+  },
+  "src/components/DecisionBrief.test.tsx": {
+    "mtime": 1783992404.1236362,
+    "ast_hash": "0ec86f7d8aa28ab1fb65d0c7e74e1235",
+    "semantic_hash": ""
+  },
+  "src/data/buyerFitTypes.ts": {
+    "mtime": 1784289093.0141058,
+    "ast_hash": "f894298f4f93e5a69947b0f4b165a68c",
+    "semantic_hash": ""
+  },
+  "return.md": {
+    "mtime": 1783996683.9196277,
+    "ast_hash": "1207e628963a9557bed9a71dd64dcd61",
+    "semantic_hash": ""
+  },
+  "review_fifth.md": {
+    "mtime": 1783994166.3245964,
+    "ast_hash": "4b604b04bf5ae132f2bcd85b3e27481f",
+    "semantic_hash": ""
+  },
+  "review_fourth.md": {
+    "mtime": 1783992001.8759742,
+    "ast_hash": "4b604b04bf5ae132f2bcd85b3e27481f",
+    "semantic_hash": ""
+  },
+  "user_journey.md": {
+    "mtime": 1783996683.9197538,
+    "ast_hash": "05b809e0e473a62308aae940afbe0aa3",
+    "semantic_hash": ""
+  },
+  "backend/test_api.py": {
+    "mtime": 1784006610.4723704,
+    "ast_hash": "3104a4dc0d0604396132907edcc14a01",
+    "semantic_hash": ""
+  },
+  "backend/test_dq.py": {
+    "mtime": 1784006236.2099369,
+    "ast_hash": "449ddf958aecf76b046f09208fa7d3f0",
+    "semantic_hash": ""
+  },
+  "backend/test_dq2.py": {
+    "mtime": 1784006292.3573527,
+    "ast_hash": "7b25c107785c098b8ed5afcda26f1e4c",
+    "semantic_hash": ""
+  },
+  "backend/test_dq3.py": {
+    "mtime": 1784006479.2333865,
+    "ast_hash": "cb9540d74f6c0b47cfbd25d45bfdee65",
+    "semantic_hash": ""
+  },
+  "backend/test_dq4.py": {
+    "mtime": 1784006628.4397423,
+    "ast_hash": "808860bae87b151a32a809cd57210ee7",
+    "semantic_hash": ""
+  },
+  "backend/test_dq5.py": {
+    "mtime": 1784006568.5218887,
+    "ast_hash": "6fa24b6e0bf3ea7d1cd535251dac9f89",
+    "semantic_hash": ""
+  },
+  "backend/test_melb.py": {
+    "mtime": 1784013930.9268243,
+    "ast_hash": "25ea21fd8428466cf12c1e755ac0aee7",
+    "semantic_hash": ""
+  },
+  "backend/test_melb2.py": {
+    "mtime": 1784013957.6446233,
+    "ast_hash": "ff03437a62a314936515e191ed033a87",
+    "semantic_hash": ""
+  },
+  "check_id.py": {
+    "mtime": 1784014694.979068,
+    "ast_hash": "be08eee8f5201badc39965a9d70123cc",
+    "semantic_hash": ""
+  },
+  "test_api.py": {
+    "mtime": 1784006418.018022,
+    "ast_hash": "3104a4dc0d0604396132907edcc14a01",
+    "semantic_hash": ""
+  },
+  "test_api2.py": {
+    "mtime": 1784006462.4427967,
+    "ast_hash": "8e0c26ad4264f7f3c277e6358d31761a",
+    "semantic_hash": ""
+  },
+  "test_dq.py": {
+    "mtime": 1784006198.167333,
+    "ast_hash": "95492db73f8138cb31b5c829785b526c",
+    "semantic_hash": ""
+  },
+  "test_dq2.py": {
+    "mtime": 1784006284.7024324,
+    "ast_hash": "7b25c107785c098b8ed5afcda26f1e4c",
+    "semantic_hash": ""
+  },
+  "test_dq3.py": {
+    "mtime": 1784006313.176136,
+    "ast_hash": "ed03eaf23346180726c9df0bdaf4d14c",
+    "semantic_hash": ""
+  },
+  "test_melbourne.py": {
+    "mtime": 1784013924.4957395,
+    "ast_hash": "d258bdbe6331d5dd5b4254d1b5cec0f1",
+    "semantic_hash": ""
+  },
+  ".kilo/package.json": {
+    "mtime": 1784016865.6808221,
+    "ast_hash": "529b8b75ea7f79240a606732e8401523",
+    "semantic_hash": ""
+  },
+  "backend/etl_abs_social_housing.py": {
+    "mtime": 1784151962.5498145,
+    "ast_hash": "074b253f9662ec38228dc5637159479f",
+    "semantic_hash": ""
+  },
+  "backend/etl_cadastre_discovery.py": {
+    "mtime": 1784152018.3223627,
+    "ast_hash": "e07d43014b4fe50e30294445ca453ff2",
+    "semantic_hash": ""
+  },
+  "backend/etl_nsw_cadastre.py": {
+    "mtime": 1784204343.1510396,
+    "ast_hash": "a29b9612ffb8128227968d630dd4ef66",
+    "semantic_hash": ""
+  },
+  "backend/etl_osm_enrich.py": {
+    "mtime": 1784343994.947549,
+    "ast_hash": "10738900f08eeccb04334e42ca30bb92",
+    "semantic_hash": ""
+  },
+  "backend/migrate_data_sources.py": {
+    "mtime": 1784151986.6720576,
+    "ast_hash": "aae3a267d2bcb566338f6f48eacdfc83",
+    "semantic_hash": ""
+  },
+  "backend/migrate_social_infra.py": {
+    "mtime": 1784149939.0296223,
+    "ast_hash": "4fdc3103cce283fcdd91e36db4a71d50",
+    "semantic_hash": ""
+  },
+  "DATA_WIRING_GUIDE.md": {
+    "mtime": 1784204565.5537596,
+    "ast_hash": "15e82a7c3605503ee749f5e8fa705f00",
+    "semantic_hash": ""
+  },
+  "GROWTH_IMPACT_DATA_SOURCES.md": {
+    "mtime": 1784118464.6111226,
+    "ast_hash": "10e9358029263bfa0d4e4c70e2016b3c",
+    "semantic_hash": ""
+  },
+  "IMPLEMENTATION_GUIDE.md": {
+    "mtime": 1784119785.6850584,
+    "ast_hash": "b381187b10a56f117fce02de97a8cb9d",
+    "semantic_hash": ""
+  },
+  "backend/etl_nsw_planning_rules.py": {
+    "mtime": 1784290554.29052,
+    "ast_hash": "53a55a47ef197a5fbbd4611698f8a066",
+    "semantic_hash": ""
+  },
+  "backend/add_columns.py": {
+    "mtime": 1784347965.6555011,
+    "ast_hash": "f91c2402c7b86007795bb66e74198b08",
+    "semantic_hash": ""
+  },
+  "backend/nightly_compute.py": {
+    "mtime": 1784335993.9568577,
+    "ast_hash": "83cdc8c8fe0c66a88c5159645fa29229",
+    "semantic_hash": ""
+  },
+  "backend/persona_presets.py": {
+    "mtime": 1784288442.6921523,
+    "ast_hash": "2f5522629da6728de731197378244466",
+    "semantic_hash": ""
+  },
+  "backend/score_meta.py": {
+    "mtime": 1784286033.5512507,
+    "ast_hash": "e8de8003c1501dbff1c9ef90974c4b8c",
+    "semantic_hash": ""
+  },
+  "rewrite_css.py": {
+    "mtime": 1784347678.9882703,
+    "ast_hash": "a7acaf06d50ad239aec7363cde396950",
+    "semantic_hash": ""
+  },
+  "src/components/LandingPage.tsx": {
+    "mtime": 1784348080.1001706,
+    "ast_hash": "0dfdf68a1e3970ba82c8ae8d7cf61da2",
+    "semantic_hash": ""
+  },
+  "src/components/MarketIndicatorsSection.tsx": {
+    "mtime": 1784289383.215794,
+    "ast_hash": "6158fce9fafda6d521e554ece204d60a",
+    "semantic_hash": ""
+  },
+  "src/components/PersonaSwitcher.tsx": {
+    "mtime": 1784289106.1591368,
+    "ast_hash": "0de10cc0382f99bd1a1d03c7278ecef9",
+    "semantic_hash": ""
+  },
+  "src/components/PocketRiskMap.tsx": {
+    "mtime": 1784289552.250421,
+    "ast_hash": "a87346b6206c8c39e5ff6eee27d1dcf3",
+    "semantic_hash": ""
+  },
+  "src/components/ProfileSectionNav.tsx": {
+    "mtime": 1784349719.9975512,
+    "ast_hash": "0660e6b2fe080d263b1291bd210b6fc1",
+    "semantic_hash": ""
+  },
+  "src/components/PromoBanner.tsx": {
+    "mtime": 1784348024.59992,
+    "ast_hash": "baf506f618b0e419e86419513b7971e3",
+    "semantic_hash": ""
+  },
+  "src/components/ScoreLegend.tsx": {
+    "mtime": 1784286475.858103,
+    "ast_hash": "d1f05c6e74688e2cb0dcec7380f037bf",
+    "semantic_hash": ""
+  },
+  "src/components/ShareReport.tsx": {
+    "mtime": 1784348026.626892,
+    "ast_hash": "85f55655a3fc2fff2f16fc25f24bcc78",
+    "semantic_hash": ""
+  },
+  "src/components/TechnicalProvenanceSection.tsx": {
+    "mtime": 1784291940.0655062,
+    "ast_hash": "f7a4e94cf6185677b5a68379a596862d",
+    "semantic_hash": ""
+  },
+  "src/data/personas.ts": {
+    "mtime": 1784288663.9804864,
+    "ast_hash": "c40aca4c380f374b27a875223e117f1f",
+    "semantic_hash": ""
+  },
+  "src/services/analytics.ts": {
+    "mtime": 1784348028.6488645,
+    "ast_hash": "e86be490eb2ea9f7f9bdb59f730a00fb",
+    "semantic_hash": ""
+  },
+  ".kilo/plans/1784276929886-multi-faceted-suburb-profile-plan.md": {
+    "mtime": 1784284554.1155946,
+    "ast_hash": "39d4fe9e077b1382882ce440f2bb0a87",
+    "semantic_hash": ""
+  },
+  "PIPELINES.md": {
+    "mtime": 1784344442.3708987,
+    "ast_hash": "5657a7d1140014c539e90dc0b57692df",
+    "semantic_hash": ""
+  },
+  "src/components/ProfileSection.tsx": {
+    "mtime": 1784349583.877437,
+    "ast_hash": "33e00bc2e6ea67c222bb3b10891ba2ae",
     "semantic_hash": ""
   }
 }

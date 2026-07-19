@@ -17,6 +17,7 @@ const createCustomIcon = (color: string, emoji: string, size: number = 30) => {
 
 const primarySchoolIcon = createCustomIcon('#eab308', '🎒'); // Yellow backpack for Primary
 const secondarySchoolIcon = createCustomIcon('#8b5cf6', '🎓'); // Purple grad cap for High School/Combined
+const earlyLearningIcon = createCustomIcon('#ec4899', '🧸'); // Pink teddy bear for Early Learning
 const stationIcon = createCustomIcon('#00f0ff', '🚏'); // Cyan for general transit
 const trainStationIcon = createCustomIcon('#00f0ff', '🚉', 45); // Cyan and large for Train Stations
 const shoppingIcon = createCustomIcon('#10b981', '🛒'); // Green
@@ -56,6 +57,14 @@ const AUSTRALIA_CENTER: [number, number] = [-25.2744, 133.7751];
 const boundaryCache = new Map<string, any>();
 
 export default memo(function SuburbMap({ center, pois, schools, suburbName, stateName, postcode }: MapProps) {
+  const [activeSchoolZone, setActiveSchoolZone] = useState<{geojson: any, name: string, type: string} | null>(null);
+
+  const getSchoolTypeFromName = (name: string, defaultType: string) => {
+    const n = (name || '').toLowerCase();
+    if (n.includes('kindergarten') || n.includes('early learning') || n.includes('childcare') || n.includes('child care') || n.includes('preschool') || n.includes('early years')) return 'Early Learning';
+    if (n.includes('secondary') || n.includes('high') || n.includes('college')) return 'Secondary';
+    return defaultType || 'Primary';
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [geoData, setGeoData] = useState<any>(null);
   const [derivedCenter, setDerivedCenter] = useState<[number, number]>(center || AUSTRALIA_CENTER);
@@ -205,22 +214,64 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
           {schools.map((school, idx) => {
             const pos = school.coordinates || (school.lat && school.lon ? [school.lat, school.lon] : null);
             if (!pos) return null;
+            
+            const typeStr = getSchoolTypeFromName(school.name, school.type);
+            let icon = primarySchoolIcon;
+            if (typeStr === 'Secondary') icon = secondarySchoolIcon;
+            if (typeStr === 'Early Learning') icon = earlyLearningIcon;
+
             return (
               <Marker 
                 key={`school-${idx}`} 
                 position={pos as [number, number]} 
-                icon={school.type === 'Primary' ? primarySchoolIcon : secondarySchoolIcon}
+                icon={icon}
+                eventHandlers={{
+                  click: () => {
+                    fetch(`/api/v3/school_zone?name=${encodeURIComponent(school.name)}&state=${encodeURIComponent(stateName || 'VIC')}`)
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.geojson) {
+                           setActiveSchoolZone({ geojson: data.geojson, name: school.name, type: typeStr });
+                        } else {
+                           setActiveSchoolZone(null); // No zone found
+                        }
+                      }).catch(() => setActiveSchoolZone(null));
+                  }
+                }}
               >
                 <Popup className="premium-popup">
                   <strong>{school.name}</strong><br/>
-                  <span style={{textTransform: 'capitalize'}}>{school.type || 'School'}</span><br/>
+                  <span style={{textTransform: 'capitalize'}}>{typeStr}</span><br/>
                   <span style={{color: '#94a3b8'}}>
                     {school.stateRank ? `State Rank: #${school.stateRank} | Score: ${school.score}/100 (Est.)` : 'OSM Extracted Data'}
+                  </span><br/>
+                  <span style={{color: '#8b5cf6', fontSize: '0.8em', marginTop: '4px', display: 'block'}}>
+                    Click marker to load Official Catchment Zone
                   </span>
                 </Popup>
               </Marker>
             );
           })}
+
+          {/* Active School Zone Overlay */}
+          {activeSchoolZone && (
+            <GeoJSON 
+              key={`school-zone-${activeSchoolZone.name}`}
+              data={activeSchoolZone.geojson} 
+              style={() => {
+                let color = '#3b82f6';
+                if (activeSchoolZone.type === 'Secondary') color = '#8b5cf6';
+                if (activeSchoolZone.type === 'Early Learning') color = '#ec4899';
+                return {
+                  fillColor: color,
+                  fillOpacity: 0.2,
+                  color: color,
+                  weight: 3,
+                  dashArray: '5 5'
+                };
+              }}
+            />
+          )}
         </MapContainer>
       </div>
       
