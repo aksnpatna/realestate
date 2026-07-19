@@ -34,7 +34,8 @@ const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 type TabName = 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('is_auth') === 'true')
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
@@ -78,8 +79,20 @@ function App() {
   // Restore auth state from httpOnly cookie on page load
   useEffect(() => {
     fetch('/api/me', { credentials: 'include' })
-      .then(res => { if (res.ok) setIsAuthenticated(true) })
-      .catch(() => {})
+      .then(res => { 
+        if (res.ok) {
+          setIsAuthenticated(true)
+          localStorage.setItem('is_auth', 'true')
+        } else {
+          setIsAuthenticated(false)
+          localStorage.removeItem('is_auth')
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false)
+        localStorage.removeItem('is_auth')
+      })
+      .finally(() => setIsCheckingAuth(false))
   }, [])
 
   const [financialProfile, setFinancialProfile] = useState({
@@ -344,6 +357,7 @@ function App() {
       })
       if (res.ok) {
         setIsAuthenticated(true)
+        localStorage.setItem('is_auth', 'true')
         setLoginError('')
       } else {
         const msg = await res.json().then(d => d.detail).catch(async () => await res.text());
@@ -420,7 +434,15 @@ function App() {
     }
   }
 
-  if (!isAuthenticated) {
+  if (isCheckingAuth) {
+    return (
+      <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
+        <div className="title-glow" style={{ fontSize: '1.5rem', fontWeight: 600 }}>Loading PropertyIQ...</div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated && !isCheckingAuth) {
     if (authMode === 'landing') {
       return (
         <LandingPage 
@@ -434,7 +456,7 @@ function App() {
     const strengthColor = passwordStrength === 'Strong' ? 'var(--success)' : passwordStrength === 'Medium' ? 'var(--warning)' : 'var(--danger)'
     
     return (
-      <div className="dashboard-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
+      <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
         <div className="glass-card" style={{ padding: '40px', maxWidth: '460px', width: '100%', background: 'var(--bg-card)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h1 className="title-glow" style={{ fontSize: '1.8rem', margin: 0, fontWeight: 800 }}>PropertyIQ</h1>
