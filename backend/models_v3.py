@@ -26,8 +26,12 @@ from datetime import datetime
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://realestate_user:realestate_pass@db:5432/realestate"
+    os.environ["DATABASE_URL"]
 )
+
+DEFAULT_CASH_RATE = float(os.getenv("DEFAULT_CASH_RATE", "3.60"))
+RETAIL_MARGIN = float(os.getenv("RETAIL_MARGIN", "2.30"))
+DEFAULT_MORTGAGE_RATE = (DEFAULT_CASH_RATE + RETAIL_MARGIN) / 100.0
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -103,7 +107,8 @@ class SuburbUIV3(Base):
     area_sqkm = Column(Float)
 
     # ---- FINANCIAL ----
-    typical_mortgage_band = Column(String)                     # "$1800 - $2100/month"
+    typical_mortgage_band = Column(String)                     # "$1800 - $2100/month" (ABS scraped)
+    estimated_mortgage_repayment = Column(Float)               # Computed monthly P&I from median price (80% LVR, 6.20%, 30yr)
     price_to_income_ratio = Column(Float)
     price_to_rent_ratio = Column(Float)
 
@@ -197,6 +202,15 @@ class SuburbUIV3(Base):
     abs_demographics_sourced = Column(Boolean, default=False)  # True = ABS Census 2021 is the source for demographics fields
     abs_sourced_fields = Column(JSON)                          # List of field names confirmed from ABS e.g. ["population_2021", "median_age"]
     abs_etl_run_date = Column(DateTime)                        # When ABS data was last applied
+
+    # ---- EXTERNAL CROSS-VALIDATION & LINEAGE ----
+    external_dom_house = Column(Integer)
+    external_dom_unit = Column(Integer)
+    external_median_price = Column(Float)
+    external_source = Column(String)
+    external_fetched_at = Column(DateTime)
+    external_validation = Column(JSON)      # {"corelogic": {"house_median": ...}, "domain": {...}}
+    metric_provenance = Column(JSON)        # { "house_median_price": {"source": "onthehouse", ...} }
 
     # ---- DQ METADATA & LINEAGE ----
     dq_issues = Column(JSON)                                   # [{field: "house_yield", issue: "negative", severity: "warning"}, ...]
@@ -314,6 +328,17 @@ class ModelDiary(Base):
     realized_price_12m = Column(Float)
     realized_price_36m = Column(Float)
     outcome_rating = Column(String)
+
+class EtlRunLog(Base):
+    __tablename__ = "etl_run_log"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    run_id = Column(String, index=True)
+    stage = Column(String, index=True)
+    suburb_id = Column(String, nullable=True, index=True)
+    exception_class = Column(String)
+    message = Column(Text)
+    severity = Column(String, default="warning")
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 Base.metadata.create_all(bind=engine)
 print("V3 tables created/verified.")

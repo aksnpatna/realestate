@@ -342,7 +342,7 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
             {result ? (
               <>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '10px', padding: '6px 10px', background: 'rgba(234,179,8,0.06)', borderRadius: '6px', border: '1px solid rgba(234,179,8,0.1)' }}>
-                  Tax, rate, rent, expense and depreciation values are assumptions or indicative calculations only. This is not financial advice.
+                  Illustrative only — not financial or tax advice. Single marginal-rate assumption; excludes Medicare levy, land tax, state-specific surcharges, CGT discounting, and capital works/plant depreciation separation. Consult an accountant before relying on after-tax figures.
                 </div>
                 <div className={`gearing-status-banner ${result.gearingStatus}`}>
                   <span className="gearing-status-icon">

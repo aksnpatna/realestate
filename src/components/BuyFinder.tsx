@@ -12,7 +12,7 @@ interface BuyFinderLocalResponse {
   total_evaluated: number
 }
 
-export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelectResult, financialProfile, setFinancialProfile }: { suburbsData?: SuburbData[]; setActiveSuburb?: (s: SuburbData) => void; setActiveTab?: (t: string) => void; onSelectResult?: (result: BuyerFitResult, requestMeta: { request_id: string; model_version: string }) => void; financialProfile?: any; setFinancialProfile?: any }) {
+export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelectResult, financialProfile, setFinancialProfile, persona }: { suburbsData?: SuburbData[]; setActiveSuburb?: (s: SuburbData) => void; setActiveTab?: (t: string) => void; onSelectResult?: (result: BuyerFitResult, requestMeta: { request_id: string; model_version: string }) => void; financialProfile?: any; setFinancialProfile?: any; persona?: string }) {
   const [backendResults, setBackendResults] = useState<BuyFinderLocalResponse | null>(null);
   const [backendLoading, setBackendLoading] = useState(false);
   const [backendError, setBackendError] = useState<string | null>(null);
@@ -51,7 +51,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          buyer_profile: 'first_home_buyer',
+          buyer_profile: persona || 'first_home_buyer',
           state,
           budget,
           deposit,
