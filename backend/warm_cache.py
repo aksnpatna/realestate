@@ -26,7 +26,7 @@ def warmup():
         logger.info("AI insights disabled — skipping warm‑up")
         return
 
-    db_url = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@realestate-db:5432/realestate")
+    db_url = os.environ["DATABASE_URL"]
     engine = create_engine(db_url)
     Session = sessionmaker(bind=engine)
     db = Session()

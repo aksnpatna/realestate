@@ -12,9 +12,7 @@ export default function UserFavoritesTab({ suburbsData, onSelectSuburb }: UserFa
 
   useEffect(() => {
     fetch('/api/favorites', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-      }
+      credentials: 'include',
     })
       .then(res => res.json())
       .then(data => {

@@ -16,6 +16,7 @@ from pydantic import BaseModel
 
 from poc_config import poc_config
 from predictive_ai_engine import has_synthetic_recommendation_inputs
+from models_v3 import DEFAULT_MORTGAGE_RATE
 
 logger = logging.getLogger("uvicorn")
 
@@ -35,7 +36,7 @@ class BuyFinderRequest(BaseModel):
     deposit: float = 170000
     annual_income: float = 150000
     existing_monthly_debt: float = 0
-    interest_rate: float = 0.062
+    interest_rate: float = DEFAULT_MORTGAGE_RATE
     serviceability_buffer: float = 0.03
     loan_term_years: int = 30
     purchase_cost_allowance: float = 0.02
@@ -78,15 +79,24 @@ def clamp(val, lo, hi):
     return max(lo, min(hi, val))
 
 
-def calculate_stamp_duty(state: str, price: float) -> float:
+def calculate_stamp_duty(state: str, price: float, buyer_profile: str = "first_home_buyer") -> float:
+    is_fhb = buyer_profile == "first_home_buyer"
     state = state.upper()
     if state == "VIC":
+        if is_fhb and price <= 600000:
+            return 0
+        if is_fhb and price <= 750000:
+            return (price - 600000) * 0.003
         if price <= 25000: return price * 0.014
         if price <= 130000: return 350 + (price - 25000) * 0.024
         if price <= 960000: return 2870 + (price - 130000) * 0.06
         if price <= 2000000: return price * 0.055
         return price * 0.065
     if state == "NSW":
+        if is_fhb and price <= 800000:
+            return 0
+        if is_fhb and price <= 1000000:
+            return (price - 800000) * 0.045
         if price <= 16000: return price * 0.0125
         if price <= 35000: return 200 + (price - 16000) * 0.015
         if price <= 93000: return 485 + (price - 35000) * 0.0175
@@ -95,6 +105,8 @@ def calculate_stamp_duty(state: str, price: float) -> float:
         if price <= 3505000: return 47295 + (price - 1168000) * 0.055
         return 175830 + (price - 3505000) * 0.07
     if state == "QLD":
+        if is_fhb and price <= 500000:
+            return 0
         if price <= 5000: return 0
         if price <= 75000: return (price - 5000) * 0.015
         if price <= 540000: return 1050 + (price - 75000) * 0.035
@@ -181,7 +193,14 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
         reason = eligibility["reasons"][0] if eligibility["reasons"] else "excluded_dq"
         return _excluded_result(v3, reason, eligibility)
 
-    stamp_duty = calculate_stamp_duty(v3.state or req.state, price)
+    stamp_duty = calculate_stamp_duty(v3.state or req.state, price, req.buyer_profile)
+
+    # Track whether an FHB concession was applied
+    concession_applied = False
+    if req.buyer_profile == "first_home_buyer":
+        full_duty = calculate_stamp_duty(v3.state or req.state, price, "investor")
+        if stamp_duty < full_duty:
+            concession_applied = True
     purchase_costs = price * req.purchase_cost_allowance + stamp_duty
     available_deposit_after_costs = req.deposit - purchase_costs
     if available_deposit_after_costs < 0:
@@ -273,6 +292,7 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
             "score": round(affordability_fit, 1),
             "purchase_price": price,
             "stamp_duty": round(stamp_duty, 2),
+            "stamp_duty_concession_applied": concession_applied,
             "purchase_costs": round(purchase_costs, 2),
             "available_deposit_after_costs": round(available_deposit_after_costs, 2),
             "required_loan": round(required_loan, 2),

@@ -74,6 +74,13 @@ function App() {
   const [clusteringResults, setClusteringResults] = useState<any[] | null>(null)
   const [macroEtf, setMacroEtf] = useState<any>(null)
 
+  // Restore auth state from httpOnly cookie on page load
+  useEffect(() => {
+    fetch('/api/me', { credentials: 'include' })
+      .then(res => { if (res.ok) setIsAuthenticated(true) })
+      .catch(() => {})
+  }, [])
+
   const [financialProfile, setFinancialProfile] = useState({
     deposit: 170000,
     lvrPct: 90,
@@ -122,11 +129,11 @@ function App() {
         try {
           const sessResult = sessionStorage.getItem('bf_result')
           if (!sessResult && isAuthenticated) {
-            fetch(`/api/buy-finder/snapshots?suburb_id=${id}`)
-              .then(r => r.json())
+            fetch(`/api/buy-finder/snapshots?suburb_id=${id}`, { credentials: 'include' })
+              .then(res => res.json())
               .then(snapshots => {
                 if (snapshots && snapshots.length > 0) {
-                  fetch(`/api/buy-finder/snapshots/${snapshots[0].id}`)
+                  fetch(`/api/buy-finder/snapshots/${snapshots[0].id}`, { credentials: 'include' })
                     .then(r => r.json())
                     .then(s => {
                       if (s?.result) setSelectedBuyerFitResult(s.result)
@@ -168,7 +175,7 @@ function App() {
         .then(data => setMacroEtf(data))
         .catch(err => console.error("ETF fetch error:", err))
 
-      fetch('/api/favorites')
+      fetch('/api/favorites', { credentials: 'include' })
         .then(res => res.json())
         .then(data => {
           if (data.status === 'success') {
@@ -221,6 +228,7 @@ function App() {
       const res = await fetch('/api/favorites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ suburb_id: suburbId })
       });
       if (!res.ok) {
@@ -258,8 +266,11 @@ function App() {
     if (stateSuburbs.length > 0) {
       // Only auto‑load the first suburb when the user hasn't manually selected one
       if (!manualSelectionRef.current && (!activeSuburb || activeSuburb.state !== activeState)) {
-        loadColdSuburb(stateSuburbs[0].id)
-        trackActivity('VIEW_SUBURB', stateSuburbs[0].id)
+        // Prefer a suburb with a good DQ score to avoid showing low quality warnings on first load
+        const defaultSuburb = [...stateSuburbs].sort((a, b) => ((b as any).dqScore || 0) - ((a as any).dqScore || 0))[0] || stateSuburbs[0];
+        
+        loadColdSuburb(defaultSuburb.id)
+        trackActivity('VIEW_SUBURB', defaultSuburb.id)
       } else {
         // Reset flag after respecting manual selection
         manualSelectionRef.current = false
@@ -327,6 +338,7 @@ function App() {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email: cleanEmail, password: cleanPassword })
       })
       if (res.ok) {
@@ -683,13 +695,33 @@ function App() {
               <div className="sidebar-preview">
                 <div className="preview-score">
                   <span className="preview-score-value">{Math.round(activeSuburb.growthScore ?? 0)}</span>
-                  <span className="preview-score-label">Score</span>
+                  <span className="preview-score-label">Momentum</span>
                 </div>
                 <p className="preview-text">
                   {(activeSuburb as any).cbdDistance
                     ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
                     : activeSuburb.metroCBD || 'Regional suburb'}
                 </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '10px', fontSize: '0.8rem' }}>
+                  {(activeSuburb as any).dqScore != null && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--text-secondary)' }}>DQ</span>
+                      <span style={{ color: (activeSuburb as any).dqScore >= 80 ? '#10b981' : (activeSuburb as any).dqScore >= 60 ? '#f59e0b' : '#ef4444', fontWeight: 600 }}>{Math.round((activeSuburb as any).dqScore)}/100</span>
+                    </div>
+                  )}
+                  {(activeSuburb as any).houseGrossRentalYield != null && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--text-secondary)' }}>Yield</span>
+                      <span style={{ fontWeight: 600 }}>{(activeSuburb as any).houseGrossRentalYield}%</span>
+                    </div>
+                  )}
+                  {(activeSuburb as any).houseDaysOnMarket != null && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--text-secondary)' }}>DOM</span>
+                      <span style={{ fontWeight: 600 }}>{(activeSuburb as any).houseDaysOnMarket}d</span>
+                    </div>
+                  )}
+                </div>
               </div>
                 )}
               </>
@@ -720,6 +752,16 @@ function App() {
                               {favorites.includes(activeSuburb.id) ? '♥ Saved' : '♡ Save'}
                             </button>
                             <ShareReport suburbName={`${activeSuburb.name}, ${activeSuburb.state}`} suburbId={activeSuburb.id} />
+                            <button
+                              onClick={() => setActiveTab('buy-finder')}
+                              style={{
+                                background: 'var(--accent-cyan)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
+                                color: '#000', transition: 'all 0.2s', padding: '6px 12px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(14,165,233,0.3)'
+                              }}
+                              title="Find similar suburbs based on your criteria"
+                            >
+                              🔍 Compare
+                            </button>
                           </div>
                         </div>
                         <p className="subtitle" style={{ marginTop: '8px', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
@@ -735,51 +777,30 @@ function App() {
                           </p>
                         )}
                         
-                        {/* Evidence-backed highlights */}
-                        {(activeSuburb.highlights || []).length > 0 && (
-                          <div style={{ marginTop: '15px' }}>
-                            <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px' }}>Key Drivers</h4>
-                            <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-primary)', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              {(activeSuburb.highlights || []).slice(0, 3).map((h, i) => (
-                                <li key={i}>{h}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        
-                        <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-                          <button
-                            onClick={() => setActiveTab('buy-finder')}
-                            style={{ padding: '8px 16px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem', transition: 'background 0.2s' }}
-                            onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                            onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
-                          >
-                            🔍 Compare Alternatives
-                          </button>
-                        </div>
+                        <div style={{ marginTop: '10px' }} />
                       </div>
 
                       <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
                         {/* Confidence Band (Data Quality) */}
-                        <div className="main-score" style={{ textAlign: 'center', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)', marginBottom: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div className="main-score" style={{ textAlign: 'center', background: 'var(--bg-card)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-glass)', boxShadow: '0 2px 4px rgba(0,0,0,0.04)' }}>
+                          <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)', marginBottom: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             Data Confidence
                             <ScoreInlineHint scoreKey="dq" value={(activeSuburb as any).dqScore ?? null} />
                           </div>
                           {(()=>{
                             const dq = (activeSuburb as any).dqScore;
-                            if (dq == null) return <div style={{ fontSize: '1.2rem', color: '#f59e0b', fontWeight: 'bold' }}>⚠️ Low</div>;
+                            if (dq == null) return <div style={{ fontSize: '1rem', color: '#f59e0b', fontWeight: 'bold' }}>⚠️ Low</div>;
                             const c=dq>=80?'#10b981':dq>=60?'#f59e0b':'#ef4444';
-                            return <div style={{ fontSize: '1.8rem', color: c, fontWeight: 'bold' }}>{Math.round(dq)}/100</div>;
+                            return <div style={{ fontSize: '1.4rem', color: c, fontWeight: 'bold' }}>{Math.round(dq)}/100</div>;
                           })()}
                           <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Data Quality</div>
                         </div>
 
                         {/* ABS Verified Badge */}
                         {(activeSuburb as any).absDemographicsSourced && (
-                          <div className="main-score" style={{ textAlign: 'center', background: 'rgba(16,185,129,0.08)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
-                            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#10b981', marginBottom: '5px' }}>Demographics</div>
-                            <div style={{ fontSize: '1.2rem', color: '#10b981', fontWeight: 'bold' }}>✓ ABS 2021</div>
+                          <div className="main-score" style={{ textAlign: 'center', background: 'rgba(16,185,129,0.05)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', boxShadow: '0 2px 4px rgba(16,185,129,0.05)' }}>
+                            <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#10b981', marginBottom: '4px' }}>Demographics</div>
+                            <div style={{ fontSize: '1.1rem', color: '#10b981', fontWeight: 'bold' }}>✓ ABS 2021</div>
                             <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Census Verified</div>
                           </div>
                         )}
@@ -805,6 +826,18 @@ function App() {
                         </div>
                       </div>
                   </div>
+                  
+                  {/* Evidence-backed highlights */}
+                  {(activeSuburb.highlights || []).length > 0 && (
+                    <div style={{ marginBottom: '20px', background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--border-glass)', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+                      <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>Key Drivers</h4>
+                      <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-primary)', fontSize: '0.95rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {(activeSuburb.highlights || []).slice(0, 3).map((h, i) => (
+                          <li key={i}>{h}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   <div className="metrics-grid">
                     <div className="metric-box">
@@ -829,9 +862,9 @@ function App() {
                       </div>
                     </div>
                     <div className="metric-box">
-                      <div className="metric-label">Infrastructure Inv.</div>
+                      <div className="metric-label">Green Space</div>
                       <div className="metric-value highlight-purple">
-                        {(activeSuburb as any).infrastructureInvestment || (activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount || 0} parks (${(activeSuburb as any).parksCoveragePct || 0}% coverage)` : 'No data'}
+                        {(activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount} parks (${(activeSuburb as any).parksCoveragePct || 0}% cover)` : (activeSuburb as any).infrastructureInvestment || 'No data'}
                       </div>
                     </div>
                     <div className="metric-box">
@@ -853,44 +886,53 @@ function App() {
                    </div>
 
                    {/* Score Legend — explains the three numbers a user sees on this page */}
-                   <ScoreLegendPanel growthFactors={((activeSuburb as any).growthFactorsLabeled) as GrowthFactorLabeled[] | undefined} />
+                   <details style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', marginTop: '15px', overflow: 'hidden' }}>
+                     <summary style={{ padding: '12px 16px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', outline: 'none' }}>
+                       ℹ️ Understanding Our Scores
+                     </summary>
+                     <div style={{ padding: '0 16px 16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                       <ScoreLegendPanel growthFactors={((activeSuburb as any).growthFactorsLabeled) as GrowthFactorLabeled[] | undefined} />
+                     </div>
+                   </details>
 
                    {/* MACRO MARKET PULSE */}
                   {macroEtf && typeof macroEtf.current_price === 'number' && (
-                    <div className="highlights-section" style={{ marginTop: '20px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', padding: '16px' }}>
-                      <h3 style={{ marginBottom: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <details className="highlights-section" style={{ marginTop: '15px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px' }}>
+                      <summary style={{ padding: '12px 16px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', outline: 'none' }}>
                         📈 Macro Market Pulse (National Benchmark)
-                      </h3>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
-                        <div>
-                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>{macroEtf.symbol} ETF</div>
-                          <div style={{ fontSize: '1.4rem', color: 'var(--text-primary)', fontWeight: 'bold' }}>${macroEtf.current_price.toFixed(2)}</div>
-                        </div>
-                        <div>
-                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>12M Growth</div>
-                          <div style={{ fontSize: '1.4rem', color: macroEtf.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
-                            {macroEtf.growth_1y_pct >= 0 ? '+' : ''}{macroEtf.growth_1y_pct}%
+                      </summary>
+                      <div style={{ padding: '0 16px 16px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
+                          <div>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>{macroEtf.symbol} ETF</div>
+                            <div style={{ fontSize: '1.4rem', color: 'var(--text-primary)', fontWeight: 'bold' }}>${macroEtf.current_price.toFixed(2)}</div>
+                          </div>
+                          <div>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>12M Growth</div>
+                            <div style={{ fontSize: '1.4rem', color: macroEtf.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 'bold' }}>
+                              {macroEtf.growth_1y_pct >= 0 ? '+' : ''}{macroEtf.growth_1y_pct}%
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>Local vs Macro (12M)</div>
+                            <div style={{ fontSize: '1.4rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)', fontWeight: 'bold' }}>
+                              {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'Outperforming' : 'Underperforming'}
+                            </div>
                           </div>
                         </div>
-                        <div>
-                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>Local vs Macro (12M)</div>
-                          <div style={{ fontSize: '1.4rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)', fontWeight: 'bold' }}>
-                            {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > macroEtf.growth_1y_pct ? 'Outperforming' : 'Underperforming'}
-                          </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '10px' }}>
+                          Baseline: {macroEtf.name}. Use this to determine if local growth is genuine alpha or just riding the national tide.
                         </div>
                       </div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '10px' }}>
-                        Baseline: {macroEtf.name}. Use this to determine if local growth is genuine alpha or just riding the national tide.
-                      </div>
-                    </div>
+                    </details>
                    )}
 
                     <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
-                   {/* PANEL A: Market Snapshot */}
+                   {/* Market Snapshot */}
                    <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'overview' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'overview' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                      Panel A: Market Snapshot
+                      Market Snapshot
                     </h3>
                     {/* Top KPI Ribbon */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px' }}>
@@ -907,12 +949,62 @@ function App() {
                         </div>
                       </div>
                       <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Mortgage Band</div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Monthly Mortgage</div>
                         <div style={{ fontSize: '1.8rem', color: 'var(--accent-purple)', fontWeight: 'bold', marginTop: '5px' }}>
-                          {(activeSuburb as any).typicalMortgageBand || (activeSuburb.metrics as any)?.mortgageBand || '—'}
+                          {(activeSuburb as any).estimatedMortgageRepayment
+                            ? '$' + (activeSuburb as any).estimatedMortgageRepayment.toLocaleString(undefined, {maximumFractionDigits: 0}) + '/mo'
+                            : (activeSuburb as any).typicalMortgageBand || (activeSuburb.metrics as any)?.mortgageBand || '—'}
                         </div>
                       </div>
                     </div>
+
+                    {/* Development Signal — surfaced for Overview visibility */}
+                    {(() => {
+                      const s = activeSuburb as any;
+                      const subdiv = s.subdivisionPotential;
+                      const approvedCount = s.approvedSubdivisions12m;
+                      const minLot = s.minApprovedSubdivisionSqm;
+                      const avgBlock = s.avgBlockSqm;
+                      const hasDevData = subdiv || approvedCount > 0 || minLot || avgBlock;
+                      if (!hasDevData) return null;
+                      const potentialColor = subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-secondary)';
+                      const potentialBg = subdiv === 'High' ? 'rgba(16,185,129,0.08)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.03)';
+                      return (
+                        <div style={{
+                          background: potentialBg, border: `1px solid ${subdiv === 'High' ? 'rgba(16,185,129,0.2)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.2)' : 'var(--border-glass)'}`,
+                          padding: '16px 20px', borderRadius: '12px',
+                          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '15px', alignItems: 'center'
+                        }}>
+                          <div>
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>✂️ Subdivision Potential</div>
+                            <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: potentialColor }}>{subdiv || 'Unknown'}</div>
+                          </div>
+                          {approvedCount > 0 && (
+                            <div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Approved (12mo)</div>
+                              <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#10b981' }}>{approvedCount} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)' }}>DAs</span></div>
+                            </div>
+                          )}
+                          {minLot && (
+                            <div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Min Lot Size</div>
+                              <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{minLot} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)' }}>sqm</span></div>
+                            </div>
+                          )}
+                          {avgBlock && (
+                            <div>
+                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Avg Block</div>
+                              <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{avgBlock} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)' }}>sqm</span></div>
+                            </div>
+                          )}
+                          {minLot && avgBlock && avgBlock >= minLot * 2 && (
+                            <div style={{ gridColumn: '1 / -1', fontSize: '0.75rem', color: '#10b981', background: 'rgba(16,185,129,0.06)', padding: '8px 12px', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.15)' }}>
+                              💡 Avg block ({avgBlock} sqm) is ≥ 2× minimum lot ({minLot} sqm) — properties in this suburb may have subdivision potential
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                    </div>
 
                   {/* Decision Brief — compact evidence-based summary */}
@@ -1000,7 +1092,7 @@ function App() {
                   {/* BUYER AGENT SUMMARY */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                      📊 Agent Scorecard
+                      📊 Quick Reference
                     </h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                       {(() => {
@@ -1023,7 +1115,7 @@ function App() {
                             { label:'Auction Clearance', value: (s as any).houseAuctionClearanceRate || '—', icon:'🔨' },
                           ]},
                           { label: 'Affordability', items: [
-                            { label:'Mortgage Band', value: (s as any).typicalMortgageBand || '—', icon:'💳' },
+                            { label:'Mortgage Band', value: (s as any).estimatedMortgageRepayment ? '$' + (s as any).estimatedMortgageRepayment.toLocaleString(undefined, {maximumFractionDigits: 0}) + '/mo' : ((s as any).typicalMortgageBand || '—'), icon:'💳' },
                             { label:'3yr Price Growth', value: yr3growth, icon:'📈' },
                             { label:'CBD Mins', value: (s as any).cbdDistance + ' min' || '—', icon:'🚗' },
                             { label:'Prof. Occupation', value: (s as any).ownerOccupierRate + '%' || '—', icon:'👔' },
@@ -1202,7 +1294,7 @@ function App() {
 
                   {/* PANEL B: Demographics (People & Infrastructure) */}
                   <div className="highlights-section" style={{ marginTop: '20px', display: (activeProfileSection === 'people' || activeProfileSection === 'infrastructure') ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'people' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & People'}</h3>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & Lifestyle'}</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Age Distribution</h4>
@@ -1340,10 +1432,10 @@ function App() {
                           })()}
                         </div>
                       </div>
-                      {/* 🏗️ Development Activity */}
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>🏗️ Development Activity</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.8rem' }}>
+                      {/* 🏗️ Development & Subdivision Dashboard — Enhanced */}
+                      <div style={{ flex: '1 1 450px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '8px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }}>
+                        <h4 style={{ textAlign: 'center', marginBottom: '15px', fontSize: '1rem' }}>🏗️ Development & Subdivision Dashboard</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.8rem' }}>
                           {(() => {
                             const s = activeSuburb as any
                             const constr = s.constructionSqkm || 0
@@ -1351,73 +1443,127 @@ function App() {
                             const brown = s.brownfieldSqkm || 0
                             const total = constr + green + brown
                             const bldCount = s.buildingConstructionCount
+                            const bldApprovals = s.buildingApprovals12m
                             const subdiv = s.subdivisionPotential || 'Low'
+                            const minLot = s.minApprovedSubdivisionSqm
+                            const avgBlock = s.avgBlockSqm
+                            const approvedCount = s.approvedSubdivisions12m || 0
+
+                            // Subdivision potential gauge
+                            const potentialPct = subdiv === 'High' ? 90 : subdiv === 'Medium' ? 55 : 20
+                            const potentialColor = subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : '#64748b'
+                            const potentialBg = subdiv === 'High' ? 'rgba(16,185,129,0.1)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.1)' : 'rgba(100,116,139,0.1)'
                             
                             return (
                               <>
-                                <div style={{ paddingBottom: '10px', marginBottom: '10px', borderBottom: '1px solid var(--border-glass)' }}>
-                                  {s.avgBlockSqm != null && (
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <span style={{ color: 'var(--text-secondary)' }}>📐 Avg Block Size</span>
-                                      <span style={{ fontWeight: 600 }}>{s.avgBlockSqm} sqm</span>
-                                    </div>
-                                  )}
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: s.avgBlockSqm != null ? '4px' : '0' }}>
-                                    <span style={{ color: 'var(--text-secondary)' }}>✂️ Subdivision Potential</span>
-                                    <span style={{ 
-                                      fontWeight: 600, 
-                                      color: subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-primary)'
-                                    }}>{subdiv}</span>
+                                {/* Subdivision Potential Gauge */}
+                                <div style={{ background: potentialBg, border: `1px solid ${potentialColor}33`, padding: '14px', borderRadius: '10px' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>✂️ Subdivision Potential</span>
+                                    <span style={{ fontWeight: 700, fontSize: '1rem', color: potentialColor }}>{subdiv}</span>
                                   </div>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
-                                    <span style={{ color: 'var(--text-secondary)' }}>✅ DA Precedent</span>
-                                    {s.approvedSubdivisions12m > 0 ? (
-                                      <div style={{ textAlign: 'right' }}>
-                                        <span style={{ fontWeight: 600, color: '#10b981', display: 'block' }}>{s.approvedSubdivisions12m} approved (last 12 mo)</span>
-                                        {s.minApprovedSubdivisionSqm && (
-                                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Min lot: {s.minApprovedSubdivisionSqm} sqm</span>
-                                        )}
-                                      </div>
-                                    ) : s.minApprovedSubdivisionSqm ? (
-                                      <div style={{ textAlign: 'right' }}>
-                                        <span style={{ fontWeight: 600, color: '#f59e0b', display: 'block' }}>Proxy only</span>
-                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Min observed: {s.minApprovedSubdivisionSqm} sqm</span>
-                                      </div>
-                                    ) : (
-                                      <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>No data</span>
-                                    )}
+                                  <div style={{ height: '8px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                                    <div style={{ width: `${potentialPct}%`, height: '100%', borderRadius: '4px', background: `linear-gradient(90deg, ${potentialColor}88, ${potentialColor})`, transition: 'width 0.5s ease' }} />
                                   </div>
                                 </div>
-                                  
-                                  {total === 0 && bldCount == null && (
-                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center', display: 'block' }}>No development data</span>
-                                  )}
-                                  
-                                  {total > 0 && (
-                                  <div>
-                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>
-                                      Land Use Within 2.5km ({total.toFixed(3)} km²)
+
+                                {/* DA Precedent & Approvals */}
+                                <div style={{ display: 'grid', gridTemplateColumns: minLot ? '1fr 1fr' : '1fr', gap: '10px' }}>
+                                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Approved DAs (12mo)</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: approvedCount > 0 ? '#10b981' : 'var(--text-secondary)' }}>
+                                      {approvedCount > 0 ? approvedCount : '—'}
                                     </div>
-                                    <div style={{ display: 'flex', height: '16px', borderRadius: '8px', overflow: 'hidden' }}>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                      {approvedCount > 0 ? 'subdivisions' : 'no data'}
+                                    </div>
+                                  </div>
+                                  {minLot && (
+                                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
+                                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Min Lot Size</div>
+                                      <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                                        {minLot}<span style={{ fontSize: '0.8rem', fontWeight: 400 }}> sqm</span>
+                                      </div>
+                                      <div style={{ fontSize: '0.65rem', color: approvedCount > 0 ? '#10b981' : '#f59e0b', marginTop: '2px' }}>
+                                        {approvedCount > 0 ? '✓ real precedent' : 'proxy estimate'}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Lot Size Comparison Bar */}
+                                {minLot && avgBlock && (
+                                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '8px' }}>
+                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px' }}>
+                                      📐 Lot Size Comparison
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                      {/* Min lot bar */}
+                                      <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '3px' }}>
+                                          <span style={{ color: 'var(--text-secondary)' }}>Min Approved Lot</span>
+                                          <span style={{ fontWeight: 600 }}>{minLot} sqm</span>
+                                        </div>
+                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                                          <div style={{ width: `${Math.min((minLot / Math.max(avgBlock, minLot)) * 100, 100)}%`, height: '100%', borderRadius: '5px', background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }} />
+                                        </div>
+                                      </div>
+                                      {/* Avg block bar */}
+                                      <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '3px' }}>
+                                          <span style={{ color: 'var(--text-secondary)' }}>Avg Block Size</span>
+                                          <span style={{ fontWeight: 600 }}>{avgBlock} sqm</span>
+                                        </div>
+                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                                          <div style={{ width: '100%', height: '100%', borderRadius: '5px', background: 'linear-gradient(90deg, #3b82f6, #6366f1)' }} />
+                                        </div>
+                                      </div>
+                                    </div>
+                                    {avgBlock >= minLot * 2 && (
+                                      <div style={{ marginTop: '10px', fontSize: '0.72rem', color: '#10b981', background: 'rgba(16,185,129,0.06)', padding: '8px 10px', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.15)' }}>
+                                        💡 Avg block is {(avgBlock / minLot).toFixed(1)}× the minimum lot — high subdivision feasibility
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+
+                                {/* Building Approvals */}
+                                {bldApprovals != null && (
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🏗️ Building Approvals (12mo)</span>
+                                    <span style={{ color: bldApprovals > 0 ? 'var(--accent-cyan)' : 'var(--text-secondary)', fontWeight: 700, fontSize: '1.1rem' }}>{bldApprovals}</span>
+                                  </div>
+                                )}
+                                  
+                                {total === 0 && bldCount == null && !minLot && !avgBlock && (
+                                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center', display: 'block' }}>No development data available for this suburb</span>
+                                )}
+                                  
+                                {total > 0 && (
+                                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '8px' }}>
+                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.5px' }}>
+                                      🗺️ Land Use Within 2.5km ({total.toFixed(3)} km²)
+                                    </div>
+                                    <div style={{ display: 'flex', height: '18px', borderRadius: '9px', overflow: 'hidden' }}>
                                       {constr > 0 && <div title={`Construction: ${constr.toFixed(3)} km²`} style={{ flex: constr, backgroundColor: '#ef4444', minWidth: '2px' }} />}
                                       {brown > 0 && <div title={`Brownfield: ${brown.toFixed(3)} km²`} style={{ flex: brown, backgroundColor: '#f59e0b', minWidth: '2px' }} />}
                                       {green > 0 && <div title={`Greenfield: ${green.toFixed(3)} km²`} style={{ flex: green, backgroundColor: '#10b981', minWidth: '2px' }} />}
                                     </div>
-                                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
-                                      {constr > 0 && <span style={{ fontSize: '0.65rem', color: '#ef4444' }}>🔴 Construction {constr.toFixed(3)}</span>}
-                                      {brown > 0 && <span style={{ fontSize: '0.65rem', color: '#f59e0b' }}>🟡 Brownfield {brown.toFixed(3)}</span>}
-                                      {green > 0 && <span style={{ fontSize: '0.65rem', color: '#10b981' }}>🟢 Greenfield {green.toFixed(3)}</span>}
+                                    <div style={{ display: 'flex', gap: '12px', marginTop: '6px', flexWrap: 'wrap' }}>
+                                      {constr > 0 && <span style={{ fontSize: '0.68rem', color: '#ef4444' }}>🔴 Construction {constr.toFixed(3)} km²</span>}
+                                      {brown > 0 && <span style={{ fontSize: '0.68rem', color: '#f59e0b' }}>🟡 Brownfield {brown.toFixed(3)} km²</span>}
+                                      {green > 0 && <span style={{ fontSize: '0.68rem', color: '#10b981' }}>🟢 Greenfield {green.toFixed(3)} km²</span>}
                                     </div>
                                   </div>
                                 )}
                                 {bldCount != null && bldCount > 0 && (
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
                                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🔨 Buildings Under Construction</span>
-                                    <span style={{ color: 'var(--warning)', fontWeight: 600, fontSize: '1.1rem' }}>{bldCount}</span>
+                                    <span style={{ color: 'var(--warning)', fontWeight: 700, fontSize: '1.1rem' }}>{bldCount}</span>
                                   </div>
                                 )}
                                 {bldCount != null && bldCount === 0 && total > 0 && (
-                                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'center' }}>
+                                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'center', padding: '8px' }}>
                                     No active building construction detected
                                   </div>
                                 )}
@@ -1693,7 +1839,7 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 

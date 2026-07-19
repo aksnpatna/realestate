@@ -4,6 +4,7 @@ import time
 import hashlib
 import secrets
 import asyncio
+import concurrent.futures
 import logging
 from collections import OrderedDict
 from datetime import datetime
@@ -59,6 +60,36 @@ except Exception as e:
     print(f"[cache] Redis not available: {e}. Falling back to DB-only.")
     redis_client = None
 
+# AI thread pool executor — 2 workers so AI calls don't block the event loop
+_ai_executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+
+# Circuit breaker for AI provider failures
+_cb_failures = 0
+_cb_last_fail = 0.0
+_cb_open = False
+CB_THRESHOLD = 3
+CB_COOLDOWN_SECONDS = 90
+
+def _ai_circuit_allowed() -> bool:
+    global _cb_open, _cb_failures, _cb_last_fail
+    now = time.time()
+    if _cb_open:
+        if now - _cb_last_fail > CB_COOLDOWN_SECONDS:
+            _cb_open = False
+            _cb_failures = 0
+            logging.getLogger("uvicorn").info("ai_circuit_breaker half-open")
+        else:
+            return False
+    return True
+
+def _ai_circuit_record_failure():
+    global _cb_open, _cb_failures, _cb_last_fail
+    _cb_failures += 1
+    _cb_last_fail = time.time()
+    if _cb_failures >= CB_THRESHOLD:
+        _cb_open = True
+        logging.getLogger("uvicorn").warning("ai_circuit_breaker open")
+
 # Feature flag for AI features
 ENABLE_AI_INSIGHTS = os.getenv("ENABLE_AI_INSIGHTS", "true").lower() in ("true", "1", "yes")
 
@@ -83,38 +114,128 @@ from observability import record_cache_hit, record_cache_miss, get_metrics_text
 app = FastAPI()
 
 # CORS: In production, restrict to your actual frontend origin(s)
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
-if "*" in CORS_ORIGINS:
-    allow_origins = ["*"]
-else:
-    allow_origins = [o.strip() for o in CORS_ORIGINS if o.strip()]
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",") if os.getenv("CORS_ORIGINS") else []
+allow_origins = [o.strip() for o in CORS_ORIGINS if o.strip()]
+
+_allows_credentials = True
+if "*" in allow_origins or not allow_origins:
+    if _allows_credentials and not os.getenv("ALLOW_INSECURE_CORS"):
+        raise RuntimeError(
+            "CORS_ORIGINS='*' or empty with allow_credentials=True is insecure. "
+            "Set CORS_ORIGINS to an explicit frontend origin, or set "
+            "ALLOW_INSECURE_CORS=1 for local dev only."
+        )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=allow_origins if allow_origins else ["*"],
+    allow_credentials=_allows_credentials,
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # GZip all responses >1KB — reduces /api/suburbs payload by ~80%
 app.add_middleware(GZipMiddleware, minimum_size=1024)
 
-# Rate limiting for auth endpoints (20 req/min per IP)
-_rate_limit_auth = OrderedDict()
-MAX_AUTH_REQUESTS = 20
+# Structured request-logging middleware (JSON line per request)
+@app.middleware("http")
+async def request_log_middleware(request: Request, call_next):
+    import time as _time
+    _start = _time.time()
+    status = 500
+    error_class = None
+    request_id = request.headers.get("X-Request-ID", str(uuid.uuid4())[:12])
+
+    client_ip = request.client.host if request.client else "0.0.0.0"
+    if not _rl_check("api", client_ip, MAX_API_REQUESTS_PER_IP, RL_WINDOW_SECONDS):
+        logging.getLogger("uvicorn").warning(json.dumps({
+            "type": "rate_limited", "request_id": request_id, "ip": client_ip,
+            "path": request.url.path,
+        }))
+        return Response(
+            content=json.dumps({"detail": "Too many requests. Try again soon.", "request_id": request_id}),
+            status_code=429,
+            media_type="application/json",
+        )
+
+    try:
+        response = await call_next(request)
+        status = response.status_code
+        return response
+    except Exception as exc:
+        error_class = type(exc).__name__
+        raise
+    finally:
+        latency_ms = round((_time.time() - _start) * 1000, 2)
+        user_id = None
+        try:
+            token = request.cookies.get("access_token")
+            if not token:
+                auth = request.headers.get("Authorization", "")
+                if auth.startswith("Bearer "):
+                    token = auth[7:]
+            if token:
+                payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+                user_id = payload.get("sub")
+        except Exception:
+            pass
+        log_entry = json.dumps({
+            "ts": datetime.utcnow().isoformat(),
+            "request_id": request_id,
+            "method": request.method,
+            "path": request.url.path,
+            "status": status,
+            "latency_ms": latency_ms,
+            "user_id": user_id,
+            "ip": request.client.host if request.client else None,
+            "error_class": error_class,
+        }, default=str)
+        logging.getLogger("uvicorn").info(log_entry)
+
+# Rate limiting — Redis-backed with in-memory fallback
+MAX_AUTH_REQUESTS = 5
+MAX_API_REQUESTS_PER_IP = 100
+RL_WINDOW_SECONDS = 60
+
+def _rl_check(scope: str, identifier: str, max_requests: int, window_seconds: int = RL_WINDOW_SECONDS) -> bool:
+    now_ts = time.time()
+    window_start = now_ts - window_seconds
+    if redis_client:
+        try:
+            key = f"rl:{scope}:{identifier}:{int(now_ts // window_seconds)}"
+            count = redis_client.incr(key)
+            redis_client.expire(key, window_seconds + 5)
+            return count <= max_requests
+        except Exception:
+            logging.getLogger("uvicorn").warning("redis_rate_limit_unavailable scope=%s", scope)
+    # In-memory fallback (survives single process but not restart)
+    if scope not in _rl_memory:
+        _rl_memory[scope] = {}
+    store = _rl_memory[scope]
+    if identifier not in store:
+        store[identifier] = []
+    store[identifier] = [t for t in store[identifier] if now_ts - t < window_seconds]
+    if len(store[identifier]) >= max_requests:
+        return False
+    store[identifier].append(now_ts)
+    return True
+
+_rl_memory: dict = {}
+_max_rl_memory_entries = 5000
 
 def _check_auth_rate(client_ip: str):
-    now = datetime.utcnow().timestamp()
-    if client_ip not in _rate_limit_auth:
-        _rate_limit_auth[client_ip] = []
-    _rate_limit_auth[client_ip] = [t for t in _rate_limit_auth[client_ip] if now - t < 60]
-    if len(_rate_limit_auth[client_ip]) >= MAX_AUTH_REQUESTS:
+    if not _rl_check("auth", client_ip, MAX_AUTH_REQUESTS):
         raise HTTPException(status_code=429, detail="Too many login attempts. Try again in 1 minute.")
-    _rate_limit_auth[client_ip].append(now)
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
-engine = create_engine(DATABASE_URL, pool_size=20, max_overflow=30, pool_pre_ping=True)
+DATABASE_URL = os.environ["DATABASE_URL"]
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=20,
+    max_overflow=30,
+    pool_pre_ping=True,
+    pool_timeout=10,
+    connect_args={"connect_timeout": 5, "options": "-c statement_timeout=30000"},
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 class UserModel(Base):
@@ -183,6 +304,27 @@ def get_db():
 
 @app.on_event("startup")
 async def startup_event():
+    # Config snapshot for auditability (no secret values printed)
+    config_keys = [
+        "CORS_ORIGINS", "DATABASE_URL", "REDIS_HOST", "REDIS_PORT",
+        "ENABLE_AI_INSIGHTS", "AI_CACHE_TTL", "CORS_ORIGINS_VAL",
+        "DEFAULT_MORTGAGE_RATE",
+    ]
+    try:
+        from models_v3 import DEFAULT_MORTGAGE_RATE as dmr
+    except Exception:
+        dmr = "unloaded"
+    snapshot = {k: os.getenv(k, "N/A") for k in config_keys}
+    snapshot["DEFAULT_MORTGAGE_RATE"] = dmr
+    snapshot["pool_timeout"] = 10
+    snapshot["connect_timeout"] = 5
+    snapshot["statement_timeout_ms"] = 30000
+    logging.getLogger("uvicorn").info(json.dumps({"type": "config_snapshot", **snapshot}, default=str))
+    if os.getenv("DEFAULT_MORTGAGE_RATE") is None:
+        logging.getLogger("uvicorn").warning(
+            "default_mortgage_rate_unset_using_fallback=%s", dmr
+        )
+
     # Wait for DB readiness to avoid race condition
     await asyncio.sleep(10)
     db = SessionLocal()
@@ -273,28 +415,14 @@ def send_verification_email(to_email: str, token: str):
         except Exception as e:
             print(f"SMTP Error: {e}")
 
-# In-memory rate limiting store for analyze-suburb endpoint
-class BoundedRateLimitStore:
-    def __init__(self, max_entries=10000):
-        self._store = OrderedDict()
-        self._max = max_entries
-    
-    def __getitem__(self, key):
-        return self._store[key]
-
-    def __setitem__(self, key, value):
-        if key not in self._store and len(self._store) >= self._max:
-            self._store.popitem(last=False)
-        self._store[key] = value
-        
-    def __contains__(self, key):
-        return key in self._store
-
-_rate_limit_store = BoundedRateLimitStore(max_entries=10000)
-
 import bcrypt
 
-JWT_SECRET = os.getenv("JWT_SECRET", secrets.token_urlsafe(32))
+JWT_SECRET = os.getenv("JWT_SECRET")
+if not JWT_SECRET or len(JWT_SECRET) < 32:
+    raise RuntimeError(
+        "JWT_SECRET must be set in environment (min 32 chars). "
+        "Generate: python -c \"import secrets; print(secrets.token_urlsafe(48))\""
+    )
 JWT_ALGORITHM = "HS256"
 
 def hash_password(password: str) -> str:
@@ -417,8 +545,16 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
             raise HTTPException(status_code=401, detail="Invalid credentials")
             
     token = jwt.encode({"sub": user.id, "exp": datetime.utcnow().timestamp() + 86400}, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    response.set_cookie(key="access_token", value=token, httponly=True, samesite="strict", max_age=86400)
-    return {"status": "success"}
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        path="/",
+        max_age=86400,
+    )
+    return {"status": "success", "user_id": user.id}
 
 class ConsentRequest(BaseModel):
     consent_type: str
@@ -527,6 +663,7 @@ def get_vap_etf():
         result = {
             "symbol": "VAP.AX",
             "name": "Vanguard Australian Property Securities Index ETF",
+            "note": "A-REIT ETF benchmark, not a residential property proxy. Holds commercial/retail/industrial REITs. Leverage, land value appreciation, and tax treatment excluded from comparison.",
             "current_price": current,
             "growth_1y_pct": round(((current - year_ago) / year_ago) * 100, 2),
             "growth_1m_pct": round(((current - month_ago) / month_ago) * 100, 2),
@@ -536,9 +673,12 @@ def get_vap_etf():
         _cache_etf_time = now
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        ref = str(uuid.uuid4())[:12]
+        logging.getLogger("uvicorn").error(json.dumps({"type": "etf_error", "ref": ref, "error_class": type(e).__name__}, default=str), exc_info=True)
+        raise HTTPException(status_code=500, detail=f"internal_error (ref: {ref})")
 
 _cache_suburbs_data = {}
+_cache_suburbs_time = {}
 _cache_suburbs_time = {}
 
 def bust_suburbs_cache():
@@ -769,7 +909,7 @@ def _calibrate_dq(v3) -> float:
     minor_checks = [
         v3.avg_icsea, 
         v3.school_count, 
-        v3.typical_mortgage_band
+        v3.estimated_mortgage_repayment or v3.typical_mortgage_band
     ]
     for c in minor_checks:
         if c is None or c == 0:
@@ -923,6 +1063,12 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "isLive": bool(v3.is_live) if v3.is_live is not None else True,
         "v3Enriched": bool(v3.is_enriched),
         "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
+        "externalDomHouse": v3.external_dom_house,
+        "externalDomUnit": v3.external_dom_unit,
+        "externalSource": v3.external_source,
+        "externalFetchedAt": str(v3.external_fetched_at) if v3.external_fetched_at else None,
+        "externalValidation": v3.external_validation,
+        "metricProvenance": v3.metric_provenance,
         "dqScore": _calibrate_dq(v3),
         "dqIssues": v3.dq_issues,
         # House — current AVM median for display, V3 history for charts
@@ -1039,6 +1185,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
         "growthFactorsLabeled": enrich_growth_factors(growth["factors"]),
         "confidenceNotes": growth.get("confidence_notes", []),
         "lastUpdated": str(v3.last_updated) if v3.last_updated else None,
+        "dataAgeDays": ((datetime.utcnow() - v3.last_updated).days + 1) if v3.last_updated else None,
+        "dataStale": ((datetime.utcnow() - v3.last_updated).days > 60) if v3.last_updated else True,
         "_provenance": _provenanced_metrics(v3),
     }
     return response
@@ -1176,31 +1324,17 @@ class AnalyzeRequest(BaseModel):
     suburb: str
     state: str
     id: str
-
-def _check_rate_limit(client_key: str, max_requests: int = 10, window_seconds: int = 60):
-    now = time.time()
-    
-    if client_key not in _rate_limit_store:
-        _rate_limit_store[client_key] = []
-    
-    # Remove old entries for current client
-    active_times = [t for t in _rate_limit_store[client_key] if now - t < window_seconds]
-    _rate_limit_store[client_key] = active_times
-    
-    if len(active_times) >= max_requests:
-        return False
-    
-    active_times.append(now)
-    _rate_limit_store[client_key] = active_times # Refresh LRU position
-    return True
+    buyer_profile: Optional[str] = None
 
 @app.post("/api/analyze-suburb")
-def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
+async def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
     if not ENABLE_AI_INSIGHTS:
         raise HTTPException(status_code=503, detail="AI insights have been temporarily disabled (ENABLE_AI_INSIGHTS=false)")
+    if not _ai_circuit_allowed():
+        raise HTTPException(status_code=503, detail="AI provider degraded — temporary hold. Retry in ~90 seconds.")
     # Rate limiting: max 10 requests per minute per suburb
-    client_key = f"{req.id}:{datetime.now().strftime('%Y%m%d%H%M')}"
-    if not _check_rate_limit(client_key, max_requests=10, window_seconds=60):
+    client_key = f"{user.id if user else 'anon'}:{req.id}"
+    if not _rl_check("ai_insights", client_key, max_requests=10, window_seconds=60):
         raise HTTPException(status_code=429, detail="Rate limit exceeded. Max 10 requests per minute per suburb.")
     
     if not AI_AGENT_AVAILABLE:
@@ -1212,9 +1346,12 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
             return {"status": "error", "message": "Suburb not found in database"}
             
         ai_cache = v3.ai_insights or {}
-            
+        persona_key = req.buyer_profile or "general"
+        persona_verdict = ai_cache.get(f"verdict_{persona_key}")
+
         # P0 FIX: Check if already analyzed to prevent LLM API exhaustion
-        if ai_cache.get("aiCommitteeVerdict") and ai_cache.get("fetched_at"):
+        # Cache is persona-scoped — an investor gets a different cached BUY/HOLD than an FHB
+        if persona_verdict and ai_cache.get("fetched_at"):
             try:
                 fetched_dt = datetime.fromisoformat(ai_cache["fetched_at"])
                 if (datetime.utcnow() - fetched_dt).total_seconds() < AI_CACHE_TTL_SECONDS:
@@ -1223,12 +1360,12 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
                         "cached": True,
                         "cache_ttl": AI_CACHE_TTL_SECONDS,
                         "result": {
-                            "bull": ai_cache.get("aiCommitteeDebate", {}).get("bull", ""),
-                            "bear": ai_cache.get("aiCommitteeDebate", {}).get("bear", ""),
-                            "urban": ai_cache.get("aiCommitteeDebate", {}).get("urban", ""),
-                            "reality_check": ai_cache.get("aiCommitteeDebate", {}).get("reality_check", ""),
-                            "verdict": ai_cache["aiCommitteeVerdict"],
-                            "playbook": ai_cache["aiCommitteePlaybook"],
+                            "bull": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("bull", ""),
+                            "bear": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("bear", ""),
+                            "urban": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("urban", ""),
+                            "reality_check": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("reality_check", ""),
+                            "verdict": persona_verdict,
+                            "playbook": ai_cache.get(f"aiCommitteePlaybook_{persona_key}", ""),
                             "catalysts": v3.highlights or [],
                             "source_snippets": ai_cache.get("source_snippets", []),
                             "risk_assessment": ai_cache.get("risk_assessment"),
@@ -1255,20 +1392,24 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
             "investorRate": v3.investor_rate,
             "vacancyRate": v3.vacancy_rate,
             "supplyDemandRatio": v3.supply_demand_ratio,
-            "typicalMortgageBand": v3.typical_mortgage_band,
+        "typicalMortgageBand": v3.typical_mortgage_band,
+        "estimatedMortgageRepayment": v3.estimated_mortgage_repayment,
             "averageHouseholdSize": v3.average_household_size,
             "medianAge": v3.median_age,
             "predominantOccupation": v3.predominant_occupation,
             "macro_benchmark_etf": etf_data
         }
 
-        # Run the full multi-agent committee (pass rich V3 metrics in)
-        ai_result = run_investment_committee(req.suburb, req.state, metrics)
+        # Run the full multi-agent committee in a thread pool to avoid blocking the event loop
+        loop = asyncio.get_event_loop()
+        ai_result = await loop.run_in_executor(
+            _ai_executor, run_investment_committee, req.suburb, req.state, metrics
+        )
 
-        # Save results back to SuburbUIV3
-        ai_cache["aiCommitteeVerdict"] = ai_result["verdict"]
-        ai_cache["aiCommitteePlaybook"] = ai_result["playbook"]
-        ai_cache["aiCommitteeDebate"] = {
+        persona_key = req.buyer_profile or "general"
+        ai_cache[f"aiCommitteeVerdict_{persona_key}"] = ai_result["verdict"]
+        ai_cache[f"aiCommitteePlaybook_{persona_key}"] = ai_result["playbook"]
+        ai_cache[f"aiCommitteeDebate_{persona_key}"] = {
             "bull": ai_result["bull"],
             "bear": ai_result["bear"],
             "urban": ai_result["urban"],
@@ -1278,6 +1419,7 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
         ai_cache["risk_assessment"] = ai_result.get("risk_assessment")
         ai_cache["policy_warnings"] = ai_result.get("policy_warnings", [])
         ai_cache["fetched_at"] = datetime.utcnow().isoformat()
+        ai_cache["cached_persona"] = persona_key
         
         v3.ai_insights = ai_cache
         
@@ -1298,7 +1440,14 @@ def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), user=Depe
             "result": ai_result,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        request_id_err = str(uuid.uuid4())[:12]
+        _ai_circuit_record_failure()
+        error_class = type(e).__name__
+        logging.getLogger("uvicorn").error(
+            json.dumps({"type": "ai_error", "request_id": request_id_err, "error_class": error_class, "suburb": req.suburb}, default=str),
+            exc_info=True
+        )
+        raise HTTPException(status_code=500, detail=f"internal_error (ref: {request_id_err})")
 
 @app.post("/api/similar-suburbs")
 def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
@@ -1339,7 +1488,9 @@ def get_similar_suburbs(req: AnalyzeRequest, db: Session = Depends(get_db)):
         print(f"[cluster] Found {len(similar)} similar suburbs for {req.suburb}")
         return {"status": "success", "similar": similar}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        ref = str(uuid.uuid4())[:12]
+        logging.getLogger("uvicorn").error(json.dumps({"type": "clustering_error", "ref": ref, "error_class": type(e).__name__}, default=str), exc_info=True)
+        raise HTTPException(status_code=500, detail=f"internal_error (ref: {ref})")
 
 def _normalize_suburb_id(suburb_id: str) -> str:
     """Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_2150)."""
@@ -1421,13 +1572,14 @@ def reload_suburbs():
 
 
 from pydantic import BaseModel
+from models_v3 import DEFAULT_MORTGAGE_RATE
 
 class ROICalcRequest(BaseModel):
     purchase_price: float
     weekly_rent: float
     state: str = "VIC"
     deposit_pct: float = 20.0
-    interest_rate: float = 6.2
+    interest_rate: float = DEFAULT_MORTGAGE_RATE * 100
     loan_type: str = "io"
     strata_fees: float = 0.0
     council_rates: float = 1800.0
@@ -1590,16 +1742,17 @@ def get_mortgage_rate():
     The frontend uses this as a starting point; users adjust via slider.
     """
     from datetime import datetime, timezone
+    from models_v3 import DEFAULT_MORTGAGE_RATE, DEFAULT_CASH_RATE, RETAIL_MARGIN
     return {
         "status": "success",
-        "base_cash_rate": 4.35,
-        "retail_margin": 1.85,
-        "effective_mortgage_rate": 6.20,
-        "source": "static_default",
+        "base_cash_rate": DEFAULT_CASH_RATE,
+        "retail_margin": RETAIL_MARGIN,
+        "effective_mortgage_rate": DEFAULT_MORTGAGE_RATE * 100,
+        "source": "env_default",
         "source_detail": "RBA cash-rate target (current cycle). No live feed integrated.",
         "last_checked": datetime.now(timezone.utc).isoformat() + "Z",
-        "data_status": "static_default",
-        "stale_indicator": True,
+        "data_status": "env_default",
+        "stale_indicator": False,
         "disclaimer": "This rate is a static default. Always verify with your lender for actual rates. Not for production decision-making."
     }
 
@@ -1610,6 +1763,7 @@ def get_mortgage_rate():
 @app.get("/api/v3/suburbs")
 def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = Depends(get_db)):
     """Returns V3-enriched suburbs for the institutional dashboard view."""
+    limit = min(limit, 100)
     
     def _fetch():
         query = db.query(SuburbUIV3).filter(SuburbUIV3.is_enriched == True)
@@ -1659,6 +1813,7 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
             },
             "financial": {
                 "typicalMortgageBand": r.typical_mortgage_band,
+                "estimatedMortgageRepayment": r.estimated_mortgage_repayment,
                 "priceToIncomeRatio": r.price_to_income_ratio,
                 "priceToRentRatio": r.price_to_rent_ratio,
             },
@@ -1671,6 +1826,12 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
             "historyRent10yr": r.history_rent_10yr,
             "demographicsDetail": r.demographics_detail,
             "salesSummary": r.sales_summary,
+            "externalDomHouse": r.external_dom_house,
+            "externalDomUnit": r.external_dom_unit,
+            "externalSource": r.external_source,
+            "externalFetchedAt": str(r.external_fetched_at) if r.external_fetched_at else None,
+            "externalValidation": r.external_validation,
+            "metricProvenance": r.metric_provenance,
             "dqScore": _calibrate_dq(r) if hasattr(r, 'dq_score') else min(100, max(5, r.dq_score or 100)),
             "dqIssues": r.dq_issues,
             "lastUpdated": str(r.last_updated) if r.last_updated else None,
@@ -1686,8 +1847,9 @@ import io
 import csv
 
 @app.get("/api/v3/export")
-def export_suburbs_csv(state: Optional[str] = None, limit: int = 1000, db: Session = Depends(get_db)):
+def export_suburbs_csv(state: Optional[str] = None, limit: int = 1000, db: Session = Depends(get_db), user=Depends(get_current_user)):
     """Exports the V3 suburbs table to a CSV file."""
+    limit = min(limit, 5000)
     query = db.query(SuburbUIV3).filter(SuburbUIV3.is_enriched == True)
     if state:
         query = query.filter(SuburbUIV3.state == state.upper())
@@ -2104,7 +2266,9 @@ def risk_what_if(
         result = compute_risk_rating(price, yield_val, growth_score, macro=macro)
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        ref = str(uuid.uuid4())[:12]
+        logging.getLogger("uvicorn").error(json.dumps({"type": "risk_engine_error", "ref": ref, "error_class": type(e).__name__}, default=str), exc_info=True)
+        raise HTTPException(status_code=500, detail=f"internal_error (ref: {ref})")
 
 
 class ModelDiaryEntry(BaseModel):
