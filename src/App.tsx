@@ -20,6 +20,7 @@ import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, L
 import './index.css'
 import LandingPage from './components/LandingPage'
 import PromoBanner from './components/PromoBanner'
+import MacroBenchmarkPanel from './components/MacroBenchmarkPanel'
 import ShareReport from './components/ShareReport'
 
 const Calculators = lazy(() => import('./components/Calculators'))
@@ -1840,7 +1841,10 @@ function App() {
                 </div>
                 <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
                   {(persona !== 'first_home_buyer') && !getPersona(persona).show_technical && (
-                    <MarketIndicatorsSection suburb={activeSuburb as any} />
+                    <>
+                      <MarketIndicatorsSection suburb={activeSuburb as any} />
+                      <MacroBenchmarkPanel />
+                    </>
                   )}
                 </div>
                 <div style={{ display: activeProfileSection === 'pockets' ? 'block' : 'none' }}>
