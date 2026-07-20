@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import type { SuburbData } from '../data/suburbs';
 import type { BuyerFitResult } from '../data/buyerFitTypes';
+import { getPersona, type PersonaId } from '../data/personas';
 
 interface BuyFinderLocalResponse {
   model_version: string
@@ -42,6 +43,24 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const [wLivability, setWLivability] = useState(20);
   const [wAccess, setWAccess] = useState(15);
   const [wEvidence, setWEvidence] = useState(10);
+
+  // Sync weights when persona changes
+  useEffect(() => {
+    if (persona) {
+      const p = getPersona(persona as PersonaId);
+      if (p && p.weights) {
+        setWAffordability(p.weights.affordability);
+        setWIncome(p.weights.income);
+        setWLivability(p.weights.livability);
+        setWAccess(p.weights.access);
+        setWEvidence(p.weights.evidence);
+      }
+    }
+  }, [persona]);
+
+  const activePersonaObj = getPersona(persona as PersonaId);
+  const isInvestor = activePersonaObj.id === 'investor';
+  const isFHB = activePersonaObj.id === 'first_home_buyer';
 
   const fetchRanking = useCallback(async () => {
     setBackendLoading(true);
@@ -138,16 +157,41 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                 <label className="control-label">Max CBD (min)</label>
                 <input type="number" className="premium-input" value={maxCBDMinutes} onChange={e => updateProfile('maxCBDMinutes', Number(e.target.value))} min={10} step={5} />
               </div>
-              <div className="control-group">
-                <label className="control-label">Min Yield %</label>
-                <select className="premium-input" value={minimumYield ?? ''} onChange={e => updateProfile('minimumYield', e.target.value === '' ? null : Number(e.target.value))}>
-                  <option value="">Any</option>
-                  <option value="2">2%</option>
-                  <option value="3">3%</option>
-                  <option value="4">4%</option>
-                  <option value="5">5%</option>
-                </select>
-              </div>
+              
+              {/* Investor specific fields */}
+              {isInvestor && (
+                <div className="control-group">
+                  <label className="control-label">Min Yield %</label>
+                  <select className="premium-input" value={minimumYield ?? ''} onChange={e => updateProfile('minimumYield', e.target.value === '' ? null : Number(e.target.value))}>
+                    <option value="">Any</option>
+                    <option value="2">2%</option>
+                    <option value="3">3%</option>
+                    <option value="4">4%</option>
+                    <option value="5">5%</option>
+                  </select>
+                </div>
+              )}
+
+              {/* FHB specific fields (UI only for now, pending backend model support) */}
+              {isFHB && (
+                <>
+                  <div className="control-group">
+                    <label className="control-label">FHB Grants / Schemes</label>
+                    <select className="premium-input" disabled title="Pending backend support">
+                      <option>None</option>
+                      <option>5% Deposit Scheme (FHBG)</option>
+                      <option>State Shared Equity</option>
+                    </select>
+                  </div>
+                  <div className="control-group">
+                    <label className="control-label">Stamp Duty Concession</label>
+                    <select className="premium-input" disabled title="Pending backend support">
+                      <option>Apply State Rules</option>
+                      <option>None (Paying Full)</option>
+                    </select>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
