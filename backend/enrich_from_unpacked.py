@@ -63,7 +63,7 @@ SELECT
     CASE WHEN u.current_sale_listing_count IS NOT NULL
               AND u.house_sold_12m IS NOT NULL
               AND u.house_sold_12m > 0
-         THEN ROUND(365.0 * u.current_sale_listing_count::numeric / u.house_sold_12m::numeric)
+         THEN LEAST(ROUND((365.0 * u.current_sale_listing_count::numeric / u.house_sold_12m::numeric) / 6.0), 180.0)
          ELSE NULL
     END AS house_days_on_market,
 
@@ -81,7 +81,7 @@ SELECT
               AND u.current_recent_sales_count_unit IS NOT NULL
               AND u.current_recent_sales_count_house IS NOT NULL
               AND (u.current_recent_sales_count_unit + u.current_recent_sales_count_house) > 0
-         THEN ROUND(365.0 * (u.current_sale_listing_count::numeric * (u.current_recent_sales_count_unit::numeric / (u.current_recent_sales_count_unit + u.current_recent_sales_count_house)::numeric)) / u.unit_sold_12m::numeric)
+         THEN LEAST(ROUND((365.0 * (u.current_sale_listing_count::numeric * (u.current_recent_sales_count_unit::numeric / (u.current_recent_sales_count_unit + u.current_recent_sales_count_house)::numeric)) / u.unit_sold_12m::numeric) / 6.0), 180.0)
          ELSE NULL
     END AS unit_days_on_market,
 
