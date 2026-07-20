@@ -114,6 +114,28 @@ def process_postcode(postcode):
                 except:
                     pass
 
+        # 4. Prices
+        if "prices" in data and len(data["prices"]) > 0:
+            latest_price = data["prices"][-1]
+            if "houses_all" in latest_price:
+                try:
+                    update_vals["house_median_price"] = float(latest_price["houses_all"]) * 1000 # SQM prices are usually in thousands, wait let me check! No they are absolute, e.g. 500000
+                    # Let me ensure it's correct. SQM asking prices are absolute usually.
+                    val = float(latest_price["houses_all"])
+                    if val < 10000:
+                        val = val * 1000 # Some charts use thousands
+                    update_vals["house_median_price"] = val
+                except:
+                    pass
+            if "units_all" in latest_price:
+                try:
+                    val = float(latest_price["units_all"])
+                    if val < 10000:
+                        val = val * 1000
+                    update_vals["unit_median_price"] = val
+                except:
+                    pass
+
         # 4. Save history as JSON
         update_vals["sqm_history"] = json.dumps(data)
 

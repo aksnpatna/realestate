@@ -215,27 +215,27 @@ ON CONFLICT (id) DO UPDATE SET
     name = EXCLUDED.name,
     postcode = EXCLUDED.postcode,
     is_enriched = TRUE,
-    house_median_price = EXCLUDED.house_median_price,
-    house_median_price_12m_change_pct = EXCLUDED.house_median_price_12m_change_pct,
-    house_median_price_12m_change = EXCLUDED.house_median_price_12m_change,
-    house_median_rent = EXCLUDED.house_median_rent,
-    house_median_rent_12m_change = EXCLUDED.house_median_rent_12m_change,
-    house_gross_rental_yield = EXCLUDED.house_gross_rental_yield,
-    house_gross_rental_yield_trend = COALESCE(EXCLUDED.house_gross_rental_yield_trend, suburbs_ui_v3.house_gross_rental_yield_trend),
+    house_median_price = COALESCE(suburbs_ui_v3.house_median_price, EXCLUDED.house_median_price),
+    house_median_price_12m_change_pct = COALESCE(suburbs_ui_v3.house_median_price_12m_change_pct, EXCLUDED.house_median_price_12m_change_pct),
+    house_median_price_12m_change = COALESCE(suburbs_ui_v3.house_median_price_12m_change, EXCLUDED.house_median_price_12m_change),
+    house_median_rent = COALESCE(suburbs_ui_v3.house_median_rent, EXCLUDED.house_median_rent),
+    house_median_rent_12m_change = COALESCE(suburbs_ui_v3.house_median_rent_12m_change, EXCLUDED.house_median_rent_12m_change),
+    house_gross_rental_yield = COALESCE(suburbs_ui_v3.house_gross_rental_yield, EXCLUDED.house_gross_rental_yield),
+    house_gross_rental_yield_trend = COALESCE(suburbs_ui_v3.house_gross_rental_yield_trend, EXCLUDED.house_gross_rental_yield_trend),
     house_sold_12m = EXCLUDED.house_sold_12m,
     house_stock_on_market = EXCLUDED.house_stock_on_market,
     house_days_on_market = EXCLUDED.house_days_on_market,
-    unit_median_price = EXCLUDED.unit_median_price,
-    unit_median_price_12m_change_pct = EXCLUDED.unit_median_price_12m_change_pct,
-    unit_median_rent = EXCLUDED.unit_median_rent,
-    unit_gross_rental_yield = EXCLUDED.unit_gross_rental_yield,
-    unit_gross_rental_yield_trend = COALESCE(EXCLUDED.unit_gross_rental_yield_trend, suburbs_ui_v3.unit_gross_rental_yield_trend),
+    unit_median_price = COALESCE(suburbs_ui_v3.unit_median_price, EXCLUDED.unit_median_price),
+    unit_median_price_12m_change_pct = COALESCE(suburbs_ui_v3.unit_median_price_12m_change_pct, EXCLUDED.unit_median_price_12m_change_pct),
+    unit_median_rent = COALESCE(suburbs_ui_v3.unit_median_rent, EXCLUDED.unit_median_rent),
+    unit_gross_rental_yield = COALESCE(suburbs_ui_v3.unit_gross_rental_yield, EXCLUDED.unit_gross_rental_yield),
+    unit_gross_rental_yield_trend = COALESCE(suburbs_ui_v3.unit_gross_rental_yield_trend, EXCLUDED.unit_gross_rental_yield_trend),
     unit_days_on_market = EXCLUDED.unit_days_on_market,
     supply_demand_ratio = EXCLUDED.supply_demand_ratio,
     price_to_rent_ratio = EXCLUDED.price_to_rent_ratio,
     price_to_income_ratio = COALESCE(EXCLUDED.price_to_income_ratio, suburbs_ui_v3.price_to_income_ratio),
-    total_properties = EXCLUDED.total_properties,
-    vacancy_rate = EXCLUDED.vacancy_rate,
+    total_properties = COALESCE(suburbs_ui_v3.total_properties, EXCLUDED.total_properties),
+    vacancy_rate = COALESCE(suburbs_ui_v3.vacancy_rate, EXCLUDED.vacancy_rate),
     population_density = EXCLUDED.population_density,
     population_2021 = CASE WHEN suburbs_ui_v3.abs_demographics_sourced = TRUE
                            THEN suburbs_ui_v3.population_2021
@@ -266,7 +266,11 @@ ON CONFLICT (id) DO UPDATE SET
     estimated_mortgage_repayment = EXCLUDED.estimated_mortgage_repayment,
     history_10yr = EXCLUDED.history_10yr,
     history_rent_10yr = EXCLUDED.history_rent_10yr,
-    demographics_detail = EXCLUDED.demographics_detail,
+    demographics_detail = CASE 
+        WHEN suburbs_ui_v3.demographics_detail::jsonb ? 'sqm_data' 
+        THEN jsonb_set(COALESCE(EXCLUDED.demographics_detail::jsonb, '{{}}'::jsonb), '{{sqm_data}}', suburbs_ui_v3.demographics_detail::jsonb->'sqm_data')::json
+        ELSE EXCLUDED.demographics_detail 
+    END,
     nearby_suburbs = EXCLUDED.nearby_suburbs,
     sales_summary = EXCLUDED.sales_summary,
     external_dom_house = COALESCE(EXCLUDED.external_dom_house, suburbs_ui_v3.external_dom_house),
@@ -279,7 +283,11 @@ ON CONFLICT (id) DO UPDATE SET
     dq_issues = CASE WHEN EXCLUDED.dq_issues IS NOT NULL
                      THEN (COALESCE(suburbs_ui_v3.dq_issues::jsonb, '[]'::jsonb) || EXCLUDED.dq_issues::jsonb)::json
                      ELSE suburbs_ui_v3.dq_issues END,
-    dq_score = LEAST(COALESCE(EXCLUDED.dq_score, suburbs_ui_v3.dq_score), suburbs_ui_v3.dq_score),
+    dq_score = CASE
+        WHEN COALESCE(suburbs_ui_v3.house_median_price, EXCLUDED.house_median_price) IS NULL THEN 85.0
+        WHEN COALESCE(suburbs_ui_v3.population_2021, EXCLUDED.population_2021) IS NULL THEN 95.0
+        ELSE 100.0
+    END,
     transform_version = 3,
     last_updated = NOW()
 """
