@@ -72,7 +72,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
             <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)' }}>
               Based on your latest Buy Finder assumptions
             </div>
-            <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               ℹ️ Logged in — decision is saved and will persist across sessions
             </div>
           </div>
@@ -132,7 +132,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
             {showAssumptions ? 'Hide' : 'Show'} assumptions (rate, buffer, term, costs)
           </summary>
           {aff?.assumptions && (
-            <div style={{ marginTop: '6px', fontSize: '0.65rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            <div style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
               <div>Rate: {(aff.assumptions.interest_rate * 100).toFixed(1)}%</div>
               <div>Buffer: +{(aff.assumptions.serviceability_buffer * 100).toFixed(0)}%</div>
               <div>Term: {aff.assumptions.loan_term_years}yr</div>
@@ -211,7 +211,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
         <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
           General Market Snapshot
         </h3>
-        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Not based on your Buy Finder inputs — open Buy Finder for personalised results</span>
+        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Not based on your Buy Finder inputs — open Buy Finder for personalised results</span>
       </div>
       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
         <div style={{ flex: '0 0 auto', textAlign: 'center', padding: '10px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>

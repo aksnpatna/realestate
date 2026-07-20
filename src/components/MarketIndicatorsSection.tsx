@@ -105,7 +105,7 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
     <div className="glass-card" style={{ padding: '16px', marginBottom: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <h3 style={{ margin: 0, fontSize: '0.95rem' }}>Market Indicators</h3>
-        <span style={{ fontSize: '0.65rem', background: 'rgba(245,158,11,0.12)', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px' }}>
+        <span style={{ fontSize: '0.8rem', background: 'rgba(245,158,11,0.12)', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px' }}>
           Investor View
         </span>
       </div>
@@ -141,7 +141,7 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
               <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                 {ind.value}
               </div>
-              <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                 {ind.impact}
               </div>
             </div>

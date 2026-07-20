@@ -128,7 +128,7 @@ export default memo(function QuickRoiCalculator({ medianPrice, medianRent, state
                 <div style={{ flex: '1 1 200px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Total Upfront Required</div>
                   <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>${Math.round(results.total_upfront).toLocaleString()}</div>
-                  <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Incl. ${Math.round(results.stamp_duty).toLocaleString()} stamp duty</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Incl. ${Math.round(results.stamp_duty).toLocaleString()} stamp duty</div>
                 </div>
                 <div style={{ flex: '1 1 200px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Annual Interest Bill</div>

@@ -30,7 +30,7 @@ function MetricCard({ label, value, suffix, trend }: {
 }) {
   return (
     <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '2px', minWidth: '120px' }}>
-      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>{label}</div>
+      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>{label}</div>
       <div style={{ fontSize: '1rem', fontWeight: 700 }}>{value !== null && value !== undefined ? value : '—'}{suffix || ''}</div>
       {trend !== undefined && trend !== null && (
         <span style={{ color: trend > 0 ? '#10b981' : '#ef4444', fontSize: '0.75em' }}>

@@ -816,7 +816,7 @@ function App() {
                             const c=dq>=80?'#10b981':dq>=60?'#f59e0b':'#ef4444';
                             return <div style={{ fontSize: '1.4rem', color: c, fontWeight: 'bold' }}>{Math.round(dq)}/100</div>;
                           })()}
-                          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Data Quality</div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Data Quality</div>
                         </div>
 
                         {/* ABS Verified Badge */}
@@ -824,7 +824,7 @@ function App() {
                           <div className="main-score" style={{ textAlign: 'center', background: 'rgba(16,185,129,0.05)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', boxShadow: '0 2px 4px rgba(16,185,129,0.05)' }}>
                             <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#10b981', marginBottom: '4px' }}>Demographics</div>
                             <div style={{ fontSize: '1.1rem', color: '#10b981', fontWeight: 'bold' }}>✓ ABS 2021</div>
-                            <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Census Verified</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Census Verified</div>
                           </div>
                         )}
 
@@ -837,7 +837,7 @@ function App() {
                             Market Momentum
                             <ScoreInlineHint scoreKey="growth" value={activeSuburb.growthScore} />
                           </div>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
                             Deterministic momentum,<br/>not a price forecast
                           </div>
                           {persona !== 'first_home_buyer' && (
@@ -1435,7 +1435,7 @@ function App() {
                                     </div>
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '4px' }}>
                                       {religions.map(r => (
-                                        <span key={r.label} style={{ fontSize: '0.65rem', color: r.color }}>
+                                        <span key={r.label} style={{ fontSize: '0.8rem', color: r.color }}>
                                           {r.label} {r.val}
                                         </span>
                                       ))}
@@ -1457,12 +1457,12 @@ function App() {
                                       </span>
                                     </div>
                                     {s.publicHousingDwellings != null && (
-                                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
                                         {s.publicHousingDwellings} public · {s.communityHousingDwellings || 0} community
                                       </div>
                                     )}
                                     {s.absG37Sourced && (
-                                      <div style={{ fontSize: '0.6rem', color: '#10b981', marginTop: '2px' }}>✓ ABS Census</div>
+                                      <div style={{ fontSize: '0.75rem', color: '#10b981', marginTop: '2px' }}>✓ ABS Census</div>
                                     )}
                                   </div>
                                 )}
@@ -1509,21 +1509,21 @@ function App() {
                                 {/* DA Precedent & Approvals */}
                                 <div style={{ display: 'grid', gridTemplateColumns: minLot ? '1fr 1fr' : '1fr', gap: '10px' }}>
                                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Approved DAs (12mo)</div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Approved DAs (12mo)</div>
                                     <div style={{ fontSize: '1.5rem', fontWeight: 700, color: approvedCount > 0 ? '#10b981' : 'var(--text-secondary)' }}>
                                       {approvedCount > 0 ? approvedCount : '—'}
                                     </div>
-                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
                                       {approvedCount > 0 ? 'subdivisions' : 'no data'}
                                     </div>
                                   </div>
                                   {minLot && (
                                     <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
-                                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Min Lot Size</div>
+                                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Min Lot Size</div>
                                       <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                                         {minLot}<span style={{ fontSize: '0.8rem', fontWeight: 400 }}> sqm</span>
                                       </div>
-                                      <div style={{ fontSize: '0.65rem', color: approvedCount > 0 ? '#10b981' : '#f59e0b', marginTop: '2px' }}>
+                                      <div style={{ fontSize: '0.8rem', color: approvedCount > 0 ? '#10b981' : '#f59e0b', marginTop: '2px' }}>
                                         {approvedCount > 0 ? '✓ real precedent' : 'proxy estimate'}
                                       </div>
                                     </div>

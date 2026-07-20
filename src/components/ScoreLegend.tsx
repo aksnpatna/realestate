@@ -105,7 +105,7 @@ export const ScoreInlineHint = memo(function ScoreInlineHint({
           borderRadius: '50%',
           width: '16px',
           height: '16px',
-          fontSize: '0.6rem',
+          fontSize: '0.75rem',
           cursor: 'pointer',
           padding: 0,
           display: 'inline-flex',
@@ -141,7 +141,7 @@ export const ScoreInlineHint = memo(function ScoreInlineHint({
             {meta.caveat}
           </div>
           {value != null && (
-            <div style={{ marginTop: '6px', fontSize: '0.65rem', color: 'var(--text-secondary)' }}>
+            <div style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
               This suburb: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(value)}</strong>
             </div>
           )}
