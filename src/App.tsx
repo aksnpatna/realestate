@@ -96,9 +96,9 @@ function App() {
   }, [])
 
   const [financialProfile, setFinancialProfile] = useState({
-    deposit: 170000,
-    lvrPct: 90,
-    annualIncome: 210000,
+    deposit: 100000,
+    lvrPct: 80,
+    annualIncome: 80000,
     monthlyDebt: 0,
     interestRate: 6.2,
     bufferRate: 3.0,

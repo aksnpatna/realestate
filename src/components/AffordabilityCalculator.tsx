@@ -98,6 +98,12 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
                 <div className="state-summary-label">Maximum Purchase Price</div>
                 <div className="state-summary-detail" style={{ marginTop: '8px' }}>Max Borrowing: <strong>${c.maxBorrow.toLocaleString()}</strong></div>
                 <div className="state-summary-detail">Upfront Stamp Duty: <strong>${c.stampDutyForMax.toLocaleString()}</strong></div>
+                <div className="state-summary-detail">Est. LMI (Capitalised): <strong>${c.lmiForMax.toLocaleString()}</strong></div>
+                {c.fhbgEligible && (
+                   <div className="state-summary-detail" style={{ color: 'var(--success)', fontWeight: 600, marginTop: '4px' }}>
+                     ✓ First Home Guarantee (LMI Waived)
+                   </div>
+                )}
                 <div className="state-summary-detail" style={{ color: c.limitedBy === 'Serviceability' ? '#ef4444' : 'var(--accent-cyan)', fontWeight: 600, marginTop: '8px' }}>
                   Limited by: {c.limitedBy}
                 </div>

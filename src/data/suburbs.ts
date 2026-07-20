@@ -304,8 +304,10 @@ export function calculateMaxPurchase(
   maxPrice: number;
   maxBorrow: number;
   stampDutyForMax: number;
+  lmiForMax: number;
   borrowingCapacity: number;
   limitedBy: 'Deposit/LVR' | 'Serviceability';
+  fhbgEligible: boolean;
 } {
   const effectiveLvr = isFHB ? Math.min(lvr, 0.95) : Math.min(lvr, 0.90);
 
@@ -335,7 +337,29 @@ export function calculateMaxPurchase(
     
     // The actual loan we can get is the minimum of what LVR allows and what the bank approves
     const actualLoan = Math.min(loanRequiredForLvr, borrowingCapacity);
-    const depositNeeded = mid - actualLoan + stampDuty;
+    
+    let lmi = 0;
+    if (actualLoan / mid > 0.8) {
+       // FHBG proxy
+       if (isFHB && mid <= 800000 && actualLoan / mid <= 0.95) {
+          lmi = 0; // Waived
+       } else {
+          // Simplified Genworth LMI approx
+          const lvrRatio = actualLoan / mid;
+          let lmiRate = 0;
+          if (lvrRatio <= 0.85) lmiRate = 0.012;
+          else if (lvrRatio <= 0.90) lmiRate = 0.019;
+          else if (lvrRatio <= 0.95) lmiRate = 0.031;
+          else lmiRate = 0.045;
+          lmi = actualLoan * lmiRate;
+       }
+    }
+    
+    // LMI is usually capitalised, but if capitalising exceeds borrowing capacity, we must pay it upfront.
+    const capitalisedLmi = Math.min(lmi, Math.max(0, borrowingCapacity - actualLoan));
+    const upfrontLmi = lmi - capitalisedLmi;
+
+    const depositNeeded = mid - actualLoan + stampDuty + upfrontLmi;
     
     if (depositNeeded <= deposit) lo = mid;
     else hi = mid;
@@ -345,9 +369,22 @@ export function calculateMaxPurchase(
   const stampDutyForMax = Math.floor(calculateStampDuty(maxPrice, state, isFHB));
   const maxBorrow = Math.min(Math.floor(maxPrice * effectiveLvr), borrowingCapacity);
   
+  const fhbgEligible = isFHB && maxPrice <= 800000 && (maxBorrow / maxPrice) > 0.8 && (maxBorrow / maxPrice) <= 0.95;
+  
+  let lmiForMax = 0;
+  if (!fhbgEligible && (maxBorrow / maxPrice) > 0.8) {
+      const lvrRatio = maxBorrow / maxPrice;
+      let lmiRate = 0;
+      if (lvrRatio <= 0.85) lmiRate = 0.012;
+      else if (lvrRatio <= 0.90) lmiRate = 0.019;
+      else if (lvrRatio <= 0.95) lmiRate = 0.031;
+      else lmiRate = 0.045;
+      lmiForMax = Math.floor(maxBorrow * lmiRate);
+  }
+  
   const limitedBy = maxBorrow >= borrowingCapacity - 1000 ? 'Serviceability' : 'Deposit/LVR';
 
-  return { maxPrice, maxBorrow, stampDutyForMax, borrowingCapacity, limitedBy };
+  return { maxPrice, maxBorrow, stampDutyForMax, lmiForMax, borrowingCapacity, limitedBy, fhbgEligible };
 }
 
 export const FHOG: Record<string, { established: number; new_home: number; vacant_land: number; cap_new: number; cap_established: number }> = {
