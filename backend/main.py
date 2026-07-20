@@ -804,6 +804,8 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db), current_user =
                 "ownerOccupierRate": v3.owner_occupier_rate,
                 "investorRate": v3.investor_rate,
                 "medianAge": v3.median_age,
+                "estimatedMortgageRepayment": v3.estimated_mortgage_repayment,
+                "typicalMortgageBand": v3.typical_mortgage_band,
                 "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
             }
             result.append(record)
