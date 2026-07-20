@@ -26,7 +26,7 @@ from datetime import datetime
 
 # Allow running outside of docker by supplying a default localhost URL
 if "DATABASE_URL" not in os.environ:
-    os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@localhost:5432/realestate"
+    os.environ["DATABASE_URL"] = "postgresql://realestate_user:realestate_pass@localhost:15432/realestate"
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

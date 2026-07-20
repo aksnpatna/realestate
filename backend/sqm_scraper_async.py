@@ -127,7 +127,7 @@ def process_postcode(postcode):
             params = {"postcode": str(postcode)}
             for k, v in update_vals.items():
                 if k == "sqm_history":
-                    set_clauses.append("demographics_detail = jsonb_set(COALESCE(demographics_detail, '{}'::jsonb), '{sqm_data}', :sqm_history::jsonb)")
+                    set_clauses.append("demographics_detail = CAST(jsonb_set(COALESCE(CAST(demographics_detail AS JSONB), '{}'::jsonb), '{sqm_data}', CAST(:sqm_history AS JSONB)) AS JSON)")
                 else:
                     set_clauses.append(f"{k} = :{k}")
                 params[k] = v
