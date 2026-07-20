@@ -382,6 +382,11 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
                     <div className="gmetric-detail">Gross yield: {((result.annualRent / result.purchasePrice) * 100).toFixed(1)}%</div>
                   </div>
                   <div className="gmetric">
+                    <div className="gmetric-label">Yield After Tax</div>
+                    <div className="gmetric-value highlight-cyan">{((result.netAfterTax + result.annualInterest) / result.purchasePrice * 100).toFixed(2)}%</div>
+                    <div className="gmetric-detail">Unleveraged net return</div>
+                  </div>
+                  <div className="gmetric">
                     <div className="gmetric-label">Annual Expenses</div>
                     <div className="gmetric-value">${result.annualExpenses.toLocaleString()}</div>
                     <div className="gmetric-detail" style={{ marginTop: '0.5rem' }}>

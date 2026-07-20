@@ -21,6 +21,7 @@ const icons: Record<PersonaId, string> = {
   first_home_buyer: '🏠',
   investor: '📈',
   buyers_agent: '🔍',
+  mortgage_broker: '💼',
 }
 
 const PersonaSwitcher = memo(function PersonaSwitcher({ activePersona, onChange }: Props) {

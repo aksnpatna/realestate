@@ -9,7 +9,7 @@
  */
 import type { BuyerFitWeights } from './buyerFitTypes'
 
-export type PersonaId = 'first_home_buyer' | 'investor' | 'buyers_agent'
+export type PersonaId = 'first_home_buyer' | 'investor' | 'buyers_agent' | 'mortgage_broker'
 
 export type ProfileSectionId =
   | 'overview'
@@ -76,6 +76,16 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     ],
     show_technical: true,
     headline_score: 'dq',
+  },
+  mortgage_broker: {
+    id: 'mortgage_broker',
+    label: 'Mortgage Broker',
+    description:
+      'Serviceability and risk assessment focus. Borrowing capacity rules above all.',
+    weights: { affordability: 50, income: 30, livability: 0, access: 0, evidence: 20 },
+    visible_profile_sections: ['overview', 'market', 'risk', 'technical'],
+    show_technical: true,
+    headline_score: 'buyer_fit',
   },
 }
 

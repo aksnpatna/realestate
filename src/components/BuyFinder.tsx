@@ -19,9 +19,9 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const [backendError, setBackendError] = useState<string | null>(null);
 
   const [state, setState] = useState('VIC');
-  const budget = financialProfile?.budget ?? 850000;
-  const deposit = financialProfile?.deposit ?? 170000;
-  const annualIncome = financialProfile?.annualIncome ?? 150000;
+  const budget = financialProfile?.budget ?? 500000;
+  const deposit = financialProfile?.deposit ?? 100000;
+  const annualIncome = financialProfile?.annualIncome ?? 80000;
   const monthlyDebt = financialProfile?.monthlyDebt ?? 0;
   const propertyType = financialProfile?.propertyType ?? 'house';
   const maxCBDMinutes = financialProfile?.maxCBDMinutes ?? 60;

@@ -8293,7 +8293,7 @@
       "label": "PersonaSwitcher",
       "file_type": "code",
       "source_file": "src/components/PersonaSwitcher.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "components_personaswitcher_personaswitcher",
       "community": 90,
@@ -9033,7 +9033,7 @@
       "label": "getPersona()",
       "file_type": "code",
       "source_file": "src/data/personas.ts",
-      "source_location": "L86",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "data_personas_getpersona",
       "community": 201,
@@ -9043,7 +9043,7 @@
       "label": "loadStoredPersona()",
       "file_type": "code",
       "source_file": "src/data/personas.ts",
-      "source_location": "L91",
+      "source_location": "L101",
       "_origin": "ast",
       "id": "data_personas_loadstoredpersona",
       "community": 90,
@@ -9053,7 +9053,7 @@
       "label": "storePersona()",
       "file_type": "code",
       "source_file": "src/data/personas.ts",
-      "source_location": "L99",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "data_personas_storepersona",
       "community": 90,
@@ -9063,7 +9063,7 @@
       "label": "personaIds()",
       "file_type": "code",
       "source_file": "src/data/personas.ts",
-      "source_location": "L105",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "data_personas_personaids",
       "community": 90,
@@ -9073,7 +9073,7 @@
       "label": "refreshPersonasFromBackend()",
       "file_type": "code",
       "source_file": "src/data/personas.ts",
-      "source_location": "L110",
+      "source_location": "L120",
       "_origin": "ast",
       "id": "data_personas_refreshpersonasfrombackend",
       "community": 90,
@@ -9163,7 +9163,7 @@
       "label": "FHOG",
       "file_type": "code",
       "source_file": "src/data/suburbs.ts",
-      "source_location": "L353",
+      "source_location": "L390",
       "_origin": "ast",
       "id": "data_suburbs_fhog",
       "community": 86,
@@ -9173,7 +9173,7 @@
       "label": "FIRST_HOME_CONCESSION",
       "file_type": "code",
       "source_file": "src/data/suburbs.ts",
-      "source_location": "L364",
+      "source_location": "L401",
       "_origin": "ast",
       "id": "data_suburbs_first_home_concession",
       "community": 86,
@@ -9183,7 +9183,7 @@
       "label": "GOVT_FEES",
       "file_type": "code",
       "source_file": "src/data/suburbs.ts",
-      "source_location": "L375",
+      "source_location": "L412",
       "_origin": "ast",
       "id": "data_suburbs_govt_fees",
       "community": 86,
@@ -9193,7 +9193,7 @@
       "label": "calcTransferFee()",
       "file_type": "code",
       "source_file": "src/data/suburbs.ts",
-      "source_location": "L386",
+      "source_location": "L423",
       "_origin": "ast",
       "id": "data_suburbs_calctransferfee",
       "community": 86,
@@ -9203,7 +9203,7 @@
       "label": "calcMortgageRegFee()",
       "file_type": "code",
       "source_file": "src/data/suburbs.ts",
-      "source_location": "L439",
+      "source_location": "L476",
       "_origin": "ast",
       "id": "data_suburbs_calcmortgageregfee",
       "community": 86,
@@ -9213,7 +9213,7 @@
       "label": "calculateComprehensiveStampDuty()",
       "file_type": "code",
       "source_file": "src/data/suburbs.ts",
-      "source_location": "L463",
+      "source_location": "L500",
       "_origin": "ast",
       "id": "data_suburbs_calculatecomprehensivestampduty",
       "community": 86,
@@ -9223,7 +9223,7 @@
       "label": "mockSuburbsData",
       "file_type": "code",
       "source_file": "src/data/suburbs.ts",
-      "source_location": "L489",
+      "source_location": "L526",
       "_origin": "ast",
       "id": "data_suburbs_mocksuburbsdata",
       "community": 200,
@@ -18094,9 +18094,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2547",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_saveclientrequest",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -18975,9 +18975,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_buyersagentclient",
-      "target": "backend_buyfinder_buyfinderweights",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderweights"
     },
     {
       "relation": "uses",
@@ -19045,9 +19045,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_response",
-      "target": "backend_buyfinder_buyfinderweights",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderweights"
     },
     {
       "relation": "uses",
@@ -19055,9 +19055,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_session",
-      "target": "backend_buyfinder_buyfinderweights",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderweights"
     },
     {
       "relation": "uses",
@@ -19085,9 +19085,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_saveclientrequest",
-      "target": "backend_buyfinder_buyfinderweights",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderweights"
     },
     {
       "relation": "uses",
@@ -19317,9 +19317,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_buyersagentclient",
-      "target": "backend_buyfinder_buyfinderrequest",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderrequest"
     },
     {
       "relation": "uses",
@@ -19387,9 +19387,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_response",
-      "target": "backend_buyfinder_buyfinderrequest",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderrequest"
     },
     {
       "relation": "uses",
@@ -19397,9 +19397,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_session",
-      "target": "backend_buyfinder_buyfinderrequest",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderrequest"
     },
     {
       "relation": "uses",
@@ -19427,9 +19427,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2459",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_saveclientrequest",
-      "target": "backend_buyfinder_buyfinderrequest",
-      "confidence_score": 0.5
+      "target": "backend_buyfinder_buyfinderrequest"
     },
     {
       "relation": "uses",
@@ -20376,9 +20376,9 @@
       "source_file": "backend/enrich_from_unpacked.py",
       "source_location": "L303",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_enrich_from_unpacked_rationale_303",
-      "target": "backend_enrich_from_unpacked_enrich_changed",
-      "confidence_score": 1.0
+      "target": "backend_enrich_from_unpacked_enrich_changed"
     },
     {
       "relation": "contains",
@@ -20866,9 +20866,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones",
-      "target": "zipfile",
-      "confidence_score": 1.0
+      "target": "zipfile"
     },
     {
       "relation": "uses",
@@ -21072,9 +21072,9 @@
       "source_file": "backend/etl_external_market.py",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_external_market",
-      "target": "backend_etl_external_market_fetch_domain_data",
-      "confidence_score": 1.0
+      "target": "backend_etl_external_market_fetch_domain_data"
     },
     {
       "relation": "contains",
@@ -21082,9 +21082,9 @@
       "source_file": "backend/etl_external_market.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_external_market",
-      "target": "backend_etl_external_market_main",
-      "confidence_score": 1.0
+      "target": "backend_etl_external_market_main"
     },
     {
       "relation": "contains",
@@ -21982,9 +21982,9 @@
       "source_file": "backend/etl_vic_school_zones.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_vic_school_zones",
-      "target": "backend_etl_vic_school_zones_create_table_if_not_exists",
-      "confidence_score": 1.0
+      "target": "backend_etl_vic_school_zones_create_table_if_not_exists"
     },
     {
       "relation": "contains",
@@ -21992,9 +21992,9 @@
       "source_file": "backend/etl_vic_school_zones.py",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_vic_school_zones",
-      "target": "backend_etl_vic_school_zones_load_geojson",
-      "confidence_score": 1.0
+      "target": "backend_etl_vic_school_zones_load_geojson"
     },
     {
       "relation": "rationale_for",
@@ -22002,9 +22002,9 @@
       "source_file": "backend/etl_vic_school_zones.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_vic_school_zones_rationale_13",
-      "target": "backend_etl_vic_school_zones_create_table_if_not_exists",
-      "confidence_score": 1.0
+      "target": "backend_etl_vic_school_zones_create_table_if_not_exists"
     },
     {
       "relation": "rationale_for",
@@ -22012,9 +22012,9 @@
       "source_file": "backend/etl_vic_school_zones.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_etl_vic_school_zones_rationale_32",
-      "target": "backend_etl_vic_school_zones_load_geojson",
-      "confidence_score": 1.0
+      "target": "backend_etl_vic_school_zones_load_geojson"
     },
     {
       "relation": "contains",
@@ -22274,9 +22274,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L199",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client",
-      "target": "backend_http_client_can_fetch",
-      "confidence_score": 1.0
+      "target": "backend_http_client_can_fetch"
     },
     {
       "relation": "contains",
@@ -22284,9 +22284,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L194",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client",
-      "target": "backend_http_client_fetch_json",
-      "confidence_score": 1.0
+      "target": "backend_http_client_fetch_json"
     },
     {
       "relation": "contains",
@@ -22294,9 +22294,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client",
-      "target": "backend_http_client_fetcherror",
-      "confidence_score": 1.0
+      "target": "backend_http_client_fetcherror"
     },
     {
       "relation": "contains",
@@ -22304,9 +22304,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client",
-      "target": "backend_http_client_get_semaphore",
-      "confidence_score": 1.0
+      "target": "backend_http_client_get_semaphore"
     },
     {
       "relation": "contains",
@@ -22314,9 +22314,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client",
-      "target": "backend_http_client_get_session",
-      "confidence_score": 1.0
+      "target": "backend_http_client_get_session"
     },
     {
       "relation": "contains",
@@ -22324,9 +22324,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client",
-      "target": "backend_http_client_get_with_backoff",
-      "confidence_score": 1.0
+      "target": "backend_http_client_get_with_backoff"
     },
     {
       "relation": "contains",
@@ -22334,9 +22334,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client",
-      "target": "backend_http_client_sourceconfig",
-      "confidence_score": 1.0
+      "target": "backend_http_client_sourceconfig"
     },
     {
       "relation": "rationale_for",
@@ -22344,9 +22344,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_rationale_1",
-      "target": "backend_http_client",
-      "confidence_score": 1.0
+      "target": "backend_http_client"
     },
     {
       "relation": "method",
@@ -22354,9 +22354,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_fetcherror",
-      "target": "backend_http_client_fetcherror_init",
-      "confidence_score": 1.0
+      "target": "backend_http_client_fetcherror_init"
     },
     {
       "relation": "inherits",
@@ -22364,9 +22364,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_fetcherror",
-      "target": "exception",
-      "confidence_score": 1.0
+      "target": "exception"
     },
     {
       "relation": "calls",
@@ -22375,9 +22375,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L134",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_with_backoff",
-      "target": "backend_http_client_fetcherror",
-      "confidence_score": 1.0
+      "target": "backend_http_client_fetcherror"
     },
     {
       "relation": "rationale_for",
@@ -22385,9 +22385,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_rationale_26",
-      "target": "backend_http_client_fetcherror",
-      "confidence_score": 1.0
+      "target": "backend_http_client_fetcherror"
     },
     {
       "relation": "calls",
@@ -22396,9 +22396,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_semaphore",
-      "target": "backend_http_client_sourceconfig",
-      "confidence_score": 1.0
+      "target": "backend_http_client_sourceconfig"
     },
     {
       "relation": "calls",
@@ -22407,9 +22407,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_with_backoff",
-      "target": "backend_http_client_sourceconfig",
-      "confidence_score": 1.0
+      "target": "backend_http_client_sourceconfig"
     },
     {
       "relation": "references",
@@ -22418,9 +22418,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_semaphore",
-      "target": "boundedsemaphore",
-      "confidence_score": 1.0
+      "target": "boundedsemaphore"
     },
     {
       "relation": "calls",
@@ -22429,9 +22429,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_with_backoff",
-      "target": "backend_http_client_get_semaphore",
-      "confidence_score": 1.0
+      "target": "backend_http_client_get_semaphore"
     },
     {
       "relation": "references",
@@ -22440,9 +22440,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_session",
-      "target": "backend_http_client_py_session",
-      "confidence_score": 1.0
+      "target": "backend_http_client_py_session"
     },
     {
       "relation": "calls",
@@ -22451,9 +22451,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L137",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_with_backoff",
-      "target": "backend_http_client_get_session",
-      "confidence_score": 1.0
+      "target": "backend_http_client_get_session"
     },
     {
       "relation": "calls",
@@ -22462,9 +22462,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L195",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_fetch_json",
-      "target": "backend_http_client_get_with_backoff",
-      "confidence_score": 1.0
+      "target": "backend_http_client_get_with_backoff"
     },
     {
       "relation": "references",
@@ -22473,9 +22473,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_get_with_backoff",
-      "target": "backend_http_client_py_response",
-      "confidence_score": 1.0
+      "target": "backend_http_client_py_response"
     },
     {
       "relation": "rationale_for",
@@ -22483,9 +22483,9 @@
       "source_file": "backend/http_client.py",
       "source_location": "L200",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_http_client_rationale_200",
-      "target": "backend_http_client_can_fetch",
-      "confidence_score": 1.0
+      "target": "backend_http_client_can_fetch"
     },
     {
       "relation": "contains",
@@ -22637,9 +22637,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones",
-      "target": "backend_load_all_zones_create_table",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_create_table"
     },
     {
       "relation": "contains",
@@ -22647,9 +22647,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones",
-      "target": "backend_load_all_zones_extract_zips",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_extract_zips"
     },
     {
       "relation": "contains",
@@ -22657,9 +22657,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones",
-      "target": "backend_load_all_zones_get_spatial_files",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_get_spatial_files"
     },
     {
       "relation": "contains",
@@ -22667,9 +22667,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones",
-      "target": "backend_load_all_zones_main",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_main"
     },
     {
       "relation": "contains",
@@ -22677,9 +22677,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones",
-      "target": "backend_load_all_zones_run_ogr2ogr",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_run_ogr2ogr"
     },
     {
       "relation": "calls",
@@ -22688,9 +22688,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones_main",
-      "target": "backend_load_all_zones_create_table",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_create_table"
     },
     {
       "relation": "calls",
@@ -22699,9 +22699,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones_main",
-      "target": "backend_load_all_zones_extract_zips",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_extract_zips"
     },
     {
       "relation": "calls",
@@ -22710,9 +22710,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones_main",
-      "target": "backend_load_all_zones_get_spatial_files",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_get_spatial_files"
     },
     {
       "relation": "calls",
@@ -22721,9 +22721,9 @@
       "source_file": "backend/load_all_zones.py",
       "source_location": "L134",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_load_all_zones_main",
-      "target": "backend_load_all_zones_run_ogr2ogr",
-      "confidence_score": 1.0
+      "target": "backend_load_all_zones_run_ogr2ogr"
     },
     {
       "relation": "contains",
@@ -22741,9 +22741,9 @@
       "source_file": "backend/main.py",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_ai_circuit_allowed",
-      "confidence_score": 1.0
+      "target": "backend_main_ai_circuit_allowed"
     },
     {
       "relation": "contains",
@@ -22751,9 +22751,9 @@
       "source_file": "backend/main.py",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_ai_circuit_record_failure",
-      "confidence_score": 1.0
+      "target": "backend_main_ai_circuit_record_failure"
     },
     {
       "relation": "contains",
@@ -22801,9 +22801,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1901",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_api_get_school_zone",
-      "confidence_score": 1.0
+      "target": "backend_main_api_get_school_zone"
     },
     {
       "relation": "contains",
@@ -22831,9 +22831,9 @@
       "source_file": "backend/main.py",
       "source_location": "L286",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_buyersagentclient",
-      "confidence_score": 1.0
+      "target": "backend_main_buyersagentclient"
     },
     {
       "relation": "contains",
@@ -22961,9 +22961,9 @@
       "source_file": "backend/main.py",
       "source_location": "L662",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_get_benchmarks",
-      "confidence_score": 1.0
+      "target": "backend_main_get_benchmarks"
     },
     {
       "relation": "contains",
@@ -22981,9 +22981,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2552",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_get_clients",
-      "confidence_score": 1.0
+      "target": "backend_main_get_clients"
     },
     {
       "relation": "contains",
@@ -23371,9 +23371,9 @@
       "source_file": "backend/main.py",
       "source_location": "L144",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_request_log_middleware",
-      "confidence_score": 1.0
+      "target": "backend_main_request_log_middleware"
     },
     {
       "relation": "contains",
@@ -23391,9 +23391,9 @@
       "source_file": "backend/main.py",
       "source_location": "L202",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_rl_check",
-      "confidence_score": 1.0
+      "target": "backend_main_rl_check"
     },
     {
       "relation": "contains",
@@ -23411,9 +23411,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2557",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_save_client",
-      "confidence_score": 1.0
+      "target": "backend_main_save_client"
     },
     {
       "relation": "contains",
@@ -23431,9 +23431,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2547",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main",
-      "target": "backend_main_saveclientrequest",
-      "confidence_score": 1.0
+      "target": "backend_main_saveclientrequest"
     },
     {
       "relation": "contains",
@@ -23582,9 +23582,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1379",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_analyze_suburb",
-      "target": "backend_main_ai_circuit_allowed",
-      "confidence_score": 1.0
+      "target": "backend_main_ai_circuit_allowed"
     },
     {
       "relation": "calls",
@@ -23593,9 +23593,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1490",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_analyze_suburb",
-      "target": "backend_main_ai_circuit_record_failure",
-      "confidence_score": 1.0
+      "target": "backend_main_ai_circuit_record_failure"
     },
     {
       "relation": "calls",
@@ -23626,9 +23626,9 @@
       "source_file": "backend/main.py",
       "source_location": "L152",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_request_log_middleware",
-      "target": "backend_main_rl_check",
-      "confidence_score": 1.0
+      "target": "backend_main_rl_check"
     },
     {
       "relation": "references",
@@ -23637,9 +23637,9 @@
       "source_file": "backend/main.py",
       "source_location": "L144",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_request_log_middleware",
-      "target": "request",
-      "confidence_score": 1.0
+      "target": "request"
     },
     {
       "relation": "references",
@@ -23783,9 +23783,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1383",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_analyze_suburb",
-      "target": "backend_main_rl_check",
-      "confidence_score": 1.0
+      "target": "backend_main_rl_check"
     },
     {
       "relation": "calls",
@@ -23794,9 +23794,9 @@
       "source_file": "backend/main.py",
       "source_location": "L229",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_check_auth_rate",
-      "target": "backend_main_rl_check",
-      "confidence_score": 1.0
+      "target": "backend_main_rl_check"
     },
     {
       "relation": "calls",
@@ -23949,9 +23949,9 @@
       "source_file": "backend/main.py",
       "source_location": "L286",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_buyersagentclient",
-      "target": "base",
-      "confidence_score": 1.0
+      "target": "base"
     },
     {
       "relation": "inherits",
@@ -24029,9 +24029,9 @@
       "source_file": "backend/models_v3.py",
       "source_location": "L332",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_models_v3_etlrunlog",
-      "target": "base",
-      "confidence_score": 1.0
+      "target": "base"
     },
     {
       "relation": "inherits",
@@ -24332,9 +24332,9 @@
       "source_file": "backend/main.py",
       "source_location": "L277",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_277",
-      "target": "backend_main_userconsent",
-      "confidence_score": 1.0
+      "target": "backend_main_userconsent"
     },
     {
       "relation": "calls",
@@ -24354,9 +24354,9 @@
       "source_file": "backend/main.py",
       "source_location": "L500",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_register",
-      "target": "backend_main_userconsent",
-      "confidence_score": 1.0
+      "target": "backend_main_userconsent"
     },
     {
       "relation": "uses",
@@ -24444,9 +24444,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2411",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_buyersagentclient",
-      "target": "backend_models_v3_modeldiary",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_modeldiary"
     },
     {
       "relation": "uses",
@@ -24454,9 +24454,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_buyersagentclient",
-      "target": "backend_models_v3_propertylisting",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_propertylisting"
     },
     {
       "relation": "uses",
@@ -24464,9 +24464,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_buyersagentclient",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "uses",
@@ -24474,9 +24474,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2278",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_buyersagentclient",
-      "target": "backend_models_v3_suburbrawv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbrawv3"
     },
     {
       "relation": "uses",
@@ -24484,9 +24484,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_buyersagentclient",
-      "target": "backend_models_v3_suburbuiv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbuiv3"
     },
     {
       "relation": "rationale_for",
@@ -24494,9 +24494,9 @@
       "source_file": "backend/main.py",
       "source_location": "L287",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_287",
-      "target": "backend_main_buyersagentclient",
-      "confidence_score": 1.0
+      "target": "backend_main_buyersagentclient"
     },
     {
       "relation": "calls",
@@ -24505,9 +24505,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2560",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_save_client",
-      "target": "backend_main_buyersagentclient",
-      "confidence_score": 1.0
+      "target": "backend_main_buyersagentclient"
     },
     {
       "relation": "rationale_for",
@@ -24515,9 +24515,9 @@
       "source_file": "backend/main.py",
       "source_location": "L297",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_297",
-      "target": "backend_main_userdecisionsnapshot",
-      "confidence_score": 1.0
+      "target": "backend_main_userdecisionsnapshot"
     },
     {
       "relation": "calls",
@@ -25109,9 +25109,9 @@
       "source_file": "backend/main.py",
       "source_location": "L449",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_current_user",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25120,9 +25120,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1376",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_analyze_suburb",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25131,9 +25131,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2432",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_buy_finder_rank",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25142,9 +25142,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2362",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_create_model_diary_entry",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25153,9 +25153,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1921",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_export_suburbs_csv",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25164,9 +25164,9 @@
       "source_file": "backend/main.py",
       "source_location": "L662",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_benchmarks",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25175,9 +25175,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2552",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_clients",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25186,9 +25186,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1340",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_decision_brief",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25197,9 +25197,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2571",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_decision_snapshot",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25208,9 +25208,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1958",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_favorites",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25219,9 +25219,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2382",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_model_diary",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25230,9 +25230,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2409",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_model_diary_summary",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25241,9 +25241,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1562",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_news_sentiment",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25252,9 +25252,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1499",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_similar_suburbs",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25263,9 +25263,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1091",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25274,9 +25274,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1255",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb_evidence",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25285,9 +25285,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1547",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb_or_404",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25296,9 +25296,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2133",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb_pockets",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25307,9 +25307,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2269",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb_properties",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25318,9 +25318,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1977",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburb_v3",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25329,9 +25329,9 @@
       "source_file": "backend/main.py",
       "source_location": "L738",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburbs",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25340,9 +25340,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1810",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_get_suburbs_v3",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25351,9 +25351,9 @@
       "source_file": "backend/main.py",
       "source_location": "L632",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_health_check",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25362,9 +25362,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2525",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_list_decision_snapshots",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25373,9 +25373,9 @@
       "source_file": "backend/main.py",
       "source_location": "L545",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_login",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "uses",
@@ -25383,9 +25383,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2411",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_session",
-      "target": "backend_models_v3_modeldiary",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_modeldiary"
     },
     {
       "relation": "uses",
@@ -25393,9 +25393,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_session",
-      "target": "backend_models_v3_propertylisting",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_propertylisting"
     },
     {
       "relation": "uses",
@@ -25403,9 +25403,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_session",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "uses",
@@ -25413,9 +25413,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2278",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_session",
-      "target": "backend_models_v3_suburbrawv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbrawv3"
     },
     {
       "relation": "uses",
@@ -25423,9 +25423,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_session",
-      "target": "backend_models_v3_suburbuiv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbuiv3"
     },
     {
       "relation": "references",
@@ -25434,9 +25434,9 @@
       "source_file": "backend/main.py",
       "source_location": "L581",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_record_consent",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25445,9 +25445,9 @@
       "source_file": "backend/main.py",
       "source_location": "L470",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_register",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25456,9 +25456,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2557",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_save_client",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25467,9 +25467,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2502",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_save_decision_snapshot",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25478,9 +25478,9 @@
       "source_file": "backend/main.py",
       "source_location": "L816",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_search_suburbs",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25489,9 +25489,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1964",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_toggle_favorite",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25500,9 +25500,9 @@
       "source_file": "backend/main.py",
       "source_location": "L621",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_track_activity",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25511,9 +25511,9 @@
       "source_file": "backend/main.py",
       "source_location": "L517",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_track_analytics_event",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "references",
@@ -25522,9 +25522,9 @@
       "source_file": "backend/main.py",
       "source_location": "L610",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_verify_email",
-      "target": "backend_main_py_session",
-      "confidence_score": 1.0
+      "target": "backend_main_py_session"
     },
     {
       "relation": "rationale_for",
@@ -25532,9 +25532,9 @@
       "source_file": "backend/main.py",
       "source_location": "L518",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_518",
-      "target": "backend_main_track_analytics_event",
-      "confidence_score": 1.0
+      "target": "backend_main_track_analytics_event"
     },
     {
       "relation": "references",
@@ -25543,9 +25543,9 @@
       "source_file": "backend/main.py",
       "source_location": "L545",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_login",
-      "target": "backend_main_py_response",
-      "confidence_score": 1.0
+      "target": "backend_main_py_response"
     },
     {
       "relation": "uses",
@@ -25553,9 +25553,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2411",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_response",
-      "target": "backend_models_v3_modeldiary",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_modeldiary"
     },
     {
       "relation": "uses",
@@ -25563,9 +25563,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_response",
-      "target": "backend_models_v3_propertylisting",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_propertylisting"
     },
     {
       "relation": "uses",
@@ -25573,9 +25573,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_response",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "uses",
@@ -25583,9 +25583,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2278",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_response",
-      "target": "backend_models_v3_suburbrawv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbrawv3"
     },
     {
       "relation": "uses",
@@ -25593,9 +25593,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_py_response",
-      "target": "backend_models_v3_suburbuiv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbuiv3"
     },
     {
       "relation": "uses",
@@ -25694,9 +25694,9 @@
       "source_file": "backend/main.py",
       "source_location": "L582",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_582",
-      "target": "backend_main_record_consent",
-      "confidence_score": 1.0
+      "target": "backend_main_record_consent"
     },
     {
       "relation": "rationale_for",
@@ -25704,9 +25704,9 @@
       "source_file": "backend/main.py",
       "source_location": "L633",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_633",
-      "target": "backend_main_health_check",
-      "confidence_score": 1.0
+      "target": "backend_main_health_check"
     },
     {
       "relation": "rationale_for",
@@ -25714,9 +25714,9 @@
       "source_file": "backend/main.py",
       "source_location": "L655",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_655",
-      "target": "backend_main_get_poc_config",
-      "confidence_score": 1.0
+      "target": "backend_main_get_poc_config"
     },
     {
       "relation": "rationale_for",
@@ -25724,9 +25724,9 @@
       "source_file": "backend/main.py",
       "source_location": "L663",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_663",
-      "target": "backend_main_get_benchmarks",
-      "confidence_score": 1.0
+      "target": "backend_main_get_benchmarks"
     },
     {
       "relation": "rationale_for",
@@ -25734,9 +25734,9 @@
       "source_file": "backend/main.py",
       "source_location": "L731",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_731",
-      "target": "backend_main_bust_suburbs_cache",
-      "confidence_score": 1.0
+      "target": "backend_main_bust_suburbs_cache"
     },
     {
       "relation": "calls",
@@ -25810,9 +25810,9 @@
       "source_file": "backend/main.py",
       "source_location": "L826",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_826",
-      "target": "backend_main_annualize_cagr",
-      "confidence_score": 1.0
+      "target": "backend_main_annualize_cagr"
     },
     {
       "relation": "calls",
@@ -25853,9 +25853,9 @@
       "source_file": "backend/main.py",
       "source_location": "L837",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_837",
-      "target": "backend_main_cap_yield",
-      "confidence_score": 1.0
+      "target": "backend_main_cap_yield"
     },
     {
       "relation": "calls",
@@ -25874,9 +25874,9 @@
       "source_file": "backend/main.py",
       "source_location": "L845",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_845",
-      "target": "backend_main_provenance",
-      "confidence_score": 1.0
+      "target": "backend_main_provenance"
     },
     {
       "relation": "calls",
@@ -25906,9 +25906,9 @@
       "source_file": "backend/main.py",
       "source_location": "L857",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_857",
-      "target": "backend_main_provenanced_metrics",
-      "confidence_score": 1.0
+      "target": "backend_main_provenanced_metrics"
     },
     {
       "relation": "calls",
@@ -25949,9 +25949,9 @@
       "source_file": "backend/main.py",
       "source_location": "L938",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_938",
-      "target": "backend_main_calibrate_dq",
-      "confidence_score": 1.0
+      "target": "backend_main_calibrate_dq"
     },
     {
       "relation": "references",
@@ -25981,9 +25981,9 @@
       "source_file": "backend/main.py",
       "source_location": "L967",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_967",
-      "target": "backend_main_compute_growth_score",
-      "confidence_score": 1.0
+      "target": "backend_main_compute_growth_score"
     },
     {
       "relation": "uses",
@@ -26082,9 +26082,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1092",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1092",
-      "target": "backend_main_get_suburb",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb"
     },
     {
       "relation": "calls",
@@ -26103,9 +26103,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1243",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1243",
-      "target": "backend_main_get_scores_meta",
-      "confidence_score": 1.0
+      "target": "backend_main_get_scores_meta"
     },
     {
       "relation": "calls",
@@ -26124,9 +26124,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1250",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1250",
-      "target": "backend_main_get_personas",
-      "confidence_score": 1.0
+      "target": "backend_main_get_personas"
     },
     {
       "relation": "calls",
@@ -26145,9 +26145,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1256",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1256",
-      "target": "backend_main_get_suburb_evidence",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_evidence"
     },
     {
       "relation": "calls",
@@ -26166,9 +26166,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1341",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1341",
-      "target": "backend_main_get_decision_brief",
-      "confidence_score": 1.0
+      "target": "backend_main_get_decision_brief"
     },
     {
       "relation": "references",
@@ -26300,9 +26300,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1542",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1542",
-      "target": "backend_main_normalize_suburb_id",
-      "confidence_score": 1.0
+      "target": "backend_main_normalize_suburb_id"
     },
     {
       "relation": "calls",
@@ -26321,9 +26321,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1548",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1548",
-      "target": "backend_main_get_suburb_or_404",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_or_404"
     },
     {
       "relation": "calls",
@@ -26342,9 +26342,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1563",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1563",
-      "target": "backend_main_get_news_sentiment",
-      "confidence_score": 1.0
+      "target": "backend_main_get_news_sentiment"
     },
     {
       "relation": "rationale_for",
@@ -26352,9 +26352,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1609",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1609",
-      "target": "backend_main_reload_suburbs",
-      "confidence_score": 1.0
+      "target": "backend_main_reload_suburbs"
     },
     {
       "relation": "references",
@@ -26464,9 +26464,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1785",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1785",
-      "target": "backend_main_get_mortgage_rate",
-      "confidence_score": 1.0
+      "target": "backend_main_get_mortgage_rate"
     },
     {
       "relation": "rationale_for",
@@ -26474,9 +26474,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1811",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1811",
-      "target": "backend_main_get_suburbs_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburbs_v3"
     },
     {
       "relation": "rationale_for",
@@ -26484,9 +26484,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1922",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1922",
-      "target": "backend_main_export_suburbs_csv",
-      "confidence_score": 1.0
+      "target": "backend_main_export_suburbs_csv"
     },
     {
       "relation": "uses",
@@ -26585,9 +26585,9 @@
       "source_file": "backend/main.py",
       "source_location": "L1978",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_1978",
-      "target": "backend_main_get_suburb_v3",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_v3"
     },
     {
       "relation": "calls",
@@ -26606,9 +26606,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2053",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2053",
-      "target": "backend_main_get_osm_livability",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_livability"
     },
     {
       "relation": "calls",
@@ -26627,9 +26627,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2124",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2124",
-      "target": "backend_main_get_osm_boundary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_osm_boundary"
     },
     {
       "relation": "rationale_for",
@@ -26637,9 +26637,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2134",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2134",
-      "target": "backend_main_get_suburb_pockets",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_pockets"
     },
     {
       "relation": "rationale_for",
@@ -26647,9 +26647,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2270",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2270",
-      "target": "backend_main_get_suburb_properties",
-      "confidence_score": 1.0
+      "target": "backend_main_get_suburb_properties"
     },
     {
       "relation": "calls",
@@ -26668,9 +26668,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2320",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2320",
-      "target": "backend_main_metrics",
-      "confidence_score": 1.0
+      "target": "backend_main_metrics"
     },
     {
       "relation": "rationale_for",
@@ -26678,9 +26678,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2332",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2332",
-      "target": "backend_main_risk_what_if",
-      "confidence_score": 1.0
+      "target": "backend_main_risk_what_if"
     },
     {
       "relation": "calls",
@@ -26760,9 +26760,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2363",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2363",
-      "target": "backend_main_create_model_diary_entry",
-      "confidence_score": 1.0
+      "target": "backend_main_create_model_diary_entry"
     },
     {
       "relation": "rationale_for",
@@ -26770,9 +26770,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2383",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2383",
-      "target": "backend_main_get_model_diary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_model_diary"
     },
     {
       "relation": "rationale_for",
@@ -26780,9 +26780,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2410",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2410",
-      "target": "backend_main_get_model_diary_summary",
-      "confidence_score": 1.0
+      "target": "backend_main_get_model_diary_summary"
     },
     {
       "relation": "calls",
@@ -26801,9 +26801,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2433",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_rationale_2433",
-      "target": "backend_main_buy_finder_rank",
-      "confidence_score": 1.0
+      "target": "backend_main_buy_finder_rank"
     },
     {
       "relation": "references",
@@ -26873,9 +26873,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2557",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_main_save_client",
-      "target": "backend_main_saveclientrequest",
-      "confidence_score": 1.0
+      "target": "backend_main_saveclientrequest"
     },
     {
       "relation": "uses",
@@ -26883,9 +26883,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2411",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_saveclientrequest",
-      "target": "backend_models_v3_modeldiary",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_modeldiary"
     },
     {
       "relation": "uses",
@@ -26893,9 +26893,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_saveclientrequest",
-      "target": "backend_models_v3_propertylisting",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_propertylisting"
     },
     {
       "relation": "uses",
@@ -26903,9 +26903,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_saveclientrequest",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "uses",
@@ -26913,9 +26913,9 @@
       "source_file": "backend/main.py",
       "source_location": "L2278",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_saveclientrequest",
-      "target": "backend_models_v3_suburbrawv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbrawv3"
     },
     {
       "relation": "uses",
@@ -26923,9 +26923,9 @@
       "source_file": "backend/main.py",
       "source_location": "L27",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_main_saveclientrequest",
-      "target": "backend_models_v3_suburbuiv3",
-      "confidence_score": 0.5
+      "target": "backend_models_v3_suburbuiv3"
     },
     {
       "relation": "contains",
@@ -27024,9 +27024,9 @@
       "source_file": "backend/migrate_external_dom.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_migrate_external_dom",
-      "target": "backend_migrate_external_dom_main",
-      "confidence_score": 1.0
+      "target": "backend_migrate_external_dom_main"
     },
     {
       "relation": "rationale_for",
@@ -27034,9 +27034,9 @@
       "source_file": "backend/migrate_external_dom.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_migrate_external_dom_rationale_1",
-      "target": "backend_migrate_external_dom",
-      "confidence_score": 1.0
+      "target": "backend_migrate_external_dom"
     },
     {
       "relation": "contains",
@@ -27065,9 +27065,9 @@
       "source_file": "backend/migrate_mortgage_repayment.py",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_migrate_mortgage_repayment",
-      "target": "backend_migrate_mortgage_repayment_main",
-      "confidence_score": 1.0
+      "target": "backend_migrate_mortgage_repayment_main"
     },
     {
       "relation": "rationale_for",
@@ -27075,9 +27075,9 @@
       "source_file": "backend/migrate_mortgage_repayment.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_migrate_mortgage_repayment_rationale_1",
-      "target": "backend_migrate_mortgage_repayment",
-      "confidence_score": 1.0
+      "target": "backend_migrate_mortgage_repayment"
     },
     {
       "relation": "contains",
@@ -27240,9 +27240,9 @@
       "source_file": "backend/models_v3.py",
       "source_location": "L332",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_models_v3",
-      "target": "backend_models_v3_etlrunlog",
-      "confidence_score": 1.0
+      "target": "backend_models_v3_etlrunlog"
     },
     {
       "relation": "contains",
@@ -27405,9 +27405,9 @@
       "source_file": "backend/models_v3.py",
       "source_location": "L231",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_models_v3_rationale_231",
-      "target": "backend_models_v3_suburbpricehistory",
-      "confidence_score": 1.0
+      "target": "backend_models_v3_suburbpricehistory"
     },
     {
       "relation": "rationale_for",
@@ -27415,9 +27415,9 @@
       "source_file": "backend/models_v3.py",
       "source_location": "L272",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_models_v3_rationale_272",
-      "target": "backend_models_v3_committeememory",
-      "confidence_score": 1.0
+      "target": "backend_models_v3_committeememory"
     },
     {
       "relation": "rationale_for",
@@ -27425,9 +27425,9 @@
       "source_file": "backend/models_v3.py",
       "source_location": "L306",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_models_v3_rationale_306",
-      "target": "backend_models_v3_modeldiary",
-      "confidence_score": 1.0
+      "target": "backend_models_v3_modeldiary"
     },
     {
       "relation": "calls",
@@ -31016,9 +31016,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "components_macrobenchmarkpanel",
-      "confidence_score": 1.0
+      "target": "components_macrobenchmarkpanel"
     },
     {
       "relation": "imports_from",
@@ -31733,9 +31733,9 @@
       "source_file": "src/components/BuyFinder.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_buyfinder",
-      "target": "data_personas",
-      "confidence_score": 1.0
+      "target": "data_personas"
     },
     {
       "relation": "imports",
@@ -31744,9 +31744,9 @@
       "source_file": "src/components/BuyFinder.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_buyfinder",
-      "target": "data_personas_getpersona",
-      "confidence_score": 1.0
+      "target": "data_personas_getpersona"
     },
     {
       "relation": "imports",
@@ -31755,9 +31755,9 @@
       "source_file": "src/components/BuyFinder.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_buyfinder",
-      "target": "data_personas_personaid",
-      "confidence_score": 1.0
+      "target": "data_personas_personaid"
     },
     {
       "relation": "imports_from",
@@ -32193,9 +32193,9 @@
       "source_file": "src/components/MacroBenchmarkPanel.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_macrobenchmarkpanel",
-      "target": "components_macrobenchmarkpanel_benchmark",
-      "confidence_score": 1.0
+      "target": "components_macrobenchmarkpanel_benchmark"
     },
     {
       "relation": "contains",
@@ -32203,9 +32203,9 @@
       "source_file": "src/components/MacroBenchmarkPanel.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_macrobenchmarkpanel",
-      "target": "components_macrobenchmarkpanel_macrobenchmarkpanel",
-      "confidence_score": 1.0
+      "target": "components_macrobenchmarkpanel_macrobenchmarkpanel"
     },
     {
       "relation": "contains",
@@ -32642,9 +32642,9 @@
       "source_file": "src/components/SchoolZonesLayer.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_schoolzoneslayer",
-      "target": "components_schoolzoneslayer_schoolzoneslayer",
-      "confidence_score": 1.0
+      "target": "components_schoolzoneslayer_schoolzoneslayer"
     },
     {
       "relation": "contains",
@@ -32652,9 +32652,9 @@
       "source_file": "src/components/SchoolZonesLayer.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_schoolzoneslayer",
-      "target": "components_schoolzoneslayer_schoolzoneslayerprops",
-      "confidence_score": 1.0
+      "target": "components_schoolzoneslayer_schoolzoneslayerprops"
     },
     {
       "relation": "contains",
@@ -32834,9 +32834,9 @@
       "source_file": "src/components/SuburbMap.tsx",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_suburbmap",
-      "target": "components_suburbmap_earlylearningicon",
-      "confidence_score": 1.0
+      "target": "components_suburbmap_earlylearningicon"
     },
     {
       "relation": "contains",
@@ -34126,9 +34126,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos"
     },
     {
       "relation": "contains",
@@ -34136,9 +34136,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_confirmed_decisions",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_confirmed_decisions"
     },
     {
       "relation": "contains",
@@ -34146,9 +34146,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_current_state_from_code_inspection",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_current_state_from_code_inspection"
     },
     {
       "relation": "contains",
@@ -34156,9 +34156,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard"
     },
     {
       "relation": "contains",
@@ -34166,9 +34166,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_new_sources_to_lift_recommended",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_new_sources_to_lift_recommended"
     },
     {
       "relation": "contains",
@@ -34176,9 +34176,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L201",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_open_questions_for_the_implementer",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_open_questions_for_the_implementer"
     },
     {
       "relation": "contains",
@@ -34186,9 +34186,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L187",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_risks_failure_modes",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_risks_failure_modes"
     },
     {
       "relation": "contains",
@@ -34196,9 +34196,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_scope_in_out",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_scope_in_out"
     },
     {
       "relation": "contains",
@@ -34206,9 +34206,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L133",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered"
     },
     {
       "relation": "contains",
@@ -34216,9 +34216,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L193",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_mortgage_band_days_on_market_data_lineage_quality_todos",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_validation_plan",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_validation_plan"
     },
     {
       "relation": "contains",
@@ -34226,9 +34226,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_a_mortgage_repayment",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_a_mortgage_repayment"
     },
     {
       "relation": "contains",
@@ -34236,9 +34236,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_b_days_on_market",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_b_days_on_market"
     },
     {
       "relation": "contains",
@@ -34246,9 +34246,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_c_median_prices_rents_reference_for_mortgage_dom_denominators",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_c_median_prices_rents_reference_for_mortgage_dom_denominators"
     },
     {
       "relation": "contains",
@@ -34256,9 +34256,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_d_market_velocity_dom_denominators",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_d_market_velocity_dom_denominators"
     },
     {
       "relation": "contains",
@@ -34266,9 +34266,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_e_demographics_already_authoritative_for_context",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_e_demographics_already_authoritative_for_context"
     },
     {
       "relation": "contains",
@@ -34276,9 +34276,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_f_social_infrastructure_future_growth_osm",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_f_social_infrastructure_future_growth_osm"
     },
     {
       "relation": "contains",
@@ -34286,9 +34286,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_g_schools",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_g_schools"
     },
     {
       "relation": "contains",
@@ -34296,9 +34296,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_metric_by_metric_data_lineage_quality_scorecard",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_h_cadastral_subdivision_nsw_only",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_h_cadastral_subdivision_nsw_only"
     },
     {
       "relation": "contains",
@@ -34306,9 +34306,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t1_mortgage_rate_env_config_refresh_from_rba_big_4_n4_n8",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t1_mortgage_rate_env_config_refresh_from_rba_big_4_n4_n8"
     },
     {
       "relation": "contains",
@@ -34316,9 +34316,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L141",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t2_true_days_on_market_etl_from_external_source_n1_n2",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t2_true_days_on_market_etl_from_external_source_n1_n2"
     },
     {
       "relation": "contains",
@@ -34326,9 +34326,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t3_median_price_cross_validation_n3",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t3_median_price_cross_validation_n3"
     },
     {
       "relation": "contains",
@@ -34336,9 +34336,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t4_provenance_lineage_per_metric_decision_7",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t4_provenance_lineage_per_metric_decision_7"
     },
     {
       "relation": "contains",
@@ -34346,9 +34346,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L161",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t5_unit_days_on_market_derivation",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t5_unit_days_on_market_derivation"
     },
     {
       "relation": "contains",
@@ -34356,9 +34356,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L168",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t6_dq_report_expansion",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t6_dq_report_expansion"
     },
     {
       "relation": "contains",
@@ -34366,9 +34366,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L178",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t7_frontend_source_freshness_footnote",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t7_frontend_source_freshness_footnote"
     },
     {
       "relation": "contains",
@@ -34376,9 +34376,9 @@
       "source_file": ".kilo/plans/1784423405957-mortgage-dom-data-lineage-quality-plan.md",
       "source_location": "L183",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_todos_ordered",
-      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t8_api_return_new_lineage_dom_fields",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_mortgage_dom_data_lineage_quality_plan_t8_api_return_new_lineage_dom_fields"
     },
     {
       "relation": "contains",
@@ -34386,9 +34386,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan"
     },
     {
       "relation": "contains",
@@ -34396,9 +34396,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_confirmed_decisions",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_confirmed_decisions"
     },
     {
       "relation": "contains",
@@ -34406,9 +34406,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close"
     },
     {
       "relation": "contains",
@@ -34416,9 +34416,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L219",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_open_questions_for_the_implementer",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_open_questions_for_the_implementer"
     },
     {
       "relation": "contains",
@@ -34426,9 +34426,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L191",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_out_of_scope_follow_up_plans",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_out_of_scope_follow_up_plans"
     },
     {
       "relation": "contains",
@@ -34436,9 +34436,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong"
     },
     {
       "relation": "contains",
@@ -34446,9 +34446,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L198",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_risks_failure_modes_of_the_hardening_itself",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_risks_failure_modes_of_the_hardening_itself"
     },
     {
       "relation": "contains",
@@ -34456,9 +34456,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L205",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_app_hardening_plan",
-      "target": "plans_1784423405957_premortem_hardening_plan_validation_plan",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_validation_plan"
     },
     {
       "relation": "contains",
@@ -34466,9 +34466,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p10_restart_wipes_in_memory_rate_limit_and_ai_contribution_memory",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p10_restart_wipes_in_memory_rate_limit_and_ai_contribution_memory"
     },
     {
       "relation": "contains",
@@ -34476,9 +34476,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p11_mortgage_estimate_silently_degrades_when_median_price_source_lags",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p11_mortgage_estimate_silently_degrades_when_median_price_source_lags"
     },
     {
       "relation": "contains",
@@ -34486,9 +34486,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p12_postgres_oom_killed_mid_enrichment_corrupts_a_partial_row",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p12_postgres_oom_killed_mid_enrichment_corrupts_a_partial_row"
     },
     {
       "relation": "contains",
@@ -34496,9 +34496,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p13_scraped_external_html_parser_breaks_on_a_layout_change_writes_nulls_no_alarm",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p13_scraped_external_html_parser_breaks_on_a_layout_change_writes_nulls_no_alarm"
     },
     {
       "relation": "contains",
@@ -34506,9 +34506,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p14_wide_except_exception_in_api_hides_a_real_bug_as_a_500",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p14_wide_except_exception_in_api_hides_a_real_bug_as_a_500"
     },
     {
       "relation": "contains",
@@ -34516,9 +34516,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p15_single_uvicorn_worker_no_horizontal_scale_same_worker_runs_cpu_heavy_ai",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p15_single_uvicorn_worker_no_horizontal_scale_same_worker_runs_cpu_heavy_ai"
     },
     {
       "relation": "contains",
@@ -34526,9 +34526,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p1_every_user_logged_out_every_time_the_container_restarts",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p1_every_user_logged_out_every_time_the_container_restarts"
     },
     {
       "relation": "contains",
@@ -34536,9 +34536,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p2_cors_allow_credentials_true_browsers_refuse_or_worse_accept",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p2_cors_allow_credentials_true_browsers_refuse_or_worse_accept"
     },
     {
       "relation": "contains",
@@ -34546,9 +34546,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p3_db_credentials_leak_via_git_or_image_layer",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p3_db_credentials_leak_via_git_or_image_layer"
     },
     {
       "relation": "contains",
@@ -34556,9 +34556,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p4_the_brand_new_external_scraper_gets_the_ip_permanently_banned_on_day_1",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p4_the_brand_new_external_scraper_gets_the_ip_permanently_banned_on_day_1"
     },
     {
       "relation": "contains",
@@ -34566,9 +34566,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p5_silent_etl_errors_produce_a_quiet_wrong_dataset",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p5_silent_etl_errors_produce_a_quiet_wrong_dataset"
     },
     {
       "relation": "contains",
@@ -34576,9 +34576,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p6_third_party_llm_provider_outage_cascades_into_total_ux_freeze",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p6_third_party_llm_provider_outage_cascades_into_total_ux_freeze"
     },
     {
       "relation": "contains",
@@ -34586,9 +34586,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p7_db_connection_pool_exhaustion_under_a_slow_query_scrape_storm",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p7_db_connection_pool_exhaustion_under_a_slow_query_scrape_storm"
     },
     {
       "relation": "contains",
@@ -34596,9 +34596,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p8_xss_in_property_description_text_steals_buyer_fit_tokens",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p8_xss_in_property_description_text_steals_buyer_fit_tokens"
     },
     {
       "relation": "contains",
@@ -34606,9 +34606,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_premortem_it_s_been_live_2_weeks_what_went_wrong",
-      "target": "plans_1784423405957_premortem_hardening_plan_p9_the_new_computed_mortgage_shows_a_wildly_wrong_number_because_the_rate_env_var_is_unset",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_p9_the_new_computed_mortgage_shows_a_wildly_wrong_number_because_the_rate_env_var_is_unset"
     },
     {
       "relation": "contains",
@@ -34616,9 +34616,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L159",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h10_p1_config_staleness_alert_closes_p9",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h10_p1_config_staleness_alert_closes_p9"
     },
     {
       "relation": "contains",
@@ -34626,9 +34626,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L165",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h11_p1_freshness_surfaced_in_ui_closes_p11",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h11_p1_freshness_surfaced_in_ui_closes_p11"
     },
     {
       "relation": "contains",
@@ -34636,9 +34636,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h12_p1_structured_request_logs_closes_p14",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h12_p1_structured_request_logs_closes_p14"
     },
     {
       "relation": "contains",
@@ -34646,9 +34646,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L174",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h13_p1_concurrency_model_for_ai_closes_p15",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h13_p1_concurrency_model_for_ai_closes_p15"
     },
     {
       "relation": "contains",
@@ -34656,9 +34656,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L180",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h14_p2_scraper_robots_tos_posture_closes_p4_follow_up",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h14_p2_scraper_robots_tos_posture_closes_p4_follow_up"
     },
     {
       "relation": "contains",
@@ -34666,9 +34666,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L186",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h15_p2_test_scaffolding_for_the_new_invariants",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h15_p2_test_scaffolding_for_the_new_invariants"
     },
     {
       "relation": "contains",
@@ -34676,9 +34676,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h1_p0_kill_the_random_jwt_secret_foot_gun_closes_p1_p10",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h1_p0_kill_the_random_jwt_secret_foot_gun_closes_p1_p10"
     },
     {
       "relation": "contains",
@@ -34686,9 +34686,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L112",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h2_p0_cors_hardening_closes_p2",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h2_p0_cors_hardening_closes_p2"
     },
     {
       "relation": "contains",
@@ -34696,9 +34696,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L118",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h3_p0_remove_all_hardcoded_db_api_key_defaults_closes_p3",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h3_p0_remove_all_hardcoded_db_api_key_defaults_closes_p3"
     },
     {
       "relation": "contains",
@@ -34706,9 +34706,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L124",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h4_p0_external_fetch_resilience_module_closes_p4_p6_p13",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h4_p0_external_fetch_resilience_module_closes_p4_p6_p13"
     },
     {
       "relation": "contains",
@@ -34716,9 +34716,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h5_p0_stop_swallowing_etl_errors_closes_p5_p12",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h5_p0_stop_swallowing_etl_errors_closes_p5_p12"
     },
     {
       "relation": "contains",
@@ -34726,9 +34726,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h6_p0_frontend_token_in_httponly_cookie_closes_p8_token_storage_half",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h6_p0_frontend_token_in_httponly_cookie_closes_p8_token_storage_half"
     },
     {
       "relation": "contains",
@@ -34736,9 +34736,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L142",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h7_p0_sanitize_rendered_external_scraped_text_closes_p8_xss_half",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h7_p0_sanitize_rendered_external_scraped_text_closes_p8_xss_half"
     },
     {
       "relation": "contains",
@@ -34746,9 +34746,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h8_p1_dblimit_timeout_hardening_closes_p7",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h8_p1_dblimit_timeout_hardening_closes_p7"
     },
     {
       "relation": "contains",
@@ -34756,9 +34756,9 @@
       "source_file": ".kilo/plans/1784423405957-premortem-hardening-plan.md",
       "source_location": "L153",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_1784423405957_premortem_hardening_plan_hardening_todos_mapped_to_the_p_they_close",
-      "target": "plans_1784423405957_premortem_hardening_plan_h9_p1_rate_limiting_via_redis_closes_p10",
-      "confidence_score": 1.0
+      "target": "plans_1784423405957_premortem_hardening_plan_h9_p1_rate_limiting_via_redis_closes_p10"
     },
     {
       "relation": "contains",
@@ -38176,9 +38176,9 @@
       "source_file": "review_persona.md",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona",
-      "target": "review_persona_1_who_the_app_is_built_for_today",
-      "confidence_score": 1.0
+      "target": "review_persona_1_who_the_app_is_built_for_today"
     },
     {
       "relation": "contains",
@@ -38186,9 +38186,9 @@
       "source_file": "review_persona.md",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona",
-      "target": "review_persona_2_persona_gap_analysis",
-      "confidence_score": 1.0
+      "target": "review_persona_2_persona_gap_analysis"
     },
     {
       "relation": "contains",
@@ -38196,9 +38196,9 @@
       "source_file": "review_persona.md",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona",
-      "target": "review_persona_3_competitive_feature_matrix_this_app_vs_the_three_reference_sites",
-      "confidence_score": 1.0
+      "target": "review_persona_3_competitive_feature_matrix_this_app_vs_the_three_reference_sites"
     },
     {
       "relation": "contains",
@@ -38206,9 +38206,9 @@
       "source_file": "review_persona.md",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona",
-      "target": "review_persona_4_prioritized_recommendations_persona_weighted_data_cost_aware",
-      "confidence_score": 1.0
+      "target": "review_persona_4_prioritized_recommendations_persona_weighted_data_cost_aware"
     },
     {
       "relation": "contains",
@@ -38216,9 +38216,9 @@
       "source_file": "review_persona.md",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona",
-      "target": "review_persona_5_one_line_takeaway_per_persona",
-      "confidence_score": 1.0
+      "target": "review_persona_5_one_line_takeaway_per_persona"
     },
     {
       "relation": "contains",
@@ -38226,9 +38226,9 @@
       "source_file": "review_persona.md",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona",
-      "target": "review_persona_scope_of_this_review",
-      "confidence_score": 1.0
+      "target": "review_persona_scope_of_this_review"
     },
     {
       "relation": "contains",
@@ -38236,9 +38236,9 @@
       "source_file": "review_persona.md",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona_2_persona_gap_analysis",
-      "target": "review_persona_2_1_first_home_buyer_fhb_largely_unserved_today",
-      "confidence_score": 1.0
+      "target": "review_persona_2_1_first_home_buyer_fhb_largely_unserved_today"
     },
     {
       "relation": "contains",
@@ -38246,9 +38246,9 @@
       "source_file": "review_persona.md",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona_2_persona_gap_analysis",
-      "target": "review_persona_2_2_investor_closest_fit_but_missing_portfolio_monitoring_features",
-      "confidence_score": 1.0
+      "target": "review_persona_2_2_investor_closest_fit_but_missing_portfolio_monitoring_features"
     },
     {
       "relation": "contains",
@@ -38256,9 +38256,9 @@
       "source_file": "review_persona.md",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona_2_persona_gap_analysis",
-      "target": "review_persona_2_3_buyers_agent_entirely_unserved_and_the_highest_leverage_gap_to_close",
-      "confidence_score": 1.0
+      "target": "review_persona_2_3_buyers_agent_entirely_unserved_and_the_highest_leverage_gap_to_close"
     },
     {
       "relation": "contains",
@@ -38266,9 +38266,9 @@
       "source_file": "review_persona.md",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona_4_prioritized_recommendations_persona_weighted_data_cost_aware",
-      "target": "review_persona_blocked_dependent_on_npd_data_licensing",
-      "confidence_score": 1.0
+      "target": "review_persona_blocked_dependent_on_npd_data_licensing"
     },
     {
       "relation": "contains",
@@ -38276,9 +38276,9 @@
       "source_file": "review_persona.md",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "review_persona_4_prioritized_recommendations_persona_weighted_data_cost_aware",
-      "target": "review_persona_can_build_now_no_new_data_required",
-      "confidence_score": 1.0
+      "target": "review_persona_can_build_now_no_new_data_required"
     },
     {
       "relation": "contains",
@@ -41218,5 +41218,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "3ddbf63899475e16134d06978406287b26baf1e5"
+  "built_at_commit": "f864aac1f7006299fd74c2def7caaf1772a02cb1"
 }

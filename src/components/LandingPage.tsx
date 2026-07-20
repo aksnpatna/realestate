@@ -25,7 +25,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
       {/* Hero Section */}
       <section style={{ padding: '80px 20px', textAlign: 'center', background: 'linear-gradient(to bottom, #F8FAFC, #FFFFFF)' }}>
         <h1 style={{ fontSize: '3.5rem', fontWeight: 800, color: 'var(--text-primary)', maxWidth: '900px', margin: '0 auto', lineHeight: 1.1 }}>
-          Make Smarter Property Decisions with <span style={{ color: 'var(--accent-cyan)' }}>Institutional-Grade Data</span>
+          Find the Right Suburb with <span style={{ color: 'var(--accent-cyan)' }}>Evidence, Not Guesswork</span>
         </h1>
         <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '24px auto 32px auto', lineHeight: 1.5 }}>
           Subdivision precedents, demand signals, and AI-powered suburb profiling — all in one platform designed for investors and professionals.
@@ -59,7 +59,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
           <div className="glass-card" style={{ padding: '30px' }}>
             <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '15px' }}>For First Home Buyers</h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: 'var(--text-secondary)' }}>
-              <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Affordability ceiling calculator</li>
+              <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Stamp duty + LMI calculator for your actual budget</li>
               <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Official school catchment zones</li>
               <li>✓ Livability & walkability scores</li>
             </ul>
@@ -68,7 +68,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
           <div className="glass-card" style={{ padding: '30px', border: '2px solid var(--accent-cyan)' }}>
             <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '15px' }}>For Investors</h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: 'var(--text-secondary)' }}>
-              <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Cashflow & yield modeling</li>
+              <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Cashflow after tax — includes depreciation schedule</li>
               <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Real subdivision precedents</li>
               <li>✓ AI Committee (Bull/Bear insights)</li>
             </ul>
@@ -77,7 +77,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
           <div className="glass-card" style={{ padding: '30px' }}>
             <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', marginBottom: '15px' }}>For Buyer's Agents</h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: 'var(--text-secondary)' }}>
-              <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ White-label suburb reports</li>
+              <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Client Audit Trail — exports to PDF</li>
               <li style={{ paddingBottom: '10px', borderBottom: '1px solid var(--border-glass)', marginBottom: '10px' }}>✓ Full technical provenance</li>
               <li>✓ Data quality confidence bands</li>
             </ul>
@@ -91,18 +91,25 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
         <h2 style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '50px', color: 'var(--text-primary)' }}>Simple, transparent pricing</h2>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', flexWrap: 'wrap' }}>
           
-          <div className="glass-card" style={{ padding: '40px', width: '100%', maxWidth: '400px' }}>
-            <h3 style={{ fontSize: '1.5rem', color: 'var(--text-primary)' }}>Quant Investor</h3>
+          <div className="glass-card" style={{ padding: '40px', width: '100%', maxWidth: '350px' }}>
+            <h3 style={{ fontSize: '1.5rem', color: 'var(--text-primary)' }}>Broker Starter</h3>
+            <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--text-primary)', margin: '20px 0' }}>$49<span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 400 }}>/mo</span></div>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>For Mortgage Brokers. Unlocks the Borrower PDF Pack instantly.</p>
+            <button onClick={onRegisterClick} style={{ width: '100%', padding: '12px', background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>Start 7-Day Trial</button>
+          </div>
+
+          <div className="glass-card" style={{ padding: '40px', width: '100%', maxWidth: '350px' }}>
+            <h3 style={{ fontSize: '1.5rem', color: 'var(--text-primary)' }}>DIY</h3>
             <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--text-primary)', margin: '20px 0' }}>$99<span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 400 }}>/mo</span></div>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>Everything an individual investor needs to outperform the market.</p>
             <button onClick={onRegisterClick} style={{ width: '100%', padding: '12px', background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>Start 7-Day Trial</button>
           </div>
 
-          <div className="glass-card" style={{ padding: '40px', width: '100%', maxWidth: '400px', background: 'var(--accent-primary)', color: '#fff' }}>
+          <div className="glass-card" style={{ padding: '40px', width: '100%', maxWidth: '350px', background: 'var(--accent-primary)', color: '#fff' }}>
             <div style={{ display: 'inline-block', background: 'var(--accent-cyan)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600, marginBottom: '15px' }}>MOST POPULAR</div>
-            <h3 style={{ fontSize: '1.5rem', color: '#fff' }}>Professional</h3>
+            <h3 style={{ fontSize: '1.5rem', color: '#fff' }}>Buyer's Agent</h3>
             <div style={{ fontSize: '3rem', fontWeight: 800, margin: '20px 0' }}>$249<span style={{ fontSize: '1rem', opacity: 0.8, fontWeight: 400 }}>/mo</span></div>
-            <p style={{ opacity: 0.9, marginBottom: '30px' }}>For Buyer's Agents and Brokers. Includes white-label reports and client portal.</p>
+            <p style={{ opacity: 0.9, marginBottom: '30px' }}>Includes Client Audit Trail, white-label reports and client portal.</p>
             <button onClick={onRegisterClick} style={{ width: '100%', padding: '12px', background: '#fff', border: 'none', color: 'var(--accent-primary)', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>Start 7-Day Trial</button>
           </div>
 
