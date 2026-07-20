@@ -17,7 +17,7 @@ const MacroBenchmarkPanel = memo(function MacroBenchmarkPanel() {
     fetch('/api/benchmarks', { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
-        setBenchmarks(data.benchmarks || [])
+        setBenchmarks(Array.isArray(data) ? data : (data.benchmarks || []))
         setLoading(false)
       })
       .catch(() => setLoading(false))
