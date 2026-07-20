@@ -613,7 +613,7 @@ function App() {
               style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '1.05rem', cursor: 'pointer', outline: 'none' }}
             >
               <option value="" disabled>Tools ▼</option>
-              <option value="gearing">Cashflow & Gearing</option>
+              {persona !== 'first_home_buyer' && <option value="gearing">Cashflow & Gearing</option>}
               <option value="affordability">Price Ceiling</option>
               <option value="purchase-plan">My Purchase Plan</option>
               <option value="calculators">Calculators</option>
@@ -840,12 +840,14 @@ function App() {
                           <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
                             Deterministic momentum,<br/>not a price forecast
                           </div>
-                          <button
-                            onClick={() => setActiveTab('gearing')}
-                            style={{ marginTop: '10px', padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', width: '100%' }}
-                          >
-                            💰 View Cashflow →
-                          </button>
+                          {persona !== 'first_home_buyer' && (
+                            <button
+                              onClick={() => setActiveTab('gearing')}
+                              style={{ marginTop: '10px', padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', width: '100%' }}
+                            >
+                              💰 View Cashflow →
+                            </button>
+                          )}
                         </div>
                       </div>
                   </div>
@@ -1672,17 +1674,19 @@ function App() {
                     </div>
                   </div>
 
-                  {/* PANEL E: Quick ROI Calculator */}
-                  <div style={{ display: activeProfileSection === 'overview' || activeProfileSection === 'market' ? 'block' : 'none' }}>
-                  <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
-                  <QuickRoiCalculator 
-                    medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
-                    medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
-                    state={(activeSuburb as any).state || "VIC"}
-                    onAdvancedClick={() => setActiveTab('gearing')}
-                  />
-                  </Suspense>
-                  </div>
+                  {/* PANEL E: Quick ROI Calculator (Investors only) */}
+                  {persona !== 'first_home_buyer' && (
+                    <div style={{ display: activeProfileSection === 'overview' || activeProfileSection === 'market' ? 'block' : 'none' }}>
+                    <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
+                    <QuickRoiCalculator 
+                      medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
+                      medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
+                      state={(activeSuburb as any).state || "VIC"}
+                      onAdvancedClick={() => setActiveTab('gearing')}
+                    />
+                    </Suspense>
+                    </div>
+                  )}
 
                   {/* K-Means Clustering: Similar Suburbs */}
                   <div style={{ marginTop: '20px', display: activeProfileSection === 'pockets' ? 'block' : 'none' }}>
