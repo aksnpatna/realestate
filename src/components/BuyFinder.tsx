@@ -78,27 +78,42 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   }, []);
 
   // Buyers Agent Client Management
-  const [clients, setClients] = useState<any[]>(() => {
-    try {
-      const stored = localStorage.getItem('realestate.clients');
-      return stored ? JSON.parse(stored) : [];
-    } catch { return []; }
-  });
+  const [clients, setClients] = useState<any[]>([]);
   const [activeClientId, setActiveClientId] = useState<string>('');
 
-  const saveClient = () => {
+  useEffect(() => {
+    if (isBuyersAgent) {
+      fetch('/api/clients')
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) setClients(data);
+        })
+        .catch(console.error);
+    }
+  }, [isBuyersAgent]);
+
+  const saveClient = async () => {
     const clientName = prompt("Enter client name (e.g. 'John & Jane - FHB'):");
     if (!clientName) return;
     
-    const newClient = {
-      id: Date.now().toString(),
-      name: clientName,
-      profile: { state, budget, deposit, annualIncome, monthlyDebt, propertyType, maxCBDMinutes, minimumYield }
-    };
-    const updated = [...clients, newClient];
-    setClients(updated);
-    localStorage.setItem('realestate.clients', JSON.stringify(updated));
-    setActiveClientId(newClient.id);
+    const profile = { state, budget, deposit, annualIncome, monthlyDebt, propertyType, maxCBDMinutes, minimumYield };
+    
+    try {
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: clientName, profile })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const newClient = { id: data.id, name: clientName, profile };
+        setClients(prev => [...prev, newClient]);
+        setActiveClientId(data.id);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to save client to server.");
+    }
   };
 
   const loadClient = (e: React.ChangeEvent<HTMLSelectElement>) => {
