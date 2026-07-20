@@ -83,7 +83,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
 
   useEffect(() => {
     if (isBuyersAgent) {
-      fetch('/api/clients')
+      fetch('/api/clients', { credentials: 'include' })
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data)) setClients(data);
@@ -102,6 +102,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
       const res = await fetch('/api/clients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ name: clientName, profile })
       });
       if (res.ok) {
@@ -141,6 +142,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
       const res = await fetch('/api/buy-finder/rank', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           buyer_profile: persona || 'first_home_buyer',
           state,

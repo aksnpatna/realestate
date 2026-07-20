@@ -117,7 +117,7 @@ function App() {
    */
   const loadColdSuburb = useCallback(async (id: string) => {
     try {
-      const res = await fetch(`/api/suburbs/${id}`)
+      const res = await fetch(`/api/suburbs/${id}`, { credentials: 'include' })
       if (res.ok) {
         const data = await res.json()
         data.id = id  // Preserve frontend ID format for dropdown match
@@ -167,7 +167,7 @@ function App() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetch('/api/suburbs')
+      fetch('/api/suburbs', { credentials: 'include' })
         .then(res => res.json())
         .then(apiData => {
           if (apiData && apiData.length > 0) {
@@ -184,7 +184,7 @@ function App() {
           setLoadingData(false)
         })
       
-      fetch('/api/benchmarks')
+      fetch('/api/benchmarks', { credentials: 'include' })
         .then(res => res.json())
         .then(data => setBenchmarks(data))
         .catch(err => console.error("Benchmarks fetch error:", err))
