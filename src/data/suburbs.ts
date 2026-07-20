@@ -193,7 +193,41 @@ export const STAMP_DUTY_RATES: StampDutyRates[] = [
   { state: 'NT', threshold1: 525000, rate1: 5.45, threshold2: 3000000, rate2: 5.45, threshold3: 3000000, rate3: 5.45 },
 ];
 
-export function calculateStampDuty(price: number, state: string): number {
+export function calculateStampDuty(price: number, state: string, isFHB: boolean = false): number {
+  if (isFHB) {
+    if (state === 'NSW') {
+      if (price <= 800000) return 0;
+      if (price <= 1000000) return (price - 800000) * 0.2024; // Approx sliding scale
+    }
+    if (state === 'VIC') {
+      if (price <= 600000) return 0;
+      if (price <= 750000) {
+        const standardDuty = 2870 + (price - 130000) * 0.06;
+        return standardDuty * ((price - 600000) / 150000);
+      }
+    }
+    if (state === 'QLD') {
+      if (price <= 700000) return 0;
+      if (price <= 800000) {
+         const standardDuty = 17325 + (price - 540000) * 0.045;
+         return standardDuty * ((price - 700000) / 100000);
+      }
+    }
+    if (state === 'WA') {
+      if (price <= 450000) return 0;
+      if (price <= 600000) {
+         return (price - 450000) * 0.1919;
+      }
+    }
+    if (state === 'SA') {
+      if (price <= 650000) return 0;
+      if (price <= 700000) {
+         const standardDuty = 21330 + (price - 500000) * 0.055;
+         return standardDuty * ((price - 650000) / 50000);
+      }
+    }
+  }
+
   if (state === 'NSW') {
     if (price <= 14500) return price * 0.0125;
     if (price <= 30000) return 175 + (price - 14500) * 0.015;
@@ -264,7 +298,8 @@ export function calculateMaxPurchase(
   annualIncome: number = 150000,
   monthlyDebt: number = 0,
   interestRate: number = 0.062,
-  bufferRate: number = 0.03
+  bufferRate: number = 0.03,
+  isFHB: boolean = false
 ): {
   maxPrice: number;
   maxBorrow: number;
@@ -272,7 +307,7 @@ export function calculateMaxPurchase(
   borrowingCapacity: number;
   limitedBy: 'Deposit/LVR' | 'Serviceability';
 } {
-  const effectiveLvr = Math.min(lvr, 0.95); // up to 95% LVR for First Home Buyers
+  const effectiveLvr = isFHB ? Math.min(lvr, 0.95) : Math.min(lvr, 0.90);
 
   // 1. Calculate Borrowing Capacity based on Income
   const grossMonthly = annualIncome / 12;
@@ -292,11 +327,11 @@ export function calculateMaxPurchase(
 
   // 2. Find max purchase price bounded by BOTH Deposit/LVR and Borrowing Capacity
   let lo = deposit;
-  let hi = deposit * 15;
+  let hi = deposit * 20;
   for (let i = 0; i < 50; i++) {
     const mid = (lo + hi) / 2;
     const loanRequiredForLvr = mid * effectiveLvr;
-    const stampDuty = calculateStampDuty(mid, state);
+    const stampDuty = calculateStampDuty(mid, state, isFHB);
     
     // The actual loan we can get is the minimum of what LVR allows and what the bank approves
     const actualLoan = Math.min(loanRequiredForLvr, borrowingCapacity);
@@ -307,7 +342,7 @@ export function calculateMaxPurchase(
   }
   
   const maxPrice = Math.floor(lo);
-  const stampDutyForMax = Math.floor(calculateStampDuty(maxPrice, state));
+  const stampDutyForMax = Math.floor(calculateStampDuty(maxPrice, state, isFHB));
   const maxBorrow = Math.min(Math.floor(maxPrice * effectiveLvr), borrowingCapacity);
   
   const limitedBy = maxBorrow >= borrowingCapacity - 1000 ? 'Serviceability' : 'Deposit/LVR';

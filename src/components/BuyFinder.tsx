@@ -61,6 +61,49 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const activePersonaObj = getPersona(persona as PersonaId);
   const isInvestor = activePersonaObj.id === 'investor';
   const isFHB = activePersonaObj.id === 'first_home_buyer';
+  const isBuyersAgent = activePersonaObj.id === 'buyers_agent';
+
+  // Buyers Agent Client Management
+  const [clients, setClients] = useState<any[]>(() => {
+    try {
+      const stored = localStorage.getItem('realestate.clients');
+      return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
+  });
+  const [activeClientId, setActiveClientId] = useState<string>('');
+
+  const saveClient = () => {
+    const clientName = prompt("Enter client name (e.g. 'John & Jane - FHB'):");
+    if (!clientName) return;
+    
+    const newClient = {
+      id: Date.now().toString(),
+      name: clientName,
+      profile: { state, budget, deposit, annualIncome, monthlyDebt, propertyType, maxCBDMinutes, minimumYield }
+    };
+    const updated = [...clients, newClient];
+    setClients(updated);
+    localStorage.setItem('realestate.clients', JSON.stringify(updated));
+    setActiveClientId(newClient.id);
+  };
+
+  const loadClient = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    setActiveClientId(id);
+    if (!id) return;
+    
+    const client = clients.find(c => c.id === id);
+    if (client) {
+      setState(client.profile.state);
+      updateProfile('budget', client.profile.budget);
+      updateProfile('deposit', client.profile.deposit);
+      updateProfile('annualIncome', client.profile.annualIncome);
+      updateProfile('monthlyDebt', client.profile.monthlyDebt);
+      updateProfile('propertyType', client.profile.propertyType);
+      updateProfile('maxCBDMinutes', client.profile.maxCBDMinutes);
+      updateProfile('minimumYield', client.profile.minimumYield);
+    }
+  };
 
   const fetchRanking = useCallback(async () => {
     setBackendLoading(true);
@@ -126,6 +169,26 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
             </span>
           )}
         </p>
+
+        {isBuyersAgent && (
+          <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
+            <div style={{ fontWeight: 600, color: 'var(--accent-cyan)', fontSize: '0.85rem' }}>Client Profile:</div>
+            <select className="premium-input small" value={activeClientId} onChange={loadClient} style={{ maxWidth: '250px' }}>
+              <option value="">-- Active Session (Unsaved) --</option>
+              {clients.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+            <button onClick={saveClient} style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>
+              💾 Save Client
+            </button>
+            {activeClientId && (
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                Viewing saved constraints for {clients.find(c => c.id === activeClientId)?.name}
+              </span>
+            )}
+          </div>
+        )}
 
         <div className="filter-grid">
           <div className="filter-section">
