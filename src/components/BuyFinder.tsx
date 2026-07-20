@@ -63,6 +63,20 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const isFHB = activePersonaObj.id === 'first_home_buyer';
   const isBuyersAgent = activePersonaObj.id === 'buyers_agent';
 
+  const [comparisonList, setComparisonList] = useState<any[]>([]);
+
+  const toggleCompare = useCallback((result: any) => {
+    setComparisonList(prev => {
+      const exists = prev.find(p => p.suburb_id === result.suburb_id);
+      if (exists) return prev.filter(p => p.suburb_id !== result.suburb_id);
+      if (prev.length >= 5) {
+        alert("You can compare up to 5 suburbs side-by-side.");
+        return prev;
+      }
+      return [...prev, result];
+    });
+  }, []);
+
   // Buyers Agent Client Management
   const [clients, setClients] = useState<any[]>(() => {
     try {
@@ -348,11 +362,76 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
             </div>
           </div>
         )}
+        {isBuyersAgent && comparisonList.length > 0 && (
+          <div className="glass-card" style={{ marginBottom: '20px', border: '1px solid var(--accent-cyan)', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+              <h3 style={{ margin: 0, color: 'var(--accent-cyan)' }}>Side-by-Side Comparison ({comparisonList.length}/5)</h3>
+              <button 
+                onClick={() => window.print()}
+                style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
+              >
+                🖨️ Export Decision Brief (PDF)
+              </button>
+            </div>
+            
+            <div style={{ overflowX: 'auto', paddingBottom: '10px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Metric</th>
+                    {comparisonList.map(c => (
+                      <th key={c.suburb_id} style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '150px' }}>
+                        <div style={{ fontSize: '1rem', color: '#fff' }}>{c.name}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{c.state} • {c.postcode}</div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Buyer Fit Score</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', fontWeight: 'bold', color: 'var(--accent-cyan)' }}>{c.buyer_fit_score.toFixed(0)} / 100</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Data Confidence</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.confidence_label?.toUpperCase() || 'LOW'}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Median Price</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>${(c.affordability?.purchase_price || 0).toLocaleString()}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Rental Yield</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.components?.income?.score ? (c.components.income.score / 10).toFixed(1) + '%' : 'N/A'}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Top Growth Driver</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '0.75rem' }}>{c.drivers?.[0] || 'N/A'}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Top Risk</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', fontSize: '0.75rem', color: '#ef4444' }}>{c.risks?.[0] || 'None identified'}</td>)}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {backendResults && backendResults.results.length > 0 && (
           <div className="search-results-grid">
             {backendResults.results.map((r: any) => (
-              <BackendResultCard key={r.suburb_id} result={r} setActiveSuburb={setActiveSuburb} setActiveTab={setActiveTab} onSelectResult={onSelectResult} requestMeta={{ request_id: backendResults.request_id, model_version: backendResults.model_version }} />
+              <BackendResultCard 
+                key={r.suburb_id} 
+                result={r} 
+                setActiveSuburb={setActiveSuburb} 
+                setActiveTab={setActiveTab} 
+                onSelectResult={onSelectResult} 
+                requestMeta={{ request_id: backendResults.request_id, model_version: backendResults.model_version }} 
+                isBuyersAgent={isBuyersAgent}
+                isCompared={comparisonList.some(c => c.suburb_id === r.suburb_id)}
+                toggleCompare={() => toggleCompare(r)}
+              />
             ))}
           </div>
         )}
@@ -364,7 +443,18 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   );
 })
 
-const BackendResultCard = memo(function BackendResultCard({ result, setActiveSuburb, setActiveTab, onSelectResult, requestMeta }: { result: any; setActiveSuburb?: (s: any) => void; setActiveTab?: (t: string) => void; onSelectResult?: (result: BuyerFitResult, meta: { request_id: string; model_version: string }) => void; requestMeta?: { request_id: string; model_version: string } }) {
+const BackendResultCard = memo(function BackendResultCard({ 
+  result, setActiveSuburb, setActiveTab, onSelectResult, requestMeta, isBuyersAgent, isCompared, toggleCompare 
+}: { 
+  result: any; 
+  setActiveSuburb?: (s: any) => void; 
+  setActiveTab?: (t: string) => void; 
+  onSelectResult?: (result: BuyerFitResult, meta: { request_id: string; model_version: string }) => void; 
+  requestMeta?: { request_id: string; model_version: string };
+  isBuyersAgent?: boolean;
+  isCompared?: boolean;
+  toggleCompare?: () => void;
+}) {
   const [showEvidence, setShowEvidence] = useState(false);
   const confColor = result.confidence_label === 'high' ? '#10b981' : result.confidence_label === 'medium' ? '#eab308' : '#ef4444';
   const evidenceLabel = result.confidence_label || 'low';
@@ -412,7 +502,15 @@ const BackendResultCard = memo(function BackendResultCard({ result, setActiveSub
       </div>
 
       {/* Body Area */}
-      <div style={{ padding: '20px', display: 'flex', gap: '20px', flex: 1 }}>
+      <div style={{ padding: '20px', display: 'flex', gap: '20px', flex: 1, position: 'relative' }}>
+        {isBuyersAgent && (
+          <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+              <input type="checkbox" checked={isCompared} onChange={toggleCompare} style={{ cursor: 'pointer' }} />
+              Compare
+            </label>
+          </div>
+        )}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(14,165,233,0.05)', padding: '15px', borderRadius: '12px', minWidth: '90px', border: '1px solid rgba(14,165,233,0.1)' }}>
           <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-cyan)', lineHeight: 1 }}>{result.buyer_fit_score.toFixed(0)}</div>
           <div style={{ fontSize: '0.65rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px', fontWeight: 600 }}>Buyer Fit</div>
