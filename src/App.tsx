@@ -12,6 +12,7 @@ import PersonaSwitcher from './components/PersonaSwitcher'
 import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
 import TechnicalProvenanceSection from './components/TechnicalProvenanceSection'
 import MarketIndicatorsSection from './components/MarketIndicatorsSection'
+import SqmHistoricalChart from './components/SqmHistoricalChart'
 import PocketRiskMap from './components/PocketRiskMap'
 import type { PersonaId, ProfileSectionId } from './data/personas'
 import { loadStoredPersona, getPersona } from './data/personas'
@@ -1050,6 +1051,10 @@ function App() {
                   <div style={{ display: activeProfileSection === 'overview' ? 'block' : 'none' }}>
                   <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
                   </div>
+
+                    <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
+                      <SqmHistoricalChart sqmData={(activeSuburb as any).demographicsDetailV3?.sqm_data} />
+                    </div>
 
                     {/* Visuals Grid (Charts) */}
                     <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'market' ? 'block' : 'none', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
