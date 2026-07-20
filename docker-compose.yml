@@ -95,6 +95,8 @@ services:
   db:
     image: postgis/postgis:15-3.4-alpine
     container_name: realestate-db
+    ports:
+      - "15432:5432"
     restart: unless-stopped
     # Tuned for mini PC: shared_buffers=512MB, effective_cache_size=2GB
     # This stops Postgres from hitting disk on every query for a 28GB dataset
