@@ -109,7 +109,7 @@ export function personaIds(): PersonaId[] {
 /** Refresh local personas from backend if available; never throws. */
 export async function refreshPersonasFromBackend(): Promise<void> {
   try {
-    const r = await fetch('/api/personas')
+    const r = await fetch('/api/personas', { credentials: 'include' })
     if (!r.ok) return
     const data = await r.json()
     if (data?.personas && typeof data.personas === 'object') {

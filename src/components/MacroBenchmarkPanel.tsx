@@ -14,7 +14,7 @@ const MacroBenchmarkPanel = memo(function MacroBenchmarkPanel() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/etf/benchmarks')
+    fetch('/api/benchmarks', { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         setBenchmarks(data.benchmarks || [])
