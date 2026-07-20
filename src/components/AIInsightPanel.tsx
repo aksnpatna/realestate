@@ -547,7 +547,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                           <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Scenario Risk: </span>
                           <span style={{ fontWeight: 800, fontSize: '1.1rem', color: whatIfResult.risk_rating === 'Low' ? '#10b981' : whatIfResult.risk_rating === 'Medium' ? '#eab308' : '#ef4444' }}>{whatIfResult.risk_rating}</span>
                           <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginLeft: '6px' }}>(~{Math.round((whatIfResult.price_decline_scenario || 0) * 100)}% estimated downside)</span>
-                          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
                             {whatIfResult.calibration_note || 'Model scenario — not validated against historical outcomes'}
                           </div>
                         </div>

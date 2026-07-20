@@ -179,10 +179,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
     }
   }, [state, budget, deposit, annualIncome, monthlyDebt, propertyType, maxCBDMinutes, minimumYield, interestRate, serviceabilityBuffer, loanTermYears, purchaseCostAllowance, wAffordability, wIncome, wLivability, wAccess, wEvidence]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => fetchRanking(), 300);
-    return () => clearTimeout(timer);
-  }, [fetchRanking]);
+  // Search is explicit, no debounce auto-trigger
 
   const handleSearch = () => fetchRanking();
 
@@ -270,16 +267,20 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
               {isFHB && (
                 <>
                   <div className="control-group">
-                    <label className="control-label">FHB Grants / Schemes</label>
-                    <select className="premium-input" disabled title="Pending backend support">
+                    <label className="control-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      FHB Grants / Schemes <span style={{ fontSize: '0.65rem', background: '#fef3c7', color: '#d97706', padding: '2px 6px', borderRadius: '4px' }}>Coming Q1</span>
+                    </label>
+                    <select className="premium-input" disabled title="Pending backend support" style={{ opacity: 0.6 }}>
                       <option>None</option>
                       <option>5% Deposit Scheme (FHBG)</option>
                       <option>State Shared Equity</option>
                     </select>
                   </div>
                   <div className="control-group">
-                    <label className="control-label">Stamp Duty Concession</label>
-                    <select className="premium-input" disabled title="Pending backend support">
+                    <label className="control-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      Stamp Duty Concession <span style={{ fontSize: '0.65rem', background: '#fef3c7', color: '#d97706', padding: '2px 6px', borderRadius: '4px' }}>Coming Q1</span>
+                    </label>
+                    <select className="premium-input" disabled title="Pending backend support" style={{ opacity: 0.6 }}>
                       <option>Apply State Rules</option>
                       <option>None (Paying Full)</option>
                     </select>
@@ -290,7 +291,10 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           </div>
 
           <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <label className="control-label">Objective Weights</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <label className="control-label" style={{ margin: 0 }}>Objective Weights</label>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Auto-normalised to 100% (Sum: {wAffordability + wIncome + wLivability + wAccess + wEvidence})</span>
+            </div>
             <div className="filter-row">
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Affordability ({wAffordability}%)</label>
@@ -327,6 +331,15 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
               </button>
             </div>
           </div>
+          
+          <button 
+            className="action-button primary" 
+            onClick={handleSearch} 
+            disabled={backendLoading}
+            style={{ width: '100%', marginTop: '20px', padding: '14px', fontSize: '1rem' }}
+          >
+            {backendLoading ? 'Ranking Suburbs...' : 'Calculate Buyer Fit & Search'}
+          </button>
         </div>
       <div className="glass-card search-results-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
@@ -334,7 +347,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
             {backendResults ? `Results (${backendResults.results.length} eligible)` : 'Results'}
           </h3>
           {backendResults && backendResults.results.length > 0 && (
-            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textAlign: 'right' }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'right' }}>
               Others excluded for insufficient data quality or constraints
             </div>
           )}
@@ -507,12 +520,12 @@ const BackendResultCard = memo(function BackendResultCard({
           {result.name}, {result.state}
         </h4>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <div style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 600, background: serviceabilityPassed ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: serviceabilityPassed ? '#10b981' : '#ef4444', border: `1px solid ${serviceabilityPassed ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
+          <div style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600, background: serviceabilityPassed ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: serviceabilityPassed ? '#10b981' : '#ef4444', border: `1px solid ${serviceabilityPassed ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
             {serviceabilityPassed ? '✓ Serviceability Passed' : '✗ Serviceability Failed'}
           </div>
           <div 
             title="HIGH = good data coverage. Buyer Fit = your personal match score. They measure different things."
-            style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: confColor, border: '1px solid rgba(255,255,255,0.1)', cursor: 'help' }}>
+            style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: confColor, border: '1px solid rgba(255,255,255,0.1)', cursor: 'help' }}>
             📊 Evidence: {evidenceLabel.toUpperCase()}
           </div>
         </div>
@@ -530,7 +543,7 @@ const BackendResultCard = memo(function BackendResultCard({
         )}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(14,165,233,0.05)', padding: '15px', borderRadius: '12px', minWidth: '90px', border: '1px solid rgba(14,165,233,0.1)' }}>
           <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-cyan)', lineHeight: 1 }}>{result.buyer_fit_score.toFixed(0)}</div>
-          <div style={{ fontSize: '0.65rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px', fontWeight: 600 }}>Buyer Fit</div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px', fontWeight: 600 }}>Buyer Fit</div>
         </div>
 
         <div style={{ flex: 1 }}>
@@ -568,6 +581,7 @@ const BackendResultCard = memo(function BackendResultCard({
         <button onClick={() => setShowEvidence(!showEvidence)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-secondary)', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem' }}>
           {showEvidence ? 'Hide Model Evidence' : 'Inspect Model Evidence'}
         </button>
+
         <button onClick={handleOpenSuburb} style={{ padding: '8px 20px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, boxShadow: '0 4px 12px rgba(14,165,233,0.3)' }}>
           Open Decision Brief →
         </button>

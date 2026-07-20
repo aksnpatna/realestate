@@ -43,7 +43,7 @@ const PersonaSwitcher = memo(function PersonaSwitcher({ activePersona, onChange 
     >
       <span
         style={{
-          fontSize: '0.65rem',
+          fontSize: '0.8rem',
           color: 'var(--text-secondary)',
           textTransform: 'uppercase',
           letterSpacing: '0.5px',

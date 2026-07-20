@@ -6,10 +6,10 @@
   --bg-card: #FFFFFF; /* White cards */
   --border-glass: #E2E8F0; /* Light borders */
   --text-primary: #0F172A; /* Dark slate text */
-  --text-secondary: #64748B;
-  --text-muted: #94A3B8;
-  --accent-cyan: #2563EB; /* Bright Blue */
-  --accent-purple: #1E40AF; /* Deep Blue */
+  --text-secondary: #475569; /* Darker than previous */
+  --text-muted: #64748B; /* Darker than previous */
+  --accent-cyan: #0284C7; /* Richer Blue */
+  --accent-purple: #4338CA; /* Deep Indigo */
   --success: #059669;
   --warning: #D97706;
   --danger: #DC2626;
@@ -1458,5 +1458,78 @@ header {
 
   .gearing-status-label {
     font-size: 1rem;
+  }
+}
+
+/* --- Print Stylesheet for Branded PDF Export --- */
+@media print {
+  /* Hide navigation and chrome */
+  header, nav, .tab-nav, .search-card, .tools-dropdown, .floating-action-button {
+    display: none !important;
+  }
+  
+  /* Reset backgrounds for clean printing */
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .main-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .glass-card {
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+
+  /* Make tables readable on A4 */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  th, td {
+    padding: 12px !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    color: #000 !important;
+  }
+  th {
+    background-color: #F8FAFC !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Expand the main content */
+  .main-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 2cm !important; /* Page margins */
+  }
+
+  /* Force background colors to print if user browser supports it */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  /* Add a branded header to the printed page */
+  body::before {
+    content: "PropertyIQ | Professional Decision Brief";
+    display: block;
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0F172A;
+    border-bottom: 2px solid #0284C7;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
   }
 }

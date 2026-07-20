@@ -46,9 +46,9 @@ function indicatorGrid(indicators: Indicator[]) {
           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
             {ind.value != null ? ind.value : '—'}
           </span>
-          <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>{ind.impact}</span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{ind.impact}</span>
           {ind.source && (
-            <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
               Source: {ind.source}
             </span>
           )}
@@ -189,7 +189,7 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
     <div className="glass-card" style={{ padding: '16px', marginBottom: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
         <h3 style={{ margin: 0, fontSize: '0.95rem' }}>Technical & Provenance</h3>
-        <span style={{ fontSize: '0.65rem', background: 'rgba(139,92,246,0.12)', color: '#8b5cf6', padding: '2px 8px', borderRadius: '4px' }}>
+        <span style={{ fontSize: '0.8rem', background: 'rgba(139,92,246,0.12)', color: '#8b5cf6', padding: '2px 8px', borderRadius: '4px' }}>
           Buyer's Agent View
         </span>
       </div>

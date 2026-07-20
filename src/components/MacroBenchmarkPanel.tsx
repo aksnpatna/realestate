@@ -30,7 +30,7 @@ const MacroBenchmarkPanel = memo(function MacroBenchmarkPanel() {
     <div className="glass-card" style={{ padding: '16px', marginBottom: '16px', marginTop: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <h3 style={{ margin: 0, fontSize: '0.95rem' }}>Macro Benchmarks (Option 3 Implementation)</h3>
-        <span style={{ fontSize: '0.65rem', background: 'rgba(59,130,246,0.12)', color: '#3b82f6', padding: '2px 8px', borderRadius: '4px' }}>
+        <span style={{ fontSize: '0.8rem', background: 'rgba(59,130,246,0.12)', color: '#3b82f6', padding: '2px 8px', borderRadius: '4px' }}>
           Market Context
         </span>
       </div>
@@ -63,7 +63,7 @@ const MacroBenchmarkPanel = memo(function MacroBenchmarkPanel() {
             <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>
               {b.symbol}
             </div>
-            <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
               {b.note}
             </div>
           </div>

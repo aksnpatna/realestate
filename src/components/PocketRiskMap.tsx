@@ -99,7 +99,7 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
         </h3>
         <span
           style={{
-            fontSize: '0.6rem',
+            fontSize: '0.75rem',
             padding: '2px 8px',
             borderRadius: '4px',
             background: 'rgba(245,158,11,0.12)',
@@ -190,7 +190,7 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
               </span>
               <span
                 style={{
-                  fontSize: '0.65rem',
+                  fontSize: '0.8rem',
                   padding: '1px 6px',
                   borderRadius: '4px',
                   background: `${severityColors[f.properties.severity]}20`,
@@ -206,14 +206,14 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
             <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
               {f.properties.impact}
             </div>
-            <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '4px' }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '4px' }}>
               Source: {f.properties.source}
             </div>
           </div>
         )
       })}
 
-      <div style={{ marginTop: '10px', fontSize: '0.6rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+      <div style={{ marginTop: '10px', fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
         This analysis is decision-aiding guidance, not a property-level verdict. Verify with due diligence.
       </div>
     </div>
