@@ -1866,7 +1866,7 @@ function App() {
                   )}
                 </div>
                 <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
-                  {(persona !== 'first_home_buyer') && !getPersona(persona).show_technical && (
+                  {persona !== 'first_home_buyer' && (
                     <>
                       <MarketIndicatorsSection suburb={activeSuburb as any} />
                       <MacroBenchmarkPanel />
