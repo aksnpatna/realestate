@@ -20,8 +20,10 @@ import uuid
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-REQUIRE_EMAIL_VERIFICATION = False
 from dotenv import load_dotenv
+load_dotenv()
+JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-default-key-for-dev-only-min-32-chars")
+JWT_ALGORITHM = "HS256"
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
 from poc_config import poc_config
 from score_meta import enrich_growth_factors, all_score_meta
@@ -281,6 +283,16 @@ class UserConsent(Base):
     consent_type = Column(String)
     timestamp = Column(String, default=lambda: datetime.now().isoformat())
 
+class BuyersAgentClient(Base):
+    """Server-side persistence for Buyers Agent clients."""
+    __tablename__ = "buyers_agent_clients"
+    id = Column(String, primary_key=True)
+    user_id = Column(String, index=True, nullable=False)
+    name = Column(String, nullable=False)
+    profile_json = Column(String, nullable=False)
+    created_at = Column(String, default=lambda: datetime.now().isoformat())
+    updated_at = Column(String, default=lambda: datetime.now().isoformat())
+
 class UserDecisionSnapshot(Base):
     """Persist a Buyer Fit decision so it survives browser refresh."""
     __tablename__ = "user_decision_snapshots"
@@ -484,6 +496,15 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
         created_at=datetime.now().isoformat()
     )
     db.add(new_user)
+    
+    consent = UserConsent(
+        user_id=new_user.id,
+        ip_address=req.client.host if req.client else "127.0.0.1",
+        user_agent=req.headers.get("user-agent", ""),
+        consent_type="marketing_consent" if request.marketing_consent else "core_tos",
+        timestamp=datetime.now().isoformat()
+    )
+    db.add(consent)
     db.commit()
     
     # Send verification email asynchronously so it doesn't block
@@ -502,7 +523,7 @@ def track_analytics_event(request: AnalyticsEventRequest, req: Request, db: Sess
         token = auth_header[7:]
         try:
             decoded = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-            user_id = decoded.get("user_id")
+            user_id = decoded.get("sub")
         except Exception:
             pass
 
@@ -529,9 +550,6 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
         
-    if REQUIRE_EMAIL_VERIFICATION and not user.is_verified:
-        raise HTTPException(status_code=403, detail="Email not verified. Please check your inbox.")
-        
     if user.salt:
         import hashlib
         legacy_hash = hashlib.pbkdf2_hmac('sha256', request.password.encode('utf-8'), user.salt.encode('utf-8'), 100000).hex()
@@ -544,7 +562,7 @@ def login(request: LoginRequest, response: Response, req: Request, db: Session =
         if not verify_password(request.password, user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid credentials")
             
-    token = jwt.encode({"sub": user.id, "exp": datetime.utcnow().timestamp() + 86400}, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    token = jwt.encode({"sub": user.id, "exp": datetime.now(timezone.utc).timestamp() + 86400}, JWT_SECRET, algorithm=JWT_ALGORITHM)
     response.set_cookie(
         key="access_token",
         value=token,
@@ -641,7 +659,7 @@ _cache_benchmarks_data = None
 _cache_benchmarks_time = 0
 
 @app.get("/api/benchmarks")
-def get_benchmarks(db: Session = Depends(get_db)):
+def get_benchmarks(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     """Fetches benchmark performance (VAS, AAA, and National Residential Average). Cached 24h."""
     global _cache_benchmarks_data, _cache_benchmarks_time
     now = time.time()
@@ -717,7 +735,7 @@ def bust_suburbs_cache():
     logging.getLogger("uvicorn").info("[cache] suburbs cache busted — fresh data will be fetched on next request")
 
 @app.get("/api/suburbs")
-def get_suburbs(state: str = None, db: Session = Depends(get_db)):
+def get_suburbs(state: str = None, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     global _cache_suburbs_data, _cache_suburbs_time
     cache_key = state or "ALL"
     now = time.time()
@@ -795,7 +813,7 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db)):
     return result
 
 @app.get("/api/search")
-def search_suburbs(q: str = "", db: Session = Depends(get_db)):
+def search_suburbs(q: str = "", db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     if not q or len(q) < 3 or len(q) > 50:
         return []
     # Simple ILIKE search on name using the trigram index
@@ -1070,7 +1088,7 @@ def _compute_growth_score(v3: SuburbUIV3) -> dict:
 
 
 @app.get("/api/suburbs/{suburb_id}")
-def get_suburb(suburb_id: str, db: Session = Depends(get_db)):
+def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     """V3-only endpoint — all data from suburbs_ui_v3 (self-sufficient)."""
     v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == suburb_id.upper()).first()
     if not v3:
@@ -1228,7 +1246,7 @@ def get_scores_meta():
 
 
 @app.get("/api/personas")
-def get_personas():
+def get_personas(current_user = Depends(get_current_user)):
     """Persona presets (weights + visible profile sections + meta).
     Frontend uses this as the single source of truth for which persona shows
     which data depth."""
@@ -2411,7 +2429,7 @@ def get_model_diary_summary(db: Session = Depends(get_db)):
 
 
 @app.post("/api/buy-finder/rank")
-def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db)):
+def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     """Versioned backend ranking endpoint for the POC Buyer Fit Score."""
     import math
     if request.budget <= 0:
@@ -2525,6 +2543,29 @@ def list_decision_snapshots(
         for s in snapshots
     ]
 
+
+class SaveClientRequest(BaseModel):
+    name: str
+    profile: dict
+
+@app.get("/api/clients")
+def get_clients(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    clients = db.query(BuyersAgentClient).filter(BuyersAgentClient.user_id == current_user.id).all()
+    return [{"id": c.id, "name": c.name, "profile": json.loads(c.profile_json)} for c in clients]
+
+@app.post("/api/clients")
+def save_client(request: SaveClientRequest, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    import json, uuid
+    client_id = str(uuid.uuid4())
+    c = BuyersAgentClient(
+        id=client_id,
+        user_id=current_user.id,
+        name=request.name,
+        profile_json=json.dumps(request.profile)
+    )
+    db.add(c)
+    db.commit()
+    return {"status": "success", "id": client_id}
 
 @app.get("/api/buy-finder/snapshots/{snapshot_id}")
 def get_decision_snapshot(
