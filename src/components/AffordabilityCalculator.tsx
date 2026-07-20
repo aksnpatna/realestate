@@ -1,7 +1,7 @@
 import { useMemo, memo } from 'react';
 import { calculateMaxPurchase } from '../data/suburbs';
 
-export default memo(function AffordabilityCalculator({ setActiveTab, financialProfile, setFinancialProfile }: { suburbsData?: any[]; setActiveTab?: (t: string) => void; financialProfile?: any; setFinancialProfile?: any }) {
+export default memo(function AffordabilityCalculator({ setActiveTab, financialProfile, setFinancialProfile, persona }: { suburbsData?: any[]; setActiveTab?: (t: string) => void; financialProfile?: any; setFinancialProfile?: any; persona?: string }) {
   const deposit = financialProfile?.deposit ?? 150000;
   const lvrPct = financialProfile?.lvrPct ?? 90;
   const annualIncome = financialProfile?.annualIncome ?? 150000;
@@ -17,17 +17,19 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
 
   const lvr = lvrPct / 100;
 
+  const isFHB = persona === 'first_home_buyer';
+
   const calc = useMemo(() => {
     if (!deposit || deposit <= 0 || !annualIncome) return null;
     return {
-      NSW: calculateMaxPurchase(deposit, 'NSW', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100),
-      VIC: calculateMaxPurchase(deposit, 'VIC', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100),
-      QLD: calculateMaxPurchase(deposit, 'QLD', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100),
-      WA: calculateMaxPurchase(deposit, 'WA', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100),
-      SA: calculateMaxPurchase(deposit, 'SA', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100),
-      TAS: calculateMaxPurchase(deposit, 'TAS', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100),
+      NSW: calculateMaxPurchase(deposit, 'NSW', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100, isFHB),
+      VIC: calculateMaxPurchase(deposit, 'VIC', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100, isFHB),
+      QLD: calculateMaxPurchase(deposit, 'QLD', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100, isFHB),
+      WA: calculateMaxPurchase(deposit, 'WA', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100, isFHB),
+      SA: calculateMaxPurchase(deposit, 'SA', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100, isFHB),
+      TAS: calculateMaxPurchase(deposit, 'TAS', lvr, annualIncome, monthlyDebt, interestRate / 100, bufferRate / 100, isFHB),
     };
-  }, [deposit, lvr, annualIncome, monthlyDebt, interestRate, bufferRate]);
+  }, [deposit, lvr, annualIncome, monthlyDebt, interestRate, bufferRate, isFHB]);
 
   const handleOpenBuyFinder = () => {
     if (setActiveTab) setActiveTab('buy-finder');
@@ -41,6 +43,11 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
         <div style={{ background: 'rgba(14,165,233,0.08)', color: 'var(--accent-cyan)', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem', border: '1px solid rgba(14,165,233,0.2)' }}>
           This calculates your serviceability limit using standard HEM expense estimates and an APRA buffer. For a full personalized suburb shortlist, use <strong>Buy Finder</strong>.
         </div>
+        {isFHB && (
+          <div style={{ background: 'rgba(168,85,247,0.1)', color: 'var(--accent-purple)', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem', border: '1px solid rgba(168,85,247,0.2)', fontWeight: 500 }}>
+            🎉 First Home Buyer state-specific stamp duty concessions and up to 95% LVR are automatically applied in these calculations.
+          </div>
+        )}
 
         <div className="calculator-inputs" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
           <div className="control-group">
