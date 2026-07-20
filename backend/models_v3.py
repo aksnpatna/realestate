@@ -24,10 +24,11 @@ from sqlalchemy import (
 from sqlalchemy.orm import sessionmaker, declarative_base
 from datetime import datetime
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    os.environ["DATABASE_URL"]
-)
+# Allow running outside of docker by supplying a default localhost URL
+if "DATABASE_URL" not in os.environ:
+    os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@localhost:5432/realestate"
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 DEFAULT_CASH_RATE = float(os.getenv("DEFAULT_CASH_RATE", "3.60"))
 RETAIL_MARGIN = float(os.getenv("RETAIL_MARGIN", "2.30"))
