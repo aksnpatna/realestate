@@ -45,18 +45,18 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1784538063.5439076,
-    "ast_hash": "bd0a7bc5bd0d3c4b93b56cee5cd17ce0",
+    "mtime": 1784539977.0729222,
+    "ast_hash": "318cd122d7648e2680476b77f72ec751",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
-    "mtime": 1784530168.4617445,
-    "ast_hash": "cfabb767818cec73b81de269be2543b2",
+    "mtime": 1784540056.0437105,
+    "ast_hash": "ed6968c6dda67b13f741b74acea7f71a",
     "semantic_hash": ""
   },
   "src/components/CashflowGearing.tsx": {
-    "mtime": 1784439184.9743292,
-    "ast_hash": "35419f15d709cd9fbb6642aee8d42a46",
+    "mtime": 1784539994.3388796,
+    "ast_hash": "711f7bf0395e9db0f8303a003c5cb368",
     "semantic_hash": ""
   },
   "src/components/SuburbMap.tsx": {
@@ -70,8 +70,8 @@
     "semantic_hash": "36943070f28dabdec6c9b061b039b286"
   },
   "src/data/suburbs.ts": {
-    "mtime": 1784530127.685312,
-    "ast_hash": "98690c01ffb2ead30f87d7b5017c95ae",
+    "mtime": 1784540046.0997393,
+    "ast_hash": "eab090c5850c5ee0cb66702d3b1f44c3",
     "semantic_hash": ""
   },
   "src/data/suburbs_generated.json": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "src/components/BuyFinder.tsx": {
-    "mtime": 1784538164.0249429,
-    "ast_hash": "7e0ef312c97389247183c6f5d8fb3619",
+    "mtime": 1784539967.6219444,
+    "ast_hash": "f4a2d68a39f70268c387e7b1ece602b0",
     "semantic_hash": ""
   },
   "suggestion.md": {
@@ -885,8 +885,8 @@
     "semantic_hash": ""
   },
   "src/components/LandingPage.tsx": {
-    "mtime": 1784348080.1001706,
-    "ast_hash": "0dfdf68a1e3970ba82c8ae8d7cf61da2",
+    "mtime": 1784539919.6940477,
+    "ast_hash": "48f5cef317e93226042b6148964dc630",
     "semantic_hash": ""
   },
   "src/components/MarketIndicatorsSection.tsx": {
@@ -895,8 +895,8 @@
     "semantic_hash": ""
   },
   "src/components/PersonaSwitcher.tsx": {
-    "mtime": 1784538063.5448613,
-    "ast_hash": "f5d9b24839bcb961733f6ea5983e892a",
+    "mtime": 1784540102.845566,
+    "ast_hash": "36322798eef64475489bdd2ec7080b0e",
     "semantic_hash": ""
   },
   "src/components/PocketRiskMap.tsx": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "src/data/personas.ts": {
-    "mtime": 1784537703.5144408,
-    "ast_hash": "057be48fc0ed4cb5ff778ded67c694cb",
+    "mtime": 1784539933.5450196,
+    "ast_hash": "9899963caa2fea2c43fdf54c69b51c2c",
     "semantic_hash": ""
   },
   "src/services/analytics.ts": {
@@ -985,8 +985,8 @@
     "semantic_hash": ""
   },
   "src/components/MacroBenchmarkPanel.tsx": {
-    "mtime": 1784538063.5466719,
-    "ast_hash": "95374b4ac2321707d48baa7db75a2655",
+    "mtime": 1784538639.388449,
+    "ast_hash": "2ef11c8e0fced1139c53d1d7d0860d3a",
     "semantic_hash": ""
   },
   "src/components/SchoolZonesLayer.tsx": {
