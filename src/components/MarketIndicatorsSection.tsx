@@ -39,22 +39,17 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
     },
     {
       label: 'Absorption Rate (mo)',
-      value: absorptionRate != null ? `${absorptionRate}% of stock/mo` : '—',
-      trend: absorptionRate != null ? (Number(absorptionRate) > 15 ? 'up' : 'down') : null,
+      value: absorptionRate != null && Number(absorptionRate) > 0 ? `${absorptionRate}% of stock/mo` : 'Insuff. Data',
+      trend: absorptionRate != null && Number(absorptionRate) > 0 ? (Number(absorptionRate) > 15 ? 'up' : 'down') : null,
       impact: '% of active stock sold each month. >15% = rapid absorption, <5% = soft market.',
     },
     {
       label: 'Days on Market',
-      value: s.houseDaysOnMarket != null ? `${s.houseDaysOnMarket} days` : '—',
-      trend: s.houseDaysOnMarket != null ? (s.houseDaysOnMarket < 30 ? 'up' : 'down') : null,
+      value: s.houseDaysOnMarket != null && s.houseDaysOnMarket > 0 ? `${s.houseDaysOnMarket} days` : 'Insuff. Data',
+      trend: s.houseDaysOnMarket != null && s.houseDaysOnMarket > 0 ? (s.houseDaysOnMarket < 30 ? 'up' : 'down') : null,
       impact: 'Fewer days = higher competition. <30 days typically signals seller advantage.',
     },
-    {
-      label: 'Auction Clearance',
-      value: s.houseAuctionClearanceRate != null ? `${Number(s.houseAuctionClearanceRate).toFixed(0)}%` : '—',
-      trend: s.houseAuctionClearanceRate != null ? (s.houseAuctionClearanceRate > 70 ? 'up' : s.houseAuctionClearanceRate > 60 ? 'neutral' : 'down') : null,
-      impact: '>70% clearance = strong auction demand. A leading indicator of price momentum.',
-    },
+
     {
       label: 'Vacancy Rate',
       value: s.vacancyRate != null ? `${Number(s.vacancyRate).toFixed(1)}%` : '—',

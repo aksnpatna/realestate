@@ -869,7 +869,7 @@ function App() {
                     <div className="metric-box">
                       <div className="metric-label">House Median Price</div>
                       <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : 'No data'}
+                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
                         {(() => {
                           const change = Number((activeSuburb as any).houseMedianPrice12mChangePct) || 0;
                           if (change) {
@@ -882,7 +882,7 @@ function App() {
                     <div className="metric-box">
                       <div className="metric-label">Unit Median Price</div>
                       <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : 'No data'}
+                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
                         {(() => {
                           const change = Number((activeSuburb as any).unitMedianPrice12mChangePct) || 0;
                           if (change) {
@@ -897,19 +897,19 @@ function App() {
                       <div className="metric-value highlight-cyan">
                         {activeSuburb.populationCagr ? `${Number(activeSuburb.populationCagr).toFixed(1)}%` : (activeSuburb.metrics?.populationGrowth && activeSuburb.metrics.populationGrowth !== 'N/A'
                           ? activeSuburb.metrics.populationGrowth
-                          : 'No data')}
+                          : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>)}
                       </div>
                     </div>
                     <div className="metric-box">
                       <div className="metric-label">Green Space</div>
                       <div className="metric-value highlight-purple">
-                        {(activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount} parks (${(activeSuburb as any).parksCoveragePct || 0}% cover)` : (activeSuburb as any).infrastructureInvestment || 'No data'}
+                        {(activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount} parks (${(activeSuburb as any).parksCoveragePct || 0}% cover)` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
                       </div>
                     </div>
                     <div className="metric-box">
                       <div className="metric-label">Avg Rental Yield</div>
                       <div className="metric-value">
-                        {(activeSuburb as any).rentalYield ? `${(activeSuburb as any).rentalYield}%` : (activeSuburb as any).houseGrossRentalYield ? `${(activeSuburb as any).houseGrossRentalYield}%` : activeSuburb.metrics?.rentalYield ? `${activeSuburb.metrics.rentalYield}%` : 'No data'}
+                        {(activeSuburb as any).rentalYield ? `${(activeSuburb as any).rentalYield}%` : (activeSuburb as any).houseGrossRentalYield ? `${(activeSuburb as any).houseGrossRentalYield}%` : activeSuburb.metrics?.rentalYield ? `${activeSuburb.metrics.rentalYield}%` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
                       </div>
                     </div>
                     <div className="metric-box">
@@ -1004,7 +1004,7 @@ function App() {
                       <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Stock on Market</div>
                         <div style={{ fontSize: '1.8rem', color: 'var(--accent-cyan)', fontWeight: 'bold', marginTop: '5px' }}>
-                          {(activeSuburb as any).totalProperties ? `${(activeSuburb as any).totalProperties} properties` : '—'}
+                          {(activeSuburb as any).totalProperties ? `${(activeSuburb as any).totalProperties} active listings` : '—'}
                         </div>
                       </div>
                     </div>
