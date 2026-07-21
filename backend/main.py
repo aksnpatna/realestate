@@ -7,7 +7,7 @@ import asyncio
 import concurrent.futures
 import logging
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Depends, Header, BackgroundTasks, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -953,8 +953,16 @@ def _get_sqm_stock(v3) -> int | None:
 
 
 def _calibrate_dq(v3) -> float:
-    """Return the actual DQ Score computed by the ETL pipeline."""
+    """Return the actual DQ Score computed by the ETL pipeline.
+    Apply a harsh penalty if the suburb lacks median price data,
+    as this is the most critical metric for investors."""
     raw = float(v3.dq_score or 100)
+    
+    # If the SQL pipeline or SQM failed to find a median price, 
+    # it's a highly regional/illiquid market. Cap confidence at 45.
+    if not v3.house_median_price:
+        raw = min(raw, 45.0)
+        
     return max(5, min(100, raw))
 
 def _compute_growth_score(v3: SuburbUIV3) -> dict:
