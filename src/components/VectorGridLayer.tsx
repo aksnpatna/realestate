@@ -29,35 +29,23 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
           if (mode === 'yield') {
             if (yieldPct >= 6) { color = '#10b981'; opacity = 0.9; stroke = true; radius = zoom > 12 ? 32 : (zoom > 8 ? 16 : 8); }
             else if (yieldPct >= 4) { color = '#f59e0b'; opacity = 0.6; stroke = true; radius = zoom > 12 ? 16 : (zoom > 8 ? 8 : 4); }
-            else { opacity = 0; stroke = false; } // Filter out poor yield noise
+            else { return []; } // Filter out poor yield noise entirely
           } else {
             // Growth Mode
             if (growth >= 10) { color = '#06b6d4'; opacity = 0.9; stroke = true; radius = zoom > 12 ? 32 : (zoom > 8 ? 16 : 8); }
             else if (growth >= 5) { color = '#3b82f6'; opacity = 0.6; stroke = true; radius = zoom > 12 ? 16 : (zoom > 8 ? 8 : 4); }
-            else { opacity = 0; stroke = false; } // Filter out poor growth noise
+            else { return []; } // Filter out poor growth noise entirely
           }
           
-          return [
-            // Invisible, larger hit area to make clicks much more responsive
-            {
-              fill: true,
-              fillColor: 'transparent',
-              fillOpacity: 0,
-              stroke: true,
-              color: 'transparent',
-              weight: opacity > 0 ? 15 : 0,
-              radius: opacity > 0 ? radius + 10 : 0
-            },
-            // The actual visible circle
-            {
-              fillColor: color,
-              fillOpacity: opacity,
-              stroke: stroke,
-              color: 'black',
-              weight: 2,
-              radius: radius
-            }
-          ];
+          return {
+            fill: true,
+            fillColor: color,
+            fillOpacity: opacity,
+            stroke: stroke,
+            color: 'black',
+            weight: 2,
+            radius: radius
+          };
         }
       },
       interactive: true,
