@@ -561,15 +561,7 @@ function App() {
       <TermsOfUseModal />
       <OnboardingTour />
       
-      <header style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        padding: '20px 40px',
-        background: 'var(--bg-card)',
-        borderBottom: '1px solid var(--border-glass)',
-        marginBottom: '30px'
-      }}>
+      <header className="app-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ width: '40px', height: '40px', background: 'var(--accent-cyan)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '1.2rem' }}>
             IQ
@@ -579,7 +571,7 @@ function App() {
           </div>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div className="app-header-controls" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <PersonaSwitcher activePersona={persona} onChange={setPersona} />
           <button 
             onClick={() => { setIsAuthenticated(false); setAuthMode('landing'); }} 

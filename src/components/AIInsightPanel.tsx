@@ -71,7 +71,11 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
     setError(null)
     setAiDisabled(false)
     try {
-      const res = await fetch(`/api/suburbs/${activeSuburb.id}/news-sentiment`, { method: 'POST' })
+      const isRefresh = hasSentiment;
+      const url = isRefresh
+        ? `/api/suburbs/${activeSuburb.id}/news-sentiment?force_refresh=true`
+        : `/api/suburbs/${activeSuburb.id}/news-sentiment`;
+      const res = await fetch(url, { method: 'POST' })
       if (!res.ok) {
         if (res.status === 503) { setAiDisabled(true); throw new Error('AI insights temporarily disabled') }
         throw new Error(`Server error (${res.status})`)
@@ -248,8 +252,13 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
           <div style={{ fontSize: '1.5rem', marginBottom: '6px' }}>🔧</div>
           <div style={{ color: '#eab308', fontWeight: 600, marginBottom: '4px' }}>AI Insights Temporarily Unavailable</div>
           <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-            The AI engine is undergoing maintenance. Cached results (shown below if available) may be up to 7 days old.
+            The AI engine is undergoing maintenance. Cached results (shown below if available) may be up to 10 minutes old.
           </div>
+          <button 
+            onClick={() => activeTab === 'sentiment' ? handleSentiment() : handleCommittee()} 
+            style={{ marginTop: '10px', padding: '6px 16px', background: '#eab308', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
+            Retry Connection
+          </button>
         </div>
       )}
 

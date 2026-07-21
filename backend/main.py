@@ -160,6 +160,21 @@ async def request_log_middleware(request: Request, call_next):
             media_type="application/json",
         )
 
+    body_str = None
+    if os.getenv("ENABLE_DETAILED_LOGS") == "true":
+        try:
+            body_bytes = await request.body()
+            if body_bytes:
+                async def receive():
+                    return {"type": "http.request", "body": body_bytes}
+                request._receive = receive
+                body_json = json.loads(body_bytes)
+                if "password" in body_json:
+                    body_json["password"] = "***REDACTED***"
+                body_str = json.dumps(body_json)
+        except Exception:
+            body_str = "<non-json body>"
+
     try:
         response = await call_next(request)
         status = response.status_code
@@ -181,7 +196,7 @@ async def request_log_middleware(request: Request, call_next):
                 user_id = payload.get("sub")
         except Exception:
             pass
-        log_entry = json.dumps({
+        log_data = {
             "ts": datetime.utcnow().isoformat(),
             "request_id": request_id,
             "method": request.method,
@@ -191,7 +206,13 @@ async def request_log_middleware(request: Request, call_next):
             "user_id": user_id,
             "ip": request.client.host if request.client else None,
             "error_class": error_class,
-        }, default=str)
+        }
+        if os.getenv("ENABLE_DETAILED_LOGS") == "true":
+            log_data["query"] = dict(request.query_params)
+            if body_str:
+                log_data["body"] = body_str
+
+        log_entry = json.dumps(log_data, default=str)
         logging.getLogger("uvicorn").info(log_entry)
 
 # Rate limiting — Redis-backed with in-memory fallback
@@ -513,33 +534,49 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
     
     return {"status": "success", "message": "Registration successful. Please check your email to verify your account."}
 
+from fastapi import BackgroundTasks
+
+def _write_analytics_event_bg(user_id: str, action_type: str, target_id: str):
+    try:
+        from sqlalchemy.orm import Session
+        from database import SessionLocal
+        db = SessionLocal()
+        activity = UserActivity(user_id=user_id, action_type=action_type, target_id=target_id)
+        db.add(activity)
+        db.commit()
+        db.close()
+    except Exception as e:
+        logger.error(f"Failed to write analytics event: {e}")
+
 @app.post("/api/analytics/event")
-def track_analytics_event(request: AnalyticsEventRequest, req: Request, db: Session = Depends(get_db)):
+def track_analytics_event(request: AnalyticsEventRequest, req: Request, background_tasks: BackgroundTasks):
     """Privacy-compliant analytics event tracking. Persists to user_activities."""
     import json
     user_id = None
+    token = None
     auth_header = req.headers.get("Authorization", "")
     if auth_header.startswith("Bearer "):
         token = auth_header[7:]
+    
+    if not token:
+        token = req.cookies.get("access_token")
+        
+    if token:
         try:
             decoded = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-            user_id = decoded.get("sub")
+            user_id = decoded.get("sub") or decoded.get("user_id")
         except Exception:
             pass
 
-    activity = UserActivity(
-        user_id=user_id,
-        action_type=request.event,
-        target_id=json.dumps({
-            "properties": request.properties or {},
-            "url": request.url,
-            "path": request.path,
-            "timestamp": request.timestamp,
-        }),
-    )
-    db.add(activity)
-    db.commit()
-    return {"status": "success"}
+    target_id = json.dumps({
+        "properties": request.properties or {},
+        "url": request.url,
+        "path": request.path,
+        "timestamp": request.timestamp,
+    })
+
+    background_tasks.add_task(_write_analytics_event_bg, user_id, request.event, target_id)
+    return {"status": "queued"}
 
 @app.post("/api/login")
 def login(request: LoginRequest, response: Response, req: Request, db: Session = Depends(get_db)):
@@ -640,14 +677,25 @@ def health_check(db: Session = Depends(get_db)):
                 SuburbUIV3.is_enriched == True,
                 SuburbUIV3.dq_score >= poc_config.public_poc_min_dq_score,
             ).count()
+        redis_status = "not_configured"
+        if redis_client:
+            try:
+                redis_client.ping()
+                redis_status = "connected"
+            except Exception as e:
+                raise HTTPException(status_code=503, detail=f"Redis unavailable: {e}")
+
         return {
             "status": "ok",
             "db": "connected",
+            "redis": redis_status,
             "poc": poc_config.to_dict(),
             "eligible_suburbs": eligible,
         }
     except Exception as e:
-        raise HTTPException(status_code=503, detail=f"DB unavailable: {e}")
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=503, detail=f"Dependencies unavailable: {e}")
 
 
 @app.get("/api/poc/config")
@@ -1600,27 +1648,30 @@ def _get_suburb_or_404(suburb_id: str, db: Session):
 AI_CACHE_TTL_SECONDS = int(os.getenv("AI_CACHE_TTL", "604800"))
 
 @app.post("/api/suburbs/{suburb_id}/news-sentiment")
-def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
+def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session = Depends(get_db)):
     """On-demand news sentiment for a suburb.
-    Caching: DB (TTL=AI_CACHE_TTL) → Redis (TTL=AI_CACHE_TTL) → Tavily+Transformers.
+    Caching: DB (TTL=600) → Redis (TTL=600) → Tavily+Transformers.
     """
     if not ENABLE_AI_INSIGHTS:
         raise HTTPException(status_code=503, detail="AI insights have been temporarily disabled (ENABLE_AI_INSIGHTS=false)")
     
+    NEWS_SENTIMENT_TTL = 600 # 10 minutes
+
     v3 = _get_suburb_or_404(suburb_id, db)
     
     # Layer 1: DB cache
-    cached = v3.news_sentiment or {}
-    if isinstance(cached, dict):
-        fetched = cached.get("fetched_at")
-        if fetched:
-            try:
-                from datetime import datetime
-                fetched_dt = datetime.fromisoformat(fetched)
-                if (datetime.utcnow() - fetched_dt).total_seconds() < AI_CACHE_TTL_SECONDS:
-                    return {
-                        "cached": True,
-                        "cache_ttl": AI_CACHE_TTL_SECONDS,
+    if not force_refresh:
+        cached = v3.news_sentiment or {}
+        if isinstance(cached, dict):
+            fetched = cached.get("fetched_at")
+            if fetched:
+                try:
+                    from datetime import datetime
+                    fetched_dt = datetime.fromisoformat(fetched)
+                    if (datetime.utcnow() - fetched_dt).total_seconds() < NEWS_SENTIMENT_TTL:
+                        return {
+                            "cached": True,
+                            "cache_ttl": NEWS_SENTIMENT_TTL,
                         **cached,
                     }
             except (ValueError, TypeError):
@@ -1628,6 +1679,9 @@ def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
     
     # Layer 2: Redis (via cached_ai wrapper on get_news_sentiment)
     # Layer 3: Fresh fetch from Tavily + Transformers
+    if force_refresh and redis_client:
+        redis_client.delete(f"ai_sentiment:{v3.name}:{v3.state}")
+        
     record_cache_miss()
     from ai_agent import get_news_sentiment as fetch_sentiment
     cache_key = f"ai_sentiment:{v3.name}:{v3.state}"
@@ -1635,7 +1689,7 @@ def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
     def _fetch():
         return fetch_sentiment(v3.name or "", v3.state or "")
     
-    result = get_cached_or_query(cache_key, _fetch, expire_secs=AI_CACHE_TTL_SECONDS)
+    result = get_cached_or_query(cache_key, _fetch, expire_secs=NEWS_SENTIMENT_TTL)
     
     # Persist to DB for cold-start
     v3.news_sentiment = result
@@ -1643,7 +1697,7 @@ def get_news_sentiment(suburb_id: str, db: Session = Depends(get_db)):
     
     return {
         "cached": False,
-        "cache_ttl": AI_CACHE_TTL_SECONDS,
+        "cache_ttl": NEWS_SENTIMENT_TTL,
         **result,
     }
 def reload_suburbs():
