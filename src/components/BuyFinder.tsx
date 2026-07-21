@@ -63,6 +63,14 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const isFHB = activePersonaObj.id === 'first_home_buyer';
   const isBuyersAgent = activePersonaObj.id === 'buyers_agent';
 
+  const totalWeight = wAffordability + wIncome + wLivability + wAccess + wEvidence;
+
+  const handleWeightChange = (setter: React.Dispatch<React.SetStateAction<number>>, currentVal: number, newVal: number) => {
+    const othersTotal = totalWeight - currentVal;
+    const maxAllowed = 100 - othersTotal;
+    setter(Math.min(newVal, maxAllowed));
+  };
+
   const [comparisonList, setComparisonList] = useState<any[]>([]);
 
   const toggleCompare = useCallback((result: any) => {
@@ -266,24 +274,15 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
               {/* FHB specific fields (UI only for now, pending backend model support) */}
               {isFHB && (
                 <>
-                  <div className="control-group">
-                    <label className="control-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      FHB Grants / Schemes <span style={{ fontSize: '0.65rem', background: '#fef3c7', color: '#d97706', padding: '2px 6px', borderRadius: '4px' }}>Coming Q1</span>
-                    </label>
-                    <select className="premium-input" disabled title="Pending backend support" style={{ opacity: 0.6 }}>
-                      <option>None</option>
-                      <option>5% Deposit Scheme (FHBG)</option>
-                      <option>State Shared Equity</option>
-                    </select>
-                  </div>
-                  <div className="control-group">
-                    <label className="control-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      Stamp Duty Concession <span style={{ fontSize: '0.65rem', background: '#fef3c7', color: '#d97706', padding: '2px 6px', borderRadius: '4px' }}>Coming Q1</span>
-                    </label>
-                    <select className="premium-input" disabled title="Pending backend support" style={{ opacity: 0.6 }}>
-                      <option>Apply State Rules</option>
-                      <option>None (Paying Full)</option>
-                    </select>
+                  <div style={{ gridColumn: '1 / -1', padding: '16px', background: 'rgba(217, 119, 6, 0.08)', border: '1px solid rgba(217, 119, 6, 0.2)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ fontSize: '1.2rem' }}>🏛️</span>
+                      <div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#d97706' }}>Government Grants & Stamp Duty Concessions</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Automated FHB scheme integration is currently in development.</div>
+                      </div>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', background: '#d97706', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>Feature in Q3</span>
                   </div>
                 </>
               )}
@@ -291,30 +290,30 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           </div>
 
           <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
               <label className="control-label" style={{ margin: 0 }}>Objective Weights</label>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Auto-normalised to 100% (Sum: {wAffordability + wIncome + wLivability + wAccess + wEvidence})</span>
+              <span style={{ fontSize: '0.8rem', background: totalWeight > 100 ? '#ef4444' : 'rgba(16,185,129,0.2)', color: totalWeight > 100 ? '#fff' : '#10b981', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>Total = {totalWeight}%</span>
             </div>
             <div className="filter-row">
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Affordability ({wAffordability}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wAffordability} onChange={e => setWAffordability(Number(e.target.value))} />
+                <input type="range" className="premium-range" min={0} max={100} value={wAffordability} onChange={e => handleWeightChange(setWAffordability, wAffordability, Number(e.target.value))} />
               </div>
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Income ({wIncome}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wIncome} onChange={e => setWIncome(Number(e.target.value))} />
+                <input type="range" className="premium-range" min={0} max={100} value={wIncome} onChange={e => handleWeightChange(setWIncome, wIncome, Number(e.target.value))} />
               </div>
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Livability ({wLivability}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wLivability} onChange={e => setWLivability(Number(e.target.value))} />
+                <input type="range" className="premium-range" min={0} max={100} value={wLivability} onChange={e => handleWeightChange(setWLivability, wLivability, Number(e.target.value))} />
               </div>
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Access ({wAccess}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wAccess} onChange={e => setWAccess(Number(e.target.value))} />
+                <input type="range" className="premium-range" min={0} max={100} value={wAccess} onChange={e => handleWeightChange(setWAccess, wAccess, Number(e.target.value))} />
               </div>
               <div className="control-group">
                 <label className="control-label" style={{ fontSize: '0.75rem' }}>Evidence ({wEvidence}%)</label>
-                <input type="range" className="premium-range" min={0} max={100} value={wEvidence} onChange={e => setWEvidence(Number(e.target.value))} />
+                <input type="range" className="premium-range" min={0} max={100} value={wEvidence} onChange={e => handleWeightChange(setWEvidence, wEvidence, Number(e.target.value))} />
               </div>
             </div>
           </div>

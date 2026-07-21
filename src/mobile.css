@@ -1,4 +1,13 @@
 /* Mobile responsive tweaks - prevent overflow on small screens */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-glass);
+  margin-bottom: 30px;
+}
 .highlights-section {
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -107,6 +116,18 @@
   
   .tab-nav > div {
     margin-left: 0 !important;
+  }
+
+  .app-header {
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 16px !important;
+    align-items: flex-start !important;
+  }
+  
+  .app-header-controls {
+    width: 100% !important;
+    justify-content: space-between !important;
   }
 }
 

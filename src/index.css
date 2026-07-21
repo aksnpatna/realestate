@@ -6,8 +6,8 @@
   --bg-card: #FFFFFF; /* White cards */
   --border-glass: #E2E8F0; /* Light borders */
   --text-primary: #0F172A; /* Dark slate text */
-  --text-secondary: #475569; /* Darker than previous */
-  --text-muted: #64748B; /* Darker than previous */
+  --text-secondary: #334155;
+  --text-muted: #475569;
   --accent-cyan: #0284C7; /* Richer Blue */
   --accent-purple: #4338CA; /* Deep Indigo */
   --success: #059669;
@@ -20,6 +20,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
 }
 
 body {
