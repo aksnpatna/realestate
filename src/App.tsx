@@ -867,11 +867,24 @@ function App() {
 
                   <div className="metrics-grid">
                     <div className="metric-box">
-                      <div className="metric-label">Median Price</div>
+                      <div className="metric-label">House Median Price</div>
                       <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : (activeSuburb as any).medianPrice ? `$${(activeSuburb as any).medianPrice.toLocaleString()}` : activeSuburb.metrics?.medianPrice ? `$${activeSuburb.metrics.medianPrice.toLocaleString()}` : 'No data'}
+                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : 'No data'}
                         {(() => {
                           const change = Number((activeSuburb as any).houseMedianPrice12mChangePct) || 0;
+                          if (change) {
+                            return <span style={{ fontSize: '1rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
+                          }
+                          return null;
+                        })()}
+                      </div>
+                    </div>
+                    <div className="metric-box">
+                      <div className="metric-label">Unit Median Price</div>
+                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : 'No data'}
+                        {(() => {
+                          const change = Number((activeSuburb as any).unitMedianPrice12mChangePct) || 0;
                           if (change) {
                             return <span style={{ fontSize: '1rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
                           }
@@ -977,9 +990,9 @@ function App() {
                     {/* Top KPI Ribbon */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px' }}>
                       <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Days on Market</div>
-                        <div style={{ fontSize: '1.8rem', color: 'var(--accent-cyan)', fontWeight: 'bold', marginTop: '5px' }}>
-                          {activeSuburb.houseDaysOnMarket ? `${activeSuburb.houseDaysOnMarket} Days` : '—'}
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Median Asking Rent</div>
+                        <div style={{ fontSize: '1.8rem', color: 'var(--accent-purple)', fontWeight: 'bold', marginTop: '5px' }}>
+                          {(activeSuburb as any).weeklyRent ? `$${(activeSuburb as any).weeklyRent}/wk` : '—'}
                         </div>
                       </div>
                       <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
@@ -989,11 +1002,9 @@ function App() {
                         </div>
                       </div>
                       <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Monthly Mortgage</div>
-                        <div style={{ fontSize: '1.8rem', color: 'var(--accent-purple)', fontWeight: 'bold', marginTop: '5px' }}>
-                          {(activeSuburb as any).estimatedMortgageRepayment
-                            ? '$' + (activeSuburb as any).estimatedMortgageRepayment.toLocaleString(undefined, {maximumFractionDigits: 0}) + '/mo'
-                            : (activeSuburb as any).typicalMortgageBand || (activeSuburb.metrics as any)?.mortgageBand || '—'}
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Stock on Market</div>
+                        <div style={{ fontSize: '1.8rem', color: 'var(--accent-cyan)', fontWeight: 'bold', marginTop: '5px' }}>
+                          {(activeSuburb as any).totalProperties ? `${(activeSuburb as any).totalProperties} properties` : '—'}
                         </div>
                       </div>
                     </div>
