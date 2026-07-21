@@ -392,7 +392,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
             </div>
           </div>
         )}
-        {isBuyersAgent && comparisonList.length > 0 && (
+        {comparisonList.length > 0 && (
           <div className="glass-card" style={{ marginBottom: '20px', border: '1px solid var(--accent-cyan)', overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
               <h3 style={{ margin: 0, color: 'var(--accent-cyan)' }}>Side-by-Side Comparison ({comparisonList.length}/5)</h3>
@@ -433,6 +433,22 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                   <tr>
                     <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Rental Yield</td>
                     {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.components?.income?.score ? (c.components.income.score / 10).toFixed(1) + '%' : 'N/A'}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>12m Capital Growth</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.['12m_growth'] !== null && c.raw_metrics?.['12m_growth'] !== undefined ? `${c.raw_metrics['12m_growth']}%` : 'N/A'}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Vacancy Rate</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.vacancy_rate !== null && c.raw_metrics?.vacancy_rate !== undefined ? `${c.raw_metrics.vacancy_rate}%` : 'N/A'}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Active Listings</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.stock_on_market !== null && c.raw_metrics?.stock_on_market !== undefined ? c.raw_metrics.stock_on_market : 'N/A'}</td>)}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Owner Occupier %</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.owner_occupier_rate !== null && c.raw_metrics?.owner_occupier_rate !== undefined ? `${c.raw_metrics.owner_occupier_rate}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
                     <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Top Growth Driver</td>

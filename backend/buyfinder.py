@@ -323,6 +323,13 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
         "drivers": drivers,
         "unknowns": unknowns,
         "risks": risks_list,
+        "raw_metrics": {
+            "vacancy_rate": v3.vacancy_rate,
+            "stock_on_market": v3.house_stock_on_market if req.property_type == "house" else None,
+            "days_on_market": v3.house_days_on_market if hasattr(v3, 'house_days_on_market') else None,
+            "12m_growth": v3.house_median_price_12m_change_pct if req.property_type == "house" else v3.unit_median_price_12m_change_pct,
+            "owner_occupier_rate": v3.owner_occupier_rate
+        },
         "evidence_ids": _build_evidence_ids(v3, price, yld),
     }
 
