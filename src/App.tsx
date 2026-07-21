@@ -15,6 +15,7 @@ import MarketIndicatorsSection from './components/MarketIndicatorsSection'
 import SqmHistoricalChart from './components/SqmHistoricalChart'
 import PriceHistoryChart from './components/PriceHistoryChart'
 import PocketRiskMap from './components/PocketRiskMap'
+import YieldHeatmap from './components/YieldHeatmap'
 import type { PersonaId, ProfileSectionId } from './data/personas'
 import { loadStoredPersona, getPersona } from './data/personas'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
@@ -33,7 +34,7 @@ const InstitutionalV3Panel = lazy(() => import('./components/InstitutionalV3Pane
 const MyPurchasePlan = lazy(() => import('./components/MyPurchasePlan'))
 const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 
-type TabName = 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites';
+type TabName = 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites' | 'heatmap';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('is_auth') === 'true')
@@ -599,6 +600,13 @@ function App() {
             style={{ fontSize: '1.1rem' }}
           >
             Dashboard
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'heatmap' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('heatmap')}
+            style={{ fontSize: '1.1rem' }}
+          >
+            🗺️ National Heatmap
           </button>
           <button
             className={`tab-btn ${activeTab === 'profile' ? 'tab-active' : ''}`}
@@ -1926,6 +1934,7 @@ function App() {
       {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
       {activeTab === 'institutional' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading institutional panel...</div>}><InstitutionalV3Panel /></Suspense>}
       {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculators...</div>}><Calculators /></Suspense>}
+      {activeTab === 'heatmap' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading heatmap...</div>}><YieldHeatmap /></Suspense>}
       {activeTab === 'favorites' && (
         <UserFavoritesTab 
           suburbsData={suburbsData} 

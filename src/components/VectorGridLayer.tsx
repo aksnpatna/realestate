@@ -7,19 +7,19 @@ interface VectorGridProps {
   url: string;
   zIndex?: number;
   mode?: 'yield' | 'growth';
+  propertyType?: 'house' | 'unit';
 }
 
-export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield' }: VectorGridProps) {
+export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', propertyType = 'house' }: VectorGridProps) {
   const map = useMap();
 
   useEffect(() => {
     // Define the vector grid layer using protobuf
     const vectorGrid = (L as any).vectorGrid.protobuf(url, {
       vectorTileLayerStyles: {
-        // Name of the layer served by pg_tileserv is 'public.suburbs_ui_v3'
         'public.suburbs_ui_v3': function(properties: any, zoom: number) {
-          const yieldPct = properties.house_gross_rental_yield || 0;
-          const growth = properties.house_median_price_12m_change_pct || 0;
+          const yieldPct = propertyType === 'house' ? (properties.house_gross_rental_yield || 0) : (properties.unit_gross_rental_yield || 0);
+          const growth = propertyType === 'house' ? (properties.house_median_price_12m_change_pct || 0) : (properties.unit_median_price_12m_change_pct || 0);
           
           let color = '#ef4444'; // Default Red
           let radius = 0;
@@ -70,11 +70,11 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield' }: V
       L.popup()
         .setContent(`
           <div style="font-family: sans-serif; min-width: 150px;">
-            <h4 style="margin: 0 0 5px 0; color: #1e293b;">${props.name}</h4>
+            <h4 style="margin: 0 0 5px 0; color: #1e293b;">${props.name} <span style="font-weight: normal; font-size: 0.8em; color: #64748b;">(${propertyType})</span></h4>
             <div style="font-size: 0.9em; color: #475569;">
-              Yield: <strong>${props.house_gross_rental_yield || 'N/A'}%</strong><br/>
-              Growth (12m): <strong>${Math.round(props.house_median_price_12m_change_pct || 0)}%</strong><br/>
-              Median: <strong>$${(props.house_median_price || 0).toLocaleString()}</strong>
+              Yield: <strong>${(propertyType === 'house' ? props.house_gross_rental_yield : props.unit_gross_rental_yield) || 'N/A'}%</strong><br/>
+              Growth (12m): <strong>${Math.round((propertyType === 'house' ? props.house_median_price_12m_change_pct : props.unit_median_price_12m_change_pct) || 0)}%</strong><br/>
+              Median: <strong>$${((propertyType === 'house' ? props.house_median_price : props.unit_median_price) || 0).toLocaleString()}</strong>
             </div>
           </div>
         `)
@@ -87,7 +87,7 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield' }: V
     return () => {
       map.removeLayer(vectorGrid);
     };
-  }, [map, url, zIndex, mode]);
+  }, [map, url, zIndex, mode, propertyType]);
 
   return null;
 }
