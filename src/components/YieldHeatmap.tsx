@@ -82,7 +82,7 @@ export default memo(function YieldHeatmap() {
             </LayersControl.BaseLayer>
 
             <LayersControl.Overlay name="Vector Analytics Heatmap" checked>
-               <VectorGridLayer key={`${heatmapMode}-${propertyType}`} url="/tiles/public.suburbs_ui_v3/{z}/{x}/{y}.pbf" mode={heatmapMode} propertyType={propertyType} />
+               <VectorGridLayer key={`${heatmapMode}-${propertyType}`} url="/tiles/public.suburbs_heatmap_view/{z}/{x}/{y}.pbf" mode={heatmapMode} propertyType={propertyType} />
             </LayersControl.Overlay>
           </LayersControl>
         </MapContainer>
