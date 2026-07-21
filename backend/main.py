@@ -686,14 +686,42 @@ def get_benchmarks(db: Session = Depends(get_db), current_user = Depends(get_cur
                 "type": "opportunity"
             })
             
-        # 2. Risk-Free Cash (High-Interest Baseline)
+        # 2. Listed Property Sector (VAP)
+        vap = yf.Ticker("VAP.AX")
+        hist_vap = vap.history(period="1y")
+        if not hist_vap.empty:
+            c_vap = float(hist_vap['Close'].iloc[-1])
+            y_vap = float(hist_vap['Close'].iloc[0])
+            results.append({
+                "symbol": "VAP.AX",
+                "name": "Vanguard Australian Property ETF",
+                "note": "A proxy for commercial and listed real estate (REITs). Useful for comparing direct residential investment vs passive listed property.",
+                "current_price": c_vap,
+                "growth_1y_pct": round(((c_vap - y_vap) / y_vap) * 100, 2),
+                "type": "property_index"
+            })
+
+        # 3. International Stocks (IVV - S&P 500)
+        ivv = yf.Ticker("IVV.AX")
+        hist_ivv = ivv.history(period="1y")
+        if not hist_ivv.empty:
+            c_ivv = float(hist_ivv['Close'].iloc[-1])
+            y_ivv = float(hist_ivv['Close'].iloc[0])
+            results.append({
+                "symbol": "IVV.AX",
+                "name": "S&P 500 ETF (AU Domiciled)",
+                "note": "Global stock market opportunity cost. Historically outpaces local property, but lacks the leverage benefits of real estate.",
+                "current_price": c_ivv,
+                "growth_1y_pct": round(((c_ivv - y_ivv) / y_ivv) * 100, 2),
+                "type": "opportunity"
+            })
+            
+        # 4. Risk-Free Cash (High-Interest Baseline)
         aaa = yf.Ticker("AAA.AX")
         hist_aaa = aaa.history(period="1y")
         if not hist_aaa.empty:
             c_aaa = float(hist_aaa['Close'].iloc[-1])
             y_aaa = float(hist_aaa['Close'].iloc[0])
-            # For AAA, the yield is distributed. The RBA cash rate is a better approx for total return of this ETF.
-            # But the adjusted close handles it. Let's use the adjusted return.
             results.append({
                 "symbol": "AAA.AX",
                 "name": "Betashares High Interest Cash ETF",
@@ -703,15 +731,26 @@ def get_benchmarks(db: Session = Depends(get_db), current_user = Depends(get_cur
                 "type": "risk-free"
             })
             
-        # 3. National Residential Average (Actual DB Data)
+        # 5. National Residential Averages (Actual DB Data)
         avg_house_growth = db.query(func.avg(SuburbUIV3.house_median_price_12m_change_pct)).filter(SuburbUIV3.house_median_price_12m_change_pct.isnot(None)).scalar()
         if avg_house_growth is not None:
             results.append({
                 "symbol": "NAT.HOUSES",
                 "name": "National Average House Growth",
                 "note": "Actual average capital growth of all houses nationwide over the last 12 months based on our enriched dataset.",
-                "current_price": 0,  # N/A for index
+                "current_price": 0,
                 "growth_1y_pct": round(avg_house_growth, 2),
+                "type": "residential"
+            })
+            
+        avg_unit_growth = db.query(func.avg(SuburbUIV3.unit_median_price_12m_change_pct)).filter(SuburbUIV3.unit_median_price_12m_change_pct.isnot(None)).scalar()
+        if avg_unit_growth is not None:
+            results.append({
+                "symbol": "NAT.UNITS",
+                "name": "National Average Unit Growth",
+                "note": "Actual average capital growth of all units/apartments nationwide over the last 12 months.",
+                "current_price": 0,
+                "growth_1y_pct": round(avg_unit_growth, 2),
                 "type": "residential"
             })
             
