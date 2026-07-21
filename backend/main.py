@@ -797,7 +797,7 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db), current_user =
                 "unitGrossRentalYield": _cap_yield(v3.unit_gross_rental_yield),
                 "unitGrossRentalYieldTrend": v3.unit_gross_rental_yield_trend,
                 "unitDaysOnMarket": v3.unit_days_on_market,
-                "totalProperties": v3.total_properties,
+                "totalProperties": _get_sqm_stock(v3) or v3.total_properties,
                 "vacancyRate": v3.vacancy_rate,
                 "supplyDemandRatio": v3.supply_demand_ratio,
                 "priceToRentRatio": v3.price_to_rent_ratio,
@@ -936,34 +936,26 @@ def _provenanced_metrics(v3) -> dict:
         ),
     }
 
+def _get_sqm_stock(v3) -> int | None:
+    try:
+        if v3.demographics_detail and "sqm_data" in v3.demographics_detail:
+            stock_array = v3.demographics_detail["sqm_data"].get("stock")
+            if stock_array and len(stock_array) > 0:
+                latest = stock_array[-1]
+                # Sum r30, r60, r90, r180, r180p
+                keys = ["r30", "r60", "r90", "r180", "r180p"]
+                total = sum(int(latest.get(k, 0)) for k in keys)
+                if total > 0:
+                    return total
+    except Exception:
+        pass
+    return None
+
+
 def _calibrate_dq(v3) -> float:
-    """Recalibrate DQ Score: subtract points for NULL critical fields."""
+    """Return the actual DQ Score computed by the ETL pipeline."""
     raw = float(v3.dq_score or 100)
-    penalties = 0
-    
-    # Critical institutional metrics (heavy penalty if missing)
-    critical_checks = [
-        v3.vacancy_rate, 
-        v3.price_to_income_ratio, 
-        v3.predominant_occupation,
-        v3.population_cagr,
-        v3.rental_stock
-    ]
-    for c in critical_checks:
-        if c is None or c == 0:
-            penalties += 15
-            
-    # Secondary metrics (light penalty if missing)
-    minor_checks = [
-        v3.avg_icsea, 
-        v3.school_count, 
-        v3.estimated_mortgage_repayment or v3.typical_mortgage_band
-    ]
-    for c in minor_checks:
-        if c is None or c == 0:
-            penalties += 3
-            
-    return max(5, min(100, raw - penalties))
+    return max(5, min(100, raw))
 
 def _compute_growth_score(v3: SuburbUIV3) -> dict:
     """
@@ -1144,7 +1136,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "supplyDemandRatio": v3.supply_demand_ratio,
         "priceToRentRatio": v3.price_to_rent_ratio,
         "priceToIncomeRatio": v3.price_to_income_ratio,
-        "totalProperties": v3.total_properties,
+        "totalProperties": _get_sqm_stock(v3) or v3.total_properties,
         "typicalMortgageBand": v3.typical_mortgage_band,
         # Demographics
         "ownerOccupierRate": v3.owner_occupier_rate,
@@ -1845,7 +1837,7 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
                 "daysOnMarket": r.unit_days_on_market,
             },
             "market": {
-                "totalProperties": r.total_properties,
+                "totalProperties": _get_sqm_stock(r) or r.total_properties,
                 "vacancyRate": r.vacancy_rate,
                 "supplyDemandRatio": r.supply_demand_ratio,
                 "approvedSubdivisions12m": r.approved_subdivisions_12m,
@@ -2010,7 +2002,7 @@ def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):
             "daysOnMarket": r.unit_days_on_market,
         },
         "market": {
-            "totalProperties": r.total_properties,
+            "totalProperties": _get_sqm_stock(r) or r.total_properties,
             "vacancyRate": r.vacancy_rate,
             "supplyDemandRatio": r.supply_demand_ratio,
             "approvedSubdivisions12m": r.approved_subdivisions_12m,
