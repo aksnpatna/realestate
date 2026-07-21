@@ -13,6 +13,7 @@ import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
 import TechnicalProvenanceSection from './components/TechnicalProvenanceSection'
 import MarketIndicatorsSection from './components/MarketIndicatorsSection'
 import SqmHistoricalChart from './components/SqmHistoricalChart'
+import PriceHistoryChart from './components/PriceHistoryChart'
 import PocketRiskMap from './components/PocketRiskMap'
 import type { PersonaId, ProfileSectionId } from './data/personas'
 import { loadStoredPersona, getPersona } from './data/personas'
@@ -1064,6 +1065,7 @@ function App() {
                   </div>
 
                     <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
+                      <PriceHistoryChart history10yr={(activeSuburb as any).history10yr} historyRent10yr={(activeSuburb as any).historyRent10yr} />
                       <SqmHistoricalChart sqmData={(activeSuburb as any).demographicsDetailV3?.sqm_data} />
                     </div>
 
