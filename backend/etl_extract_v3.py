@@ -53,8 +53,8 @@ SEED_COOKIES = [
     {'name': '_fbp', 'value': f'fb.1.{random.randint(1000000000000,9999999999999)}.{random.randint(1000000000,9999999999)}', 'domain': '.onthehouse.com.au', 'path': '/'},
 ]
 
-TARGET_STATES = ['VIC', 'NSW', 'QLD', 'SA', 'TAS', 'WA']
-EXCLUDED_STATES = ['NT']
+TARGET_STATES = ['VIC', 'NSW', 'QLD', 'SA', 'TAS', 'WA', 'NT']
+EXCLUDED_STATES = []
 BATCH_LIMIT = 100  # Pilot batch
 
 
