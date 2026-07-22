@@ -176,10 +176,19 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
   const hasVerdict = !!suburb.aiVerdict
 
   return (
-    <div className="highlights-section" style={{ marginTop: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-        <h3 style={{ margin: 0 }}>
-          <span title="AI-powered analysis of market sentiment and investment potential">AI Insights</span>
+    <div className="glass-card" style={{ 
+      marginTop: '20px', 
+      position: 'relative', 
+      overflow: 'hidden',
+      borderColor: 'var(--accent-cyan)',
+      boxShadow: '0 4px 20px rgba(2, 132, 199, 0.1)'
+    }}>
+      {/* Decorative gradient orb for AI feel */}
+      <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(2, 132, 199, 0.15) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid var(--border-glass)', paddingBottom: '15px', position: 'relative', zIndex: 1 }}>
+        <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--accent-cyan)' }}>
+          <span title="AI-powered analysis of market sentiment and investment potential">✨ AI Insights</span>
         </h3>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button

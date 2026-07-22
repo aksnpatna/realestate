@@ -2,18 +2,23 @@
 @import './mobile.css';
 
 :root {
-  --bg-dark: #F8FAFC; /* Light gray body */
-  --bg-card: #FFFFFF; /* White cards */
-  --border-glass: #E2E8F0; /* Light borders */
-  --text-primary: #0F172A; /* Dark slate text */
-  --text-secondary: #334155;
-  --text-muted: #475569;
+  --bg-dark: #F1F5F9; /* Slate 100 for stronger contrast with cards */
+  --bg-card: #FFFFFF; /* Pure white cards */
+  --border-glass: #E2E8F0; /* Slate 200 light borders */
+  --text-primary: #0F172A; /* Slate 900 */
+  --text-secondary: #334155; /* Slate 700 */
+  --text-muted: #64748B; /* Slate 500 */
   --accent-cyan: #0284C7; /* Richer Blue */
   --accent-purple: #4338CA; /* Deep Indigo */
-  --success: #059669;
-  --warning: #D97706;
-  --danger: #DC2626;
+  --success: #059669; /* Emerald 600 */
+  --warning: #D97706; /* Amber 600 */
+  --danger: #DC2626; /* Red 600 */
   --bg-glass: #FFFFFF;
+  
+  /* Premium Shadow Elevation System */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -62,16 +67,16 @@ header {
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
-  border-radius: 12px;
-  padding: 2rem;
+  border-radius: 16px;
+  padding: 2.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .main-content .glass-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border-color: rgba(59, 130, 246, 0.5); /* Subtle blue glow on hover */
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(59, 130, 246, 0.3); /* Subtle blue glow on hover */
 }
 
 /* Layout */
@@ -1205,10 +1210,10 @@ header {
   .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
-  border-radius: 12px;
-  padding: 2rem;
+  border-radius: 16px;
+  padding: 1.25rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
   .detail-header {

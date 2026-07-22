@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-07-22)
+# Graph Report - realestate  (2026-07-20)
 
 ## Corpus Check
-- 194 files · ~2,309,848 words
+- 186 files · ~2,303,932 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1774 nodes · 2344 edges · 214 communities (170 shown, 44 thin omitted)
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 331 edges (avg confidence: 0.58)
+- 1738 nodes · 2296 edges · 211 communities (166 shown, 45 thin omitted)
+- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 324 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a6bd5264`
+- Built from commit: `94f0c9b6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -184,20 +184,18 @@
 - [[_COMMUNITY_Community 208|Community 208]]
 - [[_COMMUNITY_Community 209|Community 209]]
 - [[_COMMUNITY_Community 210|Community 210]]
-- [[_COMMUNITY_Community 211|Community 211]]
-- [[_COMMUNITY_Community 212|Community 212]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Session` - 41 edges
-2. `BuyFinderRequest` - 38 edges
-3. `BuyFinderWeights` - 35 edges
-4. `SuburbUIV3` - 35 edges
-5. `ModelDiary` - 35 edges
+2. `BuyFinderRequest` - 37 edges
+3. `BuyFinderWeights` - 34 edges
+4. `SuburbUIV3` - 34 edges
+5. `ModelDiary` - 34 edges
 6. `Real Estate POC: Affordable Data Ingestion and Cleansing Playbook` - 34 edges
-7. `SuburbRawV3` - 28 edges
-8. `SuburbPriceHistory` - 28 edges
+7. `SuburbRawV3` - 27 edges
+8. `SuburbPriceHistory` - 27 edges
 9. `compute_buyer_fit()` - 26 edges
-10. `PropertyListing` - 26 edges
+10. `PropertyListing` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `analyze_sentiment()` --calls--> `record_sentiment_call()`  [INFERRED]
@@ -206,10 +204,10 @@
   backend/buyfinder.py → backend/predictive_ai_engine.py
 - `Path` --uses--> `SuburbUIV3`  [INFERRED]
   backend/etl_abs_census.py → backend/models_v3.py
-- `get_news_sentiment()` --calls--> `record_cache_miss()`  [INFERRED]
-  backend/main.py → backend/observability.py
 - `migrate()` --calls--> `SuburbPriceHistory`  [INFERRED]
   backend/migrate_history_to_timeseries.py → backend/models_v3.py
+- `get_news_sentiment()` --calls--> `analyze_sentiment()`  [INFERRED]
+  backend/ai_agent.py → backend/ai_sentiment.py
 
 ## Import Cycles
 - None detected.
@@ -225,7 +223,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (214 total, 44 thin omitted)
+## Communities (211 total, 45 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -252,8 +250,8 @@ Cohesion: 0.50
 Nodes (3): ShareReport(), ShareReportProps, trackEvent()
 
 ### Community 6 - "Database Models & Scrapers"
-Cohesion: 0.05
-Nodes (62): _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), bust_suburbs_cache(), calculate_roi(), calculate_stamp_duty(), _check_auth_rate(), create_model_diary_entry() (+54 more)
+Cohesion: 0.06
+Nodes (55): _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), bust_suburbs_cache(), buy_finder_rank(), calculate_roi(), calculate_stamp_duty(), _check_auth_rate() (+47 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -328,16 +326,16 @@ Cohesion: 0.06
 Nodes (33): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+25 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.05
-Nodes (43): agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict, _evaluate_policy_rules() (+35 more)
+Cohesion: 0.06
+Nodes (42): agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict, _evaluate_policy_rules() (+34 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
 Nodes (17): get_osm_boundary(), get_osm_livability(), Returns local POI data and livability scores from PostGIS OSM tables.     Replac, Returns suburb boundary geojson and center coordinates from local PostGIS., _build_category_query(), compute_scores(), get_boundary(), get_livability() (+9 more)
 
 ### Community 67 - "Community 67"
-Cohesion: 0.11
-Nodes (14): AUSTRALIA_CENTER, boundaryCache, cafeIcon, earlyLearningIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon (+6 more)
+Cohesion: 0.12
+Nodes (13): AUSTRALIA_CENTER, boundaryCache, cafeIcon, earlyLearningIcon, MapProps, parkIcon, primarySchoolIcon, secondarySchoolIcon (+5 more)
 
 ### Community 68 - "Community 68"
 Cohesion: 0.18
@@ -364,8 +362,8 @@ Cohesion: 0.07
 Nodes (24): analyze_sentiment(), _call_remote_llm(), _detect_non_english(), _extract_keywords(), _keyword_sentiment(), ai_sentiment.py — Sentiment analysis via remote LLM (Ollama / llama.cpp GGUF). C, Call the remote Qwen model over HTTP for sentiment classification.     Supports, Keyword-based sentiment scoring as fallback. Returns 1-10 score. (+16 more)
 
 ### Community 90 - "Community 90"
-Cohesion: 0.13
-Nodes (19): icons, PersonaSwitcher, Props, Props, ALL_SECTIONS, ProfileSectionNav, Props, Section (+11 more)
+Cohesion: 0.14
+Nodes (17): icons, PersonaSwitcher, Props, Props, ALL_SECTIONS, ProfileSectionNav, Props, Section (+9 more)
 
 ### Community 91 - "Community 91"
 Cohesion: 0.06
@@ -378,10 +376,6 @@ Nodes (8): Caboolture QLD 4510, Chermside QLD 4032, Coomera QLD 4209, Ipswich QL
 ### Community 93 - "Community 93"
 Cohesion: 0.29
 Nodes (7): Armadale WA 6112, Fremantle WA 6160, Joondalup WA 6027, Mandurah WA 6210, Midland WA 6056, Rockingham WA 6168, WA (Western Australia)
-
-### Community 94 - "Community 94"
-Cohesion: 0.18
-Nodes (10): 1. Core Data Sources & Delegation, 2. Extraction & ETL Pipeline, 3. The Database Schema (`suburbs_ui_v3`), 4. Decommissioning Legacy Systems, Overview, PropertyIQ Data Architecture V3, Stage 1: Local VPN Extraction (SQM), Stage 2: Database Normalization & DQ Scoring (+2 more)
 
 ### Community 95 - "Community 95"
 Cohesion: 0.33
@@ -396,8 +390,8 @@ Cohesion: 0.40
 Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Australia), Salisbury SA 5108
 
 ### Community 98 - "Community 98"
-Cohesion: 0.07
-Nodes (15): V3SuburbData, LandingPageProps, Benchmark, MacroBenchmarkPanel, OnboardingTour(), PriceHistoryChartProps, QuickRoiCalculatorProps, AffordabilityCalculator (+7 more)
+Cohesion: 0.08
+Nodes (16): LandingPageProps, Benchmark, MacroBenchmarkPanel, IndicatorCard, MarketIndicatorsSection, Props, OnboardingTour(), QuickRoiCalculatorProps (+8 more)
 
 ### Community 99 - "Community 99"
 Cohesion: 0.05
@@ -413,7 +407,7 @@ Nodes (3): find_similar_suburbs(), Finds cheaper suburbs that share similar inst
 
 ### Community 104 - "Community 104"
 Cohesion: 0.11
-Nodes (16): BackendResultCard, BuyFinderLocalResponse, mockFetch, DecisionBriefProps, DecisionSnapshot, FullLegendProps, GrowthFactorLabeled, InlineHintProps (+8 more)
+Nodes (16): DecisionBriefProps, DecisionSnapshot, mockFetch, mockResult, mockSuburb, FullLegendProps, GrowthFactorLabeled, InlineHintProps (+8 more)
 
 ### Community 105 - "Community 105"
 Cohesion: 0.05
@@ -600,8 +594,8 @@ Cohesion: 0.29
 Nodes (3): _is_test_database(), pytest_configure(), conftest.py — Pytest configuration and fixtures for the Buyer Fit POC test suite
 
 ### Community 153 - "Community 153"
-Cohesion: 0.29
-Nodes (33): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, buy_finder_rank(), BuyersAgentClient, BuyFinderRequest (+25 more)
+Cohesion: 0.30
+Nodes (39): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyersAgentClient, BuyFinderRequest, BuyFinderWeights (+31 more)
 
 ### Community 154 - "Community 154"
 Cohesion: 0.11
@@ -610,10 +604,6 @@ Nodes (18): Architecture Principles, COLUMN OWNERSHIP (who writes what), DATA LI
 ### Community 156 - "Community 156"
 Cohesion: 0.05
 Nodes (38): Confirmed decisions, H10 — P1 · Config staleness alert (closes P9), H11 — P1 · Freshness surfaced in UI (closes P11), H12 — P1 · Structured request logs (closes P14), H13 — P1 · Concurrency model for AI (closes P15), H14 — P2 · Scraper robots/ToS posture (closes P4 follow-up), H15 — P2 · Test scaffolding for the new invariants, H1 — P0 · Kill the random-JWT_SECRET foot-gun (closes P1, P10) (+30 more)
-
-### Community 157 - "Community 157"
-Cohesion: 0.22
-Nodes (16): get_me(), Stores legally binding Click-Wrap agreements with timestamps and IP records., UserActivity, UserConsent, UserFavorite, UserModel, _write_analytics_event_bg(), Ingestion Target Layer. Stores the pure, unprocessed JSON payload extracted from (+8 more)
 
 ### Community 158 - "Community 158"
 Cohesion: 0.13
@@ -685,7 +675,7 @@ Nodes (8): get_personas(), Persona presets (weights + visible profile sections +
 
 ### Community 191 - "Community 191"
 Cohesion: 0.15
-Nodes (20): _annualize_cagr(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), _get_sqm_stock(), get_suburb(), get_suburb_evidence(), get_suburb_v3() (+12 more)
+Nodes (19): _annualize_cagr(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), get_suburb(), get_suburb_evidence(), get_suburb_v3(), get_suburbs() (+11 more)
 
 ### Community 192 - "Community 192"
 Cohesion: 0.28
@@ -712,8 +702,8 @@ Cohesion: 0.40
 Nodes (3): Indicator, Props, TechnicalProvenanceSection
 
 ### Community 198 - "Community 198"
-Cohesion: 0.32
-Nodes (6): extract_json_data(), fetch_sqm_postcode(), process_postcode(), Extract embedded JSON array from SQM HTML script tags., Fetch and parse Rents, Vacancy, Stock, and Prices for a postcode., Worker function to process a single postcode and update DB.
+Cohesion: 0.17
+Nodes (12): get_cached_or_query(), get_decision_brief(), get_news_sentiment(), _get_suburb_or_404(), get_suburbs_v3(), _normalize_suburb_id(), Returns a versioned decision snapshot for the Decision Brief UI component., Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21 (+4 more)
 
 ### Community 199 - "Community 199"
 Cohesion: 0.17
@@ -724,36 +714,32 @@ Cohesion: 0.29
 Nodes (5): TabName, mockSuburbsData, fetchLivabilityData(), LivabilityData, OSMPoi
 
 ### Community 201 - "Community 201"
-Cohesion: 0.33
-Nodes (4): Props, IndicatorCard, MarketIndicatorsSection, Props
+Cohesion: 0.29
+Nodes (5): BackendResultCard, BuyFinderLocalResponse, mockFetch, getPersona(), App()
 
 ### Community 204 - "Community 204"
 Cohesion: 0.40
 Nodes (4): create_table_if_not_exists(), load_geojson(), Creates the school_zones table in PostGIS., Reads a GeoJSON file and inserts the polygons into PostGIS.
 
-### Community 208 - "Community 208"
-Cohesion: 0.50
-Nodes (3): mockFetch, mockResult, mockSuburb
-
 ## Knowledge Gaps
-- **756 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+751 more)
+- **745 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+740 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **44 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **45 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SuburbRawV3` connect `Community 153` to `V3 Scheduler Orchestration`, `Database Models & Scrapers`, `ETL Extract V3 Pipeline`, `Community 155`, `Community 157`?**
+- **Why does `Session` connect `Database Models & Scrapers` to `Community 191`, `Community 153`, `Community 198`, `Community 103`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `Session` connect `Database Models & Scrapers` to `Community 153`, `Community 191`, `Community 103`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `analyze_sentiment()` connect `Community 88` to `Community 65`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `get_news_sentiment()` connect `Community 65` to `Community 88`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Are the 7 inferred relationships involving `Session` (e.g. with `BuyFinderRequest` and `BuyFinderWeights`) actually correct?**
   _`Session` has 7 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 33 inferred relationships involving `BuyFinderRequest` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
-  _`BuyFinderRequest` has 33 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 33 inferred relationships involving `BuyFinderWeights` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
-  _`BuyFinderWeights` has 33 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 31 inferred relationships involving `SuburbUIV3` (e.g. with `BuyFinderRequest` and `BuyFinderWeights`) actually correct?**
-  _`SuburbUIV3` has 31 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 32 inferred relationships involving `BuyFinderRequest` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
+  _`BuyFinderRequest` has 32 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 32 inferred relationships involving `BuyFinderWeights` (e.g. with `SuburbUIV3` and `ActivityRequest`) actually correct?**
+  _`BuyFinderWeights` has 32 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 30 inferred relationships involving `SuburbUIV3` (e.g. with `BuyFinderRequest` and `BuyFinderWeights`) actually correct?**
+  _`SuburbUIV3` has 30 INFERRED edges - model-reasoned connections that need verification._
