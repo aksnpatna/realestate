@@ -7,7 +7,7 @@ import UserFavoritesTab from './components/UserFavoritesTab'
 import AIInsightPanel from './components/AIInsightPanel'
 import DecisionBrief from './components/DecisionBrief'
 import type { BuyerFitResult } from './data/buyerFitTypes'
-import { ScoreInlineHint, ScoreLegendPanel, type GrowthFactorLabeled } from './components/ScoreLegend'
+import { ScoreLegendPanel, type GrowthFactorLabeled } from './components/ScoreLegend'
 import PersonaSwitcher from './components/PersonaSwitcher'
 import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
 import TechnicalProvenanceSection from './components/TechnicalProvenanceSection'
@@ -757,103 +757,139 @@ function App() {
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card" {...{ [SECTION_ATTR]: 'overview' }}>
-                    <div className="detail-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '20px' }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                          <h2 className="detail-title" style={{ margin: 0, fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    <div className="detail-header" style={{ paddingBottom: '24px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
+                        {/* Left Column: Title & Subtitle */}
+                        <div style={{ flex: '1 1 400px', minWidth: 0 }}>
+                          <h2 style={{ margin: 0, fontSize: '2.1rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1, letterSpacing: '-0.5px' }}>
                             {activeSuburb.name}, {activeSuburb.state}
                           </h2>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <button
-                              className="favorite-btn"
-                              onClick={() => toggleFavorite(activeSuburb.id)}
-                              style={{
-                                background: 'var(--bg-card)', border: '1px solid var(--border-glass)', cursor: 'pointer', fontSize: '1.2rem',
-                                color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-secondary)',
-                                transition: 'all 0.2s', padding: '6px 12px', borderRadius: '8px', boxShadow: 'var(--shadow-sm)'
-                              }}
-                              title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
-                            >
-                              {favorites.includes(activeSuburb.id) ? '♥ Saved' : '♡ Save'}
-                            </button>
-                            <ShareReport suburbName={`${activeSuburb.name}, ${activeSuburb.state}`} suburbId={activeSuburb.id} />
-                            <button
-                              onClick={() => setActiveTab('buy-finder')}
-                              style={{
-                                background: 'var(--accent-cyan)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
-                                color: '#000', transition: 'all 0.2s', padding: '6px 12px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(14,165,233,0.3)'
-                              }}
-                              title="Find similar suburbs based on your criteria"
-                            >
-                              🔍 Compare
-                            </button>
+                          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginTop: '12px', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
+                            <span style={{ fontWeight: 600 }}>{activeSuburb.postcode}</span>
+                            <span style={{ color: 'var(--border-glass)' }}>•</span>
+                            <span>
+                              {(activeSuburb as any).cbdDistance
+                                ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
+                                : activeSuburb.metroCBD || 'Regional'}
+                            </span>
+                            {(activeSuburb as any).lastUpdated && (
+                              <>
+                                <span style={{ color: 'var(--border-glass)' }}>•</span>
+                                <span style={{ fontSize: '0.85rem' }}>
+                                  Updated {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
+                                </span>
+                              </>
+                            )}
                           </div>
                         </div>
-                        <p className="subtitle" style={{ marginTop: '8px', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
-                          {(activeSuburb as any).cbdDistance
-                            ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
-                            : activeSuburb.metroCBD || 'Regional'}
-                          <span style={{ margin: '0 10px', color: 'var(--border-glass)' }}>|</span>
-                          {activeSuburb.postcode}
-                        </p>
-                        {(activeSuburb as any).lastUpdated && (
-                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                            Data Last Updated: {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
-                          </p>
-                        )}
-                        
-                        <div style={{ marginTop: '10px' }} />
+
+                        {/* Right Column: Actions */}
+                        <div className="profile-action-btns" style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
+                          <button
+                            className="profile-action-btn"
+                            onClick={() => toggleFavorite(activeSuburb.id)}
+                            style={{
+                              background: favorites.includes(activeSuburb.id) ? 'rgba(239,68,68,0.08)' : 'var(--bg-dark)',
+                              border: '1px solid var(--border-glass)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
+                              color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-primary)',
+                              transition: 'all 0.2s', padding: '8px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px'
+                            }}
+                            title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
+                          >
+                            <span style={{ fontSize: '1.1rem' }}>{favorites.includes(activeSuburb.id) ? '♥' : '♡'}</span>
+                            <span className="profile-action-text">{favorites.includes(activeSuburb.id) ? 'Saved' : 'Save'}</span>
+                          </button>
+                          
+                          <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                            <ShareReport suburbName={`${activeSuburb.name}, ${activeSuburb.state}`} suburbId={activeSuburb.id} />
+                          </div>
+
+                          <button
+                            className="profile-action-btn"
+                            onClick={() => setActiveTab('buy-finder')}
+                            style={{
+                              background: 'var(--accent-cyan)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
+                              color: '#fff', transition: 'all 0.2s', padding: '8px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px'
+                            }}
+                            title="Find similar suburbs based on your criteria"
+                          >
+                            <span style={{ fontSize: '1rem' }}>🔍</span>
+                            <span className="profile-action-text">Compare</span>
+                          </button>
+                        </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-                        {/* Confidence Band (Data Quality) */}
-                        <div className="main-score" style={{ textAlign: 'center', background: 'var(--bg-card)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-glass)', boxShadow: '0 2px 4px rgba(0,0,0,0.04)' }}>
-                          <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)', marginBottom: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            Data Confidence
-                            <ScoreInlineHint scoreKey="dq" value={(activeSuburb as any).dqScore ?? null} />
-                          </div>
-                          {(()=>{
-                            const dq = (activeSuburb as any).dqScore;
-                            if (dq == null) return <div style={{ fontSize: '1rem', color: '#f59e0b', fontWeight: 'bold' }}>⚠️ Low</div>;
-                            const c=dq>=80?'#10b981':dq>=60?'#f59e0b':'#ef4444';
-                            return <div style={{ fontSize: '1.4rem', color: c, fontWeight: 'bold' }}>{Math.round(dq)}/100</div>;
-                          })()}
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Data Quality</div>
-                        </div>
+                      {/* Row 2: Premium Badge Ribbon */}
+                      <div className="profile-badge-ribbon" style={{ 
+                        display: 'flex', gap: '8px', marginTop: '20px', flexWrap: 'wrap', alignItems: 'center',
+                        padding: '12px 16px', background: 'var(--bg-dark)', borderRadius: '8px', border: '1px solid var(--border-glass)'
+                      }}>
+                        <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)', marginRight: '8px', fontWeight: 600 }}>Market Snapshot</span>
+                        
+                        {/* Data Quality */}
+                        {(() => {
+                          const dq = (activeSuburb as any).dqScore;
+                          return (
+                            <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ color: 'var(--text-secondary)' }}>DQ</span> 
+                              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{dq != null ? `${Math.round(dq)}/100` : 'Low'}</span>
+                            </span>
+                          );
+                        })()}
 
-                        {/* ABS Verified Badge */}
+                        {/* ABS Verified */}
                         {(activeSuburb as any).absDemographicsSourced && (
-                          <div className="main-score" style={{ textAlign: 'center', background: 'rgba(16,185,129,0.05)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', boxShadow: '0 2px 4px rgba(16,185,129,0.05)' }}>
-                            <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#10b981', marginBottom: '4px' }}>Demographics</div>
-                            <div style={{ fontSize: '1.1rem', color: '#10b981', fontWeight: 'bold' }}>✓ ABS 2021</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Census Verified</div>
-                          </div>
+                          <>
+                            <span style={{ color: 'var(--border-glass)' }}>•</span>
+                            <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 600 }}>✓ ABS Census</span>
+                          </>
                         )}
 
-                        {/* Growth Score — relabeled "Market Momentum" for clarity */}
-                        <div className="main-score">
-                          <div className="main-score-value" title="Market Momentum: deterministic composite of price growth, population, yield, demand/supply, vacancy and sentiment. Not a price forecast.">
-                            {activeSuburb.growthScore}
-                          </div>
-                          <div className="main-score-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            Market Momentum
-                            <ScoreInlineHint scoreKey="growth" value={activeSuburb.growthScore} />
-                          </div>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '2px', lineHeight: '1.1' }}>
-                            Deterministic momentum,<br/>not a price forecast
-                          </div>
-                          {persona !== 'first_home_buyer' && (
+                        {/* Market Momentum */}
+                        <span style={{ color: 'var(--border-glass)' }}>•</span>
+                        <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }} title="Deterministic momentum composite. Not a price forecast.">
+                          <span style={{ color: 'var(--text-secondary)' }}>Momentum</span> 
+                          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{activeSuburb.growthScore}</span>
+                        </span>
+
+                        {/* Yield */}
+                        {((activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield) && (
+                          <>
+                            <span style={{ color: 'var(--border-glass)' }}>•</span>
+                            <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ color: 'var(--text-secondary)' }}>Yield</span> 
+                              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{(activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield}%</span>
+                            </span>
+                          </>
+                        )}
+
+                        {/* Vacancy */}
+                        {activeSuburb.vacancyRate != null && (
+                          <>
+                            <span style={{ color: 'var(--border-glass)' }}>•</span>
+                            <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ color: 'var(--text-secondary)' }}>Vacancy</span> 
+                              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{Number(activeSuburb.vacancyRate).toFixed(1)}%</span>
+                            </span>
+                          </>
+                        )}
+
+                        {/* Cashflow CTA — compact */}
+                        {persona !== 'first_home_buyer' && (
+                          <div style={{ marginLeft: 'auto' }}>
                             <button
                               onClick={() => setActiveTab('gearing')}
-                              style={{ marginTop: '10px', padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem', width: '100%' }}
+                              className="badge-pill"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 14px', borderRadius: '20px', background: 'var(--accent-cyan)', border: 'none', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: 'pointer', transition: 'opacity 0.2s', boxShadow: '0 2px 4px rgba(2,132,199,0.2)' }}
                             >
-                              💰 View Cashflow →
+                              💰 Run Cashflow →
                             </button>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
-                  </div>
-                  
+                    </div>
+
+
                   {/* Evidence-backed highlights */}
                   {(activeSuburb.highlights || []).length > 0 && (
                     <div style={{ marginBottom: '20px', background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--border-glass)', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
@@ -866,149 +902,87 @@ function App() {
                     </div>
                   )}
 
-                  <div className="metrics-grid">
-                    <div className="metric-box">
-                      <div className="metric-label">House Median Price</div>
-                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
+                  <div className="metrics-grid" style={{ gap: '12px' }}>
+                    <div className="metric-box" style={{ padding: '12px 16px' }}>
+                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>House Median Price</div>
+                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px', fontSize: '1.15rem' }}>
+                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : <span style={{color:'var(--text-muted)'}}>—</span>}
                         {(() => {
                           const change = Number((activeSuburb as any).houseMedianPrice12mChangePct) || 0;
                           if (change) {
-                            return <span style={{ fontSize: '1rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
+                            return <span style={{ fontSize: '0.85rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
                           }
                           return null;
                         })()}
                       </div>
                     </div>
-                    <div className="metric-box">
-                      <div className="metric-label">Unit Median Price</div>
-                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
+                    <div className="metric-box" style={{ padding: '12px 16px' }}>
+                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Unit Median Price</div>
+                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px', fontSize: '1.15rem' }}>
+                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : <span style={{color:'var(--text-muted)'}}>—</span>}
                         {(() => {
                           const change = Number((activeSuburb as any).unitMedianPrice12mChangePct) || 0;
                           if (change) {
-                            return <span style={{ fontSize: '1rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
+                            return <span style={{ fontSize: '0.85rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
                           }
                           return null;
                         })()}
                       </div>
                     </div>
-                    <div className="metric-box">
-                      <div className="metric-label">Population Growth (CAGR)</div>
-                      <div className="metric-value highlight-cyan">
+                    <div className="metric-box" style={{ padding: '12px 16px' }}>
+                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Population Growth (CAGR)</div>
+                      <div className="metric-value highlight-cyan" style={{ fontSize: '1.15rem' }}>
                         {activeSuburb.populationCagr ? `${Number(activeSuburb.populationCagr).toFixed(1)}%` : (activeSuburb.metrics?.populationGrowth && activeSuburb.metrics.populationGrowth !== 'N/A'
                           ? activeSuburb.metrics.populationGrowth
-                          : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>)}
+                          : <span style={{color:'var(--text-muted)'}}>—</span>)}
                       </div>
                     </div>
-                    <div className="metric-box">
-                      <div className="metric-label">Green Space</div>
-                      <div className="metric-value highlight-purple">
-                        {(activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount} parks (${(activeSuburb as any).parksCoveragePct || 0}% cover)` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
+                    <div className="metric-box" style={{ padding: '12px 16px' }}>
+                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Green Space</div>
+                      <div className="metric-value" style={{ fontSize: '1.15rem' }}>
+                        {(activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount} parks (${(activeSuburb as any).parksCoveragePct || 0}% cover)` : <span style={{color:'var(--text-muted)'}}>—</span>}
                       </div>
                     </div>
-                    <div className="metric-box">
-                      <div className="metric-label">Avg Rental Yield</div>
-                      <div className="metric-value">
-                        {(activeSuburb as any).rentalYield ? `${(activeSuburb as any).rentalYield}%` : (activeSuburb as any).houseGrossRentalYield ? `${(activeSuburb as any).houseGrossRentalYield}%` : activeSuburb.metrics?.rentalYield ? `${activeSuburb.metrics.rentalYield}%` : <span style={{fontSize:'0.85rem', color:'var(--text-secondary)', background:'rgba(255,255,255,0.05)', padding:'2px 6px', borderRadius:'4px'}}>No data</span>}
+                    <div className="metric-box" style={{ padding: '12px 16px' }}>
+                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Avg Rental Yield</div>
+                      <div className="metric-value" style={{ fontSize: '1.15rem' }}>
+                        {(activeSuburb as any).rentalYield ? `${(activeSuburb as any).rentalYield}%` : (activeSuburb as any).houseGrossRentalYield ? `${(activeSuburb as any).houseGrossRentalYield}%` : activeSuburb.metrics?.rentalYield ? `${activeSuburb.metrics.rentalYield}%` : <span style={{color:'var(--text-muted)'}}>—</span>}
                       </div>
                     </div>
-                    <div className="metric-box">
-                      <div className="metric-label">AI News Sentiment</div>
-                      <div className={`metric-value ${
-                        (activeSuburb.metrics as any)?._newsScore >= 7 ? 'highlight-cyan' :
-                        (activeSuburb.metrics as any)?._newsScore >= 4 ? 'text-muted' : 'text-warning'
-                      }`} style={{ fontSize: '1rem' }}>
-                        {activeSuburb.metrics.aiNewsSentiment || 'Pending'}
+                    <div className="metric-box" style={{ padding: '12px 16px' }}>
+                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>AI News Sentiment</div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div className={`metric-value ${
+                          (activeSuburb.metrics as any)?._newsScore >= 7 ? 'highlight-cyan' :
+                          (activeSuburb.metrics as any)?._newsScore >= 4 ? 'text-muted' : 'text-warning'
+                        }`} style={{ fontSize: '1.15rem' }}>
+                          {activeSuburb.metrics.aiNewsSentiment || 'Pending'}
+                        </div>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>See AI panel ↓</span>
                       </div>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>See AI Insights panel below</span>
                     </div>
                    </div>
 
-                   {/* Score Legend — explains the three numbers a user sees on this page */}
-                   <details style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', marginTop: '15px', overflow: 'hidden' }}>
-                     <summary style={{ padding: '12px 16px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', outline: 'none' }}>
-                       ℹ️ Understanding Our Scores
-                     </summary>
-                     <div style={{ padding: '0 16px 16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                       <ScoreLegendPanel growthFactors={((activeSuburb as any).growthFactorsLabeled) as GrowthFactorLabeled[] | undefined} />
-                     </div>
-                     {benchmarks && benchmarks.length > 0 && (
-                    <div className="card" style={{ padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px' }}>
-                      <h4 style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        📈 Market Baselines
-                      </h4>
-                      <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                        Use these actual market baselines to determine if the local growth is genuine alpha or just riding the tide.
-                      </p>
-                      
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                        {benchmarks.map((bm, i) => (
-                          <div key={i} style={{ 
-                            padding: '1rem', 
-                            background: 'var(--bg)', 
-                            borderRadius: '8px',
-                            borderLeft: `4px solid ${
-                              (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct 
-                                ? 'var(--accent-cyan)' 
-                                : 'var(--warning)'
-                            }`
-                          }}>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase' }}>{bm.symbol}</div>
-                            <div style={{ fontSize: '1.1rem', color: 'var(--text-primary)', fontWeight: 'bold', margin: '0.25rem 0' }}>{bm.name}</div>
-                            
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
-                              <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>1Y Return</span>
-                              <span style={{ 
-                                fontSize: '1.2rem', 
-                                color: bm.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', 
-                                fontWeight: 'bold' 
-                              }}>
-                                {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
-                              </span>
-                            </div>
-                            
-                            <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)' }}>
-                              {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'Property Outperforming' : 'Property Underperforming'}
-                            </div>
-                            <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
-                              {bm.note}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                   </details>
+
 
                     <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
                    {/* Market Snapshot */}
                    <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'overview' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'overview' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                      Market Snapshot
-                    </h3>
-                    {/* Top KPI Ribbon */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px' }}>
-                      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Median Asking Rent</div>
-                        <div style={{ fontSize: '1.8rem', color: 'var(--accent-purple)', fontWeight: 'bold', marginTop: '5px' }}>
-                          {(activeSuburb as any).weeklyRent ? `$${(activeSuburb as any).weeklyRent}/wk` : '—'}
-                        </div>
-                      </div>
-                      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Vacancy Rate</div>
-                        <div style={{ fontSize: '1.8rem', color: 'var(--success)', fontWeight: 'bold', marginTop: '5px' }}>
-                          {activeSuburb.vacancyRate != null ? `${Number(activeSuburb.vacancyRate).toFixed(1)}%` : '—'}
-                        </div>
-                      </div>
-                      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Stock on Market</div>
-                        <div style={{ fontSize: '1.8rem', color: 'var(--accent-cyan)', fontWeight: 'bold', marginTop: '5px' }}>
-                          {(activeSuburb as any).totalProperties ? `${(activeSuburb as any).totalProperties} active listings` : '—'}
-                        </div>
-                      </div>
-                    </div>
+                    
+                    {/* Quick ROI Calculator — Promoted inside Overview tab */}
+                    {persona !== 'first_home_buyer' && (
+                      <Suspense fallback={<div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Loading ROI...</div>}>
+                        <QuickRoiCalculator 
+                          medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
+                          medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
+                          state={(activeSuburb as any).state || "VIC"}
+                          onAdvancedClick={() => setActiveTab('gearing')}
+                        />
+                      </Suspense>
+                    )}
+
+
 
                     {/* Development Signal — surfaced for Overview visibility */}
                     {(() => {
@@ -1061,10 +1035,62 @@ function App() {
 
                   {/* Decision Brief — compact evidence-based summary */}
                   <div style={{ display: activeProfileSection === 'overview' ? 'block' : 'none' }}>
-                  <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
+                    <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
+                    
+                    {/* Score Legend — Moved to bottom of overview tab */}
+                    <details style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', marginTop: '20px', overflow: 'hidden' }}>
+                      <summary style={{ padding: '12px 16px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', outline: 'none' }}>
+                        ℹ️ Understanding Our Scores
+                      </summary>
+                      <div style={{ padding: '0 16px 16px', borderTop: '1px solid var(--border-glass)' }}>
+                        <ScoreLegendPanel growthFactors={((activeSuburb as any).growthFactorsLabeled) as GrowthFactorLabeled[] | undefined} />
+                      </div>
+                    </details>
                   </div>
 
                     <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
+                      {/* Market Baselines — Moved to Market tab */}
+                      {benchmarks && benchmarks.length > 0 && (
+                        <div style={{ padding: '16px 20px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', marginBottom: '20px' }}>
+                          <h4 style={{ margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}>
+                            📈 Market Baselines
+                          </h4>
+                          <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                            Compare suburb growth against market benchmarks to identify genuine alpha.
+                          </p>
+                          <div className="profile-grid-auto" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                            {benchmarks.map((bm, i) => (
+                              <div key={i} style={{ 
+                                padding: '12px', 
+                                background: 'var(--bg-dark)', 
+                                borderRadius: '8px',
+                                borderLeft: `3px solid ${
+                                  (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct 
+                                    ? 'var(--accent-cyan)' 
+                                    : 'var(--warning)'
+                                }`
+                              }}>
+                                <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textTransform: 'uppercase' }}>{bm.symbol}</div>
+                                <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: 'bold', margin: '2px 0' }}>{bm.name}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
+                                  <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>1Y Return</span>
+                                  <span style={{ 
+                                    fontSize: '1rem', 
+                                    color: bm.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', 
+                                    fontWeight: 'bold' 
+                                  }}>
+                                    {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
+                                  </span>
+                                </div>
+                                <div style={{ marginTop: '4px', fontSize: '0.78rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)' }}>
+                                  {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '✓ Outperforming' : '↓ Underperforming'}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       <PriceHistoryChart history10yr={(activeSuburb as any).history10yr} historyRent10yr={(activeSuburb as any).historyRent10yr} />
                       <SqmHistoricalChart sqmData={(activeSuburb as any).demographicsDetailV3?.sqm_data} />
                     </div>
@@ -1148,10 +1174,12 @@ function App() {
 
                   {/* BUYER AGENT SUMMARY */}
                   <div className="highlights-section" style={{ marginTop: '20px' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                      📊 Quick Reference
-                    </h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <details style={{ background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', borderRadius: '12px', overflow: 'hidden' }}>
+                      <summary style={{ padding: '15px 20px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', outline: 'none' }}>
+                        📊 Quick Reference
+                      </summary>
+                      <div style={{ padding: '0 20px 20px', borderTop: '1px solid var(--border-glass)' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '15px' }}>
                       {(() => {
                         const s = activeSuburb
                         const demo = ((s as any).demographicsDetailV3) || {}
@@ -1204,14 +1232,17 @@ function App() {
                           </div>
                         ])
                       })()}
-                    </div>
+                        </div>
+                      </div>
+                    </details>
                   </div>
                     {/* Bottom Row: Charts */}
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       {/* 10-Year Historical Chart */}
                       {activeSuburb.history && activeSuburb.history.length >= 2 && (
                         <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>10-Year Historical Median Price</h4>
+                          <h4 style={{ textAlign: 'center', marginBottom: '2px' }}>10-Year Historical Median Price</h4>
+                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>House median price tracking over time</p>
                           <div style={{ height: '220px' }}>
                             <ResponsiveContainer width="100%" height="100%">
                               <LineChart data={(activeSuburb.history as any[]).map((pt: any) => ({
@@ -1228,21 +1259,7 @@ function App() {
                           </div>
                         </div>
                       )}
-                      {/* 10-Year Projection — NOT AVAILABLE in POC */}
-                      <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ textAlign: 'center', padding: '20px' }}>
-                          <h4 style={{ marginBottom: '10px', color: 'var(--text-secondary)' }}>Long-Horizon Forecast Unavailable</h4>
-                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '300px', lineHeight: 1.5 }}>
-                            The POC does not yet produce calibrated long-horizon forecasts.
-                            Return after sufficient observation history is accumulated to enable
-                            empirical backtesting and calibration.
-                          </p>
-                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '8px' }}>
-                            Scenario illustration only. This is not an empirical probability,
-                            calibrated forecast, or financial prediction.
-                          </p>
-                        </div>
-                      </div>
+
                     </div>
                   </div>
                   </details>
@@ -1691,20 +1708,6 @@ function App() {
                       />
                     </div>
                   </div>
-
-                  {/* PANEL E: Quick ROI Calculator (Investors only) */}
-                  {persona !== 'first_home_buyer' && (
-                    <div style={{ display: activeProfileSection === 'overview' || activeProfileSection === 'market' ? 'block' : 'none' }}>
-                    <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading ROI calculator...</div>}>
-                    <QuickRoiCalculator 
-                      medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
-                      medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
-                      state={(activeSuburb as any).state || "VIC"}
-                      onAdvancedClick={() => setActiveTab('gearing')}
-                    />
-                    </Suspense>
-                    </div>
-                  )}
 
                   {/* K-Means Clustering: Similar Suburbs */}
                   <div style={{ marginTop: '20px', display: activeProfileSection === 'pockets' ? 'block' : 'none' }}>

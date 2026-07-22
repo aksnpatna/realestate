@@ -1672,10 +1672,10 @@ def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session 
                         return {
                             "cached": True,
                             "cache_ttl": NEWS_SENTIMENT_TTL,
-                        **cached,
-                    }
-            except (ValueError, TypeError):
-                pass
+                            **cached,
+                        }
+                except (ValueError, TypeError):
+                    pass
     
     # Layer 2: Redis (via cached_ai wrapper on get_news_sentiment)
     # Layer 3: Fresh fetch from Tavily + Transformers

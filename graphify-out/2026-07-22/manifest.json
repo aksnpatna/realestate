@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1784633845.3396165,
-    "ast_hash": "6358334f83b3502e7454064a1bd40ca7",
+    "mtime": 1784544446.258071,
+    "ast_hash": "66504fe66dbab9d97f8e5823885f998b",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1784721404.9977295,
-    "ast_hash": "e3e6828f7e9f5f7e90d874bf992fed06",
+    "mtime": 1784539977.0729222,
+    "ast_hash": "318cd122d7648e2680476b77f72ec751",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1784548518.5932112,
-    "ast_hash": "2522cb0440e5d07f42219481220be440",
+    "mtime": 1784292004.4968944,
+    "ast_hash": "78c7d32645733e999cfe2bc320fd15d3",
     "semantic_hash": ""
   },
   "graphify-out/converted/vic_sales_time_series_20yr_latest_5350cb9d.md": {
@@ -240,8 +240,8 @@
     "semantic_hash": "935d0b00c6f6a66b0922338761e9c317"
   },
   "backend/enrich_from_unpacked.py": {
-    "mtime": 1784581555.462972,
-    "ast_hash": "56b7a203e94b03ce8bae66fbed877985",
+    "mtime": 1784544455.5731406,
+    "ast_hash": "669d24e056090116dad76bb19d50660a",
     "semantic_hash": ""
   },
   "backend/etl_abs_census.py": {
@@ -255,8 +255,8 @@
     "semantic_hash": "8cb1b1c5d591473fbb970aea17e3293a"
   },
   "backend/etl_extract_v3.py": {
-    "mtime": 1784631350.958574,
-    "ast_hash": "6dba40d1037443d5846548f494aabf13",
+    "mtime": 1783834538.8014543,
+    "ast_hash": "4b541456922ff580d0599342e5edfc34",
     "semantic_hash": ""
   },
   "backend/etl_infra_zoning.py": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "backend/models_v3.py": {
-    "mtime": 1784548527.7070138,
-    "ast_hash": "f85849fcbd65367fd71231b31e54d1f7",
+    "mtime": 1784439126.655872,
+    "ast_hash": "079029ee8d19c7f440bbcf629d50c518",
     "semantic_hash": ""
   },
   "backend/models_v3_unpacked.py": {
@@ -475,8 +475,8 @@
     "semantic_hash": "b8aff440bce3b824e046304be7958dcd"
   },
   "src/components/QuickRoiCalculator.tsx": {
-    "mtime": 1784720244.606827,
-    "ast_hash": "59c80a6eee256a5beacba0102d536ac9",
+    "mtime": 1784538063.5469463,
+    "ast_hash": "db0e0cc02d5fa1621163865dc0ec019d",
     "semantic_hash": ""
   },
   "backend/migrate_history_to_timeseries.py": {
@@ -490,9 +490,9 @@
     "semantic_hash": ""
   },
   "src/components/VectorGridLayer.tsx": {
-    "mtime": 1784635009.7121272,
-    "ast_hash": "f8095492d4b84d96b7162e263b5b86ab",
-    "semantic_hash": ""
+    "mtime": 1783575761.5759094,
+    "ast_hash": "7cdf36ca6c9ee4fc39d7c5417e34aaf3",
+    "semantic_hash": "7cdf36ca6c9ee4fc39d7c5417e34aaf3"
   },
   "App_old.tsx": {
     "mtime": 1783571006.1078632,
@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1784722233.9568906,
-    "ast_hash": "5253f703eba7606018c6cca1cc2aa9d4",
+    "mtime": 1784538063.5463402,
+    "ast_hash": "00f8713e87c5a1a95c536a1046f71cf3",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "src/components/BuyFinder.tsx": {
-    "mtime": 1784633500.1961598,
-    "ast_hash": "e924261369211a857dc9141fe4a6516f",
+    "mtime": 1784539967.6219444,
+    "ast_hash": "f4a2d68a39f70268c387e7b1ece602b0",
     "semantic_hash": ""
   },
   "suggestion.md": {
@@ -620,8 +620,8 @@
     "semantic_hash": ""
   },
   "backend/buyfinder.py": {
-    "mtime": 1784632181.7903574,
-    "ast_hash": "8c63d1c2ab959cb6c55a8ca98906bb43",
+    "mtime": 1784438632.8095896,
+    "ast_hash": "d081e55f0a687001e70b1ee69f1a4d2e",
     "semantic_hash": ""
   },
   "backend/model_diary_refresh.py": {
@@ -890,8 +890,8 @@
     "semantic_hash": ""
   },
   "src/components/MarketIndicatorsSection.tsx": {
-    "mtime": 1784632265.3916838,
-    "ast_hash": "cc1d764f1b260af6195f5e76bfeafdd9",
+    "mtime": 1784538063.5455291,
+    "ast_hash": "5be3ed2989b9fcdf5a9ebc2667ba39f5",
     "semantic_hash": ""
   },
   "src/components/PersonaSwitcher.tsx": {
@@ -905,8 +905,8 @@
     "semantic_hash": ""
   },
   "src/components/ProfileSectionNav.tsx": {
-    "mtime": 1784721608.5069818,
-    "ast_hash": "24031484222af07ac513057ea74d3124",
+    "mtime": 1784349719.9975512,
+    "ast_hash": "0660e6b2fe080d263b1291bd210b6fc1",
     "semantic_hash": ""
   },
   "src/components/PromoBanner.tsx": {
@@ -985,8 +985,8 @@
     "semantic_hash": ""
   },
   "src/components/MacroBenchmarkPanel.tsx": {
-    "mtime": 1784632979.1496918,
-    "ast_hash": "34e60ae2f941ff962207c163c4b72547",
+    "mtime": 1784538639.388449,
+    "ast_hash": "2ef11c8e0fced1139c53d1d7d0860d3a",
     "semantic_hash": ""
   },
   "src/components/SchoolZonesLayer.tsx": {
@@ -1007,46 +1007,6 @@
   "review_persona.md": {
     "mtime": 1784529535.8497481,
     "ast_hash": "c1f09d42f043337f2a39dec979d900f1",
-    "semantic_hash": ""
-  },
-  "backend/seed_wa_nt.py": {
-    "mtime": 1784631298.0299156,
-    "ast_hash": "7354afc49097d8243cd94b9036491907",
-    "semantic_hash": ""
-  },
-  "backend/sqm_scraper.py": {
-    "mtime": 1784547102.720335,
-    "ast_hash": "b3f70ddbf7a875a5523f141a210ad8aa",
-    "semantic_hash": ""
-  },
-  "backend/sqm_scraper_async.py": {
-    "mtime": 1784581513.27173,
-    "ast_hash": "f94b131c4cd98fdadae398108878abed",
-    "semantic_hash": ""
-  },
-  "src/components/MarketCycleClock.tsx": {
-    "mtime": 1784632233.680476,
-    "ast_hash": "3dd2197623da7f83f223eb094e9857b9",
-    "semantic_hash": ""
-  },
-  "src/components/PriceHistoryChart.tsx": {
-    "mtime": 1784720382.3481214,
-    "ast_hash": "f71282de246d81c8cabd39632af9d626",
-    "semantic_hash": ""
-  },
-  "src/components/SqmHistoricalChart.tsx": {
-    "mtime": 1784720292.640284,
-    "ast_hash": "3eb064006b773d2edbfaa094f6a67050",
-    "semantic_hash": ""
-  },
-  "src/components/YieldHeatmap.tsx": {
-    "mtime": 1784634491.0636656,
-    "ast_hash": "3fa0c03c5616a3fd7bd5a774fa2e11d7",
-    "semantic_hash": ""
-  },
-  "DATA_ARCHITECTURE_v3.md": {
-    "mtime": 1784583147.647932,
-    "ast_hash": "8c8f0ad1720b7d19a7fcfc84bc64932c",
     "semantic_hash": ""
   }
 }

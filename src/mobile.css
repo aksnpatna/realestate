@@ -19,7 +19,7 @@
   gap: 12px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (max-width: 900px) and (max-height: 500px) {
   /* Prevent horizontal scroll entirely */
   body, html {
     overflow-x: hidden !important;
@@ -39,9 +39,12 @@
   }
   
   /* Force large grids to single column */
+  div[style*="minmax(140px"],
+  div[style*="minmax(180px"],
   div[style*="minmax(200px"],
   div[style*="minmax(220px"],
   div[style*="minmax(260px"],
+  div[style*="minmax(280px"],
   div[style*="minmax(300px"],
   div[style*="minmax(320px"],
   div[style*="minmax(350px"],
@@ -128,6 +131,39 @@
   .app-header-controls {
     width: 100% !important;
     justify-content: space-between !important;
+  }
+  
+  /* Suburb Profile specific fixes */
+  .profile-header-compact {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .profile-header-top {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  
+  .profile-badge-ribbon {
+    gap: 6px !important;
+  }
+  
+  .profile-action-text {
+    display: none !important;
+  }
+  
+  .profile-section-nav button {
+    padding: 10px 14px !important;
+  }
+  
+  .profile-nav-text {
+    display: none !important;
+  }
+  
+  .roi-results-row {
+    grid-template-columns: 1fr 1fr !important;
+    display: grid !important;
   }
 }
 

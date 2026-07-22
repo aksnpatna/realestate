@@ -50,6 +50,7 @@ const ProfileSectionNav = memo(function ProfileSectionNav({
 
   return (
     <nav
+      className="profile-section-nav"
       style={{
         display: 'flex',
         gap: '0',
@@ -67,22 +68,22 @@ const ProfileSectionNav = memo(function ProfileSectionNav({
           key={s.id}
           onClick={() => onSectionChange(s.id)}
           style={{
-            padding: '12px 20px',
-            background: 'transparent',
+            padding: '14px 24px',
+            background: activeSection === s.id ? 'rgba(2, 132, 199, 0.08)' : 'transparent',
             border: 'none',
-            borderBottom: activeSection === s.id ? '3px solid var(--accent-cyan)' : '3px solid transparent',
-            color: activeSection === s.id ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-            fontWeight: activeSection === s.id ? 700 : 500,
-            fontSize: '0.85rem',
+            borderBottom: activeSection === s.id ? '4px solid var(--accent-cyan)' : '4px solid transparent',
+            color: activeSection === s.id ? 'var(--accent-cyan)' : 'var(--text-primary)',
+            fontWeight: activeSection === s.id ? 800 : 600,
+            fontSize: '1.05rem',
             cursor: 'pointer',
             transition: 'all 0.15s ease',
             fontFamily: 'inherit',
-            letterSpacing: '-0.3px',
+            letterSpacing: '-0.2px',
             whiteSpace: 'nowrap',
           }}
         >
-          <span style={{ marginRight: '6px' }}>{s.icon}</span>
-          {s.label}
+          <span style={{ marginRight: '8px', fontSize: '1.15rem' }}>{s.icon}</span>
+          <span className="profile-nav-text">{s.label}</span>
         </button>
       ))}
     </nav>

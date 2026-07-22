@@ -17,7 +17,7 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
     // Define the vector grid layer using protobuf
     const vectorGrid = (L as any).vectorGrid.protobuf(url, {
       vectorTileLayerStyles: {
-        'public.suburbs_ui_v3': function(properties: any, zoom: number) {
+        'public.suburbs_heatmap_view': function(properties: any, zoom: number) {
           const yieldPct = propertyType === 'house' ? (properties.house_gross_rental_yield || 0) : (properties.unit_gross_rental_yield || 0);
           const growth = propertyType === 'house' ? (properties.house_median_price_12m_change_pct || 0) : (properties.unit_median_price_12m_change_pct || 0);
           

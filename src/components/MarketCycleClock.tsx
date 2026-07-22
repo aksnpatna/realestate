@@ -29,7 +29,7 @@ export default memo(function MarketCycleClock({ suburb }: Props) {
 
   // Generate SVG points for a 12-hour clock face
   const radius = 60;
-  const center = 70;
+  const center = 90;
   
   // Calculate hand position
   const angle = (clockState.time * 30 - 90) * (Math.PI / 180);
@@ -38,8 +38,8 @@ export default memo(function MarketCycleClock({ suburb }: Props) {
 
   return (
     <div className="glass-card" style={{ padding: '20px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '30px', flexWrap: 'wrap' }}>
-      <div style={{ flex: '0 0 auto', position: 'relative', width: '140px', height: '140px' }}>
-        <svg width="140" height="140" viewBox="0 0 140 140">
+      <div style={{ flex: '0 0 auto', position: 'relative', width: '180px', height: '180px' }}>
+        <svg width="180" height="180" viewBox="0 0 180 180">
           {/* Clock face */}
           <circle cx={center} cy={center} r={radius} fill="rgba(0,0,0,0.2)" stroke="var(--border-glass)" strokeWidth="4" />
           

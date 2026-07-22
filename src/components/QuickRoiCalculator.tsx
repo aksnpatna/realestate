@@ -57,88 +57,87 @@ export default memo(function QuickRoiCalculator({ medianPrice, medianRent, state
   if (medianPrice === 0) return null;
 
   return (
-    <div className="highlights-section" style={{ marginTop: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-        <h3>Panel E: Quick ROI Calculator</h3>
+    <div className="roi-compact-card" style={{ marginTop: '16px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '1.1rem' }}>💰</span> Quick ROI Estimate
+        </h3>
         {onAdvancedClick && (
           <button 
             onClick={onAdvancedClick}
-            style={{ padding: '6px 12px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}
+            style={{ padding: '5px 10px', background: 'var(--accent-purple)', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, transition: 'opacity 0.2s' }}
+            onMouseOver={(e) => e.currentTarget.style.opacity = '0.85'}
+            onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
           >
-            Launch Detailed Tax/Cashflow Calculator ➔
+            Full Cashflow Analysis →
           </button>
         )}
       </div>
-      <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-        <div style={{ flex: '1 1 250px', background: 'var(--bg-card)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
-          <h4 style={{ marginBottom: '15px', color: 'var(--accent-purple)' }}>Adjust Assumptions</h4>
-          
-          <div style={{ marginBottom: '10px' }}>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Deposit (%)</label>
+
+      {/* Compact Controls Row */}
+      <div className="roi-controls-row" style={{ display: 'flex', gap: '16px', alignItems: 'flex-end', marginBottom: '14px', flexWrap: 'wrap' }}>
+        <div style={{ flex: '1 1 120px', minWidth: '100px' }}>
+          <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: 600 }}>Deposit</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input 
               type="range" min="10" max="100" step="5" value={depositPct} 
               onChange={e => setDepositPct(Number(e.target.value))} 
-              style={{ width: '100%' }}
+              style={{ width: '100%', accentColor: 'var(--accent-cyan)' }}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.8rem' }}>{depositPct}%</div>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)', minWidth: '32px', textAlign: 'right' }}>{depositPct}%</span>
           </div>
+        </div>
 
-          <div style={{ marginBottom: '10px' }}>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Interest Rate (%)</label>
+        <div style={{ flex: '1 1 120px', minWidth: '100px' }}>
+          <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: 600 }}>Rate</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input 
               type="range" min="2" max="10" step="0.1" value={interestRate} 
               onChange={e => setInterestRate(Number(e.target.value))} 
-              style={{ width: '100%' }}
+              style={{ width: '100%', accentColor: 'var(--accent-purple)' }}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.8rem' }}>{interestRate}%</div>
-          </div>
-
-          <div style={{ marginBottom: '10px' }}>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Loan Type</label>
-            <select 
-              value={loanType} onChange={e => setLoanType(e.target.value)}
-              style={{ width: '100%', padding: '6px', background: '#111', color: '#fff', border: '1px solid var(--border-glass)', borderRadius: '4px' }}
-            >
-              <option value="io">Interest Only</option>
-              <option value="pi">Principal & Interest</option>
-            </select>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-purple)', minWidth: '36px', textAlign: 'right' }}>{interestRate}%</span>
           </div>
         </div>
 
-        <div style={{ flex: '2 1 300px', display: 'flex', gap: '15px', flexDirection: 'column' }}>
-          {loading && !results && <div style={{ padding: '20px', textAlign: 'center' }}>Calculating...</div>}
-          {results && (
-            <>
-              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 140px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.75rem', color: '#10b981' }}>Net Yield (After Expenses)</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{results.net_yield_pct}%</div>
-                </div>
-                <div style={{ flex: '1 1 140px', background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)' }}>Cash on Cash Return</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{results.cash_on_cash_return_pct}%</div>
-                </div>
-                <div style={{ flex: '1 1 140px', background: results.gearing_status === 'positive' ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', border: `1px solid ${results.gearing_status === 'positive' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`, padding: '15px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.75rem', color: results.gearing_status === 'positive' ? '#10b981' : '#ef4444' }}>Weekly Cashflow</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${results.net_weekly_cashflow}</div>
-                </div>
-              </div>
-              
-              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 200px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Total Upfront Required</div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>${Math.round(results.total_upfront).toLocaleString()}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Incl. ${Math.round(results.stamp_duty).toLocaleString()} stamp duty</div>
-                </div>
-                <div style={{ flex: '1 1 200px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Annual Interest Bill</div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>${Math.round(results.annual_interest).toLocaleString()}</div>
-                </div>
-              </div>
-            </>
-          )}
+        <div style={{ flex: '0 1 130px', minWidth: '100px' }}>
+          <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: 600 }}>Loan</label>
+          <select 
+            value={loanType} onChange={e => setLoanType(e.target.value)}
+            style={{ width: '100%', padding: '5px 8px', background: 'var(--bg-dark)', color: 'var(--text-primary)', border: '1px solid var(--border-glass)', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 500 }}
+          >
+            <option value="io">Interest Only</option>
+            <option value="pi">P&I</option>
+          </select>
         </div>
       </div>
+
+      {/* Results Row — compact KPI pills */}
+      {loading && !results && <div style={{ padding: '10px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Calculating...</div>}
+      {results && (
+        <>
+          <div className="roi-results-row" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 100px', background: 'rgba(5,150,105,0.06)', border: '1px solid rgba(5,150,105,0.15)', padding: '10px 12px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.68rem', color: '#059669', textTransform: 'uppercase', letterSpacing: '0.3px', fontWeight: 600 }}>Net Yield</div>
+              <div style={{ fontSize: '1.15rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{results.net_yield_pct}%</div>
+            </div>
+            <div style={{ flex: '1 1 100px', background: 'rgba(2,132,199,0.06)', border: '1px solid rgba(2,132,199,0.15)', padding: '10px 12px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.3px', fontWeight: 600 }}>Cash on Cash</div>
+              <div style={{ fontSize: '1.15rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{results.cash_on_cash_return_pct}%</div>
+            </div>
+            <div style={{ flex: '1 1 100px', background: results.gearing_status === 'positive' ? 'rgba(5,150,105,0.06)' : 'rgba(220,38,38,0.06)', border: `1px solid ${results.gearing_status === 'positive' ? 'rgba(5,150,105,0.15)' : 'rgba(220,38,38,0.15)'}`, padding: '10px 12px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.68rem', color: results.gearing_status === 'positive' ? '#059669' : '#DC2626', textTransform: 'uppercase', letterSpacing: '0.3px', fontWeight: 600 }}>Weekly Cashflow</div>
+              <div style={{ fontSize: '1.15rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>${results.net_weekly_cashflow}</div>
+            </div>
+            <div style={{ flex: '1 1 100px', background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', padding: '10px 12px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.3px', fontWeight: 600 }}>Upfront Required</div>
+              <div style={{ fontSize: '1.15rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>${Math.round(results.total_upfront).toLocaleString()}</div>
+              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>incl. ${Math.round(results.stamp_duty).toLocaleString()} stamp duty</div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 });
