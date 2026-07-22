@@ -88,14 +88,14 @@ def run_ogr2ogr(file_path):
     # Heuristics for school name
     name_col = 'NULL'
     for c in columns:
-        if c in ['school_name', 'name', 'school_nam', 'facility_n', 'entity_name']:
+        if c in ['school_name', 'name', 'school_nam', 'facility_n', 'entity_name', 'use_desc', 'school']:
             name_col = c
             break
             
     # Heuristics for school type
     type_col = 'NULL'
     for c in columns:
-        if c in ['school_type', 'type', 'facility_t', 'school_typ']:
+        if c in ['school_type', 'type', 'facility_t', 'school_typ', 'catch_type']:
             type_col = c
             break
             

@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "Standalone_juniorsec_2027",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-07,
+"features": [
+{ "type": "Feature", "properties": { "ENTITY_CODE": 1547901, "School_Name": "Timbarra P-9 College", "Campus_Name": "Timbarra P-9 College", "Year_Level": "7 to 9", "Boundary_Year": "2027" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 145.3172417, -38.0418599 ], [ 145.2980126, -38.0286366 ], [ 145.3320434, -37.9722227 ], [ 145.3475297, -37.9613029 ], [ 145.3793725, -37.9635995 ], [ 145.3382163, -38.0333302 ], [ 145.3172417, -38.0418599 ] ] ] } },
+{ "type": "Feature", "properties": { "ENTITY_CODE": 1890501, "School_Name": "Doveton College", "Campus_Name": "Doveton College", "Year_Level": "7 to 9", "Boundary_Year": "2027" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 145.2084391, -38.0220719 ], [ 145.2341423, -37.967255 ], [ 145.2441144, -37.9598265 ], [ 145.2617877, -37.9847356 ], [ 145.2311967, -38.0168367 ], [ 145.2084391, -38.0220719 ] ] ] } }
+]
+}

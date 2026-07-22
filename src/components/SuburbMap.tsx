@@ -180,7 +180,7 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
             </LayersControl.Overlay>
 
             <LayersControl.Overlay name="📊 Vector Analytics Heatmap" checked>
-               <VectorGridLayer url="/tiles/public.suburbs_ui_v3/{z}/{x}/{y}.pbf" mode={heatmapMode} />
+               <VectorGridLayer url="/tiles/public.suburbs_heatmap_view/{z}/{x}/{y}.pbf" mode={heatmapMode} />
             </LayersControl.Overlay>
           </LayersControl>
 
