@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "Standalone_seniorsec_2027",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-07,
+"features": [
+{ "type": "Feature", "properties": { "School_Name": "Swinburne Senior Secondary College", "Campus_Name": "Swinburne Senior Secondary College", "ENTITY_CODE": 1736601, "Year_Level": "11 to 12", "Boundary_Year": "2027" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 145.0181225, -37.8354641 ], [ 145.027396, -37.796638 ], [ 145.0612148, -37.8140314 ], [ 145.0558429, -37.8294492 ], [ 145.0181225, -37.8354641 ] ] ] } },
+{ "type": "Feature", "properties": { "School_Name": "Box Hill Senior Secondary College", "Campus_Name": "Box Hill Senior Secondary College", "ENTITY_CODE": 1705001, "Year_Level": "10 to 12", "Boundary_Year": "2027" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 145.109392, -37.8370583 ], [ 145.1069231, -37.8368175 ], [ 145.0884183, -37.8150532 ], [ 145.0976597, -37.7970984 ], [ 145.1265477, -37.8116765 ], [ 145.109392, -37.8370583 ] ] ] } },
+{ "type": "Feature", "properties": { "School_Name": "Northern College of the Arts and Technology", "Campus_Name": "Northern College of the Arts and Technology", "ENTITY_CODE": 1730001, "Year_Level": "10 to 12", "Boundary_Year": "2027" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 145.0493698, -37.7484257 ], [ 145.0168979, -37.7482306 ], [ 145.0142781, -37.7290914 ], [ 145.0413752, -37.7333144 ], [ 145.0493698, -37.7484257 ] ] ] } }
+]
+}
