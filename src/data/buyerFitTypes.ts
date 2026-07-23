@@ -41,6 +41,7 @@ export interface BuyerFitResult {
   state: string
   postcode: string
   buyer_fit_score: number
+  market_timing_score?: number
   confidence_label: string
   eligibility: string
   affordability: BuyerFitAffordability
