@@ -279,6 +279,14 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
 
     confidence_label = "high" if evidence_completeness >= 80 else "medium" if evidence_completeness >= 50 else "low"
 
+    # Extract ASX predictive score (Market Timing)
+    market_timing = 50.0
+    dq = v3.dq_issues or {}
+    if isinstance(dq, dict):
+        pa = dq.get("predictive_analysis", {})
+        if isinstance(pa, dict):
+            market_timing = pa.get("score", 50.0)
+
     return {
         "rank": 0,
         "suburb_id": v3.id,
@@ -286,6 +294,7 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
         "state": v3.state,
         "postcode": v3.postcode,
         "buyer_fit_score": round(buyer_fit_score, 1),
+        "market_timing_score": market_timing,
         "confidence_label": confidence_label,
         "eligibility": "eligible",
         "affordability": {

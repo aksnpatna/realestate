@@ -330,6 +330,29 @@ class ModelDiary(Base):
     realized_price_36m = Column(Float)
     outcome_rating = Column(String)
 
+class DecisionBriefSnapshot(Base):
+    """
+    Persisted Decision Brief to create a durable, shareable artifact.
+    Solves the 'browser-session-only' churn problem by letting users 
+    save and share their property decision along with their serviceability.
+    """
+    __tablename__ = "decision_brief_snapshots"
+    id = Column(String, primary_key=True, index=True) # UUID string
+    suburb_id = Column(String, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # What did the user input?
+    user_inputs = Column(JSON) # e.g. income, deposit, monthly debt
+    
+    # What was the exact decision state?
+    buyer_fit_score = Column(Float)
+    market_timing_score = Column(Float)  # from ASXPredictor
+    ai_verdict = Column(String)
+    serviceability_state = Column(JSON)  # pass/fail, max borrowing, etc.
+    
+    # Monetizing the exit (Broker Handoff)
+    broker_handoff_status = Column(String, default="not_requested") # not_requested, pending, completed
+
 class EtlRunLog(Base):
     __tablename__ = "etl_run_log"
     id = Column(Integer, primary_key=True, autoincrement=True)

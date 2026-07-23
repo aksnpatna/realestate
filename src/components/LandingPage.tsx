@@ -25,10 +25,11 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
       {/* Hero Section */}
       <section style={{ padding: '80px 20px', textAlign: 'center', background: 'linear-gradient(to bottom, #F8FAFC, #FFFFFF)' }}>
         <h1 style={{ fontSize: '3.5rem', fontWeight: 800, color: 'var(--text-primary)', maxWidth: '900px', margin: '0 auto', lineHeight: 1.1 }}>
-          Find the Right Suburb with <span style={{ color: 'var(--accent-cyan)' }}>Evidence, Not Guesswork</span>
+          Deterministic, Explainable <span style={{ color: 'var(--accent-cyan)' }}>Property Decisions</span>
         </h1>
-        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '24px auto 32px auto', lineHeight: 1.5 }}>
-          Subdivision precedents, demand signals, and AI-powered suburb profiling — all in one platform designed for investors and professionals.
+        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '750px', margin: '24px auto 32px auto', lineHeight: 1.5 }}>
+          Combine your borrowing capacity with our transparent ASX-integrated Market Predictor. 
+          Generate permanent, confidence-labelled Decision Briefs — no black boxes, just evidence.
         </p>
         <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
           <button onClick={onRegisterClick} style={{ background: 'var(--accent-cyan)', color: '#fff', padding: '14px 28px', fontSize: '1.1rem', fontWeight: 600, borderRadius: '8px', border: 'none', cursor: 'pointer', boxShadow: 'var(--shadow-md)' }}>
