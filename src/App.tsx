@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef, lazy, Suspense } from 'react'
 import type { SuburbData } from './data/suburbs'
 import SuburbMap from './components/SuburbMap'
-import OnboardingTour from './components/OnboardingTour'
 import TermsOfUseModal from './components/TermsOfUseModal'
 import UserFavoritesTab from './components/UserFavoritesTab'
 import AIInsightPanel from './components/AIInsightPanel'
@@ -605,7 +604,6 @@ function App() {
     <div className="dashboard-container" style={{ background: 'var(--bg-dark)', minHeight: '100vh', padding: 0 }}>
       <PromoBanner />
       <TermsOfUseModal />
-      <OnboardingTour />
       
       <header className="app-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -637,7 +635,7 @@ function App() {
             onClick={() => setActiveTab('buy-finder')}
             style={{ fontSize: '1.1rem' }}
           >
-            Dashboard
+            🏠 Buy Finder
           </button>
           <button
             className={`tab-btn ${activeTab === 'heatmap' ? 'tab-active' : ''}`}
@@ -837,9 +835,19 @@ function App() {
                           </div>
                           
                           {/* 3. Suburb Elevator Pitch */}
-                          <div style={{ marginTop: '16px', fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>
-                            {(activeSuburb.metrics as any)?.growthNarrative || `${activeSuburb.name} is a ${activeSuburb.growthScore > 70 ? 'high-momentum' : 'stable'} suburb ${(activeSuburb as any).cbdDistance ? `${(activeSuburb as any).cbdDistance} mins from the CBD` : 'in a well-connected region'}. With a median house price of $${((activeSuburb as any).houseMedianPrice || 0).toLocaleString()} and a gross rental yield of ${((activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield || 0)}%, it presents a compelling profile for ${persona === 'first_home_buyer' ? 'home buyers' : 'investors'}.`}
-                          </div>
+                          {(() => {
+                            const price = (activeSuburb as any).houseMedianPrice;
+                            const yield_ = (activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield;
+                            const priceStr = price ? ` With a median house price of $${price.toLocaleString()}` : '';
+                            const yieldStr = yield_ ? ` and a gross rental yield of ${yield_}%` : '';
+                            const narrative = (activeSuburb.metrics as any)?.growthNarrative ||
+                              `${activeSuburb.name} is a ${activeSuburb.growthScore > 70 ? 'high-momentum' : 'stable'} suburb ${(activeSuburb as any).cbdDistance ? `${(activeSuburb as any).cbdDistance} mins from the CBD` : 'in a well-connected region'}.${priceStr}${yieldStr ? yieldStr + ',' : ''} it presents a compelling profile for ${persona === 'first_home_buyer' ? 'home buyers' : 'investors'}.`;
+                            return (
+                              <div style={{ marginTop: '16px', fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic', borderLeft: '3px solid var(--accent-cyan)', paddingLeft: '14px' }}>
+                                {narrative}
+                              </div>
+                            );
+                          })()}
                         </div>
 
                         {/* Right Column: Actions & Scorecard */}
@@ -854,10 +862,19 @@ function App() {
                             alignItems: 'center', 
                             gap: '6px',
                             boxShadow: '0 2px 8px rgba(139,92,246,0.3)'
-                          }} title="PropertyIQ Scorecard">
+                          }} title="PropertyIQ Scorecard — composite of Momentum, Yield & Vacancy">
                             <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.9 }}>Score</span>
                             <span style={{ fontSize: '1.2rem' }}>
-                              {((activeSuburb as any).houseGrossRentalYield ?? 0) > 5.0 ? 'A+' : ((activeSuburb as any).houseGrossRentalYield ?? 0) > 4.0 ? 'A' : 'B+'}
+                              {(() => {
+                                const score = activeSuburb.growthScore ?? 50;
+                                const yield_ = (activeSuburb as any).houseGrossRentalYield ?? 0;
+                                const vacancy = Number(activeSuburb.vacancyRate ?? 2);
+                                if (score > 70 && yield_ > 4.5 && vacancy < 3) return 'A+';
+                                if (score > 60 && yield_ > 4.0) return 'A';
+                                if (score > 50 || yield_ > 3.5) return 'B+';
+                                if (score > 40) return 'B';
+                                return 'C+';
+                              })()}
                             </span>
                           </div>
                           <button
@@ -894,59 +911,35 @@ function App() {
                         </div>
                       </div>
 
-                      {/* Row 2: Premium Badge Ribbon */}
+                      {/* Row 2: Data Provenance Ribbon (simplified) */}
                       <div className="profile-badge-ribbon" style={{ 
                         display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center',
-                        padding: '12px 16px', background: 'var(--bg-dark)', borderRadius: '8px', border: '1px solid var(--border-glass)'
+                        padding: '10px 16px', background: 'var(--bg-dark)', borderRadius: '8px', border: '1px solid var(--border-glass)'
                       }}>
-                        <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)', marginRight: '8px', fontWeight: 600 }}>Market Snapshot</span>
+                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)', marginRight: '4px', fontWeight: 600 }}>Data Sources</span>
                         
                         {/* Data Quality */}
                         {(() => {
                           const dq = (activeSuburb as any).dqScore;
+                          const dqColor = dq >= 80 ? 'var(--success)' : dq >= 60 ? 'var(--warning)' : 'var(--danger)';
                           return (
-                            <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ color: 'var(--text-secondary)' }}>DQ</span> 
-                              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{dq != null ? `${Math.round(dq)}/100` : 'Low'}</span>
+                            <span style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px' }}>
+                              <span style={{ color: 'var(--text-secondary)' }}>Data Quality</span>
+                              <span style={{ color: dqColor, fontWeight: 700 }}>{dq != null ? `${Math.round(dq)}/100` : 'Low'}</span>
                             </span>
                           );
                         })()}
 
                         {/* ABS Verified */}
                         {(activeSuburb as any).absDemographicsSourced && (
-                          <>
-                            <span style={{ color: 'var(--border-glass)' }}>•</span>
-                            <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 600 }}>✓ ABS Census</span>
-                          </>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 600, padding: '2px 8px', background: 'rgba(16,185,129,0.08)', borderRadius: '4px', border: '1px solid rgba(16,185,129,0.2)' }}>✓ ABS Census</span>
                         )}
 
-                        {/* Market Momentum */}
-                        <span style={{ color: 'var(--border-glass)' }}>•</span>
-                        <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }} title="Deterministic momentum composite. Not a price forecast.">
-                          <span style={{ color: 'var(--text-secondary)' }}>Momentum</span> 
-                          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{activeSuburb.growthScore}</span>
-                        </span>
-
-                        {/* Yield */}
-                        {((activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield) && (
-                          <>
-                            <span style={{ color: 'var(--border-glass)' }}>•</span>
-                            <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ color: 'var(--text-secondary)' }}>Yield</span> 
-                              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{(activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield}%</span>
-                            </span>
-                          </>
-                        )}
-
-                        {/* Vacancy */}
-                        {activeSuburb.vacancyRate != null && (
-                          <>
-                            <span style={{ color: 'var(--border-glass)' }}>•</span>
-                            <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ color: 'var(--text-secondary)' }}>Vacancy</span> 
-                              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{Number(activeSuburb.vacancyRate).toFixed(1)}%</span>
-                            </span>
-                          </>
+                        {/* Last Updated */}
+                        {(activeSuburb as any).lastUpdated && (
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '4px' }}>
+                            Updated {new Date((activeSuburb as any).lastUpdated).toLocaleDateString('en-AU', { month: 'short', year: 'numeric' })}
+                          </span>
                         )}
 
                         {/* Cashflow CTA — compact */}
@@ -965,15 +958,28 @@ function App() {
                     </div>
 
 
-                  {/* Evidence-backed highlights */}
-                  {(activeSuburb.highlights || []).length > 0 && (
-                    <div style={{ marginBottom: '20px', background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--border-glass)', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-                      <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>Key Drivers</h4>
-                      <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-primary)', fontSize: '0.95rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {(activeSuburb.highlights || []).slice(0, 3).map((h, i) => (
-                          <li key={i}>{h}</li>
+                  {/* Evidence-backed highlights — split Strengths / Cautions */}
+                  {(activeSuburb.highlights || []).length > 0 ? (
+                    <div style={{ marginBottom: '20px', background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
+                      <h4 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.5px' }}>Why consider {activeSuburb.name}?</h4>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {(activeSuburb.highlights || []).slice(0, 2).map((h, i) => (
+                          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.9rem', color: 'var(--text-primary)', padding: '8px 10px', background: 'rgba(16,185,129,0.06)', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.15)' }}>
+                            <span style={{ color: '#10b981', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                            <span>{h}</span>
+                          </div>
                         ))}
-                      </ul>
+                        {(activeSuburb.highlights || []).slice(2, 3).map((h, i) => (
+                          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.9rem', color: 'var(--text-primary)', padding: '8px 10px', background: 'rgba(245,158,11,0.06)', borderRadius: '6px', border: '1px solid rgba(245,158,11,0.15)' }}>
+                            <span style={{ color: '#f59e0b', fontWeight: 700, flexShrink: 0 }}>⚠</span>
+                            <span>{h}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ marginBottom: '20px', padding: '12px 16px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px dashed var(--border-glass)', color: 'var(--text-secondary)', fontSize: '0.85rem', fontStyle: 'italic' }}>
+                      AI key drivers will appear here once analysis is complete.
                     </div>
                   )}
 
@@ -1003,6 +1009,21 @@ function App() {
                           return null;
                         })()}
                       </div>
+                    </div>
+                    <div className="metric-box" style={{ padding: '12px 16px' }}>
+                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Avg Rental Yield</div>
+                      <div className="metric-value" style={{ fontSize: '1.15rem', color: 'var(--accent-cyan)', fontWeight: 700 }}>
+                        {(activeSuburb as any).houseGrossRentalYield
+                          ? `${(activeSuburb as any).houseGrossRentalYield}%`
+                          : (activeSuburb as any).rentalYield
+                          ? `${(activeSuburb as any).rentalYield}%`
+                          : <span style={{color:'var(--text-muted)'}}>—</span>}
+                      </div>
+                      {activeSuburb.vacancyRate != null && (
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                          Vacancy {Number(activeSuburb.vacancyRate).toFixed(1)}%
+                        </div>
+                      )}
                     </div>
                     </div>
 
