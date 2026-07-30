@@ -14,9 +14,9 @@ export default function SchoolZonesLayer({ url = "/tiles/public.get_school_zones
 
   useEffect(() => {
     // Add suburb parameter if activeSuburb is provided
-    let tileUrl = url;
+    let tileUrl = url + `?t=${Date.now()}`;
     if (activeSuburb) {
-      tileUrl = `${url}?suburb_name=${encodeURIComponent(activeSuburb)}`;
+      tileUrl = `${url}?suburb_name=${encodeURIComponent(activeSuburb)}&t=${Date.now()}`;
     }
 
     // Define the vector grid layer using protobuf

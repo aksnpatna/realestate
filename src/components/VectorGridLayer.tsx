@@ -6,7 +6,7 @@ import 'leaflet.vectorgrid';
 interface VectorGridProps {
   url: string;
   zIndex?: number;
-  mode?: 'yield' | 'growth';
+  mode?: 'yield' | 'growth' | 'sa1_income';
   propertyType?: 'house' | 'unit';
 }
 
@@ -46,15 +46,52 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
             weight: 2,
             radius: radius
           };
+        },
+        'default': function(properties: any) {
+          const income = properties.median_household_income || 0;
+          let color = '#f1f5f9';
+          if (income >= 3000) color = '#10b981';
+          else if (income >= 2500) color = '#34d399';
+          else if (income >= 2000) color = '#6ee7b7';
+          else if (income >= 1500) color = '#fcd34d';
+          else if (income >= 1000) color = '#fb923c';
+          else if (income > 0) color = '#ef4444';
+
+          return {
+            fill: true,
+            fillColor: color,
+            fillOpacity: 0.6,
+            stroke: true,
+            color: '#334155',
+            weight: 1
+          };
         }
       },
       interactive: true,
-      zIndex: 400
+      zIndex: zIndex
     });
 
     // Add interactivity
     vectorGrid.on('click', (e: any) => {
       const props = e.layer.properties;
+      
+      if (props.sa1_code_2021) {
+        L.popup()
+          .setContent(`
+            <div style="font-family: sans-serif; min-width: 150px;">
+              <h4 style="margin: 0 0 5px 0; color: #1e293b;">SA1 Pocket</h4>
+              <div style="font-size: 0.9em; color: #475569;">
+                SA1 Code: <strong>${props.sa1_code_2021}</strong><br/>
+                Median Income: <strong>$${props.median_household_income}/wk</strong><br/>
+                Population: <strong>${props.population}</strong>
+              </div>
+            </div>
+          `)
+          .setLatLng(e.latlng)
+          .openOn(map);
+        return;
+      }
+
       L.popup()
         .setContent(`
           <div style="font-family: sans-serif; min-width: 150px;">

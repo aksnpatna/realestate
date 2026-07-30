@@ -1,23 +1,8 @@
-from backend.models_v3 import engine
+from sqlalchemy import create_engine
+engine = create_engine("postgresql://realestate_user:realestate_pass@localhost:15432/realestate")
+from sqlalchemy.orm import sessionmaker
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+db = SessionLocal()
 from sqlalchemy import text
-import time
-
-sql = """
-SELECT name FROM planet_osm_polygon
-WHERE name = 'Abbotsford'
-LIMIT 1;
-"""
-start = time.time()
-with engine.connect() as conn:
-    row = conn.execute(text(sql)).first()
-print(f"Time for '=': {time.time()-start:.2f}s, Row: {row}")
-
-sql2 = """
-SELECT name FROM planet_osm_polygon
-WHERE name ILIKE 'Abbotsford'
-LIMIT 1;
-"""
-start = time.time()
-with engine.connect() as conn:
-    row = conn.execute(text(sql2)).first()
-print(f"Time for 'ILIKE': {time.time()-start:.2f}s, Row: {row}")
+res = db.execute(text("SELECT email FROM users LIMIT 1")).fetchone()
+print("Found user:", res[0] if res else "None")

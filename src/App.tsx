@@ -25,16 +25,19 @@ import LandingPage from './components/LandingPage'
 import PromoBanner from './components/PromoBanner'
 import MacroBenchmarkPanel from './components/MacroBenchmarkPanel'
 import ShareReport from './components/ShareReport'
+import { getRegion } from './utils/regionMapper'
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
 const BuyFinder = lazy(() => import('./components/BuyFinder'))
 const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
+const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
+
 const InstitutionalV3Panel = lazy(() => import('./components/InstitutionalV3Panel'))
 const MyPurchasePlan = lazy(() => import('./components/MyPurchasePlan'))
 const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 
-type TabName = 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites' | 'heatmap';
+type TabName = 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'institutional' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('is_auth') === 'true')
@@ -98,16 +101,31 @@ function App() {
       .finally(() => setIsCheckingAuth(false))
   }, [])
 
-  const [financialProfile, setFinancialProfile] = useState({
-    deposit: 100000,
-    lvrPct: 80,
-    annualIncome: 80000,
-    monthlyDebt: 0,
-    interestRate: 6.2,
-    bufferRate: 3.0,
-    loanTermYears: 30,
-    purchaseCostAllowance: 5.0,
+  const [financialProfile, setFinancialProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('financialProfile');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {
+      budget: 500000,
+      deposit: 100000,
+      lvrPct: 80,
+      annualIncome: 80000,
+      monthlyDebt: 0,
+      interestRate: 6.2,
+      bufferRate: 3.0,
+      loanTermYears: 30,
+      purchaseCostAllowance: 5.0,
+      propertyType: 'house',
+      maxCBDMinutes: 60,
+      minimumYield: null,
+      state: 'VIC',
+    };
   });
+
+  useEffect(() => {
+    localStorage.setItem('financialProfile', JSON.stringify(financialProfile));
+  }, [financialProfile]);
 
   /**
    * Fetch a suburb's enriched data from the V3 cold-load API.
@@ -170,6 +188,7 @@ function App() {
 
   useEffect(() => {
     if (isAuthenticated) {
+      setLoadingData(true)
       fetch('/api/suburbs', { credentials: 'include' })
         .then(res => res.json())
         .then(apiData => {
@@ -272,6 +291,24 @@ function App() {
     filteredSuburbsData.filter(s => s.state === activeState).sort((a, b) => a.name.localeCompare(b.name)),
     [activeState, filteredSuburbsData]
   )
+
+  const [activeRegion, setActiveRegion] = useState<string>('');
+
+  const stateRegions = useMemo(() => {
+    const regions = new Set<string>();
+    stateSuburbs.forEach(s => regions.add(getRegion(s.state, s.postcode)));
+    return Array.from(regions).sort();
+  }, [stateSuburbs]);
+
+  const regionSuburbs = useMemo(() => {
+    return activeRegion ? stateSuburbs.filter(s => getRegion(s.state, s.postcode) === activeRegion) : stateSuburbs;
+  }, [stateSuburbs, activeRegion]);
+
+  useEffect(() => {
+    if (stateRegions.length > 0 && !stateRegions.includes(activeRegion)) {
+      setActiveRegion(stateRegions[0]);
+    }
+  }, [stateRegions, activeRegion]);
 
   useEffect(() => {
     if (states.length > 0 && !states.includes(activeState)) {
@@ -621,6 +658,13 @@ function App() {
               <option value="calculators">Calculators</option>
             </select>
             <button
+              className={`tab-btn ${activeTab === 'portfolio' ? 'tab-active' : ''}`}
+              onClick={() => setActiveTab('portfolio')}
+              style={{ fontSize: '1.05rem', border: 'none' }}
+            >
+              💼 My Portfolio
+            </button>
+            <button
               className={`tab-btn ${activeTab === 'favorites' ? 'tab-active' : ''}`}
               onClick={() => setActiveTab('favorites')}
               style={{ fontSize: '1.05rem', border: 'none' }}
@@ -659,44 +703,45 @@ function App() {
 
             <div className="control-group">
               <label className="control-label">Target Suburb</label>
-              <div className="custom-select-wrapper">
-                <input
-                  key={activeSuburb?.id || 'empty'}
-                  list="suburb-datalist"
-                  className="premium-select"
-                  placeholder="Type or select from list..."
-                  defaultValue={activeSuburb ? `${activeSuburb.name} (${activeSuburb.postcode})` : ''}
-                  onFocus={(e) => {
-                    e.target.value = '';
-                  }}
-                  onBlur={(e) => {
-                    if (!e.target.value && activeSuburb) {
-                      e.target.value = `${activeSuburb.name} (${activeSuburb.postcode})`;
-                    }
-                  }}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    const target = stateSuburbs.find(s => `${s.name} (${s.postcode})` === val);
-                    if (target) {
-                      setActiveSuburb(target);
-                      manualSelectionRef.current = true;
-                      loadColdSuburb(target.id);
-                      trackActivity('VIEW_SUBURB', target.id);
-                      e.target.blur();
-                    }
-                  }}
-                />
-                <datalist id="suburb-datalist">
-                  {stateSuburbs.map(suburb => {
-                    const dq = (suburb as any).dqScore;
-                    const hasDqIssue = dq == null || dq < 70;
-                    return (
-                      <option key={suburb.id} value={`${suburb.name} (${suburb.postcode})`}>
-                        {hasDqIssue ? '⚠️ Low Data Quality' : ''}
-                      </option>
-                    )
-                  })}
-                </datalist>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div className="custom-select-wrapper" style={{ flex: 1, minWidth: 0 }}>
+                  <select
+                    className="premium-select"
+                    value={activeRegion}
+                    onChange={(e) => setActiveRegion(e.target.value)}
+                    style={{ padding: '10px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+                  >
+                    <option value="" disabled>Select Region...</option>
+                    {stateRegions.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </div>
+                <div className="custom-select-wrapper" style={{ flex: 1, minWidth: 0 }}>
+                  <select
+                    className="premium-select"
+                    value={activeSuburb?.id || ''}
+                    onChange={(e) => {
+                      const target = regionSuburbs.find(s => s.id === e.target.value);
+                      if (target) {
+                        setActiveSuburb(target);
+                        manualSelectionRef.current = true;
+                        loadColdSuburb(target.id);
+                        trackActivity('VIEW_SUBURB', target.id);
+                      }
+                    }}
+                    style={{ padding: '10px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+                  >
+                    <option value="" disabled>Select Suburb...</option>
+                    {regionSuburbs.map(suburb => {
+                      const dq = (suburb as any).dqScore;
+                      const hasDqIssue = dq == null || dq < 70;
+                      return (
+                        <option key={suburb.id} value={suburb.id}>
+                          {suburb.name} ({suburb.postcode}) {hasDqIssue ? '⚠️' : ''}
+                        </option>
+                      )
+                    })}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -722,11 +767,11 @@ function App() {
                   <span className="preview-score-value">{Math.round(activeSuburb.growthScore ?? 0)}</span>
                   <span className="preview-score-label">Momentum</span>
                 </div>
-                <p className="preview-text">
-                  {(activeSuburb as any).cbdDistance
-                    ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
-                    : activeSuburb.metroCBD || 'Regional suburb'}
-                </p>
+                {(activeSuburb as any).cbdDistance && (
+                  <p className="preview-text">
+                    {`${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`}
+                  </p>
+                )}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '10px', fontSize: '0.8rem' }}>
                   {(activeSuburb as any).dqScore != null && (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -757,7 +802,7 @@ function App() {
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card" {...{ [SECTION_ATTR]: 'overview' }}>
-                    <div className="detail-header" style={{ paddingBottom: '24px' }}>
+                    <div className="detail-header" style={{ paddingBottom: '24px', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '20px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
                         {/* Left Column: Title & Subtitle */}
                         <div style={{ flex: '1 1 400px', minWidth: 0 }}>
@@ -766,12 +811,12 @@ function App() {
                           </h2>
                           <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginTop: '12px', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
                             <span style={{ fontWeight: 600 }}>{activeSuburb.postcode}</span>
-                            <span style={{ color: 'var(--border-glass)' }}>•</span>
-                            <span>
-                              {(activeSuburb as any).cbdDistance
-                                ? `${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`
-                                : activeSuburb.metroCBD || 'Regional'}
-                            </span>
+                            {(activeSuburb as any).cbdDistance && (
+                              <>
+                                <span style={{ color: 'var(--border-glass)' }}>•</span>
+                                <span>{`${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`}</span>
+                              </>
+                            )}
                             {(activeSuburb as any).lastUpdated && (
                               <>
                                 <span style={{ color: 'var(--border-glass)' }}>•</span>
@@ -821,7 +866,7 @@ function App() {
 
                       {/* Row 2: Premium Badge Ribbon */}
                       <div className="profile-badge-ribbon" style={{ 
-                        display: 'flex', gap: '8px', marginTop: '20px', flexWrap: 'wrap', alignItems: 'center',
+                        display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center',
                         padding: '12px 16px', background: 'var(--bg-dark)', borderRadius: '8px', border: '1px solid var(--border-glass)'
                       }}>
                         <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)', marginRight: '8px', fontWeight: 600 }}>Market Snapshot</span>
@@ -1033,7 +1078,7 @@ function App() {
                     })()}
                    </div>
 
-                  {/* Decision Brief — compact evidence-based summary */}
+                  {/* Decision Brief — compact evidence-backed summary */}
                   <div style={{ display: activeProfileSection === 'overview' ? 'block' : 'none' }}>
                     <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
                     
@@ -1202,7 +1247,7 @@ function App() {
                           { label: 'Affordability', items: [
                             { label:'Mortgage Band', value: (s as any).estimatedMortgageRepayment ? '$' + (s as any).estimatedMortgageRepayment.toLocaleString(undefined, {maximumFractionDigits: 0}) + '/mo' : ((s as any).typicalMortgageBand || '—'), icon:'💳' },
                             { label:'3yr Price Growth', value: yr3growth, icon:'📈' },
-                            { label:'CBD Mins', value: (s as any).cbdDistance + ' min' || '—', icon:'🚗' },
+                            { label:'CBD Mins', value: (s as any).cbdDistance ? `${(s as any).cbdDistance} min` : '—', icon:'🚗' },
                             { label:'Prof. Occupation', value: (s as any).ownerOccupierRate + '%' || '—', icon:'👔' },
                           ]},
                           { label: 'Income & Jobs', items: [
@@ -1931,13 +1976,20 @@ function App() {
       {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculators...</div>}><Calculators /></Suspense>}
       {activeTab === 'heatmap' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading heatmap...</div>}><YieldHeatmap /></Suspense>}
       {activeTab === 'favorites' && (
-        <UserFavoritesTab 
-          suburbsData={suburbsData} 
-          onSelectSuburb={(suburb) => {
-            setActiveSuburb(suburb);
+        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading favorites...</div>}>
+          <UserFavoritesTab 
+            suburbsData={suburbsData} 
+            onSelectSuburb={(suburb) => {
+            loadColdSuburb(suburb.id);
             setActiveTab('profile');
           }} 
         />
+        </Suspense>
+      )}
+      {activeTab === 'portfolio' && (
+        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading portfolio...</div>}>
+          <PortfolioTab suburbsData={suburbsData} />
+        </Suspense>
       )}
 
       </div>

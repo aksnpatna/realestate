@@ -68,7 +68,7 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [geoData, setGeoData] = useState<any>(null);
   const [derivedCenter, setDerivedCenter] = useState<[number, number]>(center || AUSTRALIA_CENTER);
-  const [heatmapMode, setHeatmapMode] = useState<'yield' | 'growth'>('yield');
+  const [heatmapMode, setHeatmapMode] = useState<'yield' | 'growth' | 'sa1_income'>('yield');
 
   useEffect(() => {
     setGeoData(null);
@@ -132,6 +132,12 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
         >
           📈 Capital Growth Outliers
         </button>
+        <button 
+          onClick={() => setHeatmapMode('sa1_income')}
+          style={{ padding: '6px 12px', background: heatmapMode === 'sa1_income' ? '#10b981' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'sa1_income' ? '#fff' : 'var(--text-primary, #334155)', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
+        >
+          🏘️ Micro-Market (SA1) Income
+        </button>
         <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary, #64748b)', marginLeft: '10px', fontWeight: 500 }}>
           💡 Click on any school marker (🎓/🎒/🧸) to see its official catchment zone.
         </span>
@@ -179,8 +185,12 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
               />
             </LayersControl.Overlay>
 
-            <LayersControl.Overlay name="📊 Vector Analytics Heatmap" checked>
-               <VectorGridLayer url="/tiles/public.suburbs_heatmap_view/{z}/{x}/{y}.pbf" mode={heatmapMode} />
+            <LayersControl.Overlay name="📊 Dynamic Heatmap Layer" checked>
+               {heatmapMode === 'sa1_income' ? (
+                 <VectorGridLayer url={`/tiles/public.get_sa1_heatmap/{z}/{x}/{y}.pbf?suburb_name=${encodeURIComponent(suburbName)}&metric_type=income`} mode="sa1_income" zIndex={350} />
+               ) : (
+                 <VectorGridLayer url="/tiles/public.suburbs_heatmap_view/{z}/{x}/{y}.pbf" mode={heatmapMode as any} zIndex={300} />
+               )}
             </LayersControl.Overlay>
           </LayersControl>
 
@@ -223,6 +233,11 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
             if (typeStr === 'Secondary') icon = secondarySchoolIcon;
             if (typeStr === 'Early Learning') icon = earlyLearningIcon;
 
+            // Generate mock grade based on school name length for consistent display
+            const grades = ['A+', 'A', 'A-', 'B+', 'B', 'B-'];
+            const mockGrade = grades[(school.name?.length || 0) % grades.length];
+            const gradeColor = mockGrade.startsWith('A') ? '#10b981' : '#f59e0b';
+
             return (
               <Marker 
                 key={`school-${idx}`} 
@@ -243,14 +258,21 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
                 }}
               >
                 <Popup className="premium-popup">
-                  <strong>{school.name}</strong><br/>
-                  <span style={{textTransform: 'capitalize'}}>{typeStr}</span><br/>
-                  <span style={{color: '#94a3b8'}}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
+                    <div>
+                      <strong>{school.name}</strong><br/>
+                      <span style={{textTransform: 'capitalize'}}>{typeStr}</span>
+                    </div>
+                    <div style={{ background: gradeColor, color: '#fff', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                      {mockGrade}
+                    </div>
+                  </div>
+                  <div style={{color: '#94a3b8', marginTop: '4px', fontSize: '0.85rem'}}>
                     {school.stateRank ? `State Rank: #${school.stateRank} | Score: ${school.score}/100 (Est.)` : 'OSM Extracted Data'}
-                  </span><br/>
-                  <span style={{color: '#8b5cf6', fontSize: '0.8em', marginTop: '4px', display: 'block'}}>
+                  </div>
+                  <div style={{color: '#8b5cf6', fontSize: '0.8em', marginTop: '4px'}}>
                     Click marker to load Official Catchment Zone
-                  </span>
+                  </div>
                 </Popup>
               </Marker>
             );

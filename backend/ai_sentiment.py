@@ -179,6 +179,52 @@ def _call_remote_llm(text: str) -> dict | None:
         _sentiment_sem.release()
 
 
+def _call_cloud_llm(text: str) -> dict | None:
+    try:
+        from ai_agent import get_llm
+        from langchain_core.messages import SystemMessage, HumanMessage
+        
+        llm = get_llm()
+        
+        system_prompt = (
+            "You are a real-estate sentiment analyst. "
+            "Classify the sentiment of this real-estate news as Positive, Neutral, or Negative. "
+            "Return only a single number between 1.0 (extremely bearish) and 10.0 (extremely bullish). "
+            "5.0 is Neutral. Do not explain, just return the number."
+        )
+        messages = [
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=f"Article: {text[:4000]}")
+        ]
+        
+        res = llm.invoke(messages)
+        content = res.content.strip()
+        
+        import re
+        match = re.search(r"(\d+(?:\.\d+)?)", content)
+        if match:
+            score = float(match.group(1))
+            score = max(1.0, min(10.0, score))
+        else:
+            score = 5.0
+
+        if score >= 7:
+            label = "Bullish"
+        elif score >= 4.5:
+            label = "Neutral"
+        else:
+            label = "Bearish"
+
+        provider = "cloud-llm"
+        if hasattr(llm, "model_name"):
+            provider = llm.model_name
+            
+        return {"score": score, "label": label, "provider": provider}
+    except Exception as e:
+        logger.warning(f"[sentiment] Cloud LLM call failed: {e}")
+        return None
+
+
 def _keyword_sentiment(text: str) -> float:
     """Keyword-based sentiment scoring as fallback. Returns 1-10 score."""
     text_lower = text.lower()
@@ -218,6 +264,13 @@ def analyze_sentiment(text: str) -> dict:
         record_sentiment_call(result.get("provider", "unknown"))
         result["explanation"] = _extract_keywords(text.lower())
         return result
+
+    # Try Cloud LLM cascade (NVIDIA -> Groq -> OpenAI -> Deepseek)
+    cloud_result = _call_cloud_llm(text)
+    if cloud_result is not None:
+        record_sentiment_call(cloud_result.get("provider", "cloud-llm"))
+        cloud_result["explanation"] = _extract_keywords(text.lower())
+        return cloud_result
 
     # Keyword fallback
     record_sentiment_call("keyword")

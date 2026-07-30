@@ -13,7 +13,7 @@ from fastapi import FastAPI, HTTPException, Depends, Header, BackgroundTasks, Re
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, String, JSON, func, Integer, Boolean
+from sqlalchemy import create_engine, Column, String, JSON, func, Integer, Boolean, Float
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 import smtplib
 import uuid
@@ -286,6 +286,16 @@ class UserFavorite(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(String, index=True)
     suburb_id = Column(String, index=True)
+    created_at = Column(String, default=lambda: datetime.now().isoformat())
+
+class UserPortfolioProperty(Base):
+    __tablename__ = "user_portfolio_properties"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, index=True)
+    suburb_id = Column(String, index=True)
+    address = Column(String)
+    purchase_price = Column(Float)
+    purchase_date = Column(String) # YYYY-MM-DD
     created_at = Column(String, default=lambda: datetime.now().isoformat())
 
 class UserActivity(Base):
@@ -2000,18 +2010,36 @@ def api_get_school_zone(name: str, state: str):
     from models_v3 import engine
     import json
     
-    with engine.connect() as conn:
-        res = conn.execute(text("""
-            SELECT ST_AsGeoJSON(geom) as geojson, school_type
-            FROM school_zones 
-            WHERE school_name ILIKE :name 
-            AND state = :state 
-            ORDER BY ST_Area(geom) DESC
-            LIMIT 1
-        """), {"name": f"%{name}%", "state": state.upper()}).first()
+    search_name = name.lower()
+    queries = [f"%{name}%"]
+    
+    if " public school" in search_name:
+        queries.append(f"%{search_name.replace(' public school', ' ps')}%")
+        queries.append(f"%{search_name.replace(' public school', ' p.s.')}%")
+    if " high school" in search_name:
+        queries.append(f"%{search_name.replace(' high school', ' hs')}%")
+        queries.append(f"%{search_name.replace(' high school', ' h.s.')}%")
+    if " primary school" in search_name:
+        queries.append(f"%{search_name.replace(' primary school', ' ps')}%")
+    if " state school" in search_name:
+        queries.append(f"%{search_name.replace(' state school', ' ss')}%")
+    if " state high school" in search_name:
+        queries.append(f"%{search_name.replace(' state high school', ' shs')}%")
         
-    if res and res[0]:
-        return {"geojson": json.loads(res[0]), "type": res[1]}
+    with engine.connect() as conn:
+        for q in queries:
+            res = conn.execute(text("""
+                SELECT ST_AsGeoJSON(geom) as geojson, school_type
+                FROM school_zones 
+                WHERE school_name ILIKE :name 
+                AND state = :state 
+                ORDER BY ST_Area(geom) DESC
+                LIMIT 1
+            """), {"name": q, "state": state.upper()}).first()
+            
+            if res and res[0]:
+                return {"geojson": json.loads(res[0]), "type": res[1]}
+                
     return {"geojson": None}
 
 @app.get("/api/v3/export")
@@ -2069,6 +2097,68 @@ def toggle_favorite(req: FavoriteRequest, db: Session = Depends(get_db), user=De
         db.add(new_fav)
         db.commit()
         return {"status": "success", "action": "added"}
+
+class PortfolioPropertyRequest(BaseModel):
+    suburb_id: str
+    address: str
+    purchase_price: float
+    purchase_date: str
+
+@app.get("/api/portfolio")
+def get_portfolio(db: Session = Depends(get_db), user=Depends(get_current_user)):
+    props = db.query(UserPortfolioProperty).filter(UserPortfolioProperty.user_id == user.id).all()
+    return {"status": "success", "properties": [
+        {
+            "id": p.id,
+            "suburb_id": p.suburb_id,
+            "address": p.address,
+            "purchase_price": p.purchase_price,
+            "purchase_date": p.purchase_date
+        } for p in props
+    ]}
+
+@app.post("/api/portfolio")
+def add_portfolio_property(req: PortfolioPropertyRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    new_prop = UserPortfolioProperty(
+        user_id=user.id,
+        suburb_id=req.suburb_id,
+        address=req.address,
+        purchase_price=req.purchase_price,
+        purchase_date=req.purchase_date
+    )
+    db.add(new_prop)
+    db.commit()
+    db.refresh(new_prop)
+    return {"status": "success", "property_id": new_prop.id}
+
+METRICS_DOCS = {
+    "Rental Yield": "Rental yield is the percentage of a property's value that is received in rent over a year.",
+    "Clearance Rate": "The percentage of properties sold at auction over a given period.",
+    "Vacancy Rate": "The percentage of all available units in a rental property that are vacant or unoccupied at a particular time.",
+    "Capital Growth": "The increase in the value of an asset or investment over time."
+}
+
+@app.get("/api/metrics-docs")
+def get_metrics_docs():
+    return {"status": "success", "docs": METRICS_DOCS}
+
+class SlackLLMRequest(BaseModel):
+    query: str
+    context: str
+
+@app.post("/api/slack-llm")
+def proxy_slack_llm(req: SlackLLMRequest, user=Depends(get_current_user)):
+    # Mocking the Slack LLM response for RAG-lite
+    # In a real scenario, this would POST to the org's Slack LLM backend
+    query = req.query.lower()
+    explanation = "I couldn't find specific information on that metric."
+    for key, desc in METRICS_DOCS.items():
+        if key.lower() in query:
+            explanation = f"Based on the knowledge base: {desc}"
+            break
+    
+    response_text = f"Context: {req.context}\n\nExplanation: {explanation}"
+    return {"status": "success", "response": response_text}
 
 @app.get("/api/v3/suburbs/{suburb_id}")
 def get_suburb_v3(suburb_id: str, db: Session = Depends(get_db)):

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import type { SuburbData } from '../data/suburbs';
 import type { BuyerFitResult } from '../data/buyerFitTypes';
 import { getPersona, type PersonaId } from '../data/personas';
+import AiMetricTooltip from './AiMetricTooltip';
 
 interface BuyFinderLocalResponse {
   model_version: string
@@ -18,7 +19,8 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const [backendLoading, setBackendLoading] = useState(false);
   const [backendError, setBackendError] = useState<string | null>(null);
 
-  const [state, setState] = useState('VIC');
+  const state = financialProfile?.state ?? 'VIC';
+  const setState = (s: string) => updateProfile('state', s);
   const budget = financialProfile?.budget ?? 500000;
   const deposit = financialProfile?.deposit ?? 100000;
   const annualIncome = financialProfile?.annualIncome ?? 80000;
@@ -38,11 +40,19 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
     }
   };
 
-  const [wAffordability, setWAffordability] = useState(30);
-  const [wIncome, setWIncome] = useState(25);
-  const [wLivability, setWLivability] = useState(20);
-  const [wAccess, setWAccess] = useState(15);
-  const [wEvidence, setWEvidence] = useState(10);
+  const [wAffordability, setWAffordability] = useState(() => Number(localStorage.getItem('wAffordability') || 30));
+  const [wIncome, setWIncome] = useState(() => Number(localStorage.getItem('wIncome') || 25));
+  const [wLivability, setWLivability] = useState(() => Number(localStorage.getItem('wLivability') || 20));
+  const [wAccess, setWAccess] = useState(() => Number(localStorage.getItem('wAccess') || 15));
+  const [wEvidence, setWEvidence] = useState(() => Number(localStorage.getItem('wEvidence') || 10));
+
+  useEffect(() => {
+    localStorage.setItem('wAffordability', wAffordability.toString());
+    localStorage.setItem('wIncome', wIncome.toString());
+    localStorage.setItem('wLivability', wLivability.toString());
+    localStorage.setItem('wAccess', wAccess.toString());
+    localStorage.setItem('wEvidence', wEvidence.toString());
+  }, [wAffordability, wIncome, wLivability, wAccess, wEvidence]);
 
   // Sync weights when persona changes
   useEffect(() => {
@@ -61,7 +71,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const activePersonaObj = getPersona(persona as PersonaId);
   const isInvestor = activePersonaObj.id === 'investor';
   const isFHB = activePersonaObj.id === 'first_home_buyer';
-  const isBuyersAgent = activePersonaObj.id === 'buyers_agent';
+
 
   const totalWeight = wAffordability + wIncome + wLivability + wAccess + wEvidence;
 
@@ -90,15 +100,13 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
   const [activeClientId, setActiveClientId] = useState<string>('');
 
   useEffect(() => {
-    if (isBuyersAgent) {
-      fetch('/api/clients', { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data)) setClients(data);
-        })
-        .catch(console.error);
-    }
-  }, [isBuyersAgent]);
+    fetch('/api/clients', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setClients(data);
+      })
+      .catch(console.error);
+  }, []);
 
   const saveClient = async () => {
     const clientName = prompt("Enter client name (e.g. 'John & Jane - FHB'):");
@@ -206,25 +214,23 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           )}
         </p>
 
-        {isBuyersAgent && (
-          <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <div style={{ fontWeight: 600, color: 'var(--accent-cyan)', fontSize: '0.85rem' }}>Client Profile:</div>
-            <select className="premium-input small" value={activeClientId} onChange={loadClient} style={{ maxWidth: '250px' }}>
-              <option value="">-- Active Session (Unsaved) --</option>
-              {clients.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-            <button onClick={saveClient} style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>
-              💾 Save Client
-            </button>
-            {activeClientId && (
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                Viewing saved constraints for {clients.find(c => c.id === activeClientId)?.name}
-              </span>
-            )}
-          </div>
-        )}
+        <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <div style={{ fontWeight: 600, color: 'var(--accent-cyan)', fontSize: '0.85rem' }}>Saved Profiles:</div>
+          <select className="premium-input small" value={activeClientId} onChange={loadClient} style={{ maxWidth: '250px' }}>
+            <option value="">-- Active Session (Unsaved) --</option>
+            {clients.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+          <button onClick={saveClient} style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>
+            💾 Save Profile
+          </button>
+          {activeClientId && (
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              Viewing saved constraints for {clients.find(c => c.id === activeClientId)?.name}
+            </span>
+          )}
+        </div>
 
         <div className="filter-grid">
           <div className="filter-section">
@@ -392,7 +398,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           </div>
         )}
         {comparisonList.length > 0 && (
-          <div className="glass-card" style={{ marginBottom: '20px', border: '1px solid var(--accent-cyan)', overflow: 'hidden' }}>
+          <div className="glass-card" style={{ marginBottom: '20px', border: '1px solid var(--accent-cyan)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
               <h3 style={{ margin: 0, color: 'var(--accent-cyan)' }}>Side-by-Side Comparison ({comparisonList.length}/5)</h3>
               <button 
@@ -410,7 +416,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                     <th style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Metric</th>
                     {comparisonList.map(c => (
                       <th key={c.suburb_id} style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '150px' }}>
-                        <div style={{ fontSize: '1rem', color: '#fff' }}>{c.name}</div>
+                        <div style={{ fontSize: '1rem', color: 'var(--text-primary)' }}>{c.name}</div>
                         <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{c.state} • {c.postcode}</div>
                       </th>
                     ))}
@@ -430,15 +436,15 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                     {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>${(c.affordability?.purchase_price || 0).toLocaleString()}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Rental Yield</td>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Rental Yield" contextStr="Comparison List">Rental Yield</AiMetricTooltip></td>
                     {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.components?.income?.score ? (c.components.income.score / 10).toFixed(1) + '%' : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>12m Capital Growth</td>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Capital Growth" contextStr="Comparison List">12m Capital Growth</AiMetricTooltip></td>
                     {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.['12m_growth'] !== null && c.raw_metrics?.['12m_growth'] !== undefined ? `${c.raw_metrics['12m_growth']}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Vacancy Rate</td>
+                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Vacancy Rate" contextStr="Comparison List">Vacancy Rate</AiMetricTooltip></td>
                     {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.vacancy_rate !== null && c.raw_metrics?.vacancy_rate !== undefined ? `${c.raw_metrics.vacancy_rate}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
@@ -473,7 +479,6 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                 setActiveTab={setActiveTab} 
                 onSelectResult={onSelectResult} 
                 requestMeta={{ request_id: backendResults.request_id, model_version: backendResults.model_version }} 
-                isBuyersAgent={isBuyersAgent}
                 isCompared={comparisonList.some(c => c.suburb_id === r.suburb_id)}
                 toggleCompare={() => toggleCompare(r)}
               />
@@ -489,14 +494,13 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
 })
 
 const BackendResultCard = memo(function BackendResultCard({ 
-  result, setActiveSuburb, setActiveTab, onSelectResult, requestMeta, isBuyersAgent, isCompared, toggleCompare 
+  result, setActiveSuburb, setActiveTab, onSelectResult, requestMeta, isCompared, toggleCompare 
 }: { 
   result: any; 
   setActiveSuburb?: (s: any) => void; 
   setActiveTab?: (t: string) => void; 
   onSelectResult?: (result: BuyerFitResult, meta: { request_id: string; model_version: string }) => void; 
   requestMeta?: { request_id: string; model_version: string };
-  isBuyersAgent?: boolean;
   isCompared?: boolean;
   toggleCompare?: () => void;
 }) {
@@ -529,8 +533,8 @@ const BackendResultCard = memo(function BackendResultCard({
   return (
     <div className="result-card glass-card" style={{ display: 'flex', flexDirection: 'column', padding: '0' }}>
       {/* Header Area */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#fff' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 20px', borderBottom: '1px solid var(--border-glass)' }}>
+        <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
           <span style={{ color: 'var(--text-secondary)', marginRight: '8px', fontSize: '0.9rem' }}>#{result.rank}</span>
           {result.name}, {result.state}
         </h4>
@@ -548,14 +552,12 @@ const BackendResultCard = memo(function BackendResultCard({
 
       {/* Body Area */}
       <div style={{ padding: '20px', display: 'flex', gap: '20px', flex: 1, position: 'relative' }}>
-        {isBuyersAgent && (
           <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer' }}>
               <input type="checkbox" checked={isCompared} onChange={toggleCompare} style={{ cursor: 'pointer' }} />
               Compare
             </label>
           </div>
-        )}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(14,165,233,0.05)', padding: '15px', borderRadius: '12px', minWidth: '90px', border: '1px solid rgba(14,165,233,0.1)' }}>
           <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-cyan)', lineHeight: 1 }}>{result.buyer_fit_score.toFixed(0)}</div>
           <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px', fontWeight: 600 }}>Buyer Fit</div>

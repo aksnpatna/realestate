@@ -82,7 +82,7 @@ header {
 /* Layout */
 .main-grid {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 320px minmax(0, 1fr);
   gap: 2rem;
 }
 
@@ -312,7 +312,7 @@ header {
 
 @media (max-width: 900px) {
   .main-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .metrics-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -971,7 +971,7 @@ header {
 }
 
 @media (max-width: 900px) {
-  .main-grid { grid-template-columns: 1fr; }
+  .main-grid { grid-template-columns: minmax(0, 1fr); }
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
   .tab-nav { flex-wrap: wrap; }
   .filter-row { grid-template-columns: 1fr; }

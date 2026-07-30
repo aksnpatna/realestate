@@ -81,7 +81,7 @@ export default memo(function Calculators() {
             background: activeCalc === 'stamp_duty' ? 'var(--warning)' : 'var(--bg-card)',
             color: activeCalc === 'stamp_duty' ? '#000' : 'var(--text-primary)',
             padding: '10px 20px', border: '1px solid var(--border-glass)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold'
-          }}>Stamp Duty</button>
+          }}>Stamp Duty & FHOG</button>
       </div>
 
       <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', padding: '30px', maxWidth: '900px', margin: '0 auto' }}>
@@ -199,10 +199,13 @@ export default memo(function Calculators() {
                     <span style={{ fontWeight: 'bold', color: 'var(--warning)', fontSize: '1.3rem' }}>{formatCurrency(stampDutyResult.totalGovtFees)}</span>
                   </div>
                 </div>
-                <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(16,185,129,0.1)', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.3)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>First Home Owner Grant</span>
-                    <span style={{ color: '#10b981', fontWeight: 'bold' }}>{formatCurrency(stampDutyResult.fhog)}</span>
+                <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(16,185,129,0.1)', borderRadius: '8px', border: '2px solid rgba(16,185,129,0.4)', boxShadow: '0 4px 12px rgba(16,185,129,0.15)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ color: '#10b981', fontWeight: 800, fontSize: '1.1rem' }}>First Home Owner Grant</div>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '2px' }}>Government contribution towards your deposit</div>
+                    </div>
+                    <span style={{ color: '#10b981', fontWeight: 'bold', fontSize: '1.4rem' }}>{formatCurrency(stampDutyResult.fhog)}</span>
                   </div>
                 </div>
               </div>
