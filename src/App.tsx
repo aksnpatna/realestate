@@ -24,7 +24,7 @@ import LandingPage from './components/LandingPage'
 import PromoBanner from './components/PromoBanner'
 import MacroBenchmarkPanel from './components/MacroBenchmarkPanel'
 import ShareReport from './components/ShareReport'
-import { getRegion } from './utils/regionMapper'
+import { getDisplayGroup, getStateName } from './utils/regionMapper'
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
@@ -300,23 +300,48 @@ function App() {
     [activeState, filteredSuburbsData]
   )
 
-  const [activeRegion, setActiveRegion] = useState<string>('');
+  const [suburbSearch, setSuburbSearch] = useState<string>('');
+  const [showSuburbDropdown, setShowSuburbDropdown] = useState(false);
+  const [activeZonePill, setActiveZonePill] = useState<string>('All');
 
-  const stateRegions = useMemo(() => {
-    const regions = new Set<string>();
-    stateSuburbs.forEach(s => regions.add(getRegion(s.state, s.postcode)));
-    return Array.from(regions).sort();
+  // Zone pills derived from current state suburbs
+  const zonePills = useMemo(() => {
+    const groups = new Set<string>();
+    stateSuburbs.forEach(s => groups.add(getDisplayGroup(s.state, s.postcode)));
+    return ['All', ...Array.from(groups).sort()];
   }, [stateSuburbs]);
 
-  const regionSuburbs = useMemo(() => {
-    return activeRegion ? stateSuburbs.filter(s => getRegion(s.state, s.postcode) === activeRegion) : stateSuburbs;
-  }, [stateSuburbs, activeRegion]);
+  // Reset zone pill when state changes
+  useEffect(() => { setActiveZonePill('All'); setSuburbSearch(''); }, [activeState]);
 
-  useEffect(() => {
-    if (stateRegions.length > 0 && !stateRegions.includes(activeRegion)) {
-      setActiveRegion(stateRegions[0]);
-    }
-  }, [stateRegions, activeRegion]);
+  // Filtered suburbs for the search combobox
+  const searchFilteredSuburbs = useMemo(() => {
+    const q = suburbSearch.trim().toLowerCase();
+    return stateSuburbs.filter(s => {
+      const matchesZone = activeZonePill === 'All' || getDisplayGroup(s.state, s.postcode) === activeZonePill;
+      if (!matchesZone) return false;
+      if (!q) return true;
+      return s.name.toLowerCase().includes(q) || s.postcode.includes(q);
+    });
+  }, [stateSuburbs, suburbSearch, activeZonePill]);
+
+  // Group search results by display group
+  const groupedResults = useMemo(() => {
+    const groups: Record<string, typeof stateSuburbs> = {};
+    searchFilteredSuburbs.slice(0, 80).forEach(s => {
+      const g = getDisplayGroup(s.state, s.postcode);
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(s);
+    });
+    // Sort: metro groups first (🏙️), then regional (🌿)
+    return Object.entries(groups).sort(([a], [b]) => {
+      const aIsRegional = a.startsWith('🌿');
+      const bIsRegional = b.startsWith('🌿');
+      if (aIsRegional !== bIsRegional) return aIsRegional ? 1 : -1;
+      return a.localeCompare(b);
+    });
+  }, [searchFilteredSuburbs, stateSuburbs]);
+
 
   useEffect(() => {
     if (states.length > 0 && !states.includes(activeState)) {
@@ -700,57 +725,94 @@ function App() {
               <>
 
                 <div className="control-group">
-                  <label className="control-label">Region / State</label>
+                  <label className="control-label">State</label>
                   <div className="custom-select-wrapper">
-                    <select className="premium-select" value={activeState} onChange={(e) => setActiveState(e.target.value)}>
-                      {states.map(state => <option key={state} value={state}>{state} - Australia</option>)}
+                    <select className="premium-select" value={activeState} onChange={(e) => setActiveState(e.target.value)} style={{ fontSize: '0.95rem' }}>
+                      {states.map(state => <option key={state} value={state}>{getStateName(state)}</option>)}
                     </select>
                   </div>
                 </div>
 
-            <div className="control-group">
-              <label className="control-label">Target Suburb</label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div className="custom-select-wrapper" style={{ flex: 1, minWidth: 0 }}>
-                  <select
-                    className="premium-select"
-                    value={activeRegion}
-                    onChange={(e) => setActiveRegion(e.target.value)}
-                    style={{ padding: '10px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
-                  >
-                    <option value="" disabled>Select Region...</option>
-                    {stateRegions.map(r => <option key={r} value={r}>{r}</option>)}
-                  </select>
+                {/* Suburb search combobox */}
+                <div className="control-group">
+                  <label className="control-label">Suburb</label>
+                  <div className="suburb-search-wrap">
+                    <input
+                      className="suburb-search-input"
+                      type="text"
+                      placeholder={`Search ${stateSuburbs.length} suburbs or postcode…`}
+                      value={suburbSearch}
+                      onChange={e => { setSuburbSearch(e.target.value); setShowSuburbDropdown(true); }}
+                      onFocus={() => setShowSuburbDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowSuburbDropdown(false), 150)}
+                      autoComplete="off"
+                    />
+                    {suburbSearch ? (
+                      <button className="suburb-search-clear" onMouseDown={() => { setSuburbSearch(''); }} title="Clear">✕</button>
+                    ) : (
+                      <span className="suburb-search-icon">🔍</span>
+                    )}
+
+                    {showSuburbDropdown && (
+                      <div className="suburb-dropdown">
+                        {groupedResults.length === 0 ? (
+                          <div className="suburb-dropdown-empty">No suburbs match &ldquo;{suburbSearch}&rdquo;</div>
+                        ) : (
+                          groupedResults.map(([group, suburbs]) => (
+                            <div key={group}>
+                              <div className="suburb-dropdown-group-header">{group}</div>
+                              {suburbs.map(suburb => {
+                                const dq = (suburb as any).dqScore;
+                                const yield_ = (suburb as any).houseGrossRentalYield;
+                                const cbd = (suburb as any).cbdDistance;
+                                const isSelected = activeSuburb?.id === suburb.id;
+                                return (
+                                  <div
+                                    key={suburb.id}
+                                    className={`suburb-dropdown-row${isSelected ? ' selected' : ''}`}
+                                    onMouseDown={() => {
+                                      setActiveSuburb(suburb);
+                                      setSuburbSearch(suburb.name);
+                                      setShowSuburbDropdown(false);
+                                      manualSelectionRef.current = true;
+                                      loadColdSuburb(suburb.id);
+                                      trackActivity('VIEW_SUBURB', suburb.id);
+                                    }}
+                                  >
+                                    <span className="suburb-dropdown-name">
+                                      {suburb.name}
+                                      <span style={{ fontWeight: 400, color: 'var(--text-secondary)', marginLeft: 4 }}>({suburb.postcode})</span>
+                                      {(dq == null || dq < 70) && <span style={{ marginLeft: 4, fontSize: '0.7rem' }} title="Data quality warning">⚠️</span>}
+                                    </span>
+                                    <span className="suburb-dropdown-meta">
+                                      {yield_ ? `${yield_}% yield` : cbd ? `${cbd}km CBD` : ''}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Zone filter pills */}
+                  {zonePills.length > 2 && (
+                    <div className="zone-pills">
+                      {zonePills.map(pill => (
+                        <button
+                          key={pill}
+                          className={`zone-pill${activeZonePill === pill ? ' active' : ''}`}
+                          onClick={() => { setActiveZonePill(pill); setSuburbSearch(''); setShowSuburbDropdown(false); }}
+                        >
+                          {pill === 'All' ? 'All areas' : pill.replace(/^[^\s]+\s*/, '')}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="custom-select-wrapper" style={{ flex: 1, minWidth: 0 }}>
-                  <select
-                    className="premium-select"
-                    value={activeSuburb?.id || ''}
-                    onChange={(e) => {
-                      const target = regionSuburbs.find(s => s.id === e.target.value);
-                      if (target) {
-                        setActiveSuburb(target);
-                        manualSelectionRef.current = true;
-                        loadColdSuburb(target.id);
-                        trackActivity('VIEW_SUBURB', target.id);
-                      }
-                    }}
-                    style={{ padding: '10px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
-                  >
-                    <option value="" disabled>Select Suburb...</option>
-                    {regionSuburbs.map(suburb => {
-                      const dq = (suburb as any).dqScore;
-                      const hasDqIssue = dq == null || dq < 70;
-                      return (
-                        <option key={suburb.id} value={suburb.id}>
-                          {suburb.name} ({suburb.postcode}) {hasDqIssue ? '⚠️' : ''}
-                        </option>
-                      )
-                    })}
-                  </select>
-                </div>
-              </div>
-            </div>
+
 
             <div className="control-group" style={{ marginTop: '20px' }}>
               <button 
