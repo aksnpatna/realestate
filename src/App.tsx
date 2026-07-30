@@ -67,6 +67,16 @@ function App() {
   const [persona, setPersona] = useState<PersonaId>(loadStoredPersona)
   const [activeProfileSection, setActiveProfileSection] = useState<ProfileSectionId>('overview')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
+  
+  // 1. Dynamic Page Title
+  useEffect(() => {
+    if (activeSuburb) {
+      document.title = `${activeSuburb.name}, ${activeSuburb.state} ${activeSuburb.postcode} — PropertyIQ`
+    } else {
+      document.title = 'PropertyIQ'
+    }
+  }, [activeSuburb])
+
   const [selectedBuyerFitResult, setSelectedBuyerFitResult] = useState<BuyerFitResult | null>(() => {
     try { const s = sessionStorage.getItem('bf_result'); return s ? JSON.parse(s) : null } catch { return null }
   })
@@ -825,10 +835,31 @@ function App() {
                               </>
                             )}
                           </div>
+                          
+                          {/* 3. Suburb Elevator Pitch */}
+                          <div style={{ marginTop: '16px', fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>
+                            {(activeSuburb.metrics as any)?.growthNarrative || `${activeSuburb.name} is a ${activeSuburb.growthScore > 70 ? 'high-momentum' : 'stable'} suburb ${(activeSuburb as any).cbdDistance ? `${(activeSuburb as any).cbdDistance} mins from the CBD` : 'in a well-connected region'}. With a median house price of $${((activeSuburb as any).houseMedianPrice || 0).toLocaleString()} and a gross rental yield of ${((activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield || 0)}%, it presents a compelling profile for ${persona === 'first_home_buyer' ? 'home buyers' : 'investors'}.`}
+                          </div>
                         </div>
 
-                        {/* Right Column: Actions */}
-                        <div className="profile-action-btns" style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
+                        {/* Right Column: Actions & Scorecard */}
+                        <div className="profile-action-btns" style={{ display: 'flex', gap: '10px', flexShrink: 0, alignItems: 'center' }}>
+                          <div style={{ 
+                            background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', 
+                            color: '#fff', 
+                            padding: '6px 14px', 
+                            borderRadius: '8px', 
+                            fontWeight: 800, 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '6px',
+                            boxShadow: '0 2px 8px rgba(139,92,246,0.3)'
+                          }} title="PropertyIQ Scorecard">
+                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.9 }}>Score</span>
+                            <span style={{ fontSize: '1.2rem' }}>
+                              {((activeSuburb as any).houseGrossRentalYield ?? 0) > 5.0 ? 'A+' : ((activeSuburb as any).houseGrossRentalYield ?? 0) > 4.0 ? 'A' : 'B+'}
+                            </span>
+                          </div>
                           <button
                             className="profile-action-btn"
                             onClick={() => toggleFavorite(activeSuburb.id)}
@@ -973,76 +1004,15 @@ function App() {
                         })()}
                       </div>
                     </div>
-                    <div className="metric-box" style={{ padding: '12px 16px' }}>
-                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Population Growth (CAGR)</div>
-                      <div className="metric-value highlight-cyan" style={{ fontSize: '1.15rem' }}>
-                        {activeSuburb.populationCagr ? `${Number(activeSuburb.populationCagr).toFixed(1)}%` : (activeSuburb.metrics?.populationGrowth && activeSuburb.metrics.populationGrowth !== 'N/A'
-                          ? activeSuburb.metrics.populationGrowth
-                          : <span style={{color:'var(--text-muted)'}}>—</span>)}
-                      </div>
                     </div>
-                    <div className="metric-box" style={{ padding: '12px 16px' }}>
-                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Green Space</div>
-                      <div className="metric-value" style={{ fontSize: '1.15rem' }}>
-                        {(activeSuburb as any).parksCount ? `${(activeSuburb as any).parksCount} parks (${(activeSuburb as any).parksCoveragePct || 0}% cover)` : <span style={{color:'var(--text-muted)'}}>—</span>}
-                      </div>
-                    </div>
-                    <div className="metric-box" style={{ padding: '12px 16px' }}>
-                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Avg Rental Yield</div>
-                      <div className="metric-value" style={{ fontSize: '1.15rem' }}>
-                        {(activeSuburb as any).rentalYield ? `${(activeSuburb as any).rentalYield}%` : (activeSuburb as any).houseGrossRentalYield ? `${(activeSuburb as any).houseGrossRentalYield}%` : activeSuburb.metrics?.rentalYield ? `${activeSuburb.metrics.rentalYield}%` : <span style={{color:'var(--text-muted)'}}>—</span>}
-                      </div>
-                    </div>
-                    <div className="metric-box" style={{ padding: '12px 16px' }}>
-                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>AI News Sentiment</div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div className={`metric-value ${
-                          (activeSuburb.metrics as any)?._newsScore >= 7 ? 'highlight-cyan' :
-                          (activeSuburb.metrics as any)?._newsScore >= 4 ? 'text-muted' : 'text-warning'
-                        }`} style={{ fontSize: '1.15rem' }}>
-                          {activeSuburb.metrics.aiNewsSentiment || 'Pending'}
-                        </div>
-                        <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>See AI panel ↓</span>
-                      </div>
-                    </div>
-                   </div>
 
 
 
                     <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
-                   {/* Market Snapshot */}
                    <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'overview' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'overview' }}>
                     
                     {/* Quick ROI Calculator — Promoted inside Overview tab */}
-                    {/* PropertyIQ Suburb Scorecard */}
-                    <div style={{ padding: '16px', marginBottom: '15px', background: 'linear-gradient(135deg, rgba(15,169,184,0.1), rgba(139,92,246,0.1))', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '12px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <h4 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: '#fff' }}>PropertyIQ Scorecard</h4>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                            Composite grade based on Yield, Demographics, and Infrastructure.
-                          </div>
-                        </div>
-                        <div style={{ background: '#8b5cf6', color: '#fff', fontSize: '1.8rem', fontWeight: 800, padding: '10px 20px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(139,92,246,0.3)' }}>
-                          {((activeSuburb as any).houseGrossRentalYield ?? 0) > 5.0 ? 'A+' : ((activeSuburb as any).houseGrossRentalYield ?? 0) > 4.0 ? 'A' : 'B+'}
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', gap: '15px', marginTop: '15px' }}>
-                         <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '6px', textAlign: 'center', fontSize: '0.85rem' }}>
-                           <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>Education & Transit</div>
-                           <strong>A</strong>
-                         </div>
-                         <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '6px', textAlign: 'center', fontSize: '0.85rem' }}>
-                           <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>Yield & Growth</div>
-                           <strong>{((activeSuburb as any).houseGrossRentalYield ?? 0) > 4.5 ? 'A+' : 'B'}</strong>
-                         </div>
-                         <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '6px', textAlign: 'center', fontSize: '0.85rem' }}>
-                           <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>Liveability</div>
-                           <strong>A-</strong>
-                         </div>
-                      </div>
-                    </div>
 
                     {persona !== 'first_home_buyer' && (
                       <Suspense fallback={<div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Loading ROI...</div>}>
@@ -1342,9 +1312,14 @@ function App() {
                     
                     {/* NEW METRICS: Transit, NBN, Safety */}
                     <div className="metrics-grid" style={{ marginBottom: '20px' }}>
-                      <div className="metric-box">
+                      <div className="metric-box" style={{ borderColor: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)' }}>
                         <div className="metric-label">Transit Score</div>
-                        <div className="metric-value highlight-cyan">{((activeSuburb as any).areaSqkm ?? 20) < 10 ? "76/100" : "51/100"}</div>
+                        <div className="metric-value" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '1.15rem' }}>{((activeSuburb as any).areaSqkm ?? 20) < 10 ? "76/100" : "51/100"}</span>
+                          <span style={{ fontSize: '0.8rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)' }}>
+                            {((activeSuburb as any).areaSqkm ?? 20) < 10 ? "🟢 Good" : "🟡 Moderate"}
+                          </span>
+                        </div>
                       </div>
                       <div className="metric-box">
                         <div className="metric-label">Safety Rating</div>
@@ -1874,6 +1849,26 @@ function App() {
 
                   {activeSuburb.schools && activeSuburb.schools.length > 0 && (
                     <div className="schools-section" style={{ display: activeProfileSection === 'infrastructure' ? 'block' : 'none', marginTop: '20px' }}>
+                      {/* 5. School Summary Banner */}
+                      <div style={{ padding: '16px 20px', marginBottom: '20px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <h4 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+                            {activeSuburb.schools?.length || 0} Schools in {activeSuburb.name}
+                          </h4>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                            Top-ranking school: {[...activeSuburb.schools].sort((a,b)=>((b as any).icsea||0)-((a as any).icsea||0))[0]?.name || 'N/A'}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
+                            {(() => {
+                              const avgIcsea = activeSuburb.schools!.reduce((acc,s)=>acc+((s as any).icsea||0),0) / (activeSuburb.schools!.length || 1);
+                              return avgIcsea > 1100 ? 'A+ | Top 10%' : avgIcsea > 1050 ? 'A | Top 25%' : avgIcsea > 1000 ? 'B+ | Above Avg' : 'B | Average';
+                            })()}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Suburb Average (ICSEA)</div>
+                        </div>
+                      </div>
                       {((() => {
                         const primaries = activeSuburb.schools!.filter(s => ['primary', 'combined'].includes(s.type.toLowerCase()));
                         const secondaries = activeSuburb.schools!.filter(s => ['secondary', 'combined'].includes(s.type.toLowerCase()));
