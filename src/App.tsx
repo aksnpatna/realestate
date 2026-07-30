@@ -644,6 +644,13 @@ function App() {
           >
             Suburb Profile
           </button>
+          <button
+            className={`tab-btn ${activeTab === 'institutional' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('institutional')}
+            style={{ fontSize: '1.1rem' }}
+          >
+            Institutional Deep Dive (V3)
+          </button>
           
           <div style={{ display: 'flex', gap: '20px', marginLeft: 'auto', alignItems: 'center' }}>
             <select 
