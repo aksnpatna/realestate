@@ -165,6 +165,10 @@ def _build() -> Dict[str, MetricEntry]:
                                    col="news_sentiment", explainer="news_sentiment"),
         "nearby_suburbs":       e("nearby_suburbs",        "Nearby Suburbs",          "JSON",   "Derived",      90, "contextual",
                                    col="nearby_suburbs"),
+
+        # ── Extra from evidence packs ──
+        "rental_stock":         e("rental_stock",          "Rental Stock",            "count",  "CoreLogic/NPG", 45, "contextual",
+                                   col="rental_stock"),
     }
 
 

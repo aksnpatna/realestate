@@ -48,7 +48,13 @@ async def ask_query(
     """
     import time
     import hashlib
+    import os
     from ask.observability import incr_ask_request, incr_ask_cache, record_intent_confidence, record_latency, record_evidence_coverage
+
+    # Feature flag gate
+    enable_ask_v2 = os.getenv("ENABLE_ASK_V2", "true").lower() in ("true", "1", "yes")
+    if not enable_ask_v2:
+        raise HTTPException(status_code=503, detail="Ask YieldSense v2 is temporarily disabled (ENABLE_ASK_V2=false). Use /api/v3/ask instead.")
 
     t0 = time.time()
     incr_ask_request()

@@ -696,6 +696,54 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     );
   };
 
+  const EvidenceTable = ({ evidence }: { evidence: any[] }) => {
+    const [expanded, setExpanded] = useState(false);
+    if (!evidence?.length) return null;
+    return (
+      <div style={{ marginBottom: 22, borderTop: '1px solid var(--border-glass)', paddingTop: 16 }}>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          style={{
+            background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer',
+            fontSize: '0.82rem', fontWeight: 700, padding: 0,
+            textDecoration: 'underline', textUnderlineOffset: 3,
+          }}
+          aria-expanded={expanded}
+        >
+          {expanded ? '▾ Hide evidence sources' : '▸ Show evidence sources'} ({evidence.length} metrics)
+        </button>
+        {expanded && (
+          <div style={{ marginTop: 10, overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+              <thead>
+                <tr>
+                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>Metric</th>
+                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'right' }}>Value</th>
+                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>Source</th>
+                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>As of</th>
+                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>Quality</th>
+                </tr>
+              </thead>
+              <tbody>
+                {evidence.slice(0, 30).map((e, i) => (
+                  <tr key={e.id || i} style={{ background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
+                    <td style={{ ...TD, padding: '4px 10px', fontWeight: 600 }}>{e.metric}</td>
+                    <td style={{ ...TD, padding: '4px 10px', textAlign: 'right' }}>
+                      {typeof e.value === 'number' ? (e.unit.includes('$') ? `$${e.value.toLocaleString()}` : e.unit === '%' ? `${e.value.toFixed(2)}%` : e.value.toLocaleString()) : String(e.value ?? '—')}
+                    </td>
+                    <td style={{ ...TD, padding: '4px 10px', color: 'var(--text-secondary)' }}>{e.source}</td>
+                    <td style={{ ...TD, padding: '4px 10px', color: e.is_stale ? '#ffb400' : 'var(--text-secondary)' }}>{e.as_of}{e.is_stale ? ' ⚠ stale' : ''}</td>
+                    <td style={{ ...TD, padding: '4px 10px', color: e.quality === 'verified' ? '#00d282' : 'var(--text-secondary)' }}>{e.quality}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const DQWarning = ({ dq }: { dq: any }) => {
     const lowSuburbs = Object.entries(dq?.suburbs ?? {}).filter(([, v]: any) => v.dq_score < 70);
     if (!lowSuburbs.length) return null;
@@ -781,20 +829,41 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         <div style={{ marginTop: 28, padding: '20px 22px', background: 'rgba(0,210,255,0.05)', borderRadius: 12, border: '1px solid rgba(0,210,255,0.18)' }}>
           <p style={{ margin: '0 0 6px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--accent-cyan)', fontWeight: 700 }}>Follow-up question</p>
           <p style={{ margin: '0 0 14px', fontSize: '0.95rem', lineHeight: 1.6 }}>{pendingClarify.clarifyingQ}</p>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <input value={clarifyAnswer} onChange={e => setClarifyAnswer(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleClarify()}
-              placeholder="Your answer…"
-              style={{ flex: 1, padding: '10px 13px', borderRadius: 8, border: '1px solid var(--border-glass)', background: 'rgba(0,0,0,0.2)', color: 'var(--text-primary)', fontSize: '0.9rem' }} />
-            <button onClick={handleClarify} disabled={!clarifyAnswer.trim()}
-              style={{ padding: '10px 20px', borderRadius: 8, background: 'var(--accent-cyan)', color: '#000', border: 'none', fontWeight: 700, cursor: clarifyAnswer.trim() ? 'pointer' : 'not-allowed', opacity: clarifyAnswer.trim() ? 1 : 0.5 }}>
-              Continue →
-            </button>
-            <button onClick={() => { setPendingClarify(null); submitWithIntent({ ...pendingClarify, needsClarification: false, suburbs: [{ name: 'Kenmore', state: 'QLD' }] }, question); }}
-              style={{ padding: '10px 14px', borderRadius: 8, background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.83rem' }}>
-              Skip
-            </button>
-          </div>
+          {(pendingClarify as any).clarification?.options?.length ? (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+              {(pendingClarify as any).clarification.options.map((opt: any, i: number) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    const fullQ = `${opt.name} ${opt.state || ''}`;
+                    setQuestion(fullQ);
+                    setPendingClarify(null);
+                    callQuery(fullQ);
+                  }}
+                  style={{
+                    padding: '8px 16px', borderRadius: 8, border: '1px solid var(--accent-cyan)',
+                    background: 'rgba(0,210,255,0.08)', color: 'var(--accent-cyan)',
+                    cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem',
+                  }}
+                >
+                  {opt.name}{opt.state ? ` (${opt.state})` : ''}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: 10 }}>
+              <input value={clarifyAnswer} onChange={e => setClarifyAnswer(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleClarify()}
+                placeholder="Your answer…"
+                style={{ flex: 1, padding: '10px 13px', borderRadius: 8, border: '1px solid var(--border-glass)', background: 'rgba(0,0,0,0.2)', color: 'var(--text-primary)', fontSize: '0.9rem' }}
+                aria-label="Your answer"
+              />
+              <button onClick={handleClarify} disabled={!clarifyAnswer.trim()}
+                style={{ padding: '10px 20px', borderRadius: 8, background: 'var(--accent-cyan)', color: '#000', border: 'none', fontWeight: 700, cursor: clarifyAnswer.trim() ? 'pointer' : 'not-allowed', opacity: clarifyAnswer.trim() ? 1 : 0.5 }}>
+                Continue →
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -879,6 +948,9 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
 
           {/* Side-by-side table */}
           <ComparisonTable comparisons={result.comparison} evidence={result.evidence} />
+
+          {/* Evidence table (collapsible) */}
+          <EvidenceTable evidence={result.evidence} />
 
           {/* Supports / Risks */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18, marginBottom: 22 }}>
