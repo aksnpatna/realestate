@@ -238,7 +238,26 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
     priorities = extract_priorities(question)
     regional   = is_regional(question)
 
-    # 1. Guardrail
+    # 1. Guardrails (Abuse & Missing Vector)
+    abusive_words = ['fuck', 'shit', 'bitch', 'cunt', 'asshole', 'stupid', 'idiot', 'dick', 'crap']
+    if any(w in question.lower() for w in abusive_words):
+        return {
+            "guardrail": True,
+            "message": "Let's keep it professional. Please rephrase your query with a specific geographical area.",
+            "results": [],
+            "summary": "Query blocked due to inappropriate language.",
+            "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
+        }
+
+    if not city and not state and not regional:
+        return {
+            "guardrail": True,
+            "message": "I couldn't detect a specific area in your query. Please provide a clear spatial vector (e.g. 'near Melbourne', 'in NSW', or 'regional TAS').",
+            "results": [],
+            "summary": "Missing spatial vector.",
+            "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
+        }
+
     guardrail_msg = apply_geo_guardrail(city, direction, km) if city else None
     if guardrail_msg:
         return {
