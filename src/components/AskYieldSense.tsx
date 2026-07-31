@@ -191,10 +191,13 @@ function detectIntent(text: string): DetectedIntent {
     /\d+\s*km\s+(from|north|south|east|west)\b/i,
     /\b(near|around|close to)\s+(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra)\b/i,
     /\bregional\b.*(yield|school|growth|safe)/i,
-    /\b(best|highest|lowest|top)\s+(school|yield|return|transit|transport|cafe|park|safety)\b/i,
+    /\b(best|highest|lowest|top)\s+(school|yield|return|transit|transport|cafe|park|safety|area|neighbourhood|neighborhood|suburb)\b/i,
     /suburb.*\b(with|having|that have)\s+(high|good|great|best|most)\b/i,
     /\bwhich suburb(s)?\b/i,
     /\bfind (me )?(a )?suburb/i,
+    /\bfind (me )?(a |an )?(area|neighbourhood|neighborhood|location|place)\b/i,
+    /\blooking for (a |an |some )?(area|suburb|neighbourhood|neighborhood|place)\b/i,
+    /\brecommend (a |an |some |me )?(area|suburb|neighbourhood|neighborhood|place)\b/i,
   ];
   const isGeoDiscovery = GEO_PATTERNS.some(p => p.test(text));
 
