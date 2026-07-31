@@ -1,16 +1,16 @@
 # Graph Report - realestate  (2026-07-31)
 
 ## Corpus Check
-- 217 files · ~2,375,053 words
+- 218 files · ~2,375,220 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1962 nodes · 2712 edges · 227 communities (181 shown, 46 thin omitted)
+- 1964 nodes · 2713 edges · 226 communities (183 shown, 43 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 427 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `12272697`
+- Built from commit: `b1cbee08`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -192,7 +192,6 @@
 - [[_COMMUNITY_Community 220|Community 220]]
 - [[_COMMUNITY_Community 221|Community 221]]
 - [[_COMMUNITY_Community 225|Community 225]]
-- [[_COMMUNITY_Community 226|Community 226]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Session` - 43 edges
@@ -232,7 +231,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (227 total, 46 thin omitted)
+## Communities (226 total, 43 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -255,12 +254,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 5 - "Frontend Property Calculators"
-Cohesion: 0.20
-Nodes (11): _check_auth_rate(), get_me(), hash_password(), login(), register(), request_log_middleware(), _rl_check(), send_verification_email() (+3 more)
+Cohesion: 0.19
+Nodes (17): get_me(), Stores legally binding Click-Wrap agreements with timestamps and IP records., UserActivity, UserConsent, UserFavorite, UserModel, _write_analytics_event_bg(), Ingestion Target Layer. Stores the pure, unprocessed JSON payload extracted from (+9 more)
 
 ### Community 6 - "Database Models & Scrapers"
-Cohesion: 0.04
-Nodes (77): add_portfolio_property(), _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), _annualize_cagr(), bust_suburbs_cache(), buy_finder_rank(), calculate_roi() (+69 more)
+Cohesion: 0.05
+Nodes (65): add_portfolio_property(), _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), bust_suburbs_cache(), buy_finder_rank(), calculate_roi(), calculate_stamp_duty() (+57 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -404,7 +403,7 @@ Nodes (5): Elizabeth SA 5112, Noarlunga SA 5168, Prospect SA 5082, SA (South Aus
 
 ### Community 98 - "Community 98"
 Cohesion: 0.07
-Nodes (19): LandingPageProps, Benchmark, MacroBenchmarkPanel, OnboardingTour(), QuickRoiCalculatorProps, SqmHistoricalChartProps, AffordabilityCalculator, AskYieldSense (+11 more)
+Nodes (20): LandingPageProps, Benchmark, MacroBenchmarkPanel, OnboardingTour(), PriceHistoryChartProps, QuickRoiCalculatorProps, SqmHistoricalChartProps, AffordabilityCalculator (+12 more)
 
 ### Community 99 - "Community 99"
 Cohesion: 0.05
@@ -413,6 +412,10 @@ Nodes (35): _build_evidence_ids(), calculate_stamp_duty(), calibrate_dq(), clamp
 ### Community 102 - "Community 102"
 Cohesion: 0.50
 Nodes (4): Devonport TAS 7310, Hobart TAS 7000, Launceston TAS 7250, TAS (Tasmania)
+
+### Community 103 - "Community 103"
+Cohesion: 0.50
+Nodes (3): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, get_similar_suburbs()
 
 ### Community 104 - "Community 104"
 Cohesion: 0.11
@@ -603,20 +606,24 @@ Cohesion: 0.29
 Nodes (3): _is_test_database(), pytest_configure(), conftest.py — Pytest configuration and fixtures for the Buyer Fit POC test suite
 
 ### Community 153 - "Community 153"
-Cohesion: 0.22
-Nodes (48): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyersAgentClient, BuyFinderRequest, BuyFinderWeights (+40 more)
+Cohesion: 0.27
+Nodes (37): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyersAgentClient, BuyFinderRequest, BuyFinderWeights (+29 more)
 
 ### Community 154 - "Community 154"
 Cohesion: 0.11
 Nodes (18): Architecture Principles, COLUMN OWNERSHIP (who writes what), DATA LINEAGE MAP, ETL Pipeline Architecture — Real Estate Suburb Data Platform, Merge: `compute_avg_block_sqm()` → `nightly_compute.py`, Merge: `compute_derived_indicators()` → `etl_abs_building.py`, Merge: `etl_national_subdivision_proxies.py` → `nightly_compute.py`, MERGED PIPELINE DETAILS (+10 more)
 
 ### Community 155 - "Community 155"
-Cohesion: 0.12
-Nodes (35): calculate_data_quality(), extract_evidence(), get_suburb_ui(), validate_policy(), compute_affordability(), AskIntent, AskResponse, DiscoveryMetrics (+27 more)
+Cohesion: 0.08
+Nodes (58): calculate_data_quality(), extract_evidence(), get_suburb_ui(), validate_policy(), add_message(), create_conversation(), generate_share_token(), get_brief() (+50 more)
 
 ### Community 156 - "Community 156"
 Cohesion: 0.05
 Nodes (38): Confirmed decisions, H10 — P1 · Config staleness alert (closes P9), H11 — P1 · Freshness surfaced in UI (closes P11), H12 — P1 · Structured request logs (closes P14), H13 — P1 · Concurrency model for AI (closes P15), H14 — P2 · Scraper robots/ToS posture (closes P4 follow-up), H15 — P2 · Test scaffolding for the new invariants, H1 — P0 · Kill the random-JWT_SECRET foot-gun (closes P1, P10) (+30 more)
+
+### Community 157 - "Community 157"
+Cohesion: 0.15
+Nodes (20): _annualize_cagr(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), _get_sqm_stock(), get_suburb(), get_suburb_evidence(), get_suburb_v3() (+12 more)
 
 ### Community 158 - "Community 158"
 Cohesion: 0.13
@@ -747,8 +754,8 @@ Cohesion: 0.09
 Nodes (18): AskResponse, AskYieldSenseProps, CHIP_STYLE, DetectedIntent, detectIntent(), DiscoveryMetrics, DiscoveryResponse, DiscoveryResult (+10 more)
 
 ### Community 214 - "Community 214"
-Cohesion: 0.13
-Nodes (27): add_message(), create_conversation(), generate_share_token(), get_brief(), get_conversation(), get_shared_brief(), hash_token(), Redacts sensitive financial data for public viewing. (+19 more)
+Cohesion: 0.29
+Nodes (4): CommitteeMemory, EtlRunLog, models_v3.py — Clean ETL Architecture v3 =======================================, Store committee analyses for similarity-based few-shot retrieval.
 
 ### Community 218 - "Community 218"
 Cohesion: 0.25
@@ -763,9 +770,9 @@ Cohesion: 0.26
 Nodes (11): DecisionBriefSnapshot, Persisted Decision Brief to create a durable, shareable artifact.     Solves the, Session, BriefBrokerRequest, BriefCreateRequest, get_decision_brief(), get_shared_brief(), request_broker_handoff() (+3 more)
 
 ## Knowledge Gaps
-- **806 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+801 more)
+- **807 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+802 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **46 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **43 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

@@ -1068,7 +1068,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ask_repository",
-      "community": 214,
+      "community": 155,
       "norm_label": "repository.py"
     },
     {
@@ -1078,7 +1078,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "ask_repository_sanitize",
-      "community": 214,
+      "community": 155,
       "norm_label": "_sanitize()"
     },
     {
@@ -1088,7 +1088,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_ask_repository_py_any",
-      "community": 214,
+      "community": 155,
       "norm_label": "any"
     },
     {
@@ -1098,7 +1098,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ask_repository_generate_share_token",
-      "community": 214,
+      "community": 155,
       "norm_label": "generate_share_token()"
     },
     {
@@ -1108,7 +1108,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "ask_repository_hash_token",
-      "community": 214,
+      "community": 155,
       "norm_label": "hash_token()"
     },
     {
@@ -1118,7 +1118,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "ask_repository_create_conversation",
-      "community": 214,
+      "community": 155,
       "norm_label": "create_conversation()"
     },
     {
@@ -1128,7 +1128,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "backend_ask_repository_py_session",
-      "community": 214,
+      "community": 155,
       "norm_label": "session"
     },
     {
@@ -1138,7 +1138,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "askconversation",
-      "community": 214,
+      "community": 155,
       "norm_label": "askconversation"
     },
     {
@@ -1148,7 +1148,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "ask_repository_get_conversation",
-      "community": 214,
+      "community": 155,
       "norm_label": "get_conversation()"
     },
     {
@@ -1158,7 +1158,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "ask_repository_add_message",
-      "community": 214,
+      "community": 155,
       "norm_label": "add_message()"
     },
     {
@@ -1168,7 +1168,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "askmessage",
-      "community": 214,
+      "community": 155,
       "norm_label": "askmessage"
     },
     {
@@ -1178,7 +1178,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "ask_repository_save_ask_brief",
-      "community": 214,
+      "community": 155,
       "norm_label": "save_ask_brief()"
     },
     {
@@ -1188,7 +1188,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "askbrief",
-      "community": 214,
+      "community": 155,
       "norm_label": "askbrief"
     },
     {
@@ -1198,7 +1198,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "ask_repository_get_brief",
-      "community": 214,
+      "community": 155,
       "norm_label": "get_brief()"
     },
     {
@@ -1208,7 +1208,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "ask_repository_share_brief",
-      "community": 214,
+      "community": 155,
       "norm_label": "share_brief()"
     },
     {
@@ -1218,7 +1218,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "ask_repository_get_shared_brief",
-      "community": 214,
+      "community": 155,
       "norm_label": "get_shared_brief()"
     },
     {
@@ -1228,7 +1228,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "ask_repository_redact_brief_for_public",
-      "community": 214,
+      "community": 155,
       "norm_label": "redact_brief_for_public()"
     },
     {
@@ -1238,7 +1238,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "ask_repository_rationale_14",
-      "community": 214,
+      "community": 155,
       "norm_label": "recursively convert non-json-serializable types to safe primitives."
     },
     {
@@ -1248,7 +1248,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "ask_repository_rationale_26",
-      "community": 214,
+      "community": 155,
       "norm_label": "generates a raw token and its hash."
     },
     {
@@ -1258,7 +1258,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "ask_repository_rationale_90",
-      "community": 214,
+      "community": 155,
       "norm_label": "generates a share token for a brief and sets visibility to public."
     },
     {
@@ -1268,7 +1268,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ask_repository_rationale_109",
-      "community": 214,
+      "community": 155,
       "norm_label": "redacts sensitive financial data for public viewing."
     },
     {
@@ -3688,7 +3688,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "backend_main_request_log_middleware",
-      "community": 5,
+      "community": 6,
       "norm_label": "request_log_middleware()"
     },
     {
@@ -3708,7 +3708,7 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "backend_main_rl_check",
-      "community": 5,
+      "community": 6,
       "norm_label": "_rl_check()"
     },
     {
@@ -3718,7 +3718,7 @@
       "source_location": "L252",
       "_origin": "ast",
       "id": "backend_main_check_auth_rate",
-      "community": 5,
+      "community": 6,
       "norm_label": "_check_auth_rate()"
     },
     {
@@ -3738,7 +3738,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "base",
-      "community": 153,
+      "community": 5,
       "norm_label": "base"
     },
     {
@@ -3748,7 +3748,7 @@
       "source_location": "L285",
       "_origin": "ast",
       "id": "backend_main_userfavorite",
-      "community": 153,
+      "community": 5,
       "norm_label": "userfavorite"
     },
     {
@@ -3768,7 +3768,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "backend_main_useractivity",
-      "community": 153,
+      "community": 5,
       "norm_label": "useractivity"
     },
     {
@@ -3778,7 +3778,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "backend_main_userconsent",
-      "community": 153,
+      "community": 5,
       "norm_label": "userconsent"
     },
     {
@@ -3888,7 +3888,7 @@
       "source_location": "L438",
       "_origin": "ast",
       "id": "backend_main_send_verification_email",
-      "community": 5,
+      "community": 6,
       "norm_label": "send_verification_email()"
     },
     {
@@ -3898,7 +3898,7 @@
       "source_location": "L474",
       "_origin": "ast",
       "id": "backend_main_hash_password",
-      "community": 5,
+      "community": 6,
       "norm_label": "hash_password()"
     },
     {
@@ -3908,7 +3908,7 @@
       "source_location": "L477",
       "_origin": "ast",
       "id": "backend_main_verify_password",
-      "community": 5,
+      "community": 6,
       "norm_label": "verify_password()"
     },
     {
@@ -3938,7 +3938,7 @@
       "source_location": "L504",
       "_origin": "ast",
       "id": "backend_main_register",
-      "community": 5,
+      "community": 6,
       "norm_label": "register()"
     },
     {
@@ -3948,7 +3948,7 @@
       "source_location": "L552",
       "_origin": "ast",
       "id": "backend_main_write_analytics_event_bg",
-      "community": 153,
+      "community": 5,
       "norm_label": "_write_analytics_event_bg()"
     },
     {
@@ -3978,7 +3978,7 @@
       "source_location": "L595",
       "_origin": "ast",
       "id": "backend_main_login",
-      "community": 5,
+      "community": 6,
       "norm_label": "login()"
     },
     {
@@ -4008,7 +4008,7 @@
       "source_location": "L631",
       "_origin": "ast",
       "id": "backend_main_record_consent",
-      "community": 226,
+      "community": 6,
       "norm_label": "record_consent()"
     },
     {
@@ -4088,7 +4088,7 @@
       "source_location": "L838",
       "_origin": "ast",
       "id": "backend_main_get_suburbs",
-      "community": 6,
+      "community": 157,
       "norm_label": "get_suburbs()"
     },
     {
@@ -4108,7 +4108,7 @@
       "source_location": "L927",
       "_origin": "ast",
       "id": "backend_main_annualize_cagr",
-      "community": 6,
+      "community": 157,
       "norm_label": "_annualize_cagr()"
     },
     {
@@ -4118,7 +4118,7 @@
       "source_location": "L938",
       "_origin": "ast",
       "id": "backend_main_cap_yield",
-      "community": 6,
+      "community": 157,
       "norm_label": "_cap_yield()"
     },
     {
@@ -4128,7 +4128,7 @@
       "source_location": "L945",
       "_origin": "ast",
       "id": "backend_main_provenance",
-      "community": 6,
+      "community": 157,
       "norm_label": "_provenance()"
     },
     {
@@ -4138,7 +4138,7 @@
       "source_location": "L958",
       "_origin": "ast",
       "id": "backend_main_provenanced_metrics",
-      "community": 6,
+      "community": 157,
       "norm_label": "_provenanced_metrics()"
     },
     {
@@ -4148,7 +4148,7 @@
       "source_location": "L1039",
       "_origin": "ast",
       "id": "backend_main_get_sqm_stock",
-      "community": 6,
+      "community": 157,
       "norm_label": "_get_sqm_stock()"
     },
     {
@@ -4158,7 +4158,7 @@
       "source_location": "L1055",
       "_origin": "ast",
       "id": "backend_main_calibrate_dq",
-      "community": 6,
+      "community": 157,
       "norm_label": "_calibrate_dq()"
     },
     {
@@ -4168,7 +4168,7 @@
       "source_location": "L1068",
       "_origin": "ast",
       "id": "backend_main_compute_growth_score",
-      "community": 6,
+      "community": 157,
       "norm_label": "_compute_growth_score()"
     },
     {
@@ -4188,7 +4188,7 @@
       "source_location": "L1193",
       "_origin": "ast",
       "id": "backend_main_get_suburb",
-      "community": 6,
+      "community": 157,
       "norm_label": "get_suburb()"
     },
     {
@@ -4218,7 +4218,7 @@
       "source_location": "L1357",
       "_origin": "ast",
       "id": "backend_main_get_suburb_evidence",
-      "community": 6,
+      "community": 157,
       "norm_label": "get_suburb_evidence()"
     },
     {
@@ -4258,7 +4258,7 @@
       "source_location": "L1601",
       "_origin": "ast",
       "id": "backend_main_get_similar_suburbs",
-      "community": 6,
+      "community": 103,
       "norm_label": "get_similar_suburbs()"
     },
     {
@@ -4468,7 +4468,7 @@
       "source_location": "L2165",
       "_origin": "ast",
       "id": "backend_main_get_suburb_v3",
-      "community": 6,
+      "community": 157,
       "norm_label": "get_suburb_v3()"
     },
     {
@@ -4598,7 +4598,7 @@
       "source_location": "L2690",
       "_origin": "ast",
       "id": "backend_main_save_decision_snapshot",
-      "community": 6,
+      "community": 153,
       "norm_label": "save_decision_snapshot()"
     },
     {
@@ -4658,7 +4658,7 @@
       "source_location": "L311",
       "_origin": "ast",
       "id": "backend_main_rationale_311",
-      "community": 153,
+      "community": 5,
       "norm_label": "stores legally binding click-wrap agreements with timestamps and ip records."
     },
     {
@@ -4698,7 +4698,7 @@
       "source_location": "L632",
       "_origin": "ast",
       "id": "backend_main_rationale_632",
-      "community": 226,
+      "community": 6,
       "norm_label": "records a legally binding click-wrap agreement to the database with ip tracing."
     },
     {
@@ -4748,7 +4748,7 @@
       "source_location": "L928",
       "_origin": "ast",
       "id": "backend_main_rationale_928",
-      "community": 6,
+      "community": 157,
       "norm_label": "convert 5yr total growth % to annual cagr %. values >10% treated as total growth"
     },
     {
@@ -4758,7 +4758,7 @@
       "source_location": "L939",
       "_origin": "ast",
       "id": "backend_main_rationale_939",
-      "community": 6,
+      "community": 157,
       "norm_label": "clamp rental yields to prevent absurd outliers from low-price suburbs."
     },
     {
@@ -4768,7 +4768,7 @@
       "source_location": "L947",
       "_origin": "ast",
       "id": "backend_main_rationale_947",
-      "community": 6,
+      "community": 157,
       "norm_label": "attach metric-level provenance metadata to a value."
     },
     {
@@ -4778,7 +4778,7 @@
       "source_location": "L959",
       "_origin": "ast",
       "id": "backend_main_rationale_959",
-      "community": 6,
+      "community": 157,
       "norm_label": "build provenance-attached metric dictionary."
     },
     {
@@ -4788,7 +4788,7 @@
       "source_location": "L1056",
       "_origin": "ast",
       "id": "backend_main_rationale_1056",
-      "community": 6,
+      "community": 157,
       "norm_label": "return the actual dq score computed by the etl pipeline.     apply a harsh penal"
     },
     {
@@ -4798,7 +4798,7 @@
       "source_location": "L1069",
       "_origin": "ast",
       "id": "backend_main_rationale_1069",
-      "community": 6,
+      "community": 157,
       "norm_label": "compute a 0-92 growth score from real v3 metrics.     version: 1.2.0 \u2014 probabili"
     },
     {
@@ -4808,7 +4808,7 @@
       "source_location": "L1194",
       "_origin": "ast",
       "id": "backend_main_rationale_1194",
-      "community": 6,
+      "community": 157,
       "norm_label": "v3-only endpoint \u2014 all data from suburbs_ui_v3 (self-sufficient)."
     },
     {
@@ -4838,7 +4838,7 @@
       "source_location": "L1358",
       "_origin": "ast",
       "id": "backend_main_rationale_1358",
-      "community": 6,
+      "community": 157,
       "norm_label": "evidence contract: trace every material metric to its source.     returns null o"
     },
     {
@@ -4928,7 +4928,7 @@
       "source_location": "L2166",
       "_origin": "ast",
       "id": "backend_main_rationale_2166",
-      "community": 6,
+      "community": 157,
       "norm_label": "returns full v3 institutional data for a single suburb."
     },
     {
@@ -5318,7 +5318,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_models_v2",
-      "community": 157,
+      "community": 5,
       "norm_label": "models_v2.py"
     },
     {
@@ -5328,7 +5328,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_models_v2_suburbrawv2",
-      "community": 157,
+      "community": 5,
       "norm_label": "suburbrawv2"
     },
     {
@@ -5338,7 +5338,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "backend_models_v2_suburbuiv2",
-      "community": 153,
+      "community": 5,
       "norm_label": "suburbuiv2"
     },
     {
@@ -5348,7 +5348,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "backend_models_v2_rationale_11",
-      "community": 157,
+      "community": 5,
       "norm_label": "ingestion target layer. stores the pure, unprocessed json payload extracted from"
     },
     {
@@ -5358,7 +5358,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "backend_models_v2_rationale_26",
-      "community": 153,
+      "community": 5,
       "norm_label": "normalized and transformed layer.      ready for immediate frontend consumption."
     },
     {
@@ -5458,7 +5458,7 @@
       "source_location": "L370",
       "_origin": "ast",
       "id": "backend_models_v3_askconversation",
-      "community": 214,
+      "community": 155,
       "norm_label": "askconversation"
     },
     {
@@ -5468,7 +5468,7 @@
       "source_location": "L380",
       "_origin": "ast",
       "id": "backend_models_v3_askmessage",
-      "community": 214,
+      "community": 155,
       "norm_label": "askmessage"
     },
     {
@@ -5478,7 +5478,7 @@
       "source_location": "L388",
       "_origin": "ast",
       "id": "backend_models_v3_askbrief",
-      "community": 214,
+      "community": 155,
       "norm_label": "askbrief"
     },
     {
@@ -5878,7 +5878,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_parallel_scraper",
-      "community": 153,
+      "community": 5,
       "norm_label": "parallel_scraper.py"
     },
     {
@@ -5888,7 +5888,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "backend_parallel_scraper_suburballmodel",
-      "community": 153,
+      "community": 5,
       "norm_label": "suburballmodel"
     },
     {
@@ -5898,7 +5898,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "backend_parallel_scraper_suburbgeodatamodel",
-      "community": 153,
+      "community": 5,
       "norm_label": "suburbgeodatamodel"
     },
     {
@@ -5908,7 +5908,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "backend_parallel_scraper_crimestatmodel",
-      "community": 153,
+      "community": 5,
       "norm_label": "crimestatmodel"
     },
     {
@@ -5918,7 +5918,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "backend_parallel_scraper_suburbuimodel",
-      "community": 153,
+      "community": 5,
       "norm_label": "suburbuimodel"
     },
     {
@@ -9333,7 +9333,7 @@
       "label": "TH",
       "file_type": "code",
       "source_file": "src/components/AskYieldSense.tsx",
-      "source_location": "L834",
+      "source_location": "L841",
       "_origin": "ast",
       "id": "components_askyieldsense_th",
       "community": 212,
@@ -9343,7 +9343,7 @@
       "label": "TD",
       "file_type": "code",
       "source_file": "src/components/AskYieldSense.tsx",
-      "source_location": "L839",
+      "source_location": "L846",
       "_origin": "ast",
       "id": "components_askyieldsense_td",
       "community": 212,
@@ -9353,7 +9353,7 @@
       "label": "CHIP_STYLE",
       "file_type": "code",
       "source_file": "src/components/AskYieldSense.tsx",
-      "source_location": "L840",
+      "source_location": "L847",
       "_origin": "ast",
       "id": "components_askyieldsense_chip_style",
       "community": 212,
@@ -9956,7 +9956,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_pricehistorychart",
-      "community": 225,
+      "community": 98,
       "norm_label": "pricehistorychart.tsx"
     },
     {
@@ -9966,7 +9966,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_pricehistorychart_pricehistorychartprops",
-      "community": 225,
+      "community": 98,
       "norm_label": "pricehistorychartprops"
     },
     {
@@ -9976,7 +9976,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_pricehistorychart_pricehistorychart",
-      "community": 225,
+      "community": 98,
       "norm_label": "pricehistorychart()"
     },
     {
@@ -11616,6 +11616,26 @@
       "id": "home_aksai_projects_realestate_wait_and_build_sh__entry",
       "community": 36,
       "norm_label": "wait_and_build.sh script"
+    },
+    {
+      "label": "AGENTS.md",
+      "file_type": "document",
+      "source_file": ".agents/AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "agents_agents",
+      "community": 225,
+      "norm_label": "agents.md"
+    },
+    {
+      "label": "National Property Data API",
+      "file_type": "document",
+      "source_file": ".agents/AGENTS.md",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "agents_agents_national_property_data_api",
+      "community": 225,
+      "norm_label": "national property data api"
     },
     {
       "label": "graphify.md",
@@ -20214,9 +20234,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas_discoverymetrics",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -20224,9 +20244,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas_discoveryrequest",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -20234,9 +20254,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas_discoveryresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -20244,9 +20264,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas_discoveryresult",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -21486,9 +21506,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L185",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_apply_geo_guardrail",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_apply_geo_guardrail"
     },
     {
       "relation": "contains",
@@ -21496,9 +21516,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_bearing_deg",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_bearing_deg"
     },
     {
       "relation": "contains",
@@ -21506,9 +21526,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L210",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_build_composite_score",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_build_composite_score"
     },
     {
       "relation": "contains",
@@ -21516,9 +21536,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L233",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_discover_suburbs",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_discover_suburbs"
     },
     {
       "relation": "contains",
@@ -21526,9 +21546,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_extract_km",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_extract_km"
     },
     {
       "relation": "contains",
@@ -21536,9 +21556,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_extract_priorities",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_extract_priorities"
     },
     {
       "relation": "contains",
@@ -21546,9 +21566,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L146",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_extract_state",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_extract_state"
     },
     {
       "relation": "contains",
@@ -21556,9 +21576,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_haversine_km",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_haversine_km"
     },
     {
       "relation": "contains",
@@ -21566,9 +21586,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_is_in_direction",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_is_in_direction"
     },
     {
       "relation": "contains",
@@ -21576,9 +21596,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L182",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_is_regional",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_is_regional"
     },
     {
       "relation": "contains",
@@ -21586,9 +21606,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L112",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_normalise_city",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_normalise_city"
     },
     {
       "relation": "contains",
@@ -21596,9 +21616,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L122",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_normalise_direction",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_normalise_direction"
     },
     {
       "relation": "contains",
@@ -21606,9 +21626,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L201",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_normalise_score",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_normalise_score"
     },
     {
       "relation": "rationale_for",
@@ -21616,9 +21636,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_rationale_1",
-      "target": "ask_geo_discovery",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery"
     },
     {
       "relation": "imports_from",
@@ -21627,9 +21647,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routers_ask_property",
-      "target": "ask_geo_discovery",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery"
     },
     {
       "relation": "calls",
@@ -21638,9 +21658,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L328",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_haversine_km",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_haversine_km"
     },
     {
       "relation": "calls",
@@ -21649,9 +21669,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L333",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_bearing_deg",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_bearing_deg"
     },
     {
       "relation": "calls",
@@ -21660,9 +21680,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L334",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_is_in_direction",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_is_in_direction"
     },
     {
       "relation": "calls",
@@ -21671,9 +21691,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L234",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_normalise_city",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_normalise_city"
     },
     {
       "relation": "calls",
@@ -21682,9 +21702,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L235",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_normalise_direction",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_normalise_direction"
     },
     {
       "relation": "calls",
@@ -21693,9 +21713,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L236",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_extract_km",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_extract_km"
     },
     {
       "relation": "calls",
@@ -21704,9 +21724,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L237",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_extract_state",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_extract_state"
     },
     {
       "relation": "calls",
@@ -21715,9 +21735,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L238",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_extract_priorities",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_extract_priorities"
     },
     {
       "relation": "calls",
@@ -21726,9 +21746,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L239",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_is_regional",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_is_regional"
     },
     {
       "relation": "calls",
@@ -21737,9 +21757,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L242",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_apply_geo_guardrail",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_apply_geo_guardrail"
     },
     {
       "relation": "calls",
@@ -21748,9 +21768,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L230",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_build_composite_score",
-      "target": "ask_geo_discovery_normalise_score",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_normalise_score"
     },
     {
       "relation": "calls",
@@ -21759,9 +21779,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L353",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_build_composite_score",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_build_composite_score"
     },
     {
       "relation": "references",
@@ -21770,9 +21790,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L233",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "backend_ask_geo_discovery_py_any",
-      "confidence_score": 1.0
+      "target": "backend_ask_geo_discovery_py_any"
     },
     {
       "relation": "references",
@@ -21781,9 +21801,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L233",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "backend_ask_geo_discovery_py_session",
-      "confidence_score": 1.0
+      "target": "backend_ask_geo_discovery_py_session"
     },
     {
       "relation": "calls",
@@ -22493,9 +22513,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas",
-      "target": "ask_schemas_discoverymetrics",
-      "confidence_score": 1.0
+      "target": "ask_schemas_discoverymetrics"
     },
     {
       "relation": "contains",
@@ -22503,9 +22523,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas",
-      "target": "ask_schemas_discoveryrequest",
-      "confidence_score": 1.0
+      "target": "ask_schemas_discoveryrequest"
     },
     {
       "relation": "contains",
@@ -22513,9 +22533,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas",
-      "target": "ask_schemas_discoveryresponse",
-      "confidence_score": 1.0
+      "target": "ask_schemas_discoveryresponse"
     },
     {
       "relation": "contains",
@@ -22523,9 +22543,9 @@
       "source_file": "backend/ask/schemas.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_schemas",
-      "target": "ask_schemas_discoveryresult",
-      "confidence_score": 1.0
+      "target": "ask_schemas_discoveryresult"
     },
     {
       "relation": "contains",
@@ -22685,9 +22705,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_askintent",
-      "confidence_score": 0.5
+      "target": "ask_schemas_askintent"
     },
     {
       "relation": "uses",
@@ -22805,9 +22825,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_scenarioassumptions",
-      "confidence_score": 0.5
+      "target": "ask_schemas_scenarioassumptions"
     },
     {
       "relation": "uses",
@@ -22855,9 +22875,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_suburbcomparisonmetric",
-      "confidence_score": 0.5
+      "target": "ask_schemas_suburbcomparisonmetric"
     },
     {
       "relation": "calls",
@@ -22906,9 +22926,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_suburbcomparison",
-      "confidence_score": 0.5
+      "target": "ask_schemas_suburbcomparison"
     },
     {
       "relation": "calls",
@@ -22957,9 +22977,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_askresponse",
-      "confidence_score": 0.5
+      "target": "ask_schemas_askresponse"
     },
     {
       "relation": "calls",
@@ -22978,9 +22998,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_askintent",
-      "target": "ask_schemas_discoveryrequest",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryrequest"
     },
     {
       "relation": "uses",
@@ -22988,9 +23008,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_request",
-      "target": "ask_schemas_discoveryrequest",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryrequest"
     },
     {
       "relation": "uses",
@@ -22998,9 +23018,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_session",
-      "target": "ask_schemas_discoveryrequest",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryrequest"
     },
     {
       "relation": "uses",
@@ -23008,9 +23028,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_discoveryrequest",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryrequest"
     },
     {
       "relation": "uses",
@@ -23018,9 +23038,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_askintent",
-      "target": "ask_schemas_discoverymetrics",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoverymetrics"
     },
     {
       "relation": "uses",
@@ -23028,9 +23048,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_request",
-      "target": "ask_schemas_discoverymetrics",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoverymetrics"
     },
     {
       "relation": "uses",
@@ -23038,9 +23058,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_session",
-      "target": "ask_schemas_discoverymetrics",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoverymetrics"
     },
     {
       "relation": "uses",
@@ -23048,9 +23068,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_discoverymetrics",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoverymetrics"
     },
     {
       "relation": "calls",
@@ -23069,9 +23089,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_askintent",
-      "target": "ask_schemas_discoveryresult",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresult"
     },
     {
       "relation": "uses",
@@ -23079,9 +23099,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_request",
-      "target": "ask_schemas_discoveryresult",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresult"
     },
     {
       "relation": "uses",
@@ -23089,9 +23109,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_session",
-      "target": "ask_schemas_discoveryresult",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresult"
     },
     {
       "relation": "uses",
@@ -23099,9 +23119,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_discoveryresult",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresult"
     },
     {
       "relation": "calls",
@@ -23120,9 +23140,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_askintent",
-      "target": "ask_schemas_discoveryresponse",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresponse"
     },
     {
       "relation": "uses",
@@ -23130,9 +23150,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_request",
-      "target": "ask_schemas_discoveryresponse",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresponse"
     },
     {
       "relation": "uses",
@@ -23140,9 +23160,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "backend_routers_ask_property_py_session",
-      "target": "ask_schemas_discoveryresponse",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresponse"
     },
     {
       "relation": "uses",
@@ -23150,9 +23170,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L9",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "discoveryrequest",
-      "target": "ask_schemas_discoveryresponse",
-      "confidence_score": 0.5
+      "target": "ask_schemas_discoveryresponse"
     },
     {
       "relation": "calls",
@@ -33693,9 +33713,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routers_ask_property",
-      "target": "routers_ask_property_discover_yieldsense",
-      "confidence_score": 1.0
+      "target": "routers_ask_property_discover_yieldsense"
     },
     {
       "relation": "contains",
@@ -33758,9 +33778,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routers_ask_property_discover_yieldsense",
-      "target": "backend_routers_ask_property_py_request",
-      "confidence_score": 1.0
+      "target": "backend_routers_ask_property_py_request"
     },
     {
       "relation": "references",
@@ -33769,9 +33789,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routers_ask_property_discover_yieldsense",
-      "target": "backend_routers_ask_property_py_session",
-      "confidence_score": 1.0
+      "target": "backend_routers_ask_property_py_session"
     },
     {
       "relation": "references",
@@ -33780,9 +33800,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routers_ask_property_discover_yieldsense",
-      "target": "discoveryrequest",
-      "confidence_score": 1.0
+      "target": "discoveryrequest"
     },
     {
       "relation": "rationale_for",
@@ -33790,9 +33810,9 @@
       "source_file": "backend/routers/ask_property.py",
       "source_location": "L132",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routers_ask_property_rationale_132",
-      "target": "routers_ask_property_discover_yieldsense",
-      "confidence_score": 1.0
+      "target": "routers_ask_property_discover_yieldsense"
     },
     {
       "relation": "contains",
@@ -37382,9 +37402,9 @@
       "source_file": "src/components/AskYieldSense.tsx",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_askyieldsense",
-      "target": "components_askyieldsense_discoverymetrics",
-      "confidence_score": 1.0
+      "target": "components_askyieldsense_discoverymetrics"
     },
     {
       "relation": "contains",
@@ -37392,9 +37412,9 @@
       "source_file": "src/components/AskYieldSense.tsx",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_askyieldsense",
-      "target": "components_askyieldsense_discoveryresponse",
-      "confidence_score": 1.0
+      "target": "components_askyieldsense_discoveryresponse"
     },
     {
       "relation": "contains",
@@ -37402,9 +37422,9 @@
       "source_file": "src/components/AskYieldSense.tsx",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_askyieldsense",
-      "target": "components_askyieldsense_discoveryresult",
-      "confidence_score": 1.0
+      "target": "components_askyieldsense_discoveryresult"
     },
     {
       "relation": "contains",
@@ -39941,6 +39961,16 @@
       "confidence_score": 1.0,
       "source": "wait_and_build",
       "target": "home_aksai_projects_realestate_wait_and_build_sh__entry"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/AGENTS.md",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "agents_agents",
+      "target": "agents_agents_national_property_data_api",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -47740,5 +47770,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "1227269773e8edd7c70c2d14a9c42c86239f0561"
+  "built_at_commit": "b1cbee082508f2e03ba1eb7563409b1873626566"
 }

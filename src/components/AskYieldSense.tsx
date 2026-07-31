@@ -181,6 +181,9 @@ function detectIntent(text: string): DetectedIntent {
   const isInterstate = /interstate|moving (to|from)|which state|best state/i.test(text);
   const isInvestment = /invest|yield|cashflow|rental income|passive|portfolio/i.test(text);
 
+  // Fuzzy State Detection (incl. typos & capital cities)
+  const stateMatch = text.match(/\b(NSW|VIC|QLD|SA|WA|TAS|NT|ACT|New South Wales|Victoria|Queensland|South Australia|Western Australia|Tasmania|Northern Territory|Australian Capital Territory|queesnland|nsww|vctoria|sotuh australia|sydney|melbourne|brisbane|adelaide|perth)\b/i);
+
   // ── Geo/Discovery patterns — check FIRST before suburb lookup ──────────────
   const GEO_PATTERNS = [
     /\b(north|south|east|west|north-?east|north-?west|south-?east|south-?west)\s+of\b/i,
@@ -196,11 +199,13 @@ function detectIntent(text: string): DetectedIntent {
   const isGeoDiscovery = GEO_PATTERNS.some(p => p.test(text));
 
   if (isGeoDiscovery) {
+    const hasCityOrState = stateMatch || /\b(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra|regional)\b/i.test(text);
+    if (!hasCityOrState) {
+       return { goal: 'suburb_discovery', suburbs: [], needsClarification: true, propertyType, isDiscovery: true, clarifyingQ: "I didn't catch a specific area in your query. Which city, state, or region would you like to search in?" };
+    }
     return { goal: 'suburb_discovery', suburbs: [], needsClarification: false, propertyType, isDiscovery: true };
   }
   
-  // Fuzzy State Detection (incl. typos & capital cities)
-  const stateMatch = text.match(/\b(NSW|VIC|QLD|SA|WA|TAS|NT|ACT|New South Wales|Victoria|Queensland|South Australia|Western Australia|Tasmania|Northern Territory|Australian Capital Territory|queesnland|nsww|vctoria|sotuh australia|sydney|melbourne|brisbane|adelaide|perth)\b/i);
   let detectedState = null;
   if (stateMatch) {
      const raw = stateMatch[1].toUpperCase();
