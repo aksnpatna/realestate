@@ -10,6 +10,20 @@ from sqlalchemy import text, func
 from models_v3 import SuburbUIV3
 
 SUBURB_NAME_RX = re.compile(r"[A-Za-z][A-Za-z' -]{2,50}(?:\s+[A-Za-z][A-Za-z' -]{1,50}){0,2}")
+
+def _filter_tokens(raw_tokens: List[str]) -> List[str]:
+    """Filter multi-word tokens by splitting on separators and re-matching."""
+    separators = r'\s+(?:and|vs\.?|versus|or|with)\s+'
+    final = []
+    for token in raw_tokens:
+        if re.search(separators, token, re.IGNORECASE):
+            parts = re.split(separators, token)
+            for part in parts:
+                sub_matches = SUBURB_NAME_RX.findall(part)
+                final.extend(sub_matches)
+        else:
+            final.append(token)
+    return final
 POSTCODE_RX = re.compile(r"\b(\d{4})\b")
 
 def extract_tokens(question: str) -> Tuple[List[str], List[str]]:
@@ -44,18 +58,15 @@ def resolve_with_db(
         return sorted(candidates, key=lambda x: x["score"], reverse=True)
 
     # Step 3 — alias table
-    try:
-        alias_rows = db.execute(text(
-            "SELECT a.suburb_id, sa.name, sa.state, sa.postcode "
-            "FROM suburb_aliases a JOIN suburbs_ui_v3 sa ON sa.id = a.suburb_id "
-            "WHERE LOWER(a.alias) = :token"
-        ), {"token": token.lower()}).fetchall()
-        for r in alias_rows:
-            if not any(c["id"] == r[0] for c in candidates):
-                candidates.append({"id": r[0], "name": r[1], "state": r[2],
-                                   "postcode": r[3], "score": 0.9, "method": "alias"})
-    except Exception:
-        pass
+    alias_rows = db.execute(text(
+        "SELECT a.suburb_id, sa.name, sa.state, sa.postcode "
+        "FROM suburb_aliases a JOIN suburbs_ui_v3 sa ON sa.id = a.suburb_id "
+        "WHERE LOWER(a.alias) = :token"
+    ), {"token": token.lower()}).fetchall()
+    for r in alias_rows:
+        if not any(c["id"] == r[0] for c in candidates):
+            candidates.append({"id": r[0], "name": r[1], "state": r[2],
+                               "postcode": r[3], "score": 0.9, "method": "alias"})
 
     # Step 4 — pg_trgm fuzzy
     try:
@@ -99,6 +110,23 @@ def resolve_suburbs(
     db: Session, question: str, state_hint: Optional[str] = None
 ) -> Tuple[List[Dict[str, Any]], bool, Optional[str]]:
     tokens, postcodes = extract_tokens(question)
+    tokens = _filter_tokens(tokens)
+    # Generate n-grams (1-, 2-, 3-grams) for each multi-word token
+    expanded_tokens = list(tokens)
+    for token in tokens:
+        words = token.split()
+        n = len(words)
+        if n <= 1:
+            continue
+        for w in words:
+            expanded_tokens.append(w)
+        # 2-grams
+        for i in range(n - 1):
+            expanded_tokens.append(" ".join(words[i:i+2]))
+        # 3-grams
+        for i in range(n - 2):
+            expanded_tokens.append(" ".join(words[i:i+3]))
+    tokens = expanded_tokens
     resolved = []
     is_ambiguous = False
     clarifying_msg = None
@@ -115,7 +143,9 @@ def resolve_suburbs(
                    "invest", "yield", "growth", "school", "safe", "risk", "where",
                    "what", "which", "should", "will", "would", "greater",
                    "sydney", "melbourne", "brisbane", "perth",
-                   "adelaide", "canberra", "hobart", "darwin"}
+                   "adelaide", "canberra", "hobart", "darwin",
+                   "qld", "nsw", "vic", "sa", "wa", "tas", "nt", "act",
+                   "family", "home", "buyer", "investor", "capital", "properties"}
 
     for token in tokens:
         token_lower = token.lower()
