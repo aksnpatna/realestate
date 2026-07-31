@@ -1,6 +1,5 @@
-from typing import List, Optional, Literal, Dict, Any
+from typing import List, Optional, Literal
 from pydantic import BaseModel, Field, field_validator
-from datetime import date
 
 class SuburbReference(BaseModel):
     name: str = Field(..., description="Suburb name")
