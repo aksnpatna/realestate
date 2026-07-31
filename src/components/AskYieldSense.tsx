@@ -31,6 +31,39 @@ interface AskResponse {
   disclaimer: string;
 }
 
+interface DiscoveryMetrics {
+  median_price?: number | null;
+  yield_pct?: number | null;
+  vacancy_rate?: number | null;
+  population_cagr?: number | null;
+  school_quality?: number | null;
+  transit_accessibility?: number | null;
+  parks_count?: number | null;
+  safety_score?: number | null;
+  top_school_name?: string | null;
+  price_12m_change_pct?: number | null;
+}
+
+interface DiscoveryResult {
+  suburb_id?: string;
+  name: string;
+  state: string;
+  postcode?: string;
+  match_score: number;
+  dist_km?: number | null;
+  why_selected: string[];
+  metrics: DiscoveryMetrics;
+}
+
+interface DiscoveryResponse {
+  guardrail: boolean;
+  message?: string | null;
+  summary?: string | null;
+  query_understood: any;
+  results: DiscoveryResult[];
+  disclaimer: string;
+}
+
 // ─── Metric human explanations ──────────────────────────────────────────────
 interface MetricExplanation { label: string; good: boolean | null; text: string; }
 type ExplainerFn = (val: number | string, unit: string) => MetricExplanation;
@@ -85,6 +118,7 @@ function getWinner(metricLabel: string, comparisons: SuburbComparison[]): string
 interface DetectedIntent {
   goal: string; suburbs: { name: string; state: string }[];
   needsClarification: boolean; clarifyingQ?: string; propertyType: string;
+  isDiscovery?: boolean;
 }
 
 const KNOWN_SUBURBS = [
@@ -146,6 +180,24 @@ function detectIntent(text: string): DetectedIntent {
   const propertyType = /unit|apartment|flat|strata/i.test(text) ? 'unit' : 'house';
   const isInterstate = /interstate|moving (to|from)|which state|best state/i.test(text);
   const isInvestment = /invest|yield|cashflow|rental income|passive|portfolio/i.test(text);
+
+  // ── Geo/Discovery patterns — check FIRST before suburb lookup ──────────────
+  const GEO_PATTERNS = [
+    /\b(north|south|east|west|north-?east|north-?west|south-?east|south-?west)\s+of\b/i,
+    /within\s+\d+\s*km\b/i,
+    /\d+\s*km\s+(from|north|south|east|west)\b/i,
+    /\b(near|around|close to)\s+(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra)\b/i,
+    /\bregional\b.*(yield|school|growth|safe)/i,
+    /\b(best|highest|lowest|top)\s+(school|yield|return|transit|transport|cafe|park|safety)\b/i,
+    /suburb.*\b(with|having|that have)\s+(high|good|great|best|most)\b/i,
+    /\bwhich suburb(s)?\b/i,
+    /\bfind (me )?(a )?suburb/i,
+  ];
+  const isGeoDiscovery = GEO_PATTERNS.some(p => p.test(text));
+
+  if (isGeoDiscovery) {
+    return { goal: 'suburb_discovery', suburbs: [], needsClarification: false, propertyType, isDiscovery: true };
+  }
   
   // Fuzzy State Detection (incl. typos & capital cities)
   const stateMatch = text.match(/\b(NSW|VIC|QLD|SA|WA|TAS|NT|ACT|New South Wales|Victoria|Queensland|South Australia|Western Australia|Tasmania|Northern Territory|Australian Capital Territory|queesnland|nsww|vctoria|sotuh australia|sydney|melbourne|brisbane|adelaide|perth)\b/i);
@@ -238,6 +290,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   }, [budget, deposit, income]);
 
   const [showScenarios, setShowScenarios] = useState(false);
+  const [discoveryResult, setDiscoveryResult] = useState<DiscoveryResponse | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const EXAMPLES = [
@@ -247,7 +300,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   ];
 
   const callApi = async (intent: any) => {
-    setLoading(true); setError(''); setResult(null);
+    setLoading(true); setError(''); setResult(null); setDiscoveryResult(null);
     if (abortRef.current) abortRef.current.abort();
     abortRef.current = new AbortController();
     try {
@@ -262,7 +315,29 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     } finally { setLoading(false); }
   };
 
+  const callDiscover = async (q: string, b?: string) => {
+    setLoading(true); setError(''); setResult(null); setDiscoveryResult(null);
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+    try {
+      const res = await fetch('/api/v3/ask/discover', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q, budget: b ? parseFloat(b) : (budget ? parseFloat(budget) : undefined) }),
+        signal: abortRef.current.signal,
+      });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data: DiscoveryResponse = await res.json();
+      setDiscoveryResult(data);
+    } catch (err: any) {
+      if (err.name !== 'AbortError') setError(err.message || 'Discovery failed');
+    } finally { setLoading(false); }
+  };
+
   const submitWithIntent = (detected: DetectedIntent, q: string, customBudget?: string) => {
+    if (detected.isDiscovery || detected.goal === 'suburb_discovery') {
+      callDiscover(q, customBudget);
+      return;
+    }
     callApi({
       question: q, goal: detected.goal, suburbs: detected.suburbs,
       property_type: detected.propertyType,
@@ -313,6 +388,128 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   };
 
   // ── Sub-renders ────────────────────────────────────────────────────────
+  const DiscoveryCards = ({ disc }: { disc: DiscoveryResponse }) => {
+    const fmt = (v?: number | null, decimals = 2, suffix = '') => v != null ? `${v.toFixed(decimals)}${suffix}` : '—';
+    const fmtPrice = (v?: number | null) => v != null ? `$${(v / 1000).toFixed(0)}k` : '—';
+    const scoreColor = (s: number) => s >= 70 ? '#00e5ff' : s >= 50 ? '#a3e635' : '#f59e0b';
+
+    if (disc.guardrail && disc.message) {
+      return (
+        <div style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.4)', borderRadius: 12, padding: '20px 22px', marginBottom: 18 }}>
+          <p style={{ margin: 0, fontSize: '0.95rem', color: '#fbbf24', fontWeight: 600 }}>{disc.message}</p>
+          <p style={{ margin: '8px 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Try a different direction, or use Buy Finder to scan a broader area.</p>
+        </div>
+      );
+    }
+
+    if (!disc.results.length) {
+      return (
+        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 12, padding: 20, marginBottom: 18, textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{disc.message || 'No suburbs found matching your criteria.'}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ marginBottom: 24 }}>
+        {disc.summary && (
+          <p style={{ margin: '0 0 14px', fontSize: '0.82rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+            🔍 {disc.summary}
+          </p>
+        )}
+        <div style={{ display: 'grid', gap: 14 }}>
+          {disc.results.map((r, i) => (
+            <div key={r.suburb_id || r.name} style={{
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 14, padding: '18px 20px', position: 'relative', overflow: 'hidden',
+              transition: 'box-shadow 0.2s',
+            }}>
+              {/* Rank badge */}
+              <div style={{
+                position: 'absolute', top: 0, left: 0,
+                background: i === 0 ? 'linear-gradient(135deg,#00e5ff,#0066ff)' : i === 1 ? 'rgba(163,230,53,0.3)' : 'rgba(255,255,255,0.1)',
+                color: i === 0 ? '#000' : 'var(--text-primary)',
+                fontWeight: 800, fontSize: '0.72rem', padding: '3px 10px', borderRadius: '14px 0 8px 0',
+              }}>#{i + 1} MATCH</div>
+
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 8 }}>
+                <div>
+                  <h3 style={{ margin: '0 0 2px', fontSize: '1.1rem', fontWeight: 700 }}>{r.name}</h3>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{r.state}{r.postcode ? ` ${r.postcode}` : ''}{r.dist_km ? ` · ${r.dist_km.toFixed(0)}km away` : ''}</span>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 800, color: scoreColor(r.match_score) }}>{r.match_score.toFixed(0)}</div>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>match score</div>
+                </div>
+              </div>
+
+              {/* Why selected bullets */}
+              <ul style={{ margin: '12px 0 12px', padding: '0 0 0 16px', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                {r.why_selected.map((w, wi) => <li key={wi} style={{ marginBottom: 3 }}>{w}</li>)}
+              </ul>
+
+              {/* Metrics row */}
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
+                {r.metrics.median_price != null && (
+                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Price: </span><strong>{fmtPrice(r.metrics.median_price)}</strong>
+                  </div>
+                )}
+                {r.metrics.yield_pct != null && (
+                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Yield: </span><strong style={{ color: '#a3e635' }}>{fmt(r.metrics.yield_pct)}%</strong>
+                  </div>
+                )}
+                {r.metrics.school_quality != null && (
+                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Schools: </span><strong style={{ color: '#00e5ff' }}>{fmt(r.metrics.school_quality, 1)}/10</strong>
+                  </div>
+                )}
+                {r.metrics.transit_accessibility != null && (
+                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Transit: </span><strong>{fmt(r.metrics.transit_accessibility, 1)}/10</strong>
+                  </div>
+                )}
+                {r.metrics.vacancy_rate != null && (
+                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Vacancy: </span><strong>{fmt(r.metrics.vacancy_rate)}%</strong>
+                  </div>
+                )}
+                {r.metrics.population_cagr != null && (
+                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Growth: </span><strong style={{ color: '#f472b6' }}>{fmt(r.metrics.population_cagr, 1)}%pa</strong>
+                  </div>
+                )}
+              </div>
+
+              {/* Dive deeper CTA */}
+              <button
+                onClick={() => {
+                  const q = `Research ${r.name} ${r.state}`;
+                  setQuestion(q);
+                  const detected = detectIntent(q);
+                  submitWithIntent(detected, q);
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #00e5ff22, #0066ff22)', border: '1px solid #00e5ff44',
+                  color: '#00e5ff', borderRadius: 8, padding: '7px 16px', fontSize: '0.8rem',
+                  cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'linear-gradient(135deg,#00e5ff33,#0066ff33)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'linear-gradient(135deg,#00e5ff22,#0066ff22)')}
+              >
+                📋 Build Full Research Brief →
+              </button>
+            </div>
+          ))}
+        </div>
+        <p style={{ margin: '12px 0 0', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+          General research only — not financial, legal, or valuation advice. Data sourced from verified CoreLogic/ABS datasets.
+        </p>
+      </div>
+    );
+  };
+
   const ComparisonTable = ({ comparisons }: { comparisons: SuburbComparison[] }) => {
     if (!comparisons.length) return null;
     const metrics = comparisons[0].metrics;
@@ -492,6 +689,19 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       {error && (
         <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(255,60,60,0.08)', borderLeft: '4px solid #ff4444', borderRadius: '0 8px 8px 0' }}>
           <strong style={{ color: '#ff4444' }}>Error: </strong>{error}
+        </div>
+      )}
+
+      {discoveryResult && !loading && (
+        <div style={{ marginTop: 28, borderTop: '1px solid var(--border-glass)', paddingTop: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>🗺️ Suburb Discovery Results</h3>
+            <button onClick={() => { setDiscoveryResult(null); setQuestion(''); }}
+              style={{ background: 'none', border: '1px solid var(--border-glass)', color: 'var(--text-secondary)', borderRadius: 6, padding: '6px 14px', cursor: 'pointer', fontSize: '0.8rem' }}>
+              ↺ New question
+            </button>
+          </div>
+          <DiscoveryCards disc={discoveryResult} />
         </div>
       )}
 

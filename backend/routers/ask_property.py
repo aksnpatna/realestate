@@ -6,12 +6,13 @@ from datetime import datetime
 
 from models_v3 import SessionLocal
 from routers.decision_brief import get_current_user
-from ask.schemas import AskIntent, AskResponse, ScenarioAssumptions, SuburbComparison, SuburbComparisonMetric
+from ask.schemas import AskIntent, AskResponse, ScenarioAssumptions, SuburbComparison, SuburbComparisonMetric, DiscoveryRequest, DiscoveryResponse, DiscoveryResult, DiscoveryMetrics
 from ask.evidence import get_suburb_ui, extract_evidence, calculate_data_quality
 from ask.scenarios import compute_affordability, compute_yield
 from ask.synthesis import synthesize_research
 from ask.policy import validate_policy
 from ask.repository import create_conversation, save_ask_brief, _sanitize
+from ask.geo_discovery import discover_suburbs
 
 router = APIRouter(
     prefix="/api/v3/ask",
@@ -119,4 +120,54 @@ def ask_yieldsense(
         request_id=request_id,
         status=status,
         **brief_data
+    )
+
+@router.post("/discover", response_model=DiscoveryResponse)
+def discover_yieldsense(
+    req: DiscoveryRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Natural language geo-spatial suburb discovery.
+    Understands queries like:
+      - "Find suburbs north of Sydney within 20km with good schools"
+      - "Highest rental yield in regional TAS"
+      - "50km east of Sydney" → graceful ocean guardrail
+    """
+    raw = discover_suburbs(db, req.question, budget=req.budget)
+
+    # Convert raw dict results to Pydantic models
+    results = []
+    for r in raw.get("results", []):
+        m = r.get("metrics", {})
+        results.append(DiscoveryResult(
+            suburb_id=r.get("suburb_id"),
+            name=r.get("name", ""),
+            state=r.get("state", ""),
+            postcode=r.get("postcode"),
+            match_score=r.get("match_score", 0.0),
+            dist_km=r.get("dist_km"),
+            why_selected=r.get("why_selected", []),
+            metrics=DiscoveryMetrics(
+                median_price=m.get("median_price"),
+                yield_pct=m.get("yield_pct"),
+                vacancy_rate=m.get("vacancy_rate"),
+                population_cagr=m.get("population_cagr"),
+                school_quality=m.get("school_quality"),
+                transit_accessibility=m.get("transit_accessibility"),
+                parks_count=m.get("parks_count"),
+                safety_score=m.get("safety_score"),
+                top_school_name=m.get("top_school_name"),
+                price_12m_change_pct=m.get("price_12m_change_pct"),
+            )
+        ))
+
+    return DiscoveryResponse(
+        guardrail=raw.get("guardrail", False),
+        message=raw.get("message"),
+        summary=raw.get("summary"),
+        query_understood=raw.get("query_understood", {}),
+        results=results,
     )

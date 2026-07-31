@@ -49,8 +49,25 @@ def synthesize_research(
     """
     
     try:
-        # Mocking the LLM call for the sake of the project if no API key is provided, or actually calling it
-        if os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API_KEY") != "sk-mock":
+        # Use Groq if key exists, otherwise fallback to OpenAI/Mock
+        groq_key = os.getenv("GROQ_API_KEY")
+        openai_key = os.getenv("OPENAI_API_KEY")
+
+        if groq_key:
+            client = openai.Client(api_key=groq_key, base_url="https://api.groq.com/openai/v1")
+            response = client.chat.completions.create(
+                model="llama-3.1-70b-versatile",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format={"type": "json_object"},
+                timeout=15.0
+            )
+            raw = response.choices[0].message.content
+            parsed = json.loads(raw)
+        elif openai_key and openai_key != "sk-mock":
+            client = openai.Client(api_key=openai_key)
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
@@ -109,7 +126,10 @@ def synthesize_research(
                             f"${affordability_res.get('borrowing_capacity', 0):,.0f}. Consider increasing your deposit or income.")
 
             narrative = " | ".join(per_suburb_parts)
-            summary = f"{' vs '.join(suburb_names)} — {narrative}.{aff_note} Note: This is a verified data summary — not financial advice."
+            if len(suburb_names) == 1:
+                summary = f"{narrative}.{aff_note} Note: This is a verified data summary — not financial advice."
+            else:
+                summary = f"{' vs '.join(suburb_names)} — {narrative}.{aff_note} Note: This is a verified data summary — not financial advice."
 
             # Goal-specific Summary Tailoring
             goal = intent.goal
@@ -140,11 +160,13 @@ def synthesize_research(
                     risks.append({"claim": f"Bearish AI News Sentiment detected for {e.suburb_id.split('_')[1].title()} — potential negative catalysts in recent media", "evidence_ids": [e.id]})
                 if 'News' in e.metric and e.value == "Bullish":
                     supports.append({"claim": f"Bullish AI News Sentiment for {e.suburb_id.split('_')[1].title()} — positive momentum or infrastructure news detected", "evidence_ids": [e.id]})
+                if 'Price' in e.metric and e.value and intent.budget and intent.budget < e.value:
+                    risks.append({"claim": f"Budget of ${intent.budget:,.0f} is below {e.suburb_id.split('_')[1].title()} median price of ${e.value:,.0f} — consider adjacent suburbs", "evidence_ids": [e.id]})
 
             if not risks:
                 risks.append({"claim": "Market conditions and individual property condition vary — conduct physical inspection", "evidence_ids": []})
             if affordability_res.get('serviceability_passed') is False:
-                risks.append({"claim": "Budget may be insufficient at current median prices — consider adjacent suburbs", "evidence_ids": []})
+                risks.append({"claim": "Serviceability constraint — required loan exceeds estimated borrowing capacity based on current income/deposit", "evidence_ids": []})
 
             # Next Steps Tailoring
             next_steps = [

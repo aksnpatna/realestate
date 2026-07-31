@@ -75,3 +75,40 @@ class AskResponse(BaseModel):
     data_quality: dict
     disclaimer: str = "General research only; not financial, legal, tax, lending or valuation advice."
     versions: dict
+
+# ─── Discovery Schemas ──────────────────────────────────────────────────────
+class DiscoveryRequest(BaseModel):
+    question: str = Field(min_length=5, max_length=1000)
+    budget: Optional[float] = Field(default=None, ge=10_000, le=20_000_000)
+    deposit: Optional[float] = Field(default=None, ge=0)
+    annual_income: Optional[float] = Field(default=None, ge=0)
+
+class DiscoveryMetrics(BaseModel):
+    median_price: Optional[float] = None
+    yield_pct: Optional[float] = None
+    vacancy_rate: Optional[float] = None
+    population_cagr: Optional[float] = None
+    school_quality: Optional[float] = None
+    transit_accessibility: Optional[float] = None
+    parks_count: Optional[int] = None
+    safety_score: Optional[float] = None
+    top_school_name: Optional[str] = None
+    price_12m_change_pct: Optional[float] = None
+
+class DiscoveryResult(BaseModel):
+    suburb_id: Optional[str] = None
+    name: str
+    state: str
+    postcode: Optional[str] = None
+    match_score: float
+    dist_km: Optional[float] = None
+    why_selected: List[str]
+    metrics: DiscoveryMetrics
+
+class DiscoveryResponse(BaseModel):
+    guardrail: bool = False
+    message: Optional[str] = None
+    summary: Optional[str] = None
+    query_understood: dict = {}
+    results: List[DiscoveryResult] = []
+    disclaimer: str = "General research only; not financial, legal, tax, lending or valuation advice."

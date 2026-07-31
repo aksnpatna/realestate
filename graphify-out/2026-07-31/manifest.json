@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1785477162.5846195,
-    "ast_hash": "3cd587786156d983465764e13e4b2ce7",
+    "mtime": 1785119559.132742,
+    "ast_hash": "da54f91102e2b5f55436b8d5a3a4bd55",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1785482609.2452798,
-    "ast_hash": "9fd234f31d336bbd2c15ad991815b3ca",
+    "mtime": 1785398743.4516509,
+    "ast_hash": "f3a0c3cd5413926c89d69d88e14d35df",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "backend/models_v3.py": {
-    "mtime": 1785476961.0189667,
-    "ast_hash": "2ae1fb18ef5ff5ead4fa275f50dc3f4e",
+    "mtime": 1784797056.6072807,
+    "ast_hash": "b0a092ee8b3d0ecfc42cbab8ebc35519",
     "semantic_hash": ""
   },
   "backend/models_v3_unpacked.py": {
@@ -1060,8 +1060,8 @@
     "semantic_hash": ""
   },
   "backend/routers/decision_brief.py": {
-    "mtime": 1785477061.0076933,
-    "ast_hash": "386e98b141ada4eaff256728b7489de3",
+    "mtime": 1784797089.8309093,
+    "ast_hash": "d1277ef23d37cc93b70119ea01c79aad",
     "semantic_hash": ""
   },
   "src/components/AiMetricTooltip.tsx": {
@@ -1075,8 +1075,8 @@
     "semantic_hash": ""
   },
   "src/utils/regionMapper.ts": {
-    "mtime": 1785403238.9161117,
-    "ast_hash": "ad53cb773447b707314a53c85ec3d4b5",
+    "mtime": 1784806039.6406012,
+    "ast_hash": "dcc147d707a1b82425b4b66086a66b92",
     "semantic_hash": ""
   },
   "test_fastapi.py": {
@@ -1107,66 +1107,6 @@
   "goodsuburb_text.txt": {
     "mtime": 1785372757.5977135,
     "ast_hash": "acc0394de474215db2ad890a2af78f38",
-    "semantic_hash": ""
-  },
-  "backend/ask/evidence.py": {
-    "mtime": 1785480360.2095554,
-    "ast_hash": "0c4aa00e073cd5efde400296f307774e",
-    "semantic_hash": ""
-  },
-  "backend/ask/policy.py": {
-    "mtime": 1785478829.821918,
-    "ast_hash": "e8ddbb9548d29351738b2044ab67b7d7",
-    "semantic_hash": ""
-  },
-  "backend/ask/repository.py": {
-    "mtime": 1785478459.534725,
-    "ast_hash": "4e7992d10d993dda0e4b8c0e9c35bd3d",
-    "semantic_hash": ""
-  },
-  "backend/ask/scenarios.py": {
-    "mtime": 1785478086.0961075,
-    "ast_hash": "7d696ebb38cbe3b3b25267ae3bb4ba01",
-    "semantic_hash": ""
-  },
-  "backend/ask/schemas.py": {
-    "mtime": 1785480349.8526852,
-    "ast_hash": "cb7df203697333b9a4912cff30bd2ca2",
-    "semantic_hash": ""
-  },
-  "backend/ask/synthesis.py": {
-    "mtime": 1785482826.6485274,
-    "ast_hash": "1092bfaad2d8486157d63d637962604d",
-    "semantic_hash": ""
-  },
-  "backend/migrate_ask.py": {
-    "mtime": 1785476982.4159667,
-    "ast_hash": "664bbab879fed909460fe1bea0b25cd6",
-    "semantic_hash": ""
-  },
-  "backend/routers/ask_property.py": {
-    "mtime": 1785480867.7729602,
-    "ast_hash": "cfbf8d07fd7d816b9b85ab1fb4b38f83",
-    "semantic_hash": ""
-  },
-  "backend/test_news.py": {
-    "mtime": 1785480113.4159243,
-    "ast_hash": "88a8d5dc9b8fa8844d7c4457a9d14038",
-    "semantic_hash": ""
-  },
-  "src/components/AskYieldSense.tsx": {
-    "mtime": 1785483029.7218819,
-    "ast_hash": "88e4d37df5845866644d8f2617b4dda1",
-    "semantic_hash": ""
-  },
-  "test_news.py": {
-    "mtime": 1785480105.4490442,
-    "ast_hash": "88a8d5dc9b8fa8844d7c4457a9d14038",
-    "semantic_hash": ""
-  },
-  "ai_search.md": {
-    "mtime": 1785476735.2345605,
-    "ast_hash": "a21d39817935a90b9c87666a10225fdf",
     "semantic_hash": ""
   }
 }
