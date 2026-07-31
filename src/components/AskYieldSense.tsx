@@ -64,6 +64,17 @@ interface DiscoveryResponse {
   disclaimer: string;
 }
 
+// ─── V2 Types ────────────────────────────────────────────────────────────────
+interface VerdictEntry {
+  metric: string; leader?: string | null; edge_pct: number;
+  direction: string; framing: string; values: Record<string, number | null>;
+  context_note?: string | null;
+}
+interface PersonaVerdict { persona: string; leader?: string | null; scores: Record<string, number>; weights_used: Record<string, number>; }
+interface VerdictBlock { framing: string; per_metric: VerdictEntry[]; by_persona: PersonaVerdict[]; tradeoffs: string[]; }
+interface AffordabilityBlock { serviceability_passed?: boolean | null; borrowing_capacity?: number | null; monthly_repayment?: number | null; stamp_duty?: number | null; }
+interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string}[]; query_understood?: any; }
+
 // ─── Metric human explanations ──────────────────────────────────────────────
 interface MetricExplanation { label: string; good: boolean | null; text: string; }
 type ExplainerFn = (val: number | string, unit: string) => MetricExplanation;
@@ -262,6 +273,11 @@ function detectIntent(text: string): DetectedIntent {
         clarifyingQ: "I can only help with Australian property research based on verified data. Could you rephrase your question to include a specific suburb, state, or property goal?" };
   }
 
+  const isGeneralAdvice = /how much|what is|how does|should i|deposit|stamp duty|negative gearing|borrow|mortgage|advice|explain|guide/i.test(text);
+  if (isGeneralAdvice) {
+    return { goal: 'general_advice', suburbs: [], needsClarification: false, propertyType };
+  }
+
   if (suburbs.length === 0)
     return { goal: 'single_suburb_research', suburbs: [], needsClarification: true, needsMLFallback: true, propertyType,
       clarifyingQ: suggestedSuburb ? `Did you mean ${suggestedSuburb}? Please confirm the exact suburb name so I can pull the correct data.` : 'Which suburb are you researching? (e.g. "Kenmore, QLD" or "Glen Waverley, VIC")' };
@@ -319,6 +335,40 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     'Find investment areas under $900k with rental resilience',
   ];
 
+  // ─── V2: Unified NL query (primary path) ─────────────────────────────
+  const callQuery = async (q: string) => {
+    setLoading(true); setError(''); setResult(null); setDiscoveryResult(null); setPendingClarify(null);
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+    try {
+      const res = await fetch('/api/v3/ask/query', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q }), signal: abortRef.current.signal,
+      });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data = await res.json();
+      if (data.status === 'needs_clarification' && data.intent?.clarification?.questions?.length) {
+        setPendingClarify({ ...data.intent, clarifyingQ: data.intent.clarification.questions[0] } as any);
+        setLoading(false);
+        return;
+      }
+      setResult(data as AskResponseV2);
+    } catch (err: any) {
+      if (err.name !== 'AbortError') {
+        // Fallback to old intent detection + structured API
+        try {
+          let detected = detectIntent(q);
+          detected = await resolveIntentWithFallback(detected, q);
+          if (detected.needsClarification) { setPendingClarify(detected); setLoading(false); return; }
+          submitWithIntent(detected, q);
+          return;
+        } catch (e2: any) {
+          setError(err.message || 'Search failed — please try a more specific query.');
+        }
+      }
+    } finally { if (loading) setLoading(false); }
+  };
+
   const callApi = async (intent: any) => {
     setLoading(true); setError(''); setResult(null); setDiscoveryResult(null);
     if (abortRef.current) abortRef.current.abort();
@@ -368,17 +418,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     });
   };
 
-  const extractAndSetBudget = (text: string) => {
-    const extracted = parseBudget(text);
-    if (extracted) {
-      setBudget(String(extracted));
-      return String(extracted);
-    }
-    return undefined;
-  };
-
   const resolveIntentWithFallback = async (detected: DetectedIntent, q: string) => {
-    if (detected.needsMLFallback) {
       setLoading(true);
       try {
         const res = await fetch('/api/v3/ask/intent', {
@@ -402,42 +442,22 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         console.error("ML Intent failed", e);
       }
       setLoading(false);
-    }
     return detected;
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!question.trim()) return;
-    const extractedBudget = extractAndSetBudget(question);
-    let detected = detectIntent(question);
-    detected = await resolveIntentWithFallback(detected, question);
-    
-    if (detected.needsClarification) { setPendingClarify(detected); return; }
-    submitWithIntent(detected, question, extractedBudget);
+    // Primary path: use the unified NL /query endpoint
+    callQuery(question);
   };
 
   const handleClarify = async () => {
     if (!pendingClarify || !clarifyAnswer.trim()) return;
     const fullQ = `${question} — ${clarifyAnswer}`;
     setClarifyAnswer('');
-    
-    const extractedBudget = extractAndSetBudget(fullQ);
-    let detected = detectIntent(fullQ);
-    detected = await resolveIntentWithFallback(detected, fullQ);
-    
-    if (detected.needsClarification) {
-      setQuestion(fullQ);
-      setPendingClarify({
-        ...detected,
-        clarifyingQ: detected.clarifyingQ || 'Got it. To pull the verified data, could you specify exactly which suburbs you are considering? (e.g. "Norwood" or "Glenelg")'
-      });
-      return;
-    }
-    
-    setPendingClarify(null);
     setQuestion(fullQ);
-    submitWithIntent(detected, fullQ, extractedBudget);
+    callQuery(fullQ);
   };
 
   // ── Sub-renders ────────────────────────────────────────────────────────
@@ -644,6 +664,36 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     );
   };
 
+  const VerdictPanel = ({ verdict }: { verdict: VerdictBlock | null | undefined }) => {
+    if (!verdict) return null;
+    const personaLeaders = verdict.by_persona?.filter(p => p.leader) || [];
+    const tradeoffs = verdict.tradeoffs || [];
+    return (
+      <div style={{ display: 'grid', gap: 14, marginBottom: 24 }}>
+        {verdict.framing === 'clear_leader' && personaLeaders.length > 0 && (
+          <div style={{ background: 'rgba(0,210,130,0.05)', border: '1px solid rgba(0,210,130,0.15)', borderRadius: 10, padding: '14px 18px' }}>
+            <p style={{ margin: '0 0 6px', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#00d282', fontWeight: 700 }}>Verdict by persona</p>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {personaLeaders.map(p => (
+                <span key={p.persona} style={{ padding: '4px 12px', borderRadius: 20, border: '1px solid rgba(0,210,130,0.3)', fontSize: '0.82rem', background: 'rgba(0,210,130,0.06)' }}>
+                  <strong style={{ textTransform: 'capitalize' }}>{p.persona.replace(/_/g, ' ')}:</strong> {p.leader}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        {tradeoffs.length > 0 && (
+          <div style={{ background: 'rgba(251,191,36,0.04)', border: '1px solid rgba(251,191,36,0.12)', borderRadius: 10, padding: '14px 18px' }}>
+            <p style={{ margin: '0 0 8px', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#fbbf24', fontWeight: 700 }}>Trade-offs to consider</p>
+            <ul style={{ margin: 0, paddingLeft: 18 }}>
+              {tradeoffs.map((t, i) => <li key={i} style={{ marginBottom: 5, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{t}</li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const DQWarning = ({ dq }: { dq: any }) => {
     const lowSuburbs = Object.entries(dq?.suburbs ?? {}).filter(([, v]: any) => v.dq_score < 70);
     if (!lowSuburbs.length) return null;
@@ -778,7 +828,14 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22, flexWrap: 'wrap', gap: 10 }}>
             <div>
-              <h3 style={{ margin: '0 0 5px', fontSize: '1.15rem' }}>Research Brief</h3>
+              <h3 style={{ margin: '0 0 5px', fontSize: '1.15rem' }}>
+                {(result as AskResponseV2).headline || 'Research Brief'}
+              </h3>
+              {(result as AskResponseV2).query_understood?.data_as_of && (
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginTop: 2 }}>
+                  Data as of: {(result as AskResponseV2).query_understood.data_as_of}
+                </span>
+              )}
               <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                 Status: <strong>{result.status.replace(/_/g, ' ')}</strong>&ensp;|&ensp;Priority:&nbsp;
                 <span style={{
@@ -803,6 +860,9 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
             <p style={{ margin: '0 0 4px', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--accent-cyan)', fontWeight: 700 }}>AI Summary</p>
             <p style={{ margin: 0, fontSize: '0.93rem' }}>{result.summary}</p>
           </div>
+
+          {/* Verdict panel (v2) */}
+          <VerdictPanel verdict={(result as AskResponseV2).verdict} />
 
           {/* Assumptions pills */}
           {result.assumptions.length > 0 && (
@@ -856,33 +916,20 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           <div style={{ background: 'rgba(0,0,0,0.12)', borderRadius: 10, padding: '14px 16px', marginBottom: 18 }}>
             <p style={{ margin: '0 0 10px', fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Ask a follow-up:</p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {result.comparison.length >= 2 && (
-                <button onClick={() => {
-                  const q = `What are the schools like near ${result.comparison.map(c => c.name).join(' and ')}?`;
-                  setQuestion(q);
-                  submitWithIntent(detectIntent(q), q);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }} style={CHIP_STYLE}>Schools nearby?</button>
-              )}
-              <button onClick={() => {
-                const q = `Cashflow projections if I buy in ${result.comparison[0]?.name ?? 'this suburb'} at the median price?`;
-                setQuestion(q);
-                submitWithIntent(detectIntent(q), q);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }} style={CHIP_STYLE}>Cashflow projections?</button>
-              <button onClick={() => {
-                const q = `What are the biggest risks of buying in ${result.comparison[0]?.name ?? 'this suburb'} right now?`;
-                setQuestion(q);
-                submitWithIntent(detectIntent(q), q);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }} style={CHIP_STYLE}>Biggest risks?</button>
-              {result.comparison.length >= 2 && (
-                <button onClick={() => {
-                  const q = `Which of ${result.comparison.map(c => c.name).join(' or ')} has better long-term growth potential?`;
-                  setQuestion(q);
-                  submitWithIntent(detectIntent(q), q);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }} style={CHIP_STYLE}>Long-term growth?</button>
+              {((result as AskResponseV2).follow_ups || []).map((fu, i) => (
+                <button key={i} onClick={() => { setQuestion(fu.question); callQuery(fu.question); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>{fu.label}</button>
+              ))}
+              {((result as AskResponseV2).follow_ups?.length ?? 0) === 0 && (
+                <>
+                  {result.comparison.length >= 2 && (
+                    <button onClick={() => { const q = `What are the schools like near ${result.comparison.map(c => c.name).join(' and ')}?`; setQuestion(q); callQuery(q); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>Schools nearby?</button>
+                  )}
+                  <button onClick={() => { const q = `Cashflow projections if I buy in ${result.comparison[0]?.name ?? 'this suburb'} at the median price?`; setQuestion(q); callQuery(q); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>Cashflow projections?</button>
+                  <button onClick={() => { const q = `What are the biggest risks of buying in ${result.comparison[0]?.name ?? 'this suburb'} right now?`; setQuestion(q); callQuery(q); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>Biggest risks?</button>
+                  {result.comparison.length >= 2 && (
+                    <button onClick={() => { const q = `Which of ${result.comparison.map(c => c.name).join(' or ')} has better long-term growth potential?`; setQuestion(q); callQuery(q); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>Long-term growth?</button>
+                  )}
+                </>
               )}
             </div>
           </div>
