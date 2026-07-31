@@ -230,16 +230,44 @@ def build_composite_score(row: dict, priorities: List[str]) -> float:
         score += _normalise_score(val, low, high, invert) * (100.0 / n)
     return round(score, 1)
 
+from sqlalchemy.orm import Session
+from sqlalchemy import func
+import re
+import math
 import time
-_GEO_CACHE: Dict[str, Tuple[float, Dict[str, Any]]] = {}
+from collections import OrderedDict
+
+class TTLLRUCache:
+    def __init__(self, maxsize: int, ttl: float):
+        self.cache = OrderedDict()
+        self.maxsize = maxsize
+        self.ttl = ttl
+
+    def get(self, key: str):
+        if key not in self.cache:
+            return None
+        timestamp, value = self.cache[key]
+        if time.time() - timestamp > self.ttl:
+            del self.cache[key]
+            return None
+        self.cache.move_to_end(key)
+        return value
+
+    def set(self, key: str, value: Any):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = (time.time(), value)
+        if len(self.cache) > self.maxsize:
+            self.cache.popitem(last=False)
+
+_GEO_CACHE = TTLLRUCache(maxsize=1000, ttl=3600)
 
 def discover_suburbs(db: Session, question: str, budget: Optional[float] = None) -> Dict[str, Any]:
     # Check cache first
     cache_key = f"{question.strip().lower()}_{budget}"
-    if cache_key in _GEO_CACHE:
-        timestamp, cached_res = _GEO_CACHE[cache_key]
-        if time.time() - timestamp < 3600: # 1 hour TTL
-            return cached_res
+    cached_res = _GEO_CACHE.get(cache_key)
+    if cached_res is not None:
+        return cached_res
 
     city       = normalise_city(question)
     direction  = normalise_direction(question)
@@ -433,5 +461,5 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
         "summary": f"Found {len(results)} suburb{'s' if len(results) != 1 else ''} {dir_str}{km_str} ranked by {priority_str}.",
         "results": results,
     }
-    _GEO_CACHE[cache_key] = (time.time(), res)
+    _GEO_CACHE.set(cache_key, res)
     return res

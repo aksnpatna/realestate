@@ -1,9 +1,12 @@
 import json
 import os
 import openai
+import logging
 from typing import Dict, Any
 
-async def classify_intent_llm(query: str) -> Dict[str, Any]:
+logger = logging.getLogger(__name__)
+
+async def classify_intent_llm(query: str, user_id: str = "unknown") -> Dict[str, Any]:
     system_prompt = """
     You are an intent classifier for a real estate platform.
     Given a user query, extract the goal, suburbs, property_type, budget, etc.
@@ -50,6 +53,11 @@ async def classify_intent_llm(query: str) -> Dict[str, Any]:
                 timeout=5.0
             )
             raw_output = response.choices[0].message.content
+            
+            if hasattr(response, 'usage') and response.usage:
+                tokens = response.usage.total_tokens
+                logger.info(f"LLM_Usage | Feature=intent_classifier | Provider={provider['name']} | Tokens={tokens} | User={user_id}")
+                
             return json.loads(raw_output)
         except Exception as e:
             print(f"Intent Classifier: Provider {provider['name']} failed: {str(e)}")

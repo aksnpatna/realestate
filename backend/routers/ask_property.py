@@ -12,6 +12,7 @@ from ask.evidence import get_suburbs_ui_bulk, extract_evidence, calculate_data_q
 from ask.scenarios import compute_affordability, compute_yield
 from ask.synthesis import synthesize_research
 from ask.policy import validate_policy
+import asyncio
 from starlette.concurrency import run_in_threadpool
 from ask.repository import create_conversation, save_ask_brief, _sanitize
 from ask.geo_discovery import discover_suburbs
@@ -30,6 +31,9 @@ def get_db():
     finally:
         db.close()
 
+# Prevent event loop saturation: Max 50 concurrent outbound LLM requests
+llm_semaphore = asyncio.Semaphore(50)
+
 @router.post("", response_model=AskResponse)
 async def ask_yieldsense(
     intent: AskIntent, 
@@ -39,8 +43,7 @@ async def ask_yieldsense(
 ):
     request_id = f"ask_{uuid.uuid4()}"
 
-    client_ip = request.client.host if request.client else "unknown"
-    if is_rate_limited(client_ip):
+    if is_rate_limited(current_user):
         raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
         
     if is_prompt_injection(intent.question) or is_abusive(intent.question):
@@ -91,8 +94,12 @@ async def ask_yieldsense(
                 valid_suburbs[0].state, intent.property_type, float(price)
             )
 
-    # 4. Synthesize
-    syn = await synthesize_research(intent, all_evidence, assumptions, affordability_res)
+    # 4. Synthesize with Load Shedding
+    if llm_semaphore.locked():
+        raise HTTPException(status_code=503, detail="Service temporarily busy. Please try again in a few seconds.")
+        
+    async with llm_semaphore:
+        syn = await synthesize_research(intent, all_evidence, assumptions, affordability_res, current_user)
     
     # 5. Policy Check
     policy_check = validate_policy(syn)
@@ -143,8 +150,7 @@ def discover_yieldsense(
       - "Highest rental yield in regional TAS"
       - "50km east of Sydney" → graceful ocean guardrail
     """
-    client_ip = request.client.host if request.client else "unknown"
-    if is_rate_limited(client_ip):
+    if is_rate_limited(current_user):
         raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
         
     if is_prompt_injection(req.question) or is_abusive(req.question):
@@ -192,18 +198,22 @@ class IntentRequest(BaseModel):
 @router.post("/intent")
 async def extract_intent(
     req: IntentRequest,
-    request: Request
+    request: Request,
+    current_user: str = Depends(get_current_user)
 ):
-    client_ip = request.client.host if request.client else "unknown"
-    if is_rate_limited(client_ip):
+    if is_rate_limited(current_user):
         raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
         
     if is_prompt_injection(req.query) or is_abusive(req.query):
         raise HTTPException(status_code=400, detail="Query rejected by security policy.")
         
     from ask.intent_classifier import classify_intent_llm
+    if llm_semaphore.locked():
+        raise HTTPException(status_code=503, detail="Service temporarily busy. Please try again in a few seconds.")
+        
     try:
-        parsed = await classify_intent_llm(req.query)
+        async with llm_semaphore:
+            parsed = await classify_intent_llm(req.query, current_user)
         # Ensure 'suburbs' is present
         if "suburbs" not in parsed:
             parsed["suburbs"] = []

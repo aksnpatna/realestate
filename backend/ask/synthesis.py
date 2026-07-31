@@ -1,14 +1,18 @@
 import json
+import os
+import logging
 from typing import Dict, Any, List
 import openai
-import os
 from ask.schemas import AskIntent, EvidenceMetric, ScenarioAssumptions, SynthesisResponse
+
+logger = logging.getLogger(__name__)
 
 async def synthesize_research(
     intent: AskIntent, 
     evidence: List[EvidenceMetric], 
     assumptions: List[ScenarioAssumptions],
-    affordability_res: Dict[str, Any]
+    affordability_res: Dict[str, Any],
+    user_id: str = "unknown"
 ) -> Dict[str, Any]:
     
     # We will use OpenAI with structured JSON output to synthesize a single bounded response.
@@ -31,6 +35,7 @@ async def synthesize_research(
     sanitized_intent.deposit = None
     sanitized_intent.annual_income = None
     sanitized_intent.monthly_debt = None
+    sanitized_intent.question = "" # Scrub raw question to prevent PII leakage
     
     evidence_json = [e.model_dump(mode='json') for e in evidence]
     assumptions_json = [a.model_dump(mode='json') for a in assumptions]
@@ -80,6 +85,12 @@ async def synthesize_research(
                 timeout=12.0
             )
             raw_output = response.choices[0].message.content
+            
+            # Log usage for cost observability
+            if hasattr(response, 'usage') and response.usage:
+                tokens = response.usage.total_tokens
+                logger.info(f"LLM_Usage | Feature=synthesis | Provider={provider['name']} | Tokens={tokens} | User={user_id}")
+
             # Validate against schema
             validated = SynthesisResponse.model_validate_json(raw_output)
             parsed = validated.model_dump(mode='json')

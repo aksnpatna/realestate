@@ -3,23 +3,23 @@ import time
 from typing import Dict, Tuple
 
 # Rate Limiter Config
-# In-memory rate limiting (IP -> (count, reset_time))
+# In-memory rate limiting (user_id -> (count, reset_time))
 _RATE_LIMITS: Dict[str, Tuple[int, float]] = {}
 MAX_REQUESTS_PER_MINUTE = 10
 
-def is_rate_limited(client_ip: str) -> bool:
+def is_rate_limited(user_id: str) -> bool:
     now = time.time()
-    if client_ip in _RATE_LIMITS:
-        count, reset_time = _RATE_LIMITS[client_ip]
+    if user_id in _RATE_LIMITS:
+        count, reset_time = _RATE_LIMITS[user_id]
         if now > reset_time:
-            _RATE_LIMITS[client_ip] = (1, now + 60.0)
+            _RATE_LIMITS[user_id] = (1, now + 60.0)
             return False
         if count >= MAX_REQUESTS_PER_MINUTE:
             return True
-        _RATE_LIMITS[client_ip] = (count + 1, reset_time)
+        _RATE_LIMITS[user_id] = (count + 1, reset_time)
         return False
     else:
-        _RATE_LIMITS[client_ip] = (1, now + 60.0)
+        _RATE_LIMITS[user_id] = (1, now + 60.0)
         return False
 
 # Prompt Injection Defense
