@@ -46,12 +46,61 @@ async def ask_query(
     server-side via the intent pipeline, resolves entities against the DB
     gazetteer, selects evidence packs, computes verdicts, and synthesises.
     """
+    import time
+    import hashlib
+    from ask.observability import incr_ask_request, incr_ask_cache, record_intent_confidence, record_latency, record_evidence_coverage
+
+    t0 = time.time()
+    incr_ask_request()
     request_id = f"ask_{uuid.uuid4()}"
 
+    # Rate limit: simple per-user daily counter via Redis
+    try:
+        from main import redis_client
+        if redis_client:
+            daily_key = f"ask2_rate:{current_user}:{datetime.now().strftime('%Y%m%d')}"
+            daily_count = redis_client.incr(daily_key)
+            if daily_count == 1:
+                redis_client.expire(daily_key, 86400)
+            if daily_count > 200:
+                return AskResponseV2(
+                    request_id=request_id, status="degraded",
+                    intent={"goal": "general_advice"}, query_understood={},
+                    summary="Daily research limit reached. Please try again tomorrow.",
+                    research_priority="insufficient_evidence",
+                    evidence=[], data_quality={}, follow_ups=[],
+                    disclaimer="Rate limited — free tier allows 200 briefs/day.",
+                    versions={"pipeline": "ask-v2"},
+                )
+    except Exception:
+        pass
+
+    # Cache: normalize question hash for idempotency
+    cache_key = None
+    try:
+        from main import redis_client
+        if redis_client and not req.conversation_id:
+            cache_key = f"ask2:{hashlib.sha256(req.question.lower().strip().encode()).hexdigest()[:16]}"
+            cached = redis_client.get(cache_key)
+            if cached:
+                incr_ask_cache(True)
+                record_latency((time.time() - t0) * 1000)
+                return AskResponseV2(**json.loads(cached))
+    except Exception:
+        cache_key = None
+
     from ask.intent import run_intent_pipeline
+    from ask.conversation import get_latest_brief, merge_intent
 
     # 1. Parse intent (deterministic + LLM normalisation)
     parsed = await run_intent_pipeline(db, req.question)
+
+    # 1b. Multi-turn: merge prior intent if conversation_id present
+    if req.conversation_id:
+        prior_brief = get_latest_brief(db, req.conversation_id, current_user)
+        if prior_brief and prior_brief.intent:
+            prior_intent = prior_brief.intent if isinstance(prior_brief.intent, dict) else {}
+            parsed = merge_intent(prior_intent, parsed)
 
     if parsed.get("needs_clarification"):
         clarification = parsed.get("clarification", {})
@@ -242,7 +291,9 @@ async def ask_query(
                          ) + "\n\n" + syn.get("summary", "")
 
     # 10. Headline
-    suburb_names = [c.name for c in comparisons]
+    suburb_names = [c.name for c in comparisons] if comparisons else ["your area"]
+    if not suburb_names:
+        suburb_names = ["your area"]
     headline = f"Research brief for {', '.join(suburb_names)}"
     if goal == "suburb_comparison":
         headline = f"Comparison: {' vs '.join(suburb_names)}"
@@ -255,9 +306,9 @@ async def ask_query(
     follow_ups = []
     if len(comparisons) >= 2:
         follow_ups.append({"label": "Schools nearby?", "question": f"What are the schools like near {', '.join(suburb_names)}?"})
-    if goal != "cashflow_projection" and comparisons:
+    if comparisons and goal not in ("cashflow_projection",):
         follow_ups.append({"label": "Cashflow projection?", "question": f"Cashflow projection for a median property in {suburb_names[0]}"})
-    if goal != "risks_analysis":
+    if comparisons and goal not in ("risks_analysis",):
         follow_ups.append({"label": "Biggest risks?", "question": f"What are the biggest risks of buying in {suburb_names[0]}?"})
     if len(comparisons) >= 2:
         follow_ups.append({"label": "Long-term growth?", "question": f"Which of {' or '.join(suburb_names)} has better long-term growth potential?"})
@@ -286,7 +337,11 @@ async def ask_query(
     conv = create_conversation(db, current_user, title=req.question[:50])
     save_ask_brief(db, current_user, brief_data, conv.id)
 
-    return AskResponseV2(
+    # Attach conversation_id to follow-ups for multi-turn
+    for fu in follow_ups:
+        fu["conversation_id"] = str(conv.id)
+
+    result = AskResponseV2(
         request_id=request_id, status=status, intent=parsed, query_understood=query_understood,
         assumptions=assumptions, headline=headline, summary=syn["summary"],
         research_priority=syn["research_priority"],
@@ -297,6 +352,20 @@ async def ask_query(
         follow_ups=follow_ups,
         versions={"evidence": "v2", "scorer": "v2", "prompt": "ask-v2", "model": "deepseek-v3", "pipeline": "ask-v2", "qualitative_map": "v1", "policy": "v2"},
     )
+
+    # Cache write
+    if cache_key:
+        try:
+            from main import redis_client
+            if redis_client:
+                redis_client.setex(cache_key, 1800, json.dumps(result.model_dump(mode='json')))
+        except Exception:
+            pass
+
+    record_latency((time.time() - t0) * 1000)
+    record_evidence_coverage(dq_summary.get("coverage", 0))
+
+    return result
 
 
 # ═══════════════════════════════════════════════════════════════════════════

@@ -336,11 +336,13 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   ];
 
   // ─── V2: Unified NL query (primary path) ─────────────────────────────
-  const callQuery = async (q: string) => {
+  const callQuery = async (q: string, convId?: string) => {
     setLoading(true); setError(''); setResult(null); setDiscoveryResult(null); setPendingClarify(null);
     if (abortRef.current) abortRef.current.abort();
     abortRef.current = new AbortController();
     try {
+      const body: any = { question: q };
+      if (convId) body.conversation_id = convId;
       const res = await fetch('/api/v3/ask/query', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: q }), signal: abortRef.current.signal,
@@ -917,7 +919,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
             <p style={{ margin: '0 0 10px', fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Ask a follow-up:</p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {((result as AskResponseV2).follow_ups || []).map((fu, i) => (
-                <button key={i} onClick={() => { setQuestion(fu.question); callQuery(fu.question); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>{fu.label}</button>
+                <button key={i} onClick={() => { setQuestion(fu.question); callQuery(fu.question, (fu as any).conversation_id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>{fu.label}</button>
               ))}
               {((result as AskResponseV2).follow_ups?.length ?? 0) === 0 && (
                 <>

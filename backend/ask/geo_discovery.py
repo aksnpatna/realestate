@@ -230,7 +230,8 @@ def build_composite_score(row: dict, priorities: List[str]) -> float:
         score += _normalise_score(val, low, high, invert) * (100.0 / n)
     return round(score, 1)
 
-def discover_suburbs(db: Session, question: str, budget: Optional[float] = None) -> Dict[str, Any]:
+def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
+                     thresholds: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
     city       = normalise_city(question)
     direction  = normalise_direction(question)
     km         = extract_km(question) or (20.0 if direction else None)
@@ -244,8 +245,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
         return {
             "guardrail": True,
             "message": "Let's keep it professional. Please rephrase your query with a specific geographical area.",
-            "results": [],
-            "summary": "Query blocked due to inappropriate language.",
+            "results": [], "summary": "Query blocked due to inappropriate language.",
             "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
         }
 
@@ -253,22 +253,19 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
         return {
             "guardrail": True,
             "message": "I couldn't detect a specific area in your query. Please provide a clear spatial vector (e.g. 'near Melbourne', 'in NSW', or 'regional TAS').",
-            "results": [],
-            "summary": "Missing spatial vector.",
+            "results": [], "summary": "Missing spatial vector.",
             "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
         }
 
     guardrail_msg = apply_geo_guardrail(city, direction, km) if city else None
     if guardrail_msg:
         return {
-            "guardrail": True,
-            "message": guardrail_msg,
-            "results": [],
-            "summary": guardrail_msg,
+            "guardrail": True, "message": guardrail_msg,
+            "results": [], "summary": guardrail_msg,
             "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
         }
 
-    # 2. Build SQL
+    # 2. Build SQL with threshold filters from the intent pipeline
     filters = []
     params: Dict[str, Any] = {}
 
@@ -293,6 +290,39 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
     if budget:
         filters.append("house_median_price <= :budget")
         params["budget"] = budget
+
+    # Structured threshold filters from the intent pipeline
+    threshold_display = []
+    if thresholds:
+        threshold_field_map = {
+            "gross_yield": "house_gross_rental_yield",
+            "school_quality": "school_quality",
+            "avg_icsea": "avg_icsea",
+            "safety_score": "safety_score",
+            "vacancy_rate": "vacancy_rate",
+            "population_cagr": "population_cagr",
+            "median_price": "house_median_price",
+            "days_on_market": "house_days_on_market",
+            "cbd_distance_mins": "cbd_distance_mins",
+            "transit_accessibility": "transit_accessibility",
+            "parks_count": "parks_count",
+            "investor_rate": "investor_rate",
+            "owner_occupier_rate": "owner_occupier_rate",
+            "building_approvals_12m": "building_approvals_12m",
+        }
+        for t in thresholds:
+            metric_key = t.get("metric", "")
+            col = threshold_field_map.get(metric_key)
+            if not col:
+                continue
+            op = t.get("op", ">=")
+            val = t.get("value")
+            if val is None:
+                continue
+            param_name = f"thresh_{metric_key}_{len(threshold_display)}"
+            filters.append(f"{col} {op} :{param_name}")
+            params[param_name] = float(val)
+            threshold_display.append(f"{metric_key} {op} {val}")
 
     where_clause = "WHERE coordinates IS NOT NULL AND is_live = true"
     if filters:
@@ -397,13 +427,9 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
         return reasons or ["Matches your criteria based on verified data"]
 
     results = [{
-        "suburb_id": s.get("id"),
-        "name": s.get("name"),
-        "state": s.get("state"),
-        "postcode": s.get("postcode"),
-        "match_score": s["_score"],
-        "dist_km": s.get("_dist_km"),
-        "why_selected": format_why(s),
+        "suburb_id": s.get("id"), "name": s.get("name"), "state": s.get("state"),
+        "postcode": s.get("postcode"), "match_score": s["_score"],
+        "dist_km": s.get("_dist_km"), "why_selected": format_why(s),
         "metrics": {
             "median_price": s.get("house_median_price"),
             "yield_pct": s.get("house_gross_rental_yield"),
@@ -422,14 +448,16 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
     dir_str = f"{direction} of {summary_city}" if direction else summary_city
     km_str = f" within {km:.0f}km" if km else ""
     priority_str = ", ".join(p for p in priorities[:3])
+    threshold_str = f" with filters: {'; '.join(threshold_display)}" if threshold_display else ""
 
     return {
         "guardrail": False,
         "message": None,
         "query_understood": {
             "city": city, "direction": direction, "km": km,
-            "state": state, "priorities": priorities, "regional": regional
+            "state": state, "priorities": priorities, "regional": regional,
+            "thresholds_applied": threshold_display,
         },
-        "summary": f"Found {len(results)} suburb{'s' if len(results) != 1 else ''} {dir_str}{km_str} ranked by {priority_str}.",
+        "summary": f"Found {len(results)} suburb{'s' if len(results) != 1 else ''} {dir_str}{km_str} ranked by {priority_str}.{threshold_str}",
         "results": results,
     }
