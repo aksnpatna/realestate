@@ -31,10 +31,22 @@ def get_db():
     finally:
         db.close()
 
+async def verify_security(request: Request, current_user: str = Depends(get_current_user)):
+    if is_rate_limited(current_user):
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
+    
+    try:
+        body = await request.json()
+        query = body.get("question", body.get("query", ""))
+        if is_prompt_injection(query) or is_abusive(query):
+            raise HTTPException(status_code=400, detail="Query rejected by security policy.")
+    except Exception:
+        pass
+
 # Prevent event loop saturation: Max 50 concurrent outbound LLM requests
 llm_semaphore = asyncio.Semaphore(50)
 
-@router.post("", response_model=AskResponse)
+@router.post("", response_model=AskResponse, dependencies=[Depends(verify_security)])
 async def ask_yieldsense(
     intent: AskIntent, 
     request: Request,
@@ -42,12 +54,6 @@ async def ask_yieldsense(
     current_user: str = Depends(get_current_user)
 ):
     request_id = f"ask_{uuid.uuid4()}"
-
-    if is_rate_limited(current_user):
-        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
-        
-    if is_prompt_injection(intent.question) or is_abusive(intent.question):
-        raise HTTPException(status_code=400, detail="Query rejected by security policy.")
     
     # 1. Resolve Suburbs & Evidence
     all_evidence = []
@@ -95,11 +101,15 @@ async def ask_yieldsense(
             )
 
     # 4. Synthesize with Load Shedding
-    if llm_semaphore.locked():
+    try:
+        await asyncio.wait_for(llm_semaphore.acquire(), timeout=5.0)
+    except asyncio.TimeoutError:
         raise HTTPException(status_code=503, detail="Service temporarily busy. Please try again in a few seconds.")
         
-    async with llm_semaphore:
+    try:
         syn = await synthesize_research(intent, all_evidence, assumptions, affordability_res, current_user)
+    finally:
+        llm_semaphore.release()
     
     # 5. Policy Check
     policy_check = validate_policy(syn)
@@ -136,8 +146,8 @@ async def ask_yieldsense(
         **brief_data
     )
 
-@router.post("/discover", response_model=DiscoveryResponse)
-def discover_yieldsense(
+@router.post("/discover", response_model=DiscoveryResponse, dependencies=[Depends(verify_security)])
+async def discover_yieldsense(
     req: DiscoveryRequest,
     request: Request,
     db: Session = Depends(get_db),
@@ -150,12 +160,6 @@ def discover_yieldsense(
       - "Highest rental yield in regional TAS"
       - "50km east of Sydney" → graceful ocean guardrail
     """
-    if is_rate_limited(current_user):
-        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
-        
-    if is_prompt_injection(req.question) or is_abusive(req.question):
-        raise HTTPException(status_code=400, detail="Query rejected by security policy.")
-        
     raw = discover_suburbs(db, req.question, budget=req.budget)
 
     # Convert raw dict results to Pydantic models
@@ -195,25 +199,22 @@ def discover_yieldsense(
 class IntentRequest(BaseModel):
     query: str
 
-@router.post("/intent")
+@router.post("/intent", dependencies=[Depends(verify_security)])
 async def extract_intent(
     req: IntentRequest,
     request: Request,
     current_user: str = Depends(get_current_user)
 ):
-    if is_rate_limited(current_user):
-        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
-        
-    if is_prompt_injection(req.query) or is_abusive(req.query):
-        raise HTTPException(status_code=400, detail="Query rejected by security policy.")
-        
     from ask.intent_classifier import classify_intent_llm
-    if llm_semaphore.locked():
+    try:
+        await asyncio.wait_for(llm_semaphore.acquire(), timeout=5.0)
+    except asyncio.TimeoutError:
         raise HTTPException(status_code=503, detail="Service temporarily busy. Please try again in a few seconds.")
         
     try:
-        async with llm_semaphore:
-            parsed = await classify_intent_llm(req.query, current_user)
+        parsed = await classify_intent_llm(req.query, current_user)
+    finally:
+        llm_semaphore.release()
         # Ensure 'suburbs' is present
         if "suburbs" not in parsed:
             parsed["suburbs"] = []
