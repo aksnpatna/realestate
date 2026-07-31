@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session
-from datetime import datetime
+from datetime import datetime, timezone
 
 from models_v3 import SuburbUIV3
 from ask.schemas import SuburbReference, EvidenceMetric
@@ -13,7 +13,7 @@ def get_suburb_ui(db: Session, ref: SuburbReference) -> Optional[SuburbUIV3]:
 
 def extract_evidence(v3: SuburbUIV3, property_type: str = "house") -> List[EvidenceMetric]:
     evidence = []
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     
     # helper
     def add(met_id, name, val, unit, src="NPG/CoreLogic", qual="verified"):
