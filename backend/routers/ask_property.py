@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 import uuid
 import json
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -11,6 +12,7 @@ from ask.evidence import get_suburbs_ui_bulk, extract_evidence, calculate_data_q
 from ask.scenarios import compute_affordability, compute_yield
 from ask.synthesis import synthesize_research
 from ask.policy import validate_policy
+from starlette.concurrency import run_in_threadpool
 from ask.repository import create_conversation, save_ask_brief, _sanitize
 from ask.geo_discovery import discover_suburbs
 from ask.security import is_rate_limited, is_prompt_injection, is_abusive
@@ -29,7 +31,7 @@ def get_db():
         db.close()
 
 @router.post("", response_model=AskResponse)
-def ask_yieldsense(
+async def ask_yieldsense(
     intent: AskIntent, 
     request: Request,
     db: Session = Depends(get_db), 
@@ -53,7 +55,7 @@ def ask_yieldsense(
         if intent.goal != "interstate_discovery":
             raise HTTPException(status_code=400, detail="Missing target suburbs for research.")
     
-    valid_suburbs = get_suburbs_ui_bulk(db, intent.suburbs)
+    valid_suburbs = await run_in_threadpool(get_suburbs_ui_bulk, db, intent.suburbs)
     for v3 in valid_suburbs:
         ev = extract_evidence(v3, intent.property_type)
         all_evidence.extend(ev)
@@ -90,7 +92,7 @@ def ask_yieldsense(
             )
 
     # 4. Synthesize
-    syn = synthesize_research(intent, all_evidence, assumptions, affordability_res)
+    syn = await synthesize_research(intent, all_evidence, assumptions, affordability_res)
     
     # 5. Policy Check
     policy_check = validate_policy(syn)
@@ -118,8 +120,8 @@ def ask_yieldsense(
         "versions": {"evidence": "v1", "scorer": "v1", "prompt": "ask-v1", "model": "gpt-4o"}
     })
     
-    conv = create_conversation(db, current_user, title=intent.question[:50])
-    save_ask_brief(db, current_user, brief_data, conv.id)
+    conv = await run_in_threadpool(create_conversation, db, current_user, title=intent.question[:50])
+    await run_in_threadpool(save_ask_brief, db, current_user, brief_data, conv.id)
 
     return AskResponse(
         request_id=request_id,
@@ -183,3 +185,28 @@ def discover_yieldsense(
         query_understood=raw.get("query_understood", {}),
         results=results,
     )
+
+class IntentRequest(BaseModel):
+    query: str
+
+@router.post("/intent")
+async def extract_intent(
+    req: IntentRequest,
+    request: Request
+):
+    client_ip = request.client.host if request.client else "unknown"
+    if is_rate_limited(client_ip):
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
+        
+    if is_prompt_injection(req.query) or is_abusive(req.query):
+        raise HTTPException(status_code=400, detail="Query rejected by security policy.")
+        
+    from ask.intent_classifier import classify_intent_llm
+    try:
+        parsed = await classify_intent_llm(req.query)
+        # Ensure 'suburbs' is present
+        if "suburbs" not in parsed:
+            parsed["suburbs"] = []
+        return parsed
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Failed to classify intent")

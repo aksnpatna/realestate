@@ -4,7 +4,7 @@ import openai
 import os
 from ask.schemas import AskIntent, EvidenceMetric, ScenarioAssumptions, SynthesisResponse
 
-def synthesize_research(
+async def synthesize_research(
     intent: AskIntent, 
     evidence: List[EvidenceMetric], 
     assumptions: List[ScenarioAssumptions],
@@ -67,8 +67,8 @@ def synthesize_research(
             
         try:
             print(f"Attempting synthesis with {provider['name']} ({provider['model']})...")
-            client = openai.Client(api_key=provider["key"], base_url=provider["base_url"])
-            response = client.chat.completions.create(
+            client = openai.AsyncClient(api_key=provider["key"], base_url=provider["base_url"])
+            response = await client.chat.completions.create(
                 model=provider["model"],
                 messages=[
                     {"role": "system", "content": system_prompt},

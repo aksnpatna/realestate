@@ -118,7 +118,7 @@ function getWinner(metricLabel: string, comparisons: SuburbComparison[]): string
 interface DetectedIntent {
   goal: string; suburbs: { name: string; state: string }[];
   needsClarification: boolean; clarifyingQ?: string; propertyType: string;
-  isDiscovery?: boolean;
+  isDiscovery?: boolean; needsMLFallback?: boolean;
 }
 
 const KNOWN_SUBURBS = [
@@ -257,7 +257,7 @@ function detectIntent(text: string): DetectedIntent {
   }
 
   if (suburbs.length === 0)
-    return { goal: 'single_suburb_research', suburbs: [], needsClarification: true, propertyType,
+    return { goal: 'single_suburb_research', suburbs: [], needsClarification: true, needsMLFallback: true, propertyType,
       clarifyingQ: suggestedSuburb ? `Did you mean ${suggestedSuburb}? Please confirm the exact suburb name so I can pull the correct data.` : 'Which suburb are you researching? (e.g. "Kenmore, QLD" or "Glen Waverley, VIC")' };
 
   // Detect specific deep-dive intents from follow-up chips
@@ -371,22 +371,55 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     return undefined;
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const resolveIntentWithFallback = async (detected: DetectedIntent, q: string) => {
+    if (detected.needsMLFallback) {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/v3/ask/intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        if (res.ok) {
+          const mlIntent = await res.json();
+          if (mlIntent.suburbs && mlIntent.suburbs.length > 0) {
+             return {
+               goal: mlIntent.goal,
+               suburbs: mlIntent.suburbs,
+               needsClarification: false,
+               propertyType: mlIntent.property_type || 'any',
+               isDiscovery: mlIntent.goal === 'interstate_discovery'
+             };
+          }
+        }
+      } catch (e) {
+        console.error("ML Intent failed", e);
+      }
+      setLoading(false);
+    }
+    return detected;
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!question.trim()) return;
     const extractedBudget = extractAndSetBudget(question);
-    const detected = detectIntent(question);
+    let detected = detectIntent(question);
+    detected = await resolveIntentWithFallback(detected, question);
+    
     if (detected.needsClarification) { setPendingClarify(detected); return; }
     submitWithIntent(detected, question, extractedBudget);
   };
 
-  const handleClarify = () => {
+  const handleClarify = async () => {
     if (!pendingClarify || !clarifyAnswer.trim()) return;
     const fullQ = `${question} — ${clarifyAnswer}`;
     setClarifyAnswer('');
     
     const extractedBudget = extractAndSetBudget(fullQ);
-    const detected = detectIntent(fullQ);
+    let detected = detectIntent(fullQ);
+    detected = await resolveIntentWithFallback(detected, fullQ);
+    
     if (detected.needsClarification) {
       setQuestion(fullQ);
       setPendingClarify({
