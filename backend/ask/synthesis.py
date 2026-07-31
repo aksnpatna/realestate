@@ -49,33 +49,33 @@ def synthesize_research(
     """
     
     try:
-        # Use Groq if key exists, otherwise fallback to OpenAI/Mock
         groq_key = os.getenv("GROQ_API_KEY")
         openai_key = os.getenv("OPENAI_API_KEY")
+        llm_timeout = float(os.getenv("LLM_TIMEOUT_SEC", "15.0"))
 
         if groq_key:
             client = openai.Client(api_key=groq_key, base_url="https://api.groq.com/openai/v1")
             response = client.chat.completions.create(
-                model="llama-3.1-70b-versatile",
+                model=os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile"),
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
                 ],
                 response_format={"type": "json_object"},
-                timeout=15.0
+                timeout=llm_timeout
             )
             raw = response.choices[0].message.content
             parsed = json.loads(raw)
         elif openai_key and openai_key != "sk-mock":
             client = openai.Client(api_key=openai_key)
             response = client.chat.completions.create(
-                model="gpt-4o",
+                model=os.getenv("OPENAI_MODEL", "gpt-4o"),
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
                 ],
                 response_format={"type": "json_object"},
-                timeout=15.0
+                timeout=llm_timeout
             )
             raw = response.choices[0].message.content
             parsed = json.loads(raw)
