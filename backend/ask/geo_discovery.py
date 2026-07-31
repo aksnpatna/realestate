@@ -262,7 +262,7 @@ class TTLLRUCache:
 
 _GEO_CACHE = TTLLRUCache(maxsize=1000, ttl=3600)
 
-def discover_suburbs(db: Session, question: str, budget: Optional[float] = None) -> Dict[str, Any]:
+def discover_suburbs(db: Session, question: str, budget: Optional[float] = None, limit: int = 5) -> Dict[str, Any]:
     # Check cache first
     cache_key = f"{question.strip().lower()}_{budget}"
     cached_res = _GEO_CACHE.get(cache_key)
@@ -399,7 +399,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
     for c in candidates:
         c["_score"] = build_composite_score(c, priorities)
     candidates.sort(key=lambda x: x["_score"], reverse=True)
-    top = candidates[:5]
+    top = candidates[:limit]
 
     # 5. Format results
     def format_why(s: dict) -> List[str]:
