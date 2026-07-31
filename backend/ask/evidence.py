@@ -11,9 +11,26 @@ def get_suburb_ui(db: Session, ref: SuburbReference) -> Optional[SuburbUIV3]:
         query = query.filter(SuburbUIV3.postcode == ref.postcode)
     return query.first()
 
+def get_suburbs_ui_bulk(db: Session, refs: List[SuburbReference]) -> List[SuburbUIV3]:
+    if not refs:
+        return []
+    from sqlalchemy import or_, and_
+    conditions = []
+    for r in refs:
+        cond = and_(SuburbUIV3.name.ilike(r.name), SuburbUIV3.state.ilike(r.state))
+        if r.postcode:
+            cond = and_(cond, SuburbUIV3.postcode == r.postcode)
+        conditions.append(cond)
+    return db.query(SuburbUIV3).filter(or_(*conditions)).all()
+
 def extract_evidence(v3: SuburbUIV3, property_type: str = "house") -> List[EvidenceMetric]:
     evidence = []
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    
+    # Use actual record timestamp if available, else fallback to today
+    if v3.updated_at:
+        today = v3.updated_at.strftime("%Y-%m-%d")
+    else:
+        today = datetime.utcnow().strftime("%Y-%m-%d")
     
     # helper
     def add(met_id, name, val, unit, src="NPG/CoreLogic", qual="verified"):

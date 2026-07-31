@@ -230,7 +230,17 @@ def build_composite_score(row: dict, priorities: List[str]) -> float:
         score += _normalise_score(val, low, high, invert) * (100.0 / n)
     return round(score, 1)
 
+import time
+_GEO_CACHE: Dict[str, Tuple[float, Dict[str, Any]]] = {}
+
 def discover_suburbs(db: Session, question: str, budget: Optional[float] = None) -> Dict[str, Any]:
+    # Check cache first
+    cache_key = f"{question.strip().lower()}_{budget}"
+    if cache_key in _GEO_CACHE:
+        timestamp, cached_res = _GEO_CACHE[cache_key]
+        if time.time() - timestamp < 3600: # 1 hour TTL
+            return cached_res
+
     city       = normalise_city(question)
     direction  = normalise_direction(question)
     km         = extract_km(question) or (20.0 if direction else None)
@@ -238,17 +248,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
     priorities = extract_priorities(question)
     regional   = is_regional(question)
 
-    # 1. Guardrails (Abuse & Missing Vector)
-    abusive_words = ['fuck', 'shit', 'bitch', 'cunt', 'asshole', 'stupid', 'idiot', 'dick', 'crap']
-    if any(w in question.lower() for w in abusive_words):
-        return {
-            "guardrail": True,
-            "message": "Let's keep it professional. Please rephrase your query with a specific geographical area.",
-            "results": [],
-            "summary": "Query blocked due to inappropriate language.",
-            "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
-        }
-
+    # 1. Guardrails (Missing Vector)
     if not city and not state and not regional:
         return {
             "guardrail": True,
@@ -423,7 +423,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
     km_str = f" within {km:.0f}km" if km else ""
     priority_str = ", ".join(p for p in priorities[:3])
 
-    return {
+    res = {
         "guardrail": False,
         "message": None,
         "query_understood": {
@@ -433,3 +433,5 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None)
         "summary": f"Found {len(results)} suburb{'s' if len(results) != 1 else ''} {dir_str}{km_str} ranked by {priority_str}.",
         "results": results,
     }
+    _GEO_CACHE[cache_key] = (time.time(), res)
+    return res

@@ -146,18 +146,20 @@ const KNOWN_SUBURBS = [
 ];
 
 function parseBudget(text: string): number | null {
-  const match = text.match(/(?:budget|under|for|of)?\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?\b/);
+  // Require $, a context word (budget/under/for), or a suffix (k/m/million)
+  const match = text.match(/(?:budget|under|for|of)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?\b|\$\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?\b|\b(\d+(?:\.\d+)?)\s*([kKmM]|million)\b/i);
+  
   if (match) {
-    let num = parseFloat(match[1]);
-    const suffix = match[2]?.toLowerCase();
-    if (suffix === 'm' || (num < 1000 && text.toLowerCase().includes('million'))) num *= 1000000;
-    else if (suffix === 'k') num *= 1000;
+    let num = parseFloat(match[1] || match[3] || match[5]);
+    const suffix = (match[2] || match[4] || match[6])?.toLowerCase();
+    
+    if (suffix === 'm' || suffix === 'million' || (num < 1000 && text.toLowerCase().includes('million'))) {
+      num *= 1000000;
+    } else if (suffix === 'k') {
+      num *= 1000;
+    }
+    
     if (num >= 10000 && num <= 20000000) return num;
-  }
-  const rawMatch = text.match(/\b([1-9]\d{4,7})\b/);
-  if (rawMatch) {
-    const parsed = parseInt(rawMatch[1], 10);
-    if (parsed >= 10000) return parsed;
   }
   return null;
 }
@@ -246,6 +248,13 @@ function detectIntent(text: string): DetectedIntent {
   if (isInvestment && suburbs.length === 0)
     return { goal: 'investment_search', suburbs: [], needsClarification: true, propertyType,
       clarifyingQ: detectedState ? `I see you're looking for investments in ${detectedState}. Ask YieldSense needs specific suburbs (e.g. "Norwood") to build a brief. If you want to scan the whole state, try the Buy Finder tab!` : 'Which state or region would you like to find investment areas in?' };
+
+  // Out of scope handler
+  const isRealEstateRelated = /suburb|house|unit|apartment|property|yield|rent|price|growth|buy|invest|market|schools|transit|safe|parks/i.test(text);
+  if (suburbs.length === 0 && !isGeoDiscovery && !isInterstate && !isInvestment && !isRealEstateRelated && !stateMatch) {
+      return { goal: 'single_suburb_research', suburbs: [], needsClarification: true, propertyType,
+        clarifyingQ: "I can only help with Australian property research based on verified data. Could you rephrase your question to include a specific suburb, state, or property goal?" };
+  }
 
   if (suburbs.length === 0)
     return { goal: 'single_suburb_research', suburbs: [], needsClarification: true, propertyType,
@@ -522,7 +531,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     );
   };
 
-  const ComparisonTable = ({ comparisons }: { comparisons: SuburbComparison[] }) => {
+  const ComparisonTable = ({ comparisons, evidence }: { comparisons: SuburbComparison[], evidence: any[] }) => {
     if (!comparisons.length) return null;
     const metrics = comparisons[0].metrics;
     const multi = comparisons.length > 1;
@@ -549,6 +558,13 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                   <tr style={{ background: idx % 2 === 0 ? 'rgba(255,255,255,0.025)' : 'transparent' }}>
                     <td style={{ ...TD, color: 'var(--text-secondary)', fontWeight: 600 }}>
                       {exp?.label ?? m.label}
+                      {(() => {
+                        const ev = evidence?.find(e => e.metric === m.label);
+                        if (ev?.as_of) {
+                          return <span style={{ marginLeft: 8, padding: '2px 6px', background: 'rgba(0, 210, 255, 0.1)', color: '#00d2ff', borderRadius: 4, fontSize: '0.65rem', textTransform: 'uppercase' }}>Verified {ev.as_of}</span>;
+                        }
+                        return null;
+                      })()}
                       {m.is_stale && <span style={{ marginLeft: 6, fontSize: '0.72rem', color: '#ffb400' }}>⚠ stale data</span>}
                     </td>
                     {comparisons.map(c => {
@@ -761,7 +777,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           )}
 
           {/* Side-by-side table */}
-          <ComparisonTable comparisons={result.comparison} />
+          <ComparisonTable comparisons={result.comparison} evidence={result.evidence} />
 
           {/* Supports / Risks */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18, marginBottom: 22 }}>
