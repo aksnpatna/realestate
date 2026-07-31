@@ -488,6 +488,13 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                   const q = `Research ${r.name} ${r.state}`;
                   setQuestion(q);
                   const detected = detectIntent(q);
+                  
+                  // Override detection since we explicitly know the target
+                  detected.goal = 'single_suburb_research';
+                  detected.suburbs = [{ name: r.name, state: r.state }];
+                  detected.needsClarification = false;
+                  detected.isDiscovery = false;
+                  
                   submitWithIntent(detected, q);
                 }}
                 style={{
