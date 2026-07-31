@@ -33,6 +33,12 @@ MAX_REQUESTS_PER_MINUTE = 10
 
 def is_rate_limited(user_id: str) -> bool:
     now = time.time()
+    # Cleanup any stale entries to prevent memory growth
+    # Iterate over a copy of keys to avoid mutation during iteration
+    for uid in list(_RATE_LIMITS.cache.keys()):
+        ts, _ = _RATE_LIMITS.cache[uid]
+        if now > ts + _RATE_LIMITS.ttl:
+            del _RATE_LIMITS.cache[uid]
     record = _RATE_LIMITS.get(user_id)
     if record is not None:
         count, reset_time = record
