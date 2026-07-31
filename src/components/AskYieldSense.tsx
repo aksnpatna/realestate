@@ -191,13 +191,14 @@ function detectIntent(text: string): DetectedIntent {
     /\d+\s*km\s+(from|north|south|east|west)\b/i,
     /\b(near|around|close to)\s+(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra)\b/i,
     /\bregional\b.*(yield|school|growth|safe)/i,
-    /\b(best|highest|lowest|top)\s+(school|yield|return|transit|transport|cafe|park|safety|area|neighbourhood|neighborhood|suburb)\b/i,
+    /\b(best|highest|lowest|top)\s+(school|yield|return|transit|transport|cafe|park|safety|area|neighbourhood|neighborhood|suburb|rental)\b/i,
     /suburb.*\b(with|having|that have)\s+(high|good|great|best|most)\b/i,
     /\bwhich suburb(s)?\b/i,
     /\bfind (me )?(a )?suburb/i,
     /\bfind (me )?(a |an )?(area|neighbourhood|neighborhood|location|place)\b/i,
     /\blooking for (a |an |some )?(area|suburb|neighbourhood|neighborhood|place)\b/i,
     /\brecommend (a |an |some |me )?(area|suburb|neighbourhood|neighborhood|place)\b/i,
+    /\bsuburbs?\b.*\b(in|near|around)\s+(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra|NSW|VIC|QLD|SA|WA|TAS|NT|ACT)\b/i,
   ];
   const isGeoDiscovery = GEO_PATTERNS.some(p => p.test(text));
 
@@ -246,9 +247,13 @@ function detectIntent(text: string): DetectedIntent {
     return { goal: 'interstate_discovery', suburbs: [], needsClarification: true, propertyType,
       clarifyingQ: detectedState ? `I see you're looking at ${detectedState}. To pull verified data, could you specify exactly which suburbs? (Or use Buy Finder to scan the whole state).` : 'Which state are you moving from, and which are you considering? (e.g. "Moving from Sydney NSW to Brisbane QLD")' };
 
-  if (isInvestment && suburbs.length === 0)
+  if (isInvestment && suburbs.length === 0) {
+    if (detectedState) {
+      return { goal: 'suburb_discovery', suburbs: [], needsClarification: false, propertyType, isDiscovery: true };
+    }
     return { goal: 'investment_search', suburbs: [], needsClarification: true, propertyType,
-      clarifyingQ: detectedState ? `I see you're looking for investments in ${detectedState}. Ask YieldSense needs specific suburbs (e.g. "Norwood") to build a brief. If you want to scan the whole state, try the Buy Finder tab!` : 'Which state or region would you like to find investment areas in?' };
+      clarifyingQ: 'Which state or region would you like to find investment areas in?' };
+  }
 
   // Out of scope handler
   const isRealEstateRelated = /suburb|house|unit|apartment|property|yield|rent|price|growth|buy|invest|market|schools|transit|safe|parks/i.test(text);
