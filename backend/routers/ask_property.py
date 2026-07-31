@@ -139,12 +139,13 @@ async def ask_query(
             ))
 
     # 3. Route
-    if goal == "suburb_discovery":
+    if goal == "suburb_discovery" or goal == "interstate_discovery":
+        from ask.geo_discovery import discover_suburbs
         disc = discover_suburbs(db, req.question, budget=budget)
-        results = []
+        disc_results = []
         for r in disc.get("results", []):
             m = r.get("metrics", {})
-            results.append(DiscoveryResult(
+            disc_results.append(DiscoveryResult(
                 suburb_id=r.get("suburb_id"), name=r.get("name", ""), state=r.get("state", ""),
                 postcode=r.get("postcode"), match_score=r.get("match_score", 0),
                 dist_km=r.get("dist_km"), why_selected=r.get("why_selected", []),
@@ -156,11 +157,18 @@ async def ask_query(
                     top_school_name=m.get("top_school_name"), price_12m_change_pct=m.get("price_12m_change_pct"),
                 )
             ))
+        discovery_out = DiscoveryResponse(
+            guardrail=disc.get("guardrail", False), message=disc.get("message"),
+            summary=disc.get("summary"), query_understood=disc.get("query_understood", {}),
+            results=disc_results,
+        )
         return AskResponseV2(
             request_id=request_id, status="complete",
             intent=parsed, query_understood=disc.get("query_understood", {}),
+            headline=f"Discovery — {disc.get('summary', '')}",
             summary=disc.get("summary", ""),
-            research_priority="medium" if results else "low",
+            research_priority="medium" if disc_results else "low",
+            discovery=discovery_out,
             disclaimer="General research only; not financial, legal, tax, lending or valuation advice.",
             versions={"pipeline": "ask-v2", "evidence": "v2"},
         )

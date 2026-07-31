@@ -73,7 +73,7 @@ interface VerdictEntry {
 interface PersonaVerdict { persona: string; leader?: string | null; scores: Record<string, number>; weights_used: Record<string, number>; }
 interface VerdictBlock { framing: string; per_metric: VerdictEntry[]; by_persona: PersonaVerdict[]; tradeoffs: string[]; }
 interface AffordabilityBlock { serviceability_passed?: boolean | null; borrowing_capacity?: number | null; monthly_repayment?: number | null; stamp_duty?: number | null; }
-interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string}[]; query_understood?: any; }
+interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string;conversation_id?:string}[]; query_understood?: any; discovery?: DiscoveryResponse | null; }
 
 // ─── Metric human explanations ──────────────────────────────────────────────
 interface MetricExplanation { label: string; good: boolean | null; text: string; }
@@ -355,6 +355,10 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         return;
       }
       setResult(data as AskResponseV2);
+      // If this is a discovery response, also set discoveryResult for card rendering
+      if ((data as AskResponseV2).discovery) {
+        setDiscoveryResult((data as AskResponseV2).discovery || null);
+      }
     } catch (err: any) {
       if (err.name !== 'AbortError') {
         // Fallback to old intent detection + structured API
@@ -893,7 +897,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         </div>
       )}
 
-      {result && !loading && (
+      {result && !loading && !discoveryResult && (
         <div style={{ marginTop: 36, borderTop: '1px solid var(--border-glass)', paddingTop: 28 }}>
 
           {/* Header */}

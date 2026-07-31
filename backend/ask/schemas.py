@@ -190,6 +190,7 @@ class AskResponseV2(BaseModel):
     next_steps: List[str] = []
     evidence: List[EvidenceMetric] = []
     data_quality: dict = {}
+    discovery: Optional[Any] = None
     follow_ups: List[Dict[str, str]] = []
     disclaimer: str = "General research only; not financial, legal, tax, lending or valuation advice."
     versions: dict = {}
