@@ -219,9 +219,9 @@ function detectIntent(text: string): DetectedIntent {
      else if (raw.includes('ACT') || raw.includes('CAPITAL')) detectedState = 'ACT';
   }
 
-  // Budget Missing Zero Clarification
+  // Budget Missing Zero Clarification (only trigger for suspiciously low numbers like $250 → $2.5M)
   const parsedBudget = parseBudget(text);
-  if (parsedBudget && parsedBudget >= 10000 && parsedBudget <= 250000) {
+  if (parsedBudget && parsedBudget >= 10000 && parsedBudget <= 50000) {
      return { goal: 'single_suburb_research', suburbs, needsClarification: true, propertyType, clarifyingQ: `I noticed a budget of $${parsedBudget.toLocaleString()}. Did you mean $${(parsedBudget * 10).toLocaleString()}? Please clarify the correct amount.` };
   }
 
