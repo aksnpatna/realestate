@@ -334,7 +334,6 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
                house_median_price_12m_change_pct
         FROM suburbs_ui_v3
         {where_clause}
-        LIMIT 300
     """)
 
     rows = db.execute(sql, params).fetchall()

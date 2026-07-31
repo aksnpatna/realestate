@@ -160,7 +160,7 @@ async def discover_yieldsense(
       - "Highest rental yield in regional TAS"
       - "50km east of Sydney" → graceful ocean guardrail
     """
-    raw = discover_suburbs(db, req.question, budget=req.budget)
+    raw = discover_suburbs(db, req.question, budget=req.budget, limit=req.limit)
 
     # Convert raw dict results to Pydantic models
     results = []
@@ -213,11 +213,13 @@ async def extract_intent(
         
     try:
         parsed = await classify_intent_llm(req.query, current_user)
-    finally:
-        llm_semaphore.release()
-        # Ensure 'suburbs' is present
-        if "suburbs" not in parsed:
-            parsed["suburbs"] = []
-        return parsed
     except Exception as e:
+        llm_semaphore.release()
         raise HTTPException(status_code=500, detail="Failed to classify intent")
+    
+    llm_semaphore.release()
+    
+    # Ensure 'suburbs' is present
+    if "suburbs" not in parsed:
+        parsed["suburbs"] = []
+    return parsed
