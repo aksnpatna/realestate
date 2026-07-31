@@ -146,20 +146,18 @@ const KNOWN_SUBURBS = [
 ];
 
 function parseBudget(text: string): number | null {
-  // Require $, a context word (budget/under/for), or a suffix (k/m/million)
-  const match = text.match(/(?:budget|under|for|of)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?\b|\$\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?\b|\b(\d+(?:\.\d+)?)\s*([kKmM]|million)\b/i);
-  
+  const match = text.match(/(?:budget|under|for|of)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?\b/);
   if (match) {
-    let num = parseFloat(match[1] || match[3] || match[5]);
-    const suffix = (match[2] || match[4] || match[6])?.toLowerCase();
-    
-    if (suffix === 'm' || suffix === 'million' || (num < 1000 && text.toLowerCase().includes('million'))) {
-      num *= 1000000;
-    } else if (suffix === 'k') {
-      num *= 1000;
-    }
-    
+    let num = parseFloat(match[1]);
+    const suffix = match[2]?.toLowerCase();
+    if (suffix === 'm' || (num < 1000 && text.toLowerCase().includes('million'))) num *= 1000000;
+    else if (suffix === 'k') num *= 1000;
     if (num >= 10000 && num <= 20000000) return num;
+  }
+  const rawMatch = text.match(/\b([1-9]\d{4,7})\b/);
+  if (rawMatch) {
+    const parsed = parseInt(rawMatch[1], 10);
+    if (parsed >= 10000) return parsed;
   }
   return null;
 }

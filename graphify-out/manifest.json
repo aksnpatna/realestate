@@ -135,8 +135,8 @@
     "semantic_hash": "3903fdd09ac66228d8137b28f7ec7dd9"
   },
   "backend/requirements.txt": {
-    "mtime": 1783994307.4300432,
-    "ast_hash": "5d184a9bac9cd828da3360f57455d955",
+    "mtime": 1785505315.9937477,
+    "ast_hash": "8c97e1ac70406476da73e0422072c05b",
     "semantic_hash": ""
   },
   "docker-compose.yml": {
@@ -1110,13 +1110,13 @@
     "semantic_hash": ""
   },
   "backend/ask/evidence.py": {
-    "mtime": 1785480360.2095554,
-    "ast_hash": "0c4aa00e073cd5efde400296f307774e",
+    "mtime": 1785503915.8274548,
+    "ast_hash": "f478d0ec4d36b50276400db55bdf2010",
     "semantic_hash": ""
   },
   "backend/ask/policy.py": {
-    "mtime": 1785478829.821918,
-    "ast_hash": "e8ddbb9548d29351738b2044ab67b7d7",
+    "mtime": 1785506352.5606532,
+    "ast_hash": "7deda90944ab9637607d01c98ecec6f1",
     "semantic_hash": ""
   },
   "backend/ask/repository.py": {
@@ -1130,13 +1130,13 @@
     "semantic_hash": ""
   },
   "backend/ask/schemas.py": {
-    "mtime": 1785501475.4677346,
-    "ast_hash": "3fd090c1bd202150557673310a4a54a6",
+    "mtime": 1785506374.699425,
+    "ast_hash": "8fe73d09779d8c4783ddde97297e6c85",
     "semantic_hash": ""
   },
   "backend/ask/synthesis.py": {
-    "mtime": 1785500700.5066617,
-    "ast_hash": "03699329b81fe8c5d43b68a54a142b0e",
+    "mtime": 1785505256.247903,
+    "ast_hash": "79648ea9c9f54e4db98441edfa0fde1e",
     "semantic_hash": ""
   },
   "backend/migrate_ask.py": {
@@ -1145,8 +1145,8 @@
     "semantic_hash": ""
   },
   "backend/routers/ask_property.py": {
-    "mtime": 1785501504.9742842,
-    "ast_hash": "0bbdf26120ce046c3f007a1e683458cc",
+    "mtime": 1785506854.0272896,
+    "ast_hash": "11da72c878f5d8d5555168cbe9bcd9e1",
     "semantic_hash": ""
   },
   "backend/test_news.py": {
@@ -1155,8 +1155,8 @@
     "semantic_hash": ""
   },
   "src/components/AskYieldSense.tsx": {
-    "mtime": 1785502940.8366094,
-    "ast_hash": "05799b292b4bbb04d8b46f96e657f391",
+    "mtime": 1785504915.5465436,
+    "ast_hash": "2bc8fe41f99f5dc41492d1e610c26322",
     "semantic_hash": ""
   },
   "test_news.py": {
@@ -1170,13 +1170,43 @@
     "semantic_hash": ""
   },
   "backend/ask/geo_discovery.py": {
-    "mtime": 1785502796.8173163,
-    "ast_hash": "7b186c017019ff7070b71a7e44017713",
+    "mtime": 1785506906.5859017,
+    "ast_hash": "28741446e4ebc673b55b69fb1301ac5b",
     "semantic_hash": ""
   },
   ".agents/AGENTS.md": {
     "mtime": 1785502466.663938,
     "ast_hash": "67b5840e3d8bf941c6ad62dd798f4934",
+    "semantic_hash": ""
+  },
+  "backend/ask/security.py": {
+    "mtime": 1785506344.1437411,
+    "ast_hash": "9c36544744b814d938c885fdf3023366",
+    "semantic_hash": ""
+  },
+  "backend/ask/intent_classifier.py": {
+    "mtime": 1785505266.4578774,
+    "ast_hash": "5ec648d35c3e83baa6dbe517efcaaa16",
+    "semantic_hash": ""
+  },
+  ".kilo/agent-manager.json": {
+    "mtime": 1785505500.3642135,
+    "ast_hash": "8d46f1f8da454701ed930a766998a0e3",
+    "semantic_hash": ""
+  },
+  "backend/scratch_test_geo.py": {
+    "mtime": 1785506754.9800475,
+    "ast_hash": "9e206f71c359063556a32436b8504f00",
+    "semantic_hash": ""
+  },
+  "backend/scratch_test_geo2.py": {
+    "mtime": 1785506828.3604825,
+    "ast_hash": "4f5629307ebab8c3c96036af9d14daf1",
+    "semantic_hash": ""
+  },
+  "backend/scratch_test_geo3.py": {
+    "mtime": 1785506894.6700838,
+    "ast_hash": "217d0416f2c7c3b879802f519bbb1faf",
     "semantic_hash": ""
   }
 }

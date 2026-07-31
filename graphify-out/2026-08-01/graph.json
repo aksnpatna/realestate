@@ -1552,10 +1552,60 @@
       "norm_label": "security.py"
     },
     {
+      "label": "TTLLRUCache",
+      "file_type": "code",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "ask_security_ttllrucache",
+      "community": 155,
+      "norm_label": "ttllrucache"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "ask_security_ttllrucache_init",
+      "community": 155,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".get()",
+      "file_type": "code",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "ask_security_ttllrucache_get",
+      "community": 155,
+      "norm_label": ".get()"
+    },
+    {
+      "label": ".set()",
+      "file_type": "code",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "ask_security_ttllrucache_set",
+      "community": 155,
+      "norm_label": ".set()"
+    },
+    {
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "backend_ask_security_py_any",
+      "community": 155,
+      "norm_label": "any"
+    },
+    {
       "label": "is_rate_limited()",
       "file_type": "code",
       "source_file": "backend/ask/security.py",
-      "source_location": "L10",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "ask_security_is_rate_limited",
       "community": 155,
@@ -1565,7 +1615,7 @@
       "label": "is_prompt_injection()",
       "file_type": "code",
       "source_file": "backend/ask/security.py",
-      "source_location": "L37",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "ask_security_is_prompt_injection",
       "community": 155,
@@ -1575,7 +1625,7 @@
       "label": "is_abusive()",
       "file_type": "code",
       "source_file": "backend/ask/security.py",
-      "source_location": "L47",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "ask_security_is_abusive",
       "community": 155,
@@ -3818,7 +3868,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "backend_main_request_log_middleware",
-      "community": 214,
+      "community": 6,
       "norm_label": "request_log_middleware()"
     },
     {
@@ -3838,7 +3888,7 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "backend_main_rl_check",
-      "community": 214,
+      "community": 6,
       "norm_label": "_rl_check()"
     },
     {
@@ -3848,7 +3898,7 @@
       "source_location": "L252",
       "_origin": "ast",
       "id": "backend_main_check_auth_rate",
-      "community": 214,
+      "community": 6,
       "norm_label": "_check_auth_rate()"
     },
     {
@@ -3858,7 +3908,7 @@
       "source_location": "L267",
       "_origin": "ast",
       "id": "backend_main_usermodel",
-      "community": 214,
+      "community": 226,
       "norm_label": "usermodel"
     },
     {
@@ -3868,7 +3918,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "base",
-      "community": 153,
+      "community": 226,
       "norm_label": "base"
     },
     {
@@ -3878,7 +3928,7 @@
       "source_location": "L285",
       "_origin": "ast",
       "id": "backend_main_userfavorite",
-      "community": 153,
+      "community": 226,
       "norm_label": "userfavorite"
     },
     {
@@ -3898,7 +3948,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "backend_main_useractivity",
-      "community": 153,
+      "community": 226,
       "norm_label": "useractivity"
     },
     {
@@ -3908,7 +3958,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "backend_main_userconsent",
-      "community": 153,
+      "community": 226,
       "norm_label": "userconsent"
     },
     {
@@ -4018,7 +4068,7 @@
       "source_location": "L438",
       "_origin": "ast",
       "id": "backend_main_send_verification_email",
-      "community": 214,
+      "community": 6,
       "norm_label": "send_verification_email()"
     },
     {
@@ -4028,7 +4078,7 @@
       "source_location": "L474",
       "_origin": "ast",
       "id": "backend_main_hash_password",
-      "community": 214,
+      "community": 6,
       "norm_label": "hash_password()"
     },
     {
@@ -4038,7 +4088,7 @@
       "source_location": "L477",
       "_origin": "ast",
       "id": "backend_main_verify_password",
-      "community": 214,
+      "community": 6,
       "norm_label": "verify_password()"
     },
     {
@@ -4068,7 +4118,7 @@
       "source_location": "L504",
       "_origin": "ast",
       "id": "backend_main_register",
-      "community": 214,
+      "community": 6,
       "norm_label": "register()"
     },
     {
@@ -4078,7 +4128,7 @@
       "source_location": "L552",
       "_origin": "ast",
       "id": "backend_main_write_analytics_event_bg",
-      "community": 6,
+      "community": 226,
       "norm_label": "_write_analytics_event_bg()"
     },
     {
@@ -4108,7 +4158,7 @@
       "source_location": "L595",
       "_origin": "ast",
       "id": "backend_main_login",
-      "community": 214,
+      "community": 6,
       "norm_label": "login()"
     },
     {
@@ -4148,7 +4198,7 @@
       "source_location": "L656",
       "_origin": "ast",
       "id": "backend_main_get_me",
-      "community": 214,
+      "community": 226,
       "norm_label": "get_me()"
     },
     {
@@ -4348,7 +4398,7 @@
       "source_location": "L1357",
       "_origin": "ast",
       "id": "backend_main_get_suburb_evidence",
-      "community": 6,
+      "community": 157,
       "norm_label": "get_suburb_evidence()"
     },
     {
@@ -4358,7 +4408,7 @@
       "source_location": "L1442",
       "_origin": "ast",
       "id": "backend_main_get_decision_brief",
-      "community": 6,
+      "community": 99,
       "norm_label": "get_decision_brief()"
     },
     {
@@ -4388,7 +4438,7 @@
       "source_location": "L1601",
       "_origin": "ast",
       "id": "backend_main_get_similar_suburbs",
-      "community": 103,
+      "community": 6,
       "norm_label": "get_similar_suburbs()"
     },
     {
@@ -4788,7 +4838,7 @@
       "source_location": "L311",
       "_origin": "ast",
       "id": "backend_main_rationale_311",
-      "community": 153,
+      "community": 226,
       "norm_label": "stores legally binding click-wrap agreements with timestamps and ip records."
     },
     {
@@ -4968,7 +5018,7 @@
       "source_location": "L1358",
       "_origin": "ast",
       "id": "backend_main_rationale_1358",
-      "community": 6,
+      "community": 157,
       "norm_label": "evidence contract: trace every material metric to its source.     returns null o"
     },
     {
@@ -4978,7 +5028,7 @@
       "source_location": "L1443",
       "_origin": "ast",
       "id": "backend_main_rationale_1443",
-      "community": 6,
+      "community": 99,
       "norm_label": "returns a versioned decision snapshot for the decision brief ui component."
     },
     {
@@ -5468,7 +5518,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "backend_models_v2_suburbuiv2",
-      "community": 153,
+      "community": 226,
       "norm_label": "suburbuiv2"
     },
     {
@@ -5488,7 +5538,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "backend_models_v2_rationale_26",
-      "community": 153,
+      "community": 226,
       "norm_label": "normalized and transformed layer.      ready for immediate frontend consumption."
     },
     {
@@ -6008,7 +6058,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_parallel_scraper",
-      "community": 227,
+      "community": 226,
       "norm_label": "parallel_scraper.py"
     },
     {
@@ -6018,7 +6068,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "backend_parallel_scraper_suburballmodel",
-      "community": 153,
+      "community": 226,
       "norm_label": "suburballmodel"
     },
     {
@@ -6028,7 +6078,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "backend_parallel_scraper_suburbgeodatamodel",
-      "community": 227,
+      "community": 226,
       "norm_label": "suburbgeodatamodel"
     },
     {
@@ -6038,7 +6088,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "backend_parallel_scraper_crimestatmodel",
-      "community": 227,
+      "community": 226,
       "norm_label": "crimestatmodel"
     },
     {
@@ -6048,7 +6098,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "backend_parallel_scraper_suburbuimodel",
-      "community": 153,
+      "community": 226,
       "norm_label": "suburbuimodel"
     },
     {
@@ -6482,10 +6532,30 @@
       "norm_label": "get_db()"
     },
     {
+      "label": "verify_security()",
+      "file_type": "code",
+      "source_file": "backend/routers/ask_property.py",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "routers_ask_property_verify_security",
+      "community": 155,
+      "norm_label": "verify_security()"
+    },
+    {
+      "label": "Request",
+      "file_type": "code",
+      "source_file": "backend/routers/ask_property.py",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "backend_routers_ask_property_py_request",
+      "community": 155,
+      "norm_label": "request"
+    },
+    {
       "label": "ask_yieldsense()",
       "file_type": "code",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L38",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "routers_ask_property_ask_yieldsense",
       "community": 155,
@@ -6495,27 +6565,17 @@
       "label": "AskIntent",
       "file_type": "code",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L38",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "backend_routers_ask_property_py_askintent",
       "community": 155,
       "norm_label": "askintent"
     },
     {
-      "label": "Request",
-      "file_type": "code",
-      "source_file": "backend/routers/ask_property.py",
-      "source_location": "L38",
-      "_origin": "ast",
-      "id": "backend_routers_ask_property_py_request",
-      "community": 155,
-      "norm_label": "request"
-    },
-    {
       "label": "Session",
       "file_type": "code",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L38",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "backend_routers_ask_property_py_session",
       "community": 155,
@@ -6525,7 +6585,7 @@
       "label": "discover_yieldsense()",
       "file_type": "code",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L140",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "routers_ask_property_discover_yieldsense",
       "community": 155,
@@ -6535,7 +6595,7 @@
       "label": "DiscoveryRequest",
       "file_type": "code",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L140",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "discoveryrequest",
       "community": 155,
@@ -6545,7 +6605,7 @@
       "label": "IntentRequest",
       "file_type": "code",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L195",
+      "source_location": "L199",
       "_origin": "ast",
       "id": "routers_ask_property_intentrequest",
       "community": 155,
@@ -6555,7 +6615,7 @@
       "label": "extract_intent()",
       "file_type": "code",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L199",
+      "source_location": "L203",
       "_origin": "ast",
       "id": "routers_ask_property_extract_intent",
       "community": 155,
@@ -6565,9 +6625,9 @@
       "label": "Natural language geo-spatial suburb discovery.     Understands queries like:",
       "file_type": "rationale",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L146",
+      "source_location": "L156",
       "_origin": "ast",
-      "id": "routers_ask_property_rationale_146",
+      "id": "routers_ask_property_rationale_156",
       "community": 155,
       "norm_label": "natural language geo-spatial suburb discovery.     understands queries like:"
     },
@@ -11236,7 +11296,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_fastapi",
-      "community": 214,
+      "community": 226,
       "norm_label": "test_fastapi.py"
     },
     {
@@ -11246,7 +11306,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "test_fastapi_mock_get_current_user",
-      "community": 214,
+      "community": 226,
       "norm_label": "mock_get_current_user()"
     },
     {
@@ -21860,9 +21920,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L240",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery",
-      "target": "ask_geo_discovery_ttllrucache",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_ttllrucache"
     },
     {
       "relation": "rationale_for",
@@ -21991,9 +22051,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_apply_geo_guardrail",
-      "target": "ask_geo_discovery_ttllrucache_get",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_ttllrucache_get"
     },
     {
       "relation": "calls",
@@ -22024,9 +22084,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L229",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_build_composite_score",
-      "target": "ask_geo_discovery_ttllrucache_get",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_ttllrucache_get"
     },
     {
       "relation": "calls",
@@ -22045,9 +22105,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L246",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_ttllrucache",
-      "target": "ask_geo_discovery_ttllrucache_get",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_ttllrucache_get"
     },
     {
       "relation": "method",
@@ -22055,9 +22115,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L241",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_ttllrucache",
-      "target": "ask_geo_discovery_ttllrucache_init",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_ttllrucache_init"
     },
     {
       "relation": "method",
@@ -22065,9 +22125,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L256",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_ttllrucache",
-      "target": "ask_geo_discovery_ttllrucache_set",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_ttllrucache_set"
     },
     {
       "relation": "calls",
@@ -22076,9 +22136,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L268",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_discover_suburbs",
-      "target": "ask_geo_discovery_ttllrucache_get",
-      "confidence_score": 1.0
+      "target": "ask_geo_discovery_ttllrucache_get"
     },
     {
       "relation": "references",
@@ -22087,9 +22147,9 @@
       "source_file": "backend/ask/geo_discovery.py",
       "source_location": "L256",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ask_geo_discovery_ttllrucache_set",
-      "target": "backend_ask_geo_discovery_py_any",
-      "confidence_score": 1.0
+      "target": "backend_ask_geo_discovery_py_any"
     },
     {
       "relation": "references",
@@ -23707,6 +23767,16 @@
       "target": "ask_security_is_rate_limited"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "ask_security",
+      "target": "ask_security_ttllrucache",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -23716,6 +23786,58 @@
       "confidence_score": 1.0,
       "source": "routers_ask_property",
       "target": "ask_security"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "ask_security_ttllrucache",
+      "target": "ask_security_ttllrucache_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "ask_security_ttllrucache",
+      "target": "ask_security_ttllrucache_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "ask_security_ttllrucache",
+      "target": "ask_security_ttllrucache_set",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "ask_security_is_rate_limited",
+      "target": "ask_security_ttllrucache_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/ask/security.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "ask_security_ttllrucache_set",
+      "target": "backend_ask_security_py_any",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -23756,6 +23878,17 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/routers/ask_property.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "routers_ask_property_verify_security",
+      "target": "ask_security_is_rate_limited"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/routers/ask_property.py",
       "source_location": "L44",
       "weight": 1.0,
       "source": "routers_ask_property_ask_yieldsense",
@@ -23789,6 +23922,17 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/routers/ask_property.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "routers_ask_property_verify_security",
+      "target": "ask_security_is_prompt_injection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/routers/ask_property.py",
       "source_location": "L44",
       "weight": 1.0,
       "source": "routers_ask_property_ask_yieldsense",
@@ -23814,6 +23958,17 @@
       "source_location": "L201",
       "weight": 1.0,
       "source": "routers_ask_property_extract_intent",
+      "target": "ask_security_is_abusive"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/routers/ask_property.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "routers_ask_property_verify_security",
       "target": "ask_security_is_abusive"
     },
     {
@@ -34379,6 +34534,16 @@
       "target": "routers_ask_property_intentrequest"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/ask_property.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "routers_ask_property",
+      "target": "routers_ask_property_verify_security",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -34394,11 +34559,11 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L29",
+      "source_location": "L34",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routers_ask_property_ask_yieldsense",
-      "target": "backend_routers_ask_property_py_askintent"
+      "source": "routers_ask_property_verify_security",
+      "target": "backend_routers_ask_property_py_request",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -34410,17 +34575,6 @@
       "confidence_score": 1.0,
       "source": "routers_ask_property_ask_yieldsense",
       "target": "backend_routers_ask_property_py_request"
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/routers/ask_property.py",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routers_ask_property_ask_yieldsense",
-      "target": "backend_routers_ask_property_py_session"
     },
     {
       "relation": "references",
@@ -34449,6 +34603,28 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "backend/routers/ask_property.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_ask_property_ask_yieldsense",
+      "target": "backend_routers_ask_property_py_askintent"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/ask_property.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_ask_property_ask_yieldsense",
+      "target": "backend_routers_ask_property_py_session"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/ask_property.py",
       "source_location": "L126",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -34470,9 +34646,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/routers/ask_property.py",
-      "source_location": "L146",
+      "source_location": "L156",
       "weight": 1.0,
-      "source": "routers_ask_property_rationale_146",
+      "source": "routers_ask_property_rationale_156",
       "target": "routers_ask_property_discover_yieldsense",
       "confidence_score": 1.0
     },
@@ -48443,5 +48619,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "a71f1d0e9e6d0347a9d14ea08ecdf5426505bf07"
+  "built_at_commit": "d24d1847d6bbfee25adca047a4c5186a97e6f499"
 }

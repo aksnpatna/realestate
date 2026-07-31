@@ -1145,8 +1145,8 @@
     "semantic_hash": ""
   },
   "backend/routers/ask_property.py": {
-    "mtime": 1785505290.607815,
-    "ast_hash": "2086aa88ceeb3ae3e15e5ff03221e9a9",
+    "mtime": 1785505968.4505374,
+    "ast_hash": "d1b3cf12410bdee5c29c076c499ccf8a",
     "semantic_hash": ""
   },
   "backend/test_news.py": {
@@ -1180,13 +1180,18 @@
     "semantic_hash": ""
   },
   "backend/ask/security.py": {
-    "mtime": 1785505162.8511245,
-    "ast_hash": "dbc557f193c48590c69c225c6b83c596",
+    "mtime": 1785505910.677477,
+    "ast_hash": "e651a4063252d465671166f2f6c42de1",
     "semantic_hash": ""
   },
   "backend/ask/intent_classifier.py": {
     "mtime": 1785505266.4578774,
     "ast_hash": "5ec648d35c3e83baa6dbe517efcaaa16",
+    "semantic_hash": ""
+  },
+  ".kilo/agent-manager.json": {
+    "mtime": 1785505500.3642135,
+    "ast_hash": "8d46f1f8da454701ed930a766998a0e3",
     "semantic_hash": ""
   }
 }

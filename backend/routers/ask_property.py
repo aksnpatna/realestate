@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 import uuid
 import json
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -8,16 +7,12 @@ from datetime import datetime
 from models_v3 import SessionLocal
 from routers.decision_brief import get_current_user
 from ask.schemas import AskIntent, AskResponse, ScenarioAssumptions, SuburbComparison, SuburbComparisonMetric, DiscoveryRequest, DiscoveryResponse, DiscoveryResult, DiscoveryMetrics
-from ask.evidence import get_suburbs_ui_bulk, extract_evidence, calculate_data_quality
+from ask.evidence import get_suburb_ui, extract_evidence, calculate_data_quality
 from ask.scenarios import compute_affordability, compute_yield
 from ask.synthesis import synthesize_research
 from ask.policy import validate_policy
-import asyncio
-from starlette.concurrency import run_in_threadpool
 from ask.repository import create_conversation, save_ask_brief, _sanitize
 from ask.geo_discovery import discover_suburbs
-from ask.security import is_rate_limited, is_prompt_injection, is_abusive
-from ask.security import is_rate_limited, is_prompt_injection, is_abusive
 
 router = APIRouter(
     prefix="/api/v3/ask",
@@ -31,23 +26,8 @@ def get_db():
     finally:
         db.close()
 
-async def verify_security(request: Request, current_user: str = Depends(get_current_user)):
-    if is_rate_limited(current_user):
-        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
-    
-    try:
-        body = await request.json()
-        query = body.get("question", body.get("query", ""))
-        if is_prompt_injection(query) or is_abusive(query):
-            raise HTTPException(status_code=400, detail="Query rejected by security policy.")
-    except Exception:
-        pass
-
-# Prevent event loop saturation: Max 50 concurrent outbound LLM requests
-llm_semaphore = asyncio.Semaphore(50)
-
-@router.post("", response_model=AskResponse, dependencies=[Depends(verify_security)])
-async def ask_yieldsense(
+@router.post("", response_model=AskResponse)
+def ask_yieldsense(
     intent: AskIntent, 
     request: Request,
     db: Session = Depends(get_db), 
@@ -64,8 +44,12 @@ async def ask_yieldsense(
         if intent.goal != "interstate_discovery":
             raise HTTPException(status_code=400, detail="Missing target suburbs for research.")
     
-    valid_suburbs = await run_in_threadpool(get_suburbs_ui_bulk, db, intent.suburbs)
-    for v3 in valid_suburbs:
+    valid_suburbs = []
+    for ref in intent.suburbs:
+        v3 = get_suburb_ui(db, ref)
+        if not v3:
+            continue
+        valid_suburbs.append(v3)
         ev = extract_evidence(v3, intent.property_type)
         all_evidence.extend(ev)
         
@@ -100,16 +84,8 @@ async def ask_yieldsense(
                 valid_suburbs[0].state, intent.property_type, float(price)
             )
 
-    # 4. Synthesize with Load Shedding
-    try:
-        await asyncio.wait_for(llm_semaphore.acquire(), timeout=5.0)
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=503, detail="Service temporarily busy. Please try again in a few seconds.")
-        
-    try:
-        syn = await synthesize_research(intent, all_evidence, assumptions, affordability_res, current_user)
-    finally:
-        llm_semaphore.release()
+    # 4. Synthesize
+    syn = synthesize_research(intent, all_evidence, assumptions, affordability_res)
     
     # 5. Policy Check
     policy_check = validate_policy(syn)
@@ -137,8 +113,8 @@ async def ask_yieldsense(
         "versions": {"evidence": "v1", "scorer": "v1", "prompt": "ask-v1", "model": "gpt-4o"}
     })
     
-    conv = await run_in_threadpool(create_conversation, db, current_user, title=intent.question[:50])
-    await run_in_threadpool(save_ask_brief, db, current_user, brief_data, conv.id)
+    conv = create_conversation(db, current_user, title=intent.question[:50])
+    save_ask_brief(db, current_user, brief_data, conv.id)
 
     return AskResponse(
         request_id=request_id,
@@ -146,8 +122,8 @@ async def ask_yieldsense(
         **brief_data
     )
 
-@router.post("/discover", response_model=DiscoveryResponse, dependencies=[Depends(verify_security)])
-async def discover_yieldsense(
+@router.post("/discover", response_model=DiscoveryResponse)
+def discover_yieldsense(
     req: DiscoveryRequest,
     request: Request,
     db: Session = Depends(get_db),
@@ -160,7 +136,7 @@ async def discover_yieldsense(
       - "Highest rental yield in regional TAS"
       - "50km east of Sydney" → graceful ocean guardrail
     """
-    raw = discover_suburbs(db, req.question, budget=req.budget, limit=req.limit)
+    raw = discover_suburbs(db, req.question, budget=req.budget)
 
     # Convert raw dict results to Pydantic models
     results = []
@@ -195,31 +171,3 @@ async def discover_yieldsense(
         query_understood=raw.get("query_understood", {}),
         results=results,
     )
-
-class IntentRequest(BaseModel):
-    query: str
-
-@router.post("/intent", dependencies=[Depends(verify_security)])
-async def extract_intent(
-    req: IntentRequest,
-    request: Request,
-    current_user: str = Depends(get_current_user)
-):
-    from ask.intent_classifier import classify_intent_llm
-    try:
-        await asyncio.wait_for(llm_semaphore.acquire(), timeout=5.0)
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=503, detail="Service temporarily busy. Please try again in a few seconds.")
-        
-    try:
-        parsed = await classify_intent_llm(req.query, current_user)
-    except Exception as e:
-        llm_semaphore.release()
-        raise HTTPException(status_code=500, detail="Failed to classify intent")
-    
-    llm_semaphore.release()
-    
-    # Ensure 'suburbs' is present
-    if "suburbs" not in parsed:
-        parsed["suburbs"] = []
-    return parsed

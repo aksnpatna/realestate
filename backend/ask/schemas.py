@@ -112,15 +112,3 @@ class DiscoveryResponse(BaseModel):
     query_understood: dict = {}
     results: List[DiscoveryResult] = []
     disclaimer: str = "General research only; not financial, legal, tax, lending or valuation advice."
-
-class SupportRiskClaim(BaseModel):
-    claim: str
-    evidence_ids: List[str]
-
-class SynthesisResponse(BaseModel):
-    summary: str
-    research_priority: Literal["high", "medium", "low", "insufficient_evidence"]
-    supports: List[SupportRiskClaim]
-    risks: List[SupportRiskClaim]
-    unknowns: List[str]
-    next_steps: List[str]

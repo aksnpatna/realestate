@@ -230,45 +230,7 @@ def build_composite_score(row: dict, priorities: List[str]) -> float:
         score += _normalise_score(val, low, high, invert) * (100.0 / n)
     return round(score, 1)
 
-from sqlalchemy.orm import Session
-from sqlalchemy import func
-import re
-import math
-import time
-from collections import OrderedDict
-
-class TTLLRUCache:
-    def __init__(self, maxsize: int, ttl: float):
-        self.cache = OrderedDict()
-        self.maxsize = maxsize
-        self.ttl = ttl
-
-    def get(self, key: str):
-        if key not in self.cache:
-            return None
-        timestamp, value = self.cache[key]
-        if time.time() - timestamp > self.ttl:
-            del self.cache[key]
-            return None
-        self.cache.move_to_end(key)
-        return value
-
-    def set(self, key: str, value: Any):
-        if key in self.cache:
-            self.cache.move_to_end(key)
-        self.cache[key] = (time.time(), value)
-        if len(self.cache) > self.maxsize:
-            self.cache.popitem(last=False)
-
-_GEO_CACHE = TTLLRUCache(maxsize=1000, ttl=3600)
-
-def discover_suburbs(db: Session, question: str, budget: Optional[float] = None, limit: int = 5) -> Dict[str, Any]:
-    # Check cache first
-    cache_key = f"{question.strip().lower()}_{budget}"
-    cached_res = _GEO_CACHE.get(cache_key)
-    if cached_res is not None:
-        return cached_res
-
+def discover_suburbs(db: Session, question: str, budget: Optional[float] = None) -> Dict[str, Any]:
     city       = normalise_city(question)
     direction  = normalise_direction(question)
     km         = extract_km(question) or (20.0 if direction else None)
@@ -276,7 +238,17 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
     priorities = extract_priorities(question)
     regional   = is_regional(question)
 
-    # 1. Guardrails (Missing Vector)
+    # 1. Guardrails (Abuse & Missing Vector)
+    abusive_words = ['fuck', 'shit', 'bitch', 'cunt', 'asshole', 'stupid', 'idiot', 'dick', 'crap']
+    if any(w in question.lower() for w in abusive_words):
+        return {
+            "guardrail": True,
+            "message": "Let's keep it professional. Please rephrase your query with a specific geographical area.",
+            "results": [],
+            "summary": "Query blocked due to inappropriate language.",
+            "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
+        }
+
     if not city and not state and not regional:
         return {
             "guardrail": True,
@@ -334,6 +306,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
                house_median_price_12m_change_pct
         FROM suburbs_ui_v3
         {where_clause}
+        LIMIT 300
     """)
 
     rows = db.execute(sql, params).fetchall()
@@ -398,7 +371,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
     for c in candidates:
         c["_score"] = build_composite_score(c, priorities)
     candidates.sort(key=lambda x: x["_score"], reverse=True)
-    top = candidates[:limit]
+    top = candidates[:5]
 
     # 5. Format results
     def format_why(s: dict) -> List[str]:
@@ -450,7 +423,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
     km_str = f" within {km:.0f}km" if km else ""
     priority_str = ", ".join(p for p in priorities[:3])
 
-    res = {
+    return {
         "guardrail": False,
         "message": None,
         "query_understood": {
@@ -460,5 +433,3 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
         "summary": f"Found {len(results)} suburb{'s' if len(results) != 1 else ''} {dir_str}{km_str} ranked by {priority_str}.",
         "results": results,
     }
-    _GEO_CACHE.set(cache_key, res)
-    return res

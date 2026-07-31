@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-07-31)
+# Graph Report - realestate  (2026-08-01)
 
 ## Corpus Check
-- 218 files · ~2,375,263 words
+- 224 files · ~2,376,569 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1964 nodes · 2713 edges · 226 communities (183 shown, 43 thin omitted)
-- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 427 edges (avg confidence: 0.56)
+- 1988 nodes · 2776 edges · 228 communities (183 shown, 45 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 442 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ca0d0a3c`
+- Built from commit: `2a35a7e1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -192,6 +192,7 @@
 - [[_COMMUNITY_Community 220|Community 220]]
 - [[_COMMUNITY_Community 221|Community 221]]
 - [[_COMMUNITY_Community 225|Community 225]]
+- [[_COMMUNITY_Community 226|Community 226]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Session` - 43 edges
@@ -214,8 +215,8 @@
   backend/etl_abs_census.py → backend/models_v3.py
 - `mock_get_current_user()` --calls--> `UserModel`  [EXTRACTED]
   test_fastapi.py → backend/main.py
-- `migrate()` --calls--> `SuburbPriceHistory`  [INFERRED]
-  backend/migrate_history_to_timeseries.py → backend/models_v3.py
+- `get_news_sentiment()` --calls--> `record_cache_miss()`  [INFERRED]
+  backend/main.py → backend/observability.py
 
 ## Import Cycles
 - None detected.
@@ -231,7 +232,7 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (226 total, 43 thin omitted)
+## Communities (228 total, 45 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
@@ -254,12 +255,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 5 - "Frontend Property Calculators"
-Cohesion: 0.19
-Nodes (17): get_me(), Stores legally binding Click-Wrap agreements with timestamps and IP records., UserActivity, UserConsent, UserFavorite, UserModel, _write_analytics_event_bg(), Ingestion Target Layer. Stores the pure, unprocessed JSON payload extracted from (+9 more)
+Cohesion: 0.26
+Nodes (11): DecisionBriefSnapshot, Persisted Decision Brief to create a durable, shareable artifact.     Solves the, Session, BriefBrokerRequest, BriefCreateRequest, get_decision_brief(), get_shared_brief(), request_broker_handoff() (+3 more)
 
 ### Community 6 - "Database Models & Scrapers"
 Cohesion: 0.05
-Nodes (65): add_portfolio_property(), _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), bust_suburbs_cache(), buy_finder_rank(), calculate_roi(), calculate_stamp_duty() (+57 more)
+Nodes (58): add_portfolio_property(), _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), bust_suburbs_cache(), buy_finder_rank(), calculate_roi(), calculate_stamp_duty() (+50 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -334,8 +335,8 @@ Cohesion: 0.06
 Nodes (33): dependencies, @babel/parser, @babel/traverse, driver.js, leaflet, leaflet.vectorgrid, react, react-dom (+25 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.06
-Nodes (40): agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict, _evaluate_policy_rules() (+32 more)
+Cohesion: 0.05
+Nodes (43): agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict, _evaluate_policy_rules() (+35 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.14
@@ -358,12 +359,8 @@ Cohesion: 0.15
 Nodes (13): Bankstown NSW 2200, Blacktown NSW 2148, Bondi Junction NSW 2022, Campbelltown NSW 2560, Castle Hill NSW 2154, Chatswood NSW 2067, Hurstville NSW 2220, Liverpool NSW 2170 (+5 more)
 
 ### Community 86 - "Community 86"
-Cohesion: 0.12
-Nodes (16): CalcType, CHART_COLORS, PropertyType, STATE_OPTIONS, calcMortgageRegFee(), calcTransferFee(), calculateComprehensiveStampDuty(), calculateMaxPurchase() (+8 more)
-
-### Community 87 - "Community 87"
-Cohesion: 0.13
-Nodes (11): AIInsightPanelProps, AnalysisStep, AnalysisTab, CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, PortfolioProperty (+3 more)
+Cohesion: 0.07
+Nodes (27): AIInsightPanelProps, AnalysisStep, AnalysisTab, CalcType, CHART_COLORS, PropertyType, STATE_OPTIONS, CashflowGearingProps (+19 more)
 
 ### Community 88 - "Community 88"
 Cohesion: 0.06
@@ -606,24 +603,24 @@ Cohesion: 0.29
 Nodes (3): _is_test_database(), pytest_configure(), conftest.py — Pytest configuration and fixtures for the Buyer Fit POC test suite
 
 ### Community 153 - "Community 153"
-Cohesion: 0.27
-Nodes (37): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyersAgentClient, BuyFinderRequest, BuyFinderWeights (+29 more)
+Cohesion: 0.28
+Nodes (42): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyersAgentClient, BuyFinderRequest, BuyFinderWeights (+34 more)
 
 ### Community 154 - "Community 154"
 Cohesion: 0.11
 Nodes (18): Architecture Principles, COLUMN OWNERSHIP (who writes what), DATA LINEAGE MAP, ETL Pipeline Architecture — Real Estate Suburb Data Platform, Merge: `compute_avg_block_sqm()` → `nightly_compute.py`, Merge: `compute_derived_indicators()` → `etl_abs_building.py`, Merge: `etl_national_subdivision_proxies.py` → `nightly_compute.py`, MERGED PIPELINE DETAILS (+10 more)
 
 ### Community 155 - "Community 155"
-Cohesion: 0.08
-Nodes (58): calculate_data_quality(), extract_evidence(), get_suburb_ui(), validate_policy(), add_message(), create_conversation(), generate_share_token(), get_brief() (+50 more)
+Cohesion: 0.10
+Nodes (45): calculate_data_quality(), extract_evidence(), get_suburb_ui(), get_suburbs_ui_bulk(), validate_policy(), compute_affordability(), AskIntent, AskResponse (+37 more)
 
 ### Community 156 - "Community 156"
 Cohesion: 0.05
 Nodes (38): Confirmed decisions, H10 — P1 · Config staleness alert (closes P9), H11 — P1 · Freshness surfaced in UI (closes P11), H12 — P1 · Structured request logs (closes P14), H13 — P1 · Concurrency model for AI (closes P15), H14 — P2 · Scraper robots/ToS posture (closes P4 follow-up), H15 — P2 · Test scaffolding for the new invariants, H1 — P0 · Kill the random-JWT_SECRET foot-gun (closes P1, P10) (+30 more)
 
 ### Community 157 - "Community 157"
-Cohesion: 0.15
-Nodes (20): _annualize_cagr(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), _get_sqm_stock(), get_suburb(), get_suburb_evidence(), get_suburb_v3() (+12 more)
+Cohesion: 0.16
+Nodes (18): _annualize_cagr(), _calibrate_dq(), _cap_yield(), _compute_growth_score(), _get_sqm_stock(), get_suburb(), get_suburb_v3(), get_suburbs() (+10 more)
 
 ### Community 158 - "Community 158"
 Cohesion: 0.13
@@ -694,8 +691,8 @@ Cohesion: 0.22
 Nodes (8): get_personas(), Persona presets (weights + visible profile sections + meta).     Frontend uses t, get_persona(), persona_weights(), public_persona_payload(), Any, persona_presets.py — Persona-driven default weights and configuration.  Personas, Frontend-facing payload (weights + section visibility + meta).
 
 ### Community 191 - "Community 191"
-Cohesion: 0.21
-Nodes (16): apply_geo_guardrail(), bearing_deg(), build_composite_score(), discover_suburbs(), extract_km(), extract_priorities(), extract_state(), haversine_km() (+8 more)
+Cohesion: 0.15
+Nodes (17): apply_geo_guardrail(), bearing_deg(), build_composite_score(), discover_suburbs(), extract_km(), extract_priorities(), extract_state(), haversine_km() (+9 more)
 
 ### Community 192 - "Community 192"
 Cohesion: 0.28
@@ -710,8 +707,8 @@ Cohesion: 0.50
 Nodes (4): fetch_min_lot_size_for_bbox(), etl_nsw_planning_rules.py — NSW Real-World Minimum Lot Size Fetcher ============, Queries the ArcGIS REST API for the minimum lot size polygons intersecting the b, run_pipeline()
 
 ### Community 195 - "Community 195"
-Cohesion: 0.17
-Nodes (14): can_fetch(), fetch_json(), FetchError, _get_semaphore(), _get_session(), get_with_backoff(), Response, Session (+6 more)
+Cohesion: 0.14
+Nodes (16): classify_intent_llm(), Any, can_fetch(), fetch_json(), FetchError, _get_semaphore(), _get_session(), get_with_backoff() (+8 more)
 
 ### Community 196 - "Community 196"
 Cohesion: 0.33
@@ -754,8 +751,8 @@ Cohesion: 0.09
 Nodes (18): AskResponse, AskYieldSenseProps, CHIP_STYLE, DetectedIntent, detectIntent(), DiscoveryMetrics, DiscoveryResponse, DiscoveryResult (+10 more)
 
 ### Community 214 - "Community 214"
-Cohesion: 0.29
-Nodes (4): CommitteeMemory, EtlRunLog, models_v3.py — Clean ETL Architecture v3 =======================================, Store committee analyses for similarity-based few-shot retrieval.
+Cohesion: 0.15
+Nodes (16): _check_auth_rate(), get_me(), hash_password(), login(), Request, Privacy-compliant analytics event tracking. Persists to user_activities., Records a legally binding Click-Wrap agreement to the database with IP tracing., record_consent() (+8 more)
 
 ### Community 218 - "Community 218"
 Cohesion: 0.25
@@ -766,23 +763,23 @@ Cohesion: 0.50
 Nodes (3): ShareReport(), ShareReportProps, trackEvent()
 
 ### Community 220 - "Community 220"
-Cohesion: 0.26
-Nodes (11): DecisionBriefSnapshot, Persisted Decision Brief to create a durable, shareable artifact.     Solves the, Session, BriefBrokerRequest, BriefCreateRequest, get_decision_brief(), get_shared_brief(), request_broker_handoff() (+3 more)
+Cohesion: 0.14
+Nodes (25): add_message(), create_conversation(), generate_share_token(), get_brief(), get_conversation(), get_shared_brief(), hash_token(), Redacts sensitive financial data for public viewing. (+17 more)
 
 ## Knowledge Gaps
-- **807 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+802 more)
+- **808 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+803 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **43 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **45 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SuburbUIV3` connect `Community 153` to `Community 99`, `Frontend Property Calculators`, `Database Models & Scrapers`, `Community 135`, `Predictive AI Engine`, `ABS Census Integration`, `Community 214`, `Community 155`, `Community 221`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
-- **Why does `ZipFile` connect `ABS Census Integration` to `Community 153`?**
+- **Why does `SuburbUIV3` connect `Community 153` to `Community 99`, `Database Models & Scrapers`, `Community 135`, `Predictive AI Engine`, `ABS Census Integration`, `Community 214`, `Community 155`, `Community 220`, `Community 221`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `BuyFinderRequest` connect `Community 153` to `Community 99`, `Frontend Property Calculators`, `Database Models & Scrapers`?**
+- **Why does `ZipFile` connect `ABS Census Integration` to `Community 153`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `Session` connect `Database Models & Scrapers` to `Community 153`, `Community 157`, `Community 214`, `Community 103`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Are the 7 inferred relationships involving `Session` (e.g. with `BuyFinderRequest` and `BuyFinderWeights`) actually correct?**
   _`Session` has 7 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 38 inferred relationships involving `SuburbUIV3` (e.g. with `EvidenceMetric` and `Session`) actually correct?**

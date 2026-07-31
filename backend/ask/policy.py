@@ -5,7 +5,7 @@ from typing import Dict, Any, List
 def validate_policy(response: Dict[str, Any]) -> Dict[str, Any]:
     summary = response.get("summary", "").lower()
     
-    # 1. Check for illegal advice language in summary, supports, and risks
+    # 1. Check for illegal advice language
     forbidden_phrases = [
         "you should buy",
         "guaranteed return",
@@ -14,22 +14,13 @@ def validate_policy(response: Dict[str, Any]) -> Dict[str, Any]:
         "loan approved",
         "guaranteed to go up"
     ]
-    # Check summary
+    
     for phrase in forbidden_phrases:
         if phrase in summary:
             return {
                 "status": "insufficient_evidence",
                 "reason": f"Policy violation: Generated summary contains forbidden phrase: '{phrase}'"
             }
-    # Check supports and risks claims
-    for claim_container in (response.get('supports', []) + response.get('risks', [])):
-        claim = claim_container.get('claim', '').lower()
-        for phrase in forbidden_phrases:
-            if phrase in claim:
-                return {
-                    "status": "insufficient_evidence",
-                    "reason": f"Policy violation: Claim contains forbidden phrase: '{phrase}'"
-                }
             
     # 2. Check for citation integrity (not strictly enforced here without complex parsing, but basic check)
     # The requirement is that claims MUST cite evidence. We will just ensure the structure is valid.
