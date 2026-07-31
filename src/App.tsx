@@ -29,13 +29,14 @@ import { getDisplayGroup, getStateName } from './utils/regionMapper'
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
 const BuyFinder = lazy(() => import('./components/BuyFinder'))
+const AskYieldSense = lazy(() => import('./components/AskYieldSense').then(module => ({ default: module.AskYieldSense })))
 const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
 const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
 
 const MyPurchasePlan = lazy(() => import('./components/MyPurchasePlan'))
 const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 
-type TabName = 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap';
+type TabName = 'ask' | 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('is_auth') === 'true')
@@ -61,7 +62,7 @@ function App() {
   const [showPrimarySchools, setShowPrimarySchools] = useState(false)
   const [showSecondarySchools, setShowSecondarySchools] = useState(false)
 
-  const [activeTab, setActiveTab] = useState<TabName>('buy-finder')
+  const [activeTab, setActiveTab] = useState<TabName>('ask')
   const [activeState, setActiveState] = useState<string>('VIC')
   const [persona, setPersona] = useState<PersonaId>(loadStoredPersona)
   const [activeProfileSection, setActiveProfileSection] = useState<ProfileSectionId>('overview')
@@ -70,9 +71,9 @@ function App() {
   // 1. Dynamic Page Title
   useEffect(() => {
     if (activeSuburb) {
-      document.title = `${activeSuburb.name}, ${activeSuburb.state} ${activeSuburb.postcode} — PropertyIQ`
+      document.title = `${activeSuburb.name}, ${activeSuburb.state} ${activeSuburb.postcode} — YieldSense`
     } else {
-      document.title = 'PropertyIQ'
+      document.title = 'YieldSense'
     }
   }, [activeSuburb])
 
@@ -510,7 +511,7 @@ function App() {
   if (isCheckingAuth) {
     return (
       <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
-        <div className="title-glow" style={{ fontSize: '1.5rem', fontWeight: 600 }}>Loading PropertyIQ...</div>
+        <div className="title-glow" style={{ fontSize: '1.5rem', fontWeight: 600 }}>Loading YieldSense...</div>
       </div>
     )
   }
@@ -532,7 +533,7 @@ function App() {
       <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
         <div className="glass-card" style={{ padding: '40px', maxWidth: '460px', width: '100%', background: 'var(--bg-card)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h1 className="title-glow" style={{ fontSize: '1.8rem', margin: 0, fontWeight: 800 }}>PropertyIQ</h1>
+            <h1 className="title-glow" style={{ fontSize: '1.8rem', margin: 0, fontWeight: 800 }}>YieldSense</h1>
             <button onClick={() => setAuthMode('landing')} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>Back</button>
           </div>
           <p className="subtitle" style={{ marginBottom: '24px' }}>
@@ -636,7 +637,7 @@ function App() {
             IQ
           </div>
           <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>PropertyIQ</h1>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>YieldSense</h1>
           </div>
         </div>
         
@@ -654,7 +655,14 @@ function App() {
       </header>
 
       <div className="main-wrapper">
-        <nav className="tab-nav" style={{ gap: '20px', marginBottom: '30px', borderBottom: '2px solid var(--border-glass)' }}>
+        <nav className="tab-nav" style={{ gap: '20px', marginBottom: '30px', borderBottom: '2px solid var(--border-glass)', maxWidth: 1100, margin: '0 auto 30px' }}>
+          <button
+            className={`tab-btn ${activeTab === 'ask' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('ask')}
+            style={{ fontSize: '1.1rem' }}
+          >
+            Ask YieldSense ✨
+          </button>
           <button
             className={`tab-btn ${activeTab === 'buy-finder' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('buy-finder')}
@@ -683,7 +691,7 @@ function App() {
               onChange={(e) => { if (e.target.value) setActiveTab(e.target.value as TabName) }}
               style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '1.05rem', cursor: 'pointer', outline: 'none' }}
             >
-              <option value="" disabled>Tools ▼</option>
+              <option value="" disabled>Tools</option>
               {persona !== 'first_home_buyer' && <option value="gearing">Cashflow & Gearing</option>}
               <option value="affordability">Price Ceiling</option>
               <option value="purchase-plan">My Purchase Plan</option>
@@ -705,6 +713,35 @@ function App() {
             </button>
           </div>
         </nav>
+
+      {activeTab === 'ask' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading Ask YieldSense...</div>}><AskYieldSense financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
+      {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
+      {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
+        suburbsData={suburbsData} 
+        defaultSuburbId={activeSuburb?.id}
+        defaultPrice={selectedBuyerFitResult?.affordability?.purchase_price || (activeSuburb as any)?.houseMedianPrice || (activeSuburb as any)?.medianPrice || undefined}
+        defaultRent={(activeSuburb as any)?.houseMedianRent || (activeSuburb as any)?.weeklyRent || undefined}
+      /></Suspense>}
+      {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculators...</div>}><Calculators /></Suspense>}
+      {activeTab === 'heatmap' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading heatmap...</div>}><YieldHeatmap /></Suspense>}
+      {activeTab === 'favorites' && (
+        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading favorites...</div>}>
+          <UserFavoritesTab 
+            suburbsData={suburbsData} 
+            onSelectSuburb={(suburb) => {
+            loadColdSuburb(suburb.id);
+            setActiveTab('profile');
+          }} 
+        />
+        </Suspense>
+      )}
+      {activeTab === 'portfolio' && (
+        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading portfolio...</div>}>
+          <PortfolioTab suburbsData={suburbsData} />
+        </Suspense>
+      )}
 
       {activeTab === 'profile' && (
         <div className="main-grid">
@@ -2085,35 +2122,6 @@ function App() {
           </main>
         </div>
       )}
-
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
-      {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
-      {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
-        suburbsData={suburbsData} 
-        defaultSuburbId={activeSuburb?.id}
-        defaultPrice={selectedBuyerFitResult?.affordability?.purchase_price || (activeSuburb as any)?.houseMedianPrice || (activeSuburb as any)?.medianPrice || undefined}
-        defaultRent={(activeSuburb as any)?.houseMedianRent || (activeSuburb as any)?.weeklyRent || undefined}
-      /></Suspense>}
-      {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
-      {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculators...</div>}><Calculators /></Suspense>}
-      {activeTab === 'heatmap' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading heatmap...</div>}><YieldHeatmap /></Suspense>}
-      {activeTab === 'favorites' && (
-        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading favorites...</div>}>
-          <UserFavoritesTab 
-            suburbsData={suburbsData} 
-            onSelectSuburb={(suburb) => {
-            loadColdSuburb(suburb.id);
-            setActiveTab('profile');
-          }} 
-        />
-        </Suspense>
-      )}
-      {activeTab === 'portfolio' && (
-        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading portfolio...</div>}>
-          <PortfolioTab suburbsData={suburbsData} />
-        </Suspense>
-      )}
-
       </div>
 
       <footer style={{ marginTop: '40px', padding: '20px', fontSize: '0.75rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border)', textAlign: 'center', lineHeight: '1.5' }}>

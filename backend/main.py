@@ -25,7 +25,7 @@ load_dotenv()
 JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-default-key-for-dev-only-min-32-chars")
 JWT_ALGORITHM = "HS256"
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
-from routers import decision_brief
+from routers import decision_brief, ask_property
 from poc_config import poc_config
 from score_meta import enrich_growth_factors, all_score_meta
 
@@ -116,6 +116,7 @@ from observability import record_cache_hit, record_cache_miss, get_metrics_text
 
 app = FastAPI()
 app.include_router(decision_brief.router)
+app.include_router(ask_property.router)
 
 # CORS: In production, restrict to your actual frontend origin(s)
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",") if os.getenv("CORS_ORIGINS") else []

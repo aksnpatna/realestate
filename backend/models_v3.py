@@ -338,6 +338,9 @@ class DecisionBriefSnapshot(Base):
     """
     __tablename__ = "decision_brief_snapshots"
     id = Column(String, primary_key=True, index=True) # UUID string
+    user_id = Column(String, index=True, nullable=True) # The owner of this brief
+    visibility = Column(String, default="private") # private or public
+    share_token_hash = Column(String, index=True, nullable=True) # Hashed token for public viewing
     suburb_id = Column(String, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     
@@ -362,6 +365,47 @@ class EtlRunLog(Base):
     exception_class = Column(String)
     message = Column(Text)
     severity = Column(String, default="warning")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class AskConversation(Base):
+    __tablename__ = "ask_conversations"
+    id = Column(String, primary_key=True, index=True)
+    user_id = Column(String, index=True)
+    title = Column(String, nullable=True)
+    visibility = Column(String, default="private")
+    share_token_hash = Column(String, index=True, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class AskMessage(Base):
+    __tablename__ = "ask_messages"
+    id = Column(String, primary_key=True, index=True)
+    conversation_id = Column(String, index=True)
+    role = Column(String) # user or assistant
+    content = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+class AskBrief(Base):
+    __tablename__ = "ask_briefs"
+    id = Column(String, primary_key=True, index=True)
+    conversation_id = Column(String, index=True)
+    user_id = Column(String, index=True)
+    visibility = Column(String, default="private")
+    share_token_hash = Column(String, index=True, nullable=True)
+    
+    intent = Column(JSON)
+    assumptions = Column(JSON)
+    summary = Column(Text)
+    research_priority = Column(String)
+    comparison = Column(JSON)
+    supports = Column(JSON)
+    risks = Column(JSON)
+    unknowns = Column(JSON)
+    next_steps = Column(JSON)
+    evidence = Column(JSON)
+    data_quality = Column(JSON)
+    versions = Column(JSON)
+    
     created_at = Column(DateTime, default=datetime.utcnow)
 
 Base.metadata.create_all(bind=engine)
