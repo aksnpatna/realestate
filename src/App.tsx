@@ -661,6 +661,7 @@ function App() {
       onPersonaChange={setPersona}
       onLogout={() => { setIsAuthenticated(false); setAuthMode('landing'); }}
       showProfile={activeTab === 'profile'}
+      usage={{ used: 3, limit: 5 }}
     >
       <PromoBanner />
       <TermsOfUseModal />

@@ -13,6 +13,7 @@ interface AppShellProps {
   onPersonaChange: (p: any) => void;
   onLogout: () => void;
   showProfile: boolean;
+  usage?: { used: number; limit: number };
   children: React.ReactNode;
 }
 
@@ -77,6 +78,11 @@ export const AppShell: React.FC<AppShellProps> = ({
         </div>
         <div className="app-shell__header-actions">
           <PersonaSwitcher activePersona={persona as any} onChange={onPersonaChange} />
+          {usage && (
+            <span className="app-shell__usage" title={`${usage.used} of ${usage.limit} briefs used this month`}>
+              {usage.used}/{usage.limit} briefs
+            </span>
+          )}
           <Button variant="ghost" size="sm" onClick={onLogout}>Log out</Button>
         </div>
       </header>

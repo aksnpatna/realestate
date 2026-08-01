@@ -33,6 +33,11 @@
 .app-shell__header-actions {
   display: flex; align-items: center; gap: var(--space-2);
 }
+.app-shell__usage {
+  padding: 2px 10px; border-radius: var(--radius-full); font-size: var(--text-xs);
+  font-weight: 600; background: var(--bg-surface-sunken); color: var(--text-2);
+  white-space: nowrap;
+}
 
 /* Desktop tabs nav */
 .app-shell__nav-desktop {
