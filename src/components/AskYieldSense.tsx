@@ -372,7 +372,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           setError(err.message || 'Search failed — please try a more specific query.');
         }
       }
-    } finally { if (loading) setLoading(false); }
+    } finally { setLoading(false); }
   };
 
   const callApi = async (intent: any) => {
@@ -763,7 +763,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   };
 
   return (
-    <div data-build="v2-cdnfix" style={{ padding: '28px', marginBottom: '24px', borderRadius: '16px', border: '1px solid var(--border-glass)', background: 'var(--bg-card)', maxWidth: 1100, margin: '0 auto 24px' }}>
+    <div data-build="v2-loadingfix" style={{ padding: '28px', marginBottom: '24px', borderRadius: '16px', border: '1px solid var(--border-glass)', background: 'var(--bg-card)', maxWidth: 1100, margin: '0 auto 24px' }}>
       <div style={{ marginBottom: 22 }}>
         <h2 style={{ margin: '0 0 6px', fontSize: '1.55rem', fontWeight: 800 }}>Ask YieldSense ✨</h2>
         <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Natural-language property research powered by verified data — not opinions.</p>
