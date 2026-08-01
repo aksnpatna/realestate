@@ -26,6 +26,7 @@ import ShareReport from './components/ShareReport'
 import { getDisplayGroup, getStateName } from './utils/regionMapper'
 import { AppShell } from './components/AppShell'
 import type { ViewId } from './components/AppShell'
+import { ChartToggle } from './components/ui/ChartToggle'
 
 const viewToTab = (view: string | null): TabName => {
   const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites', 'settings'];
@@ -1509,23 +1510,30 @@ function App() {
                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & Lifestyle'}</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Age Distribution</h4>
-                        <div style={{ height: '200px' }}>
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={(() => {
-                              const ageData = ((activeSuburb as any).demographicsDetailV3?.age_distribution) || {}
-                              return Object.entries(ageData)
-                                .filter(([k,_]) => k !== '100+')
-                                .map(([k,v]) => ({ name: k, value: Number(v) }))
-                            })()} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
-                              <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
-                              <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `${val}%`} />
-                              <RechartsTooltip formatter={(value: number) => [`${value}%`, 'Population']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
-                              <Bar dataKey="value" fill="var(--warning)" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
+                        {(() => {
+                          const ageData = ((activeSuburb as any).demographicsDetailV3?.age_distribution) || {};
+                          const chartData = Object.entries(ageData)
+                            .filter(([k,_]) => k !== '100+')
+                            .map(([k,v]) => ({ name: k, value: Number(v) }));
+                          return (
+                            <ChartToggle
+                              title="Age Distribution"
+                              data={chartData.map(d => ({ label: d.name, value: `${d.value}%` }))}
+                              colHeaders={['Age Group', 'Population']}
+                              chart={
+                                <ResponsiveContainer width="100%" height={200}>
+                                  <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                                    <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
+                                    <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `${val}%`} />
+                                    <RechartsTooltip formatter={(value: number) => [`${value}%`, 'Population']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
+                                    <Bar dataKey="value" fill="var(--warning)" radius={[4, 4, 0, 0]} />
+                                  </BarChart>
+                                </ResponsiveContainer>
+                              }
+                            />
+                          );
+                        })()}
                       </div>
                       <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
                         <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Owner vs Renter Ratio</h4>

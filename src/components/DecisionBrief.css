@@ -1,0 +1,38 @@
+.db { max-width: 900px; margin: 0 auto; }
+.db__hero {
+  background: var(--bg-surface); border: 1px solid var(--border-1);
+  border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-5);
+  text-align: center; box-shadow: var(--shadow-2);
+}
+.db__score {
+  font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1;
+  color: var(--bg-brand);
+}
+.db__score-label { font-size: var(--text-sm); color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: var(--space-1); }
+.db__name { font-size: var(--text-2xl); font-weight: 700; margin: var(--space-3) 0 var(--space-1); }
+.db__meta { font-size: var(--text-sm); color: var(--text-3); }
+.db__badges { display: flex; gap: var(--space-2); justify-content: center; margin-top: var(--space-4); flex-wrap: wrap; }
+
+.db__section {
+  background: var(--bg-surface); border: 1px solid var(--border-1);
+  border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-3);
+}
+.db__section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); }
+.db__section-title { margin: 0; font-size: var(--text-base); font-weight: 700; }
+
+.db__drivers { display: grid; gap: var(--space-2); }
+.db__driver { display: flex; gap: var(--space-2); align-items: flex-start; font-size: var(--text-sm); padding: var(--space-2) 0; }
+.db__driver-icon { color: var(--success); flex-shrink: 0; }
+.db__risk-icon { color: var(--danger); flex-shrink: 0; }
+
+.db__compliance {
+  background: var(--status-warning-bg); border: 1px solid var(--status-warning-border);
+  border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-3);
+  font-size: var(--text-xs); line-height: 1.6;
+}
+.db__compliance-title { font-weight: 700; color: var(--warning); margin-bottom: var(--space-1); }
+
+.db__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-4); }
+
+.db__loading { text-align: center; padding: var(--space-8); color: var(--text-3); }
+.db__error { text-align: center; padding: var(--space-6); }

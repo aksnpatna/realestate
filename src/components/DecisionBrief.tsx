@@ -2,6 +2,8 @@ import { useState, useEffect, memo } from 'react'
 import type { SuburbData } from '../data/suburbs'
 import type { BuyerFitResult } from '../data/buyerFitTypes'
 import { ScoreInlineHint } from './ScoreLegend'
+import { Badge } from './ui'
+import './DecisionBrief.css'
 
 interface DecisionSnapshot {
   decision_snapshot_id: string
@@ -56,109 +58,56 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
   if (selectedResult) {
     const aff = selectedResult.affordability
     const score = selectedResult.buyer_fit_score
-    const confColor = selectedResult.confidence_label === 'high' ? '#10b981' : selectedResult.confidence_label === 'medium' ? '#eab308' : '#ef4444'
 
     return (
-      <div style={{
-        marginTop: '15px', padding: '16px',
-        background: 'linear-gradient(145deg, rgba(14,165,233,0.06) 0%, rgba(16,185,129,0.06) 100%)',
-        border: '2px solid rgba(14,165,233,0.2)', borderRadius: '10px',
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Decision Brief
-          </h3>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)' }}>
-              Based on your latest Buy Finder assumptions
-            </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-              ℹ️ Logged in — decision is saved and will persist across sessions
-            </div>
-          </div>
+      <div className="db__hero">
+        <div className="db__badges">
+          <Badge variant="info">Buyer Fit</Badge>
+          <Badge variant={selectedResult.confidence_label === 'high' ? 'dq-high' : selectedResult.confidence_label === 'medium' ? 'dq-medium' : 'dq-limited'}>
+            {selectedResult.confidence_label.toUpperCase()} Confidence
+          </Badge>
+          {aff?.serviceability_passed !== undefined && (
+            <Badge variant={aff.serviceability_passed ? 'success' : 'danger'}>
+              {aff.serviceability_passed ? 'Serviceable' : 'Not serviceable'}
+            </Badge>
+          )}
+        </div>
+        <div className="db__score">{Math.round(score)}</div>
+        <div className="db__score-label">Fit Score · Your Inputs</div>
+        <div className="db__name">{selectedResult.name}, {selectedResult.state}</div>
+        <div className="db__meta">
+          Loan ${aff?.required_loan?.toLocaleString() || 'N/A'} · Capacity ${aff?.estimated_borrowing_capacity?.toLocaleString() || 'N/A'}
+          {requestMeta?.model_version && <span> · Model {requestMeta.model_version}</span>}
         </div>
 
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <div style={{ flex: '0 0 auto', textAlign: 'center', padding: '10px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
-              {Math.round(score)}
-            </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              Fit For Your Inputs
-              <ScoreInlineHint scoreKey="buyer_fit" value={score} />
-            </div>
+        {selectedResult.drivers.length > 0 && (
+          <div className="db__drivers" style={{ marginTop: 16, textAlign: 'left' }}>
+            {selectedResult.drivers.slice(0, 3).map((d, i) => (
+              <div key={i} className="db__driver"><span className="db__driver-icon">✓</span> {d}</div>
+            ))}
+            {selectedResult.risks.slice(0, 2).map((r, i) => (
+              <div key={`r${i}`} className="db__driver"><span className="db__risk-icon">⚠</span> {r}</div>
+            ))}
           </div>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            {aff && (
-              <div style={{ marginBottom: '8px' }}>
-                <div style={{ fontSize: '0.8rem', color: aff.serviceability_passed ? '#10b981' : '#ef4444', fontWeight: 600 }}>
-                  {aff.serviceability_passed ? '✓ Serviceability passes under stated assumptions' : '✗ Serviceability not met at current rate assumptions'}
-                </div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                  Loan ${aff.required_loan?.toLocaleString()} · Capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}
-                </div>
-              </div>
-            )}
-            <div 
-              style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', cursor: 'help' }}
-              title="HIGH = good data coverage. Buyer Fit = your personal match score. They measure different things."
-            >
-              <span style={{ borderBottom: '1px dashed var(--text-muted)' }}>
-                Evidence:
-              </span>{' '}
-              <span style={{ color: confColor, fontWeight: 600 }}>{selectedResult.confidence_label.toUpperCase()}</span>
-              <span style={{ marginLeft: '8px', cursor: 'default' }} title="">· {requestMeta?.model_version || ''}</span>
-            </div>
-            {selectedResult.drivers.length > 0 && (
-              <div style={{ marginTop: '6px' }}>
-                {selectedResult.drivers.slice(0, 2).map((d, i) => (
-                  <div key={i} style={{ fontSize: '0.8rem', color: '#10b981', paddingLeft: '8px' }}>+ {d}</div>
-                ))}
-              </div>
-            )}
-            {selectedResult.risks.length > 0 && (
-              <div style={{ marginTop: '4px' }}>
-                {selectedResult.risks.slice(0, 2).map((r, i) => (
-                  <div key={i} style={{ fontSize: '0.8rem', color: '#ef4444', paddingLeft: '8px' }}>- {r}</div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        )}
 
-        <details style={{ marginTop: '10px' }}>
-          <summary style={{ cursor: 'pointer', fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600 }}
-            onClick={() => setShowAssumptions(!showAssumptions)}>
-            {showAssumptions ? 'Hide' : 'Show'} assumptions (rate, buffer, term, costs)
+        <details style={{ marginTop: 16, textAlign: 'left' }}>
+          <summary onClick={() => setShowAssumptions(!showAssumptions)} style={{ cursor: 'pointer', fontSize: '0.8rem', color: 'var(--text-2)', fontWeight: 600 }}>
+            {showAssumptions ? 'Hide' : 'Show'} loan assumptions
           </summary>
           {aff?.assumptions && (
-            <div style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-              <div>Rate: {(aff.assumptions.interest_rate * 100).toFixed(1)}%</div>
-              <div>Buffer: +{(aff.assumptions.serviceability_buffer * 100).toFixed(0)}%</div>
-              <div>Term: {aff.assumptions.loan_term_years}yr</div>
-              <div>Costs: {(aff.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}%</div>
-              <div>Income: ${aff.assumptions.annual_income?.toLocaleString()}</div>
-              <div>Debt: ${aff.assumptions.monthly_debt?.toLocaleString()}/mo</div>
-              <div style={{ marginTop: '4px', color: 'var(--text-muted)' }}>Decision ID: {requestMeta?.request_id || 'N/A'}</div>
+            <div style={{ marginTop: 8, fontSize: '0.8rem', color: 'var(--text-3)', lineHeight: 1.6 }}>
+              <div>Rate: {(aff.assumptions.interest_rate * 100).toFixed(1)}% · Buffer: +{(aff.assumptions.serviceability_buffer * 100).toFixed(0)}% · {aff.assumptions.loan_term_years}yr</div>
+              <div>Costs: {(aff.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% · Income: ${aff.assumptions.annual_income?.toLocaleString()}</div>
+              {requestMeta?.request_id && <div>Decision ID: {requestMeta.request_id}</div>}
             </div>
           )}
         </details>
 
-        <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-          <button
-            onClick={() => setActiveTab('buy-finder')}
-            style={{ padding: '4px 10px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}
-          >
-            Back to Results
-          </button>
-          <button
-            onClick={() => setActiveTab('gearing')}
-            style={{ padding: '4px 10px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}
-          >
-            View Cashflow
-          </button>
-          <button
-            onClick={async (e) => {
+        <div className="db__actions" style={{ justifyContent: 'center', marginTop: 16 }}>
+          <button onClick={() => setActiveTab('buy-finder')} className="bf-card__action">Back to Results</button>
+          <button onClick={() => setActiveTab('gearing')} className="bf-card__action bf-card__action--primary">View Cashflow</button>
+          <button onClick={async (e) => {
               const btn = e.currentTarget;
               btn.textContent = 'Saving...';
               btn.disabled = true;
@@ -187,7 +136,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
                 btn.textContent = 'Failed to Save';
               }
             }}
-            style={{ padding: '4px 10px', background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.5)', color: '#10b981', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600, marginLeft: 'auto' }}
+            className="bf-card__action bf-card__action--primary"
           >
             Save & Share Brief
           </button>
@@ -226,14 +175,9 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
           </button>
         </div>
 
-        {/* Responsible Next Steps — Journey 7 */}
-        <div style={{
-          marginTop: '16px', padding: '12px 14px',
-          background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '8px'
-        }}>
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#eab308', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            📋 Responsible Next Steps — outside this app
-          </div>
+        {/* Responsible Next Steps */}
+        <div className="db__compliance" style={{ marginTop: 16 }}>
+          <div className="db__compliance-title">Responsible Next Steps — outside this app</div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             <div>1. Obtain a formal serviceability assessment from a licensed broker or lender.</div>
             <div>2. Inspect actual listings and compare recent sales prices in this suburb.</div>
