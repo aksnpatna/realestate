@@ -7,9 +7,8 @@ import AIInsightPanel from './components/AIInsightPanel'
 import DecisionBrief from './components/DecisionBrief'
 import type { BuyerFitResult } from './data/buyerFitTypes'
 import { ScoreLegendPanel, type GrowthFactorLabeled } from './components/ScoreLegend'
-import PersonaSwitcher from './components/PersonaSwitcher'
-import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
 import TechnicalProvenanceSection from './components/TechnicalProvenanceSection'
+import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
 import MarketIndicatorsSection from './components/MarketIndicatorsSection'
 import SqmHistoricalChart from './components/SqmHistoricalChart'
 import PriceHistoryChart from './components/PriceHistoryChart'
@@ -25,6 +24,14 @@ import PromoBanner from './components/PromoBanner'
 import MacroBenchmarkPanel from './components/MacroBenchmarkPanel'
 import ShareReport from './components/ShareReport'
 import { getDisplayGroup, getStateName } from './utils/regionMapper'
+import { AppShell } from './components/AppShell'
+import type { ViewId } from './components/AppShell'
+
+const viewToTab = (view: string | null): TabName => {
+  const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites'];
+  if (view && validViews.includes(view as TabName)) return view as TabName;
+  return 'ask';
+};
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
@@ -62,11 +69,30 @@ function App() {
   const [showPrimarySchools, setShowPrimarySchools] = useState(false)
   const [showSecondarySchools, setShowSecondarySchools] = useState(false)
 
-  const [activeTab, setActiveTab] = useState<TabName>('ask')
+  const [activeTab, setActiveTab] = useState<TabName>(() => {
+    const p = new URLSearchParams(window.location.search).get('view');
+    return viewToTab(p);
+  })
   const [activeState, setActiveState] = useState<string>('VIC')
   const [persona, setPersona] = useState<PersonaId>(loadStoredPersona)
   const [activeProfileSection, setActiveProfileSection] = useState<ProfileSectionId>('overview')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
+
+  const handleViewChange = useCallback((view: ViewId) => {
+    const tab = view as TabName;
+    setActiveTab(tab);
+    const params = new URLSearchParams(window.location.search);
+    params.set('view', tab);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') !== activeTab) {
+      params.set('view', activeTab);
+      window.history.replaceState(null, '', `?${params.toString()}`);
+    }
+  }, [activeTab]);
   
   // 1. Dynamic Page Title
   useEffect(() => {
@@ -627,92 +653,16 @@ function App() {
   }
 
   return (
-    <div className="dashboard-container" style={{ background: 'var(--bg-dark)', minHeight: '100vh', padding: 0 }}>
+    <AppShell
+      currentView={activeTab as ViewId}
+      onViewChange={handleViewChange}
+      persona={persona}
+      onPersonaChange={setPersona}
+      onLogout={() => { setIsAuthenticated(false); setAuthMode('landing'); }}
+      showProfile={activeTab === 'profile'}
+    >
       <PromoBanner />
       <TermsOfUseModal />
-      
-      <header className="app-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ width: '40px', height: '40px', background: 'var(--accent-cyan)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '1.2rem' }}>
-            IQ
-          </div>
-          <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>YieldSense</h1>
-          </div>
-        </div>
-        
-        <div className="app-header-controls" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <PersonaSwitcher activePersona={persona} onChange={setPersona} />
-          <button 
-            onClick={() => { setIsAuthenticated(false); setAuthMode('landing'); }} 
-            style={{ background: 'none', border: '1px solid var(--border-glass)', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 600, transition: 'all 0.2s' }}
-            onMouseOver={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--text-secondary)' }}
-            onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-glass)' }}
-          >
-            Log Out
-          </button>
-        </div>
-      </header>
-
-      <div className="main-wrapper">
-        <nav className="tab-nav" style={{ gap: '20px', marginBottom: '30px', borderBottom: '2px solid var(--border-glass)', maxWidth: 1100, margin: '0 auto 30px' }}>
-          <button
-            className={`tab-btn ${activeTab === 'ask' ? 'tab-active' : ''}`}
-            onClick={() => setActiveTab('ask')}
-            style={{ fontSize: '1.1rem' }}
-          >
-            Ask YieldSense ✨
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'buy-finder' ? 'tab-active' : ''}`}
-            onClick={() => setActiveTab('buy-finder')}
-            style={{ fontSize: '1.1rem' }}
-          >
-            🏠 Buy Finder
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'heatmap' ? 'tab-active' : ''}`}
-            onClick={() => setActiveTab('heatmap')}
-            style={{ fontSize: '1.1rem' }}
-          >
-            🗺️ National Heatmap
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'profile' ? 'tab-active' : ''}`}
-            onClick={() => setActiveTab('profile')}
-            style={{ fontSize: '1.1rem' }}
-          >
-            Suburb Profile
-          </button>
-          
-          <div style={{ display: 'flex', gap: '20px', marginLeft: 'auto', alignItems: 'center' }}>
-            <select 
-              value={['gearing', 'affordability', 'purchase-plan', 'calculators'].includes(activeTab) ? activeTab : ''} 
-              onChange={(e) => { if (e.target.value) setActiveTab(e.target.value as TabName) }}
-              style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '1.05rem', cursor: 'pointer', outline: 'none' }}
-            >
-              <option value="" disabled>Tools</option>
-              {persona !== 'first_home_buyer' && <option value="gearing">Cashflow & Gearing</option>}
-              <option value="affordability">Price Ceiling</option>
-              <option value="purchase-plan">My Purchase Plan</option>
-              <option value="calculators">Calculators</option>
-            </select>
-            <button
-              className={`tab-btn ${activeTab === 'portfolio' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('portfolio')}
-              style={{ fontSize: '1.05rem', border: 'none' }}
-            >
-              💼 My Portfolio
-            </button>
-            <button
-              className={`tab-btn ${activeTab === 'favorites' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('favorites')}
-              style={{ fontSize: '1.05rem', border: 'none' }}
-            >
-              ❤ Saved
-            </button>
-          </div>
-        </nav>
 
       {activeTab === 'ask' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading Ask YieldSense...</div>}><AskYieldSense financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
       {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
@@ -2122,8 +2072,6 @@ function App() {
           </main>
         </div>
       )}
-      </div>
-
       <footer style={{ marginTop: '40px', padding: '20px', fontSize: '0.75rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border)', textAlign: 'center', lineHeight: '1.5' }}>
         <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational purposes only and does not constitute financial, investment, or real estate advice. Forecasts are statistical models based on historical data and do not guarantee future performance.</p>
         <p style={{ marginTop: '10px' }}><strong>State Data Attributions:</strong> 
@@ -2132,7 +2080,7 @@ function App() {
           (QLD) Based on or contains data provided by the State of Queensland (Department of Resources).
         </p>
       </footer>
-    </div>
+    </AppShell>
   )
 }
 

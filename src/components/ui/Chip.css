@@ -1,0 +1,15 @@
+.ui-chip {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  padding: var(--space-1) var(--space-3); border-radius: var(--radius-full);
+  border: 1px solid var(--border-1); font-size: var(--text-sm); font-weight: 500;
+  background: transparent; color: var(--text-2); min-height: 36px;
+  transition: all var(--dur-fast);
+}
+.ui-chip--clickable { cursor: pointer; }
+.ui-chip--clickable:hover { border-color: var(--border-2); background: var(--bg-surface-sunken); }
+.ui-chip--selected { background: var(--bg-brand-subtle); border-color: var(--bg-brand); color: var(--bg-brand); font-weight: 600; }
+.ui-chip__remove {
+  background: none; border: none; color: inherit; cursor: pointer; font-size: 14px;
+  padding: 0 2px; line-height: 1; margin-left: 2px; opacity: 0.6;
+}
+.ui-chip__remove:hover { opacity: 1; }
