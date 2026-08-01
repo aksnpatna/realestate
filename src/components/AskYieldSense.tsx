@@ -125,175 +125,9 @@ function getWinner(metricLabel: string, comparisons: SuburbComparison[]): string
   return best.name;
 }
 
-// ─── Intent detector ────────────────────────────────────────────────────────
-interface DetectedIntent {
-  goal: string; suburbs: { name: string; state: string }[];
-  needsClarification: boolean; clarifyingQ?: string; propertyType: string;
-  isDiscovery?: boolean; needsMLFallback?: boolean;
-}
-
-const KNOWN_SUBURBS = [
-  { pattern: /kenmore/i, name: 'Kenmore', state: 'QLD' },
-  { pattern: /indooroopilly/i, name: 'Indooroopilly', state: 'QLD' },
-  { pattern: /point cook/i, name: 'Point Cook', state: 'VIC' },
-  { pattern: /werribee/i, name: 'Werribee', state: 'VIC' },
-  { pattern: /glen waverley/i, name: 'Glen Waverley', state: 'VIC' },
-  { pattern: /doncaster/i, name: 'Doncaster', state: 'VIC' },
-  { pattern: /box hill/i, name: 'Box Hill', state: 'VIC' },
-  { pattern: /footscray/i, name: 'Footscray', state: 'VIC' },
-  { pattern: /brunswick/i, name: 'Brunswick', state: 'VIC' },
-  { pattern: /fitzroy/i, name: 'Fitzroy', state: 'VIC' },
-  { pattern: /st kilda/i, name: 'St Kilda', state: 'VIC' },
-  { pattern: /richmond/i, name: 'Richmond', state: 'VIC' },
-  { pattern: /surry hills/i, name: 'Surry Hills', state: 'NSW' },
-  { pattern: /newtown/i, name: 'Newtown', state: 'NSW' },
-  { pattern: /bondi/i, name: 'Bondi', state: 'NSW' },
-  { pattern: /chatswood/i, name: 'Chatswood', state: 'NSW' },
-  { pattern: /parramatta/i, name: 'Parramatta', state: 'NSW' },
-  { pattern: /norwood/i, name: 'Norwood', state: 'SA' },
-  { pattern: /glenelg/i, name: 'Glenelg', state: 'SA' },
-  { pattern: /prospect/i, name: 'Prospect', state: 'SA' },
-  { pattern: /marion/i, name: 'Marion', state: 'SA' },
-];
-
-function parseBudget(text: string): number | null {
-  const match = text.match(/(?:budget|under|for|of)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?\b/);
-  if (match) {
-    let num = parseFloat(match[1]);
-    const suffix = match[2]?.toLowerCase();
-    if (suffix === 'm' || (num < 1000 && text.toLowerCase().includes('million'))) num *= 1000000;
-    else if (suffix === 'k') num *= 1000;
-    if (num >= 10000 && num <= 20000000) return num;
-  }
-  const rawMatch = text.match(/\b([1-9]\d{4,7})\b/);
-  if (rawMatch) {
-    const parsed = parseInt(rawMatch[1], 10);
-    if (parsed >= 10000) return parsed;
-  }
-  return null;
-}
-
-function levenshtein(a: string, b: string): number {
-  const matrix = [];
-  for (let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
-  for (let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1];
-      else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1));
-    }
-  }
-  return matrix[b.length][a.length];
-}
-
-function detectIntent(text: string): DetectedIntent {
-  const suburbs = KNOWN_SUBURBS.filter(p => p.pattern.test(text)).map(p => ({ name: p.name, state: p.state }));
-  const propertyType = /unit|apartment|flat|strata/i.test(text) ? 'unit' : 'house';
-  const isInterstate = /interstate|moving (to|from)|which state|best state/i.test(text);
-  const isInvestment = /invest|yield|cashflow|rental income|passive|portfolio/i.test(text);
-
-  // Fuzzy State Detection (incl. typos & capital cities)
-  const stateMatch = text.match(/\b(NSW|VIC|QLD|SA|WA|TAS|NT|ACT|New South Wales|Victoria|Queensland|South Australia|Western Australia|Tasmania|Northern Territory|Australian Capital Territory|queesnland|nsww|vctoria|sotuh australia|sydney|melbourne|brisbane|adelaide|perth)\b/i);
-
-  // ── Geo/Discovery patterns — check FIRST before suburb lookup ──────────────
-  const GEO_PATTERNS = [
-    /\b(north|south|east|west|north-?east|north-?west|south-?east|south-?west)\s+of\b/i,
-    /within\s+\d+\s*km\b/i,
-    /\d+\s*km\s+(from|north|south|east|west)\b/i,
-    /\b(near|around|close to)\s+(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra)\b/i,
-    /\bregional\b.*(yield|school|growth|safe)/i,
-    /\b(best|highest|lowest|top)\s+(school|yield|return|transit|transport|cafe|park|safety|area|neighbourhood|neighborhood|suburb|rental)\b/i,
-    /suburb.*\b(with|having|that have)\s+(high|good|great|best|most)\b/i,
-    /\bwhich suburb(s)?\b/i,
-    /\bfind (me )?(a )?suburb/i,
-    /\bfind (me )?(a |an )?(area|neighbourhood|neighborhood|location|place)\b/i,
-    /\blooking for (a |an |some )?(area|suburb|neighbourhood|neighborhood|place)\b/i,
-    /\brecommend (a |an |some |me )?(area|suburb|neighbourhood|neighborhood|place)\b/i,
-    /\bsuburbs?\b.*\b(in|near|around)\s+(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra|NSW|VIC|QLD|SA|WA|TAS|NT|ACT)\b/i,
-  ];
-  const isGeoDiscovery = GEO_PATTERNS.some(p => p.test(text));
-
-  if (isGeoDiscovery) {
-    const hasCityOrState = stateMatch || /\b(sydney|melbourne|brisbane|adelaide|perth|hobart|darwin|canberra|regional)\b/i.test(text);
-    if (!hasCityOrState) {
-       return { goal: 'suburb_discovery', suburbs: [], needsClarification: true, propertyType, isDiscovery: true, clarifyingQ: "I didn't catch a specific area in your query. Which city, state, or region would you like to search in?" };
-    }
-    return { goal: 'suburb_discovery', suburbs: [], needsClarification: false, propertyType, isDiscovery: true };
-  }
-  
-  let detectedState = null;
-  if (stateMatch) {
-     const raw = stateMatch[1].toUpperCase();
-     if (raw.includes('NSW') || raw.includes('NEW') || raw.includes('SYDNEY')) detectedState = 'NSW';
-     else if (raw.includes('VIC') || raw.includes('MELBOURNE')) detectedState = 'VIC';
-     else if (raw.includes('QLD') || raw.includes('QUEEN') || raw.includes('BRISBANE')) detectedState = 'QLD';
-     else if (raw.includes('SA') || raw.includes('SOUTH') || raw.includes('ADELAIDE')) detectedState = 'SA';
-     else if (raw.includes('WA') || raw.includes('WEST') || raw.includes('PERTH')) detectedState = 'WA';
-     else if (raw.includes('TAS')) detectedState = 'TAS';
-     else if (raw.includes('NT') || raw.includes('NORTH')) detectedState = 'NT';
-     else if (raw.includes('ACT') || raw.includes('CAPITAL')) detectedState = 'ACT';
-  }
-
-  // Budget Missing Zero Clarification (only trigger for suspiciously low numbers like $250 → $2.5M)
-  const parsedBudget = parseBudget(text);
-  if (parsedBudget && parsedBudget >= 10000 && parsedBudget <= 50000) {
-     return { goal: 'single_suburb_research', suburbs, needsClarification: true, propertyType, clarifyingQ: `I noticed a budget of $${parsedBudget.toLocaleString()}. Did you mean $${(parsedBudget * 10).toLocaleString()}? Please clarify the correct amount.` };
-  }
-
-  let suggestedSuburb = '';
-  if (suburbs.length === 0) {
-    const words = text.replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 4);
-    for (const w of words) {
-      for (const known of KNOWN_SUBURBS) {
-        if (levenshtein(w.toLowerCase(), known.name.toLowerCase()) <= 2) {
-          suggestedSuburb = known.name;
-          break;
-        }
-      }
-      if (suggestedSuburb) break;
-    }
-  }
-
-  if (isInterstate && suburbs.length === 0)
-    return { goal: 'interstate_discovery', suburbs: [], needsClarification: true, propertyType,
-      clarifyingQ: detectedState ? `I see you're looking at ${detectedState}. To pull verified data, could you specify exactly which suburbs? (Or use Buy Finder to scan the whole state).` : 'Which state are you moving from, and which are you considering? (e.g. "Moving from Sydney NSW to Brisbane QLD")' };
-
-  if (isInvestment && suburbs.length === 0) {
-    if (detectedState) {
-      return { goal: 'suburb_discovery', suburbs: [], needsClarification: false, propertyType, isDiscovery: true };
-    }
-    return { goal: 'investment_search', suburbs: [], needsClarification: true, propertyType,
-      clarifyingQ: 'Which state or region would you like to find investment areas in?' };
-  }
-
-  // Out of scope handler
-  const isRealEstateRelated = /suburb|house|unit|apartment|property|yield|rent|price|growth|buy|invest|market|schools|transit|safe|parks/i.test(text);
-  if (suburbs.length === 0 && !isGeoDiscovery && !isInterstate && !isInvestment && !isRealEstateRelated && !stateMatch) {
-      return { goal: 'single_suburb_research', suburbs: [], needsClarification: true, propertyType,
-        clarifyingQ: "I can only help with Australian property research based on verified data. Could you rephrase your question to include a specific suburb, state, or property goal?" };
-  }
-
-  const isGeneralAdvice = /how much|what is|how does|should i|deposit|stamp duty|negative gearing|borrow|mortgage|advice|explain|guide/i.test(text);
-  if (isGeneralAdvice) {
-    return { goal: 'general_advice', suburbs: [], needsClarification: false, propertyType };
-  }
-
-  if (suburbs.length === 0)
-    return { goal: 'single_suburb_research', suburbs: [], needsClarification: true, needsMLFallback: true, propertyType,
-      clarifyingQ: suggestedSuburb ? `Did you mean ${suggestedSuburb}? Please confirm the exact suburb name so I can pull the correct data.` : 'Which suburb are you researching? (e.g. "Kenmore, QLD" or "Glen Waverley, VIC")' };
-
-  // Detect specific deep-dive intents from follow-up chips
-  if (/risk|downside/i.test(text)) return { goal: 'risks_analysis', suburbs, needsClarification: false, propertyType };
-  if (/school|education/i.test(text)) return { goal: 'schools_analysis', suburbs, needsClarification: false, propertyType };
-  if (/cashflow|projection|return/i.test(text)) return { goal: 'cashflow_projection', suburbs, needsClarification: false, propertyType };
-  if (/growth|long-term|potential/i.test(text)) return { goal: 'growth_analysis', suburbs, needsClarification: false, propertyType };
-
-  const isComparison = suburbs.length >= 2 || /compar|vs\.?|versus|or\b/i.test(text);
-  return {
-    goal: isComparison ? 'suburb_comparison' : isInvestment ? 'investment_search' : 'single_suburb_research',
-    suburbs, needsClarification: false, propertyType,
-  };
-}
+// ─── Intent detection & parsing DELETED per YIELDSENSE_AI_SEARCH_DELIVERY_PLAN.md §Appendix A ───
+// All suburb resolution, goal detection, and metric explainers are now server-side via /api/v3/ask/query.
+// TODO(Phase 2): migrate ComparisonTable explainMetric to use server-provided explanation text from AskResponseV2.
 
 // ─── Component ──────────────────────────────────────────────────────────────
 interface AskYieldSenseProps {
@@ -307,7 +141,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AskResponse | null>(null);
   const [error, setError] = useState('');
-  const [pendingClarify, setPendingClarify] = useState<DetectedIntent | null>(null);
+  const [pendingClarify, setPendingClarify] = useState<any>(null);
   
   const [budget, setBudget] = useState(String(financialProfile?.budget || 850000));
   const [deposit, setDeposit] = useState(String(financialProfile?.deposit || 170000));
@@ -345,7 +179,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       if (convId) body.conversation_id = convId;
       const res = await fetch('/api/v3/ask/query', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q }), signal: abortRef.current.signal,
+        body: JSON.stringify(body), signal: abortRef.current.signal,
       });
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
@@ -361,95 +195,12 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       }
     } catch (err: any) {
       if (err.name !== 'AbortError') {
-        // Fallback to old intent detection + structured API
-        try {
-          let detected = detectIntent(q);
-          detected = await resolveIntentWithFallback(detected, q);
-          if (detected.needsClarification) { setPendingClarify(detected); setLoading(false); return; }
-          submitWithIntent(detected, q);
-          return;
-        } catch (e2: any) {
-          setError(err.message || 'Search failed — please try a more specific query.');
-        }
+        setError(err.message || 'Search failed — please try a more specific query.');
       }
     } finally { setLoading(false); }
   };
 
-  const callApi = async (intent: any) => {
-    setLoading(true); setError(''); setResult(null); setDiscoveryResult(null);
-    if (abortRef.current) abortRef.current.abort();
-    abortRef.current = new AbortController();
-    try {
-      const res = await fetch('/api/v3/ask', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(intent), signal: abortRef.current.signal,
-      });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      setResult(await res.json());
-    } catch (err: any) {
-      if (err.name !== 'AbortError') setError(err.message || 'An error occurred.');
-    } finally { setLoading(false); }
-  };
-
-  const callDiscover = async (q: string, b?: string) => {
-    setLoading(true); setError(''); setResult(null); setDiscoveryResult(null);
-    if (abortRef.current) abortRef.current.abort();
-    abortRef.current = new AbortController();
-    try {
-      const res = await fetch('/api/v3/ask/discover', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, budget: b ? parseFloat(b) : (budget ? parseFloat(budget) : undefined) }),
-        signal: abortRef.current.signal,
-      });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data: DiscoveryResponse = await res.json();
-      setDiscoveryResult(data);
-    } catch (err: any) {
-      if (err.name !== 'AbortError') setError(err.message || 'Discovery failed');
-    } finally { setLoading(false); }
-  };
-
-  const submitWithIntent = (detected: DetectedIntent, q: string, customBudget?: string) => {
-    if (detected.isDiscovery || detected.goal === 'suburb_discovery') {
-      callDiscover(q, customBudget);
-      return;
-    }
-    callApi({
-      question: q, goal: detected.goal, suburbs: detected.suburbs,
-      property_type: detected.propertyType,
-      tenure: detected.goal === 'investment_search' ? 'investor' : 'owner_occupier',
-      budget: customBudget ? parseFloat(customBudget) : (budget ? parseFloat(budget) : undefined),
-      deposit: deposit ? parseFloat(deposit) : undefined,
-      annual_income: income ? parseFloat(income) : undefined,
-    });
-  };
-
-  const resolveIntentWithFallback = async (detected: DetectedIntent, q: string) => {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/v3/ask/intent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q })
-        });
-        if (res.ok) {
-          const mlIntent = await res.json();
-          if (mlIntent.suburbs && mlIntent.suburbs.length > 0) {
-             return {
-               goal: mlIntent.goal,
-               suburbs: mlIntent.suburbs,
-               needsClarification: false,
-               propertyType: mlIntent.property_type || 'any',
-               isDiscovery: mlIntent.goal === 'interstate_discovery'
-             };
-          }
-        }
-      } catch (e) {
-        console.error("ML Intent failed", e);
-      }
-      setLoading(false);
-    return detected;
-  };
+  // ─── End V2 primary path ────────────────────────────────────────────
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -483,7 +234,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
 
     if (!disc.results.length) {
       return (
-        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 12, padding: 20, marginBottom: 18, textAlign: 'center' }}>
+        <div style={{ background: 'rgba(15,23,42,0.02)', borderRadius: 12, padding: 20, marginBottom: 18, textAlign: 'center' }}>
           <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{disc.message || 'No suburbs found matching your criteria.'}</p>
         </div>
       );
@@ -499,14 +250,14 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         <div style={{ display: 'grid', gap: 14 }}>
           {disc.results.map((r, i) => (
             <div key={r.suburb_id || r.name} style={{
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(15,23,42,0.02)', border: '1px solid rgba(15,23,42,0.06)',
               borderRadius: 14, padding: '18px 20px', position: 'relative', overflow: 'hidden',
               transition: 'box-shadow 0.2s',
             }}>
               {/* Rank badge */}
               <div style={{
                 position: 'absolute', top: 0, left: 0,
-                background: i === 0 ? 'linear-gradient(135deg,#00e5ff,#0066ff)' : i === 1 ? 'rgba(163,230,53,0.3)' : 'rgba(255,255,255,0.1)',
+                background: i === 0 ? 'linear-gradient(135deg,#00e5ff,#0066ff)' : i === 1 ? 'rgba(163,230,53,0.3)' : 'rgba(15,23,42,0.06)',
                 color: i === 0 ? '#000' : 'var(--text-primary)',
                 fontWeight: 800, fontSize: '0.72rem', padding: '3px 10px', borderRadius: '14px 0 8px 0',
               }}>#{i + 1} MATCH</div>
@@ -530,32 +281,32 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
               {/* Metrics row */}
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
                 {r.metrics.median_price != null && (
-                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Price: </span><strong>{fmtPrice(r.metrics.median_price)}</strong>
                   </div>
                 )}
                 {r.metrics.yield_pct != null && (
-                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Yield: </span><strong style={{ color: '#a3e635' }}>{fmt(r.metrics.yield_pct)}%</strong>
                   </div>
                 )}
                 {r.metrics.school_quality != null && (
-                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Schools: </span><strong style={{ color: '#00e5ff' }}>{fmt(r.metrics.school_quality, 1)}/10</strong>
                   </div>
                 )}
                 {r.metrics.transit_accessibility != null && (
-                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Transit: </span><strong>{fmt(r.metrics.transit_accessibility, 1)}/10</strong>
                   </div>
                 )}
                 {r.metrics.vacancy_rate != null && (
-                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Vacancy: </span><strong>{fmt(r.metrics.vacancy_rate)}%</strong>
                   </div>
                 )}
                 {r.metrics.population_cagr != null && (
-                  <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
+                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Growth: </span><strong style={{ color: '#f472b6' }}>{fmt(r.metrics.population_cagr, 1)}%pa</strong>
                   </div>
                 )}
@@ -566,15 +317,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                 onClick={() => {
                   const q = `Research ${r.name} ${r.state}`;
                   setQuestion(q);
-                  const detected = detectIntent(q);
-                  
-                  // Override detection since we explicitly know the target
-                  detected.goal = 'single_suburb_research';
-                  detected.suburbs = [{ name: r.name, state: r.state }];
-                  detected.needsClarification = false;
-                  detected.isDiscovery = false;
-                  
-                  submitWithIntent(detected, q);
+                  callQuery(q);
                 }}
                 style={{
                   background: 'linear-gradient(135deg, #00e5ff22, #0066ff22)', border: '1px solid #00e5ff44',
@@ -620,7 +363,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
               const exp = explainMetric(m);
               return (
                 <React.Fragment key={m.label}>
-                  <tr style={{ background: idx % 2 === 0 ? 'rgba(255,255,255,0.025)' : 'transparent' }}>
+                  <tr style={{ background: idx % 2 === 0 ? 'rgba(15,23,42,0.012)' : 'transparent' }}>
                     <td style={{ ...TD, color: 'var(--text-secondary)', fontWeight: 600 }}>
                       {exp?.label ?? m.label}
                       {(() => {
@@ -652,7 +395,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                       <td colSpan={comparisons.length + (multi ? 2 : 1)} style={{ padding: '4px 12px 10px', fontSize: '0.78rem', lineHeight: 1.55 }}>
                         <span style={{
                           display: 'inline-block', padding: '2px 10px', borderRadius: 4,
-                          background: exp.good === true ? 'rgba(0,210,130,0.07)' : exp.good === false ? 'rgba(255,60,60,0.07)' : 'rgba(255,255,255,0.03)',
+                          background: exp.good === true ? 'rgba(0,210,130,0.07)' : exp.good === false ? 'rgba(255,60,60,0.07)' : 'rgba(15,23,42,0.015)',
                           borderLeft: `3px solid ${exp.good === true ? '#00d282' : exp.good === false ? '#ff4444' : 'var(--border-glass)'}`,
                           color: 'var(--text-secondary)',
                         }}>
@@ -730,7 +473,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
               </thead>
               <tbody>
                 {evidence.slice(0, 30).map((e, i) => (
-                  <tr key={e.id || i} style={{ background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
+                  <tr key={e.id || i} style={{ background: i % 2 === 0 ? 'rgba(15,23,42,0.01)' : 'transparent' }}>
                     <td style={{ ...TD, padding: '4px 10px', fontWeight: 600 }}>{e.metric}</td>
                     <td style={{ ...TD, padding: '4px 10px', textAlign: 'right' }}>
                       {typeof e.value === 'number' ? (e.unit.includes('$') ? `$${e.value.toLocaleString()}` : e.unit === '%' ? `${e.value.toFixed(2)}%` : e.value.toLocaleString()) : String(e.value ?? '—')}
@@ -774,7 +517,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           placeholder="Describe what you're deciding… e.g. 'Compare Kenmore and Indooroopilly for a $1.5M family home'"
           rows={3} style={{
             width: '100%', padding: '13px 14px', borderRadius: '10px', boxSizing: 'border-box',
-            border: '1.5px solid var(--border-glass)', background: 'rgba(0,0,0,0.2)',
+            border: '1.5px solid var(--border-glass)', background: 'var(--slate-50)',
             color: 'var(--text-primary)', fontFamily: 'inherit', resize: 'vertical', fontSize: '0.93rem', lineHeight: 1.5, marginBottom: 12,
           }} />
 
@@ -802,7 +545,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                 <div key={lbl}>
                   <label style={{ display: 'block', fontSize: '0.78rem', marginBottom: 4, color: 'var(--text-secondary)' }}>{lbl}</label>
                   <input type="number" step={step} value={val} onChange={e => set(e.target.value)}
-                    style={{ padding: '7px 10px', borderRadius: 6, border: '1px solid var(--border-glass)', background: 'rgba(0,0,0,0.2)', color: 'var(--text-primary)', width: 120 }} />
+                    style={{ padding: '7px 10px', borderRadius: 6, border: '1px solid var(--border-glass)', background: 'var(--slate-50)', color: 'var(--text-primary)', width: 120 }} />
                 </div>
               ))}
             </div>
@@ -859,7 +602,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
               <input value={clarifyAnswer} onChange={e => setClarifyAnswer(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleClarify()}
                 placeholder="Your answer…"
-                style={{ flex: 1, padding: '10px 13px', borderRadius: 8, border: '1px solid var(--border-glass)', background: 'rgba(0,0,0,0.2)', color: 'var(--text-primary)', fontSize: '0.9rem' }}
+                style={{ flex: 1, padding: '10px 13px', borderRadius: 8, border: '1px solid var(--border-glass)', background: 'var(--slate-50)', color: 'var(--text-primary)', fontSize: '0.9rem' }}
                 aria-label="Your answer"
               />
               <button onClick={handleClarify} disabled={!clarifyAnswer.trim()}
@@ -943,7 +686,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           {result.assumptions.length > 0 && (
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 22 }}>
               {result.assumptions.map((a, i) => (
-                <span key={i} style={{ padding: '4px 12px', borderRadius: 20, border: '1px solid var(--border-glass)', fontSize: '0.8rem', background: 'rgba(255,255,255,0.04)' }}>
+                <span key={i} style={{ padding: '4px 12px', borderRadius: 20, border: '1px solid var(--border-glass)', fontSize: '0.8rem', background: 'rgba(15,23,42,0.02)' }}>
                   {a.label}: <strong>{a.value}</strong>
                 </span>
               ))}
@@ -1028,7 +771,7 @@ const TH: React.CSSProperties = {
   background: 'rgba(0,0,0,0.28)', borderBottom: '2px solid var(--border-glass)',
   color: 'var(--text-secondary)', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap',
 };
-const TD: React.CSSProperties = { padding: '9px 12px', borderBottom: '1px solid rgba(255,255,255,0.04)' };
+const TD: React.CSSProperties = { padding: '9px 12px', borderBottom: '1px solid rgba(15,23,42,0.02)' };
 const CHIP_STYLE: React.CSSProperties = {
   padding: '5px 12px', borderRadius: 20, border: '1px solid var(--border-glass)',
   background: 'transparent', color: 'var(--text-secondary)', fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s',

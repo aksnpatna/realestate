@@ -163,25 +163,25 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
               />
             </LayersControl.BaseLayer>
 
-            {/* Environmental Overlays (Using generic/mock WMS layers for demo) */}
-            <LayersControl.Overlay name="🚨 Flood Risk Zones (1-in-100 Yr)">
+            {/* Environmental Overlays (DEMONSTRATION ONLY — not Australian hazard data) */}
+            <LayersControl.Overlay checked={false} name="⚠️ Flood Risk (Demo — not real data)">
               {/* In production, replace with actual State Government SES WMS Tile Server */}
               <WMSTileLayer
                 url="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi"
                 layers="nexrad-n0r-900913"
                 format="image/png"
                 transparent={true}
-                opacity={0.4}
-                attribution="Mock Flood Overlay (Requires State SES API)"
+                opacity={0.25}
+                attribution="DEMONSTRATION ONLY — US weather radar, not Australian flood hazard. Real source pending."
               />
             </LayersControl.Overlay>
             
-            <LayersControl.Overlay name="🔥 Bushfire Prone Area (BAL-29+)">
+            <LayersControl.Overlay checked={false} name="⚠️ Bushfire (Demo — not real data)">
               {/* In production, replace with actual State RFS/CFA WMS Tile Server */}
               <TileLayer
                 url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
-                opacity={0.5}
-                attribution="Mock Fire Overlay (Requires State Fire API)"
+                opacity={0.3}
+                attribution="DEMONSTRATION ONLY — terrain map, not Australian bushfire hazard. Real source pending."
               />
             </LayersControl.Overlay>
 

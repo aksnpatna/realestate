@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './styles/tokens.css';
 @import './mobile.css';
 
 :root {
@@ -14,6 +15,14 @@
   --warning: #D97706; /* Amber 600 */
   --danger: #DC2626; /* Red 600 */
   --bg-glass: #FFFFFF;
+  /* Legacy aliases (Phase 0 bridge — used by PortfolioTab, UserFavoritesTab, etc.) */
+  --accent: var(--accent-cyan);
+  --surface: var(--bg-card);
+  --bg: var(--bg-dark);
+  --text: var(--text-primary);
+  --border: var(--border-glass);
+  --text-tertiary: var(--text-muted);
+  --radius-md: 8px;
   
   /* Premium Shadow Elevation System */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);

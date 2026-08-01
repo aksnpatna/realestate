@@ -2017,10 +2017,10 @@ function App() {
                                       <tbody>
                                         {primaries.map((school, idx) => (
                                           <tr key={idx}>
-                                            <td className="school-name-cell">{school.name}</td>
-                                            <td><span className="type-badge type-primary">Primary</span></td>
-                                            <td>#{school.stateRank}</td>
-                                            <td>
+                                            <td className="school-name-cell" data-label="School">{school.name}</td>
+                                            <td data-label="Type"><span className="type-badge type-primary">Primary</span></td>
+                                            <td data-label="State Rank">#{school.stateRank}</td>
+                                            <td data-label="Score">
                                               <div className="score-bar-wrapper">
                                                 <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
                                                 <span>{school.score}/100 <span style={{fontSize: '0.7rem', color: '#94a3b8'}}>(Est.)</span></span>
@@ -2057,14 +2057,14 @@ function App() {
                                       <tbody>
                                         {secondaries.map((school, idx) => (
                                           <tr key={idx}>
-                                            <td className="school-name-cell">{school.name}</td>
-                                            <td>
+                                            <td className="school-name-cell" data-label="School">{school.name}</td>
+                                            <td data-label="Type">
                                               <span className={`type-badge type-${school.type.toLowerCase()}`}>
                                                 {school.type}
                                               </span>
                                             </td>
-                                            <td>#{school.stateRank}</td>
-                                            <td>
+                                            <td data-label="State Rank">#{school.stateRank}</td>
+                                            <td data-label="Score">
                                               <div className="score-bar-wrapper">
                                                 <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
                                                 <span>{school.score}/100 <span style={{fontSize: '0.7rem', color: '#94a3b8'}}>(Est.)</span></span>

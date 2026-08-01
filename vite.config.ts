@@ -9,6 +9,17 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react-dom') || (id.includes('node_modules/react') && !id.includes('react-leaflet'))) return 'vendor-react';
+          if (id.includes('node_modules/leaflet') || id.includes('node_modules/react-leaflet') || id.includes('node_modules/leaflet.vectorgrid')) return 'vendor-leaflet';
+          if (id.includes('node_modules/recharts')) return 'vendor-recharts';
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/api': {
