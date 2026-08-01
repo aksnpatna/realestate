@@ -8,3 +8,4 @@ export { Icon } from './Icon';
 export type { IconName } from './Icon';
 export { Skeleton, BriefSkeleton } from './Skeleton';
 export { EmptyState } from './EmptyState';
+export { ChartToggle } from './ChartToggle';

@@ -39,7 +39,7 @@ export default memo(function MarketCycleClock({ suburb }: Props) {
   return (
     <div className="glass-card" style={{ padding: '20px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '30px', flexWrap: 'wrap' }}>
       <div style={{ flex: '0 0 auto', position: 'relative', width: '180px', height: '180px' }}>
-        <svg width="180" height="180" viewBox="0 0 180 180">
+        <svg width="180" height="180" viewBox="0 0 180 180" role="img" aria-label={`Market cycle clock showing ${clockState.label}: ${clockState.desc}`}>
           {/* Clock face */}
           <circle cx={center} cy={center} r={radius} fill="rgba(0,0,0,0.2)" stroke="var(--border-glass)" strokeWidth="4" />
           
