@@ -813,7 +813,7 @@ function App() {
                   color: 'var(--text-primary)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center',
                   alignItems: 'center', gap: '8px', fontWeight: '500', transition: 'all 0.2s'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(15,23,42,0.06)'}
                 onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
               >
                 <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -976,7 +976,7 @@ function App() {
                           const dq = (activeSuburb as any).dqScore;
                           const dqColor = dq >= 80 ? 'var(--success)' : dq >= 60 ? 'var(--warning)' : 'var(--danger)';
                           return (
-                            <span style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px' }}>
+                            <span style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', background: 'rgba(15,23,42,0.02)', borderRadius: '4px' }}>
                               <span style={{ color: 'var(--text-secondary)' }}>Data Quality</span>
                               <span style={{ color: dqColor, fontWeight: 700 }}>{dq != null ? `${Math.round(dq)}/100` : 'Low'}</span>
                             </span>
@@ -1031,7 +1031,7 @@ function App() {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ marginBottom: '20px', padding: '12px 16px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px dashed var(--border-glass)', color: 'var(--text-secondary)', fontSize: '0.85rem', fontStyle: 'italic' }}>
+                    <div style={{ marginBottom: '20px', padding: '12px 16px', background: 'rgba(15,23,42,0.01)', borderRadius: '8px', border: '1px dashed var(--border-glass)', color: 'var(--text-secondary)', fontSize: '0.85rem', fontStyle: 'italic' }}>
                       AI key drivers will appear here once analysis is complete.
                     </div>
                   )}
@@ -1111,7 +1111,7 @@ function App() {
                       const hasDevData = subdiv || approvedCount > 0 || minLot || avgBlock;
                       if (!hasDevData) return null;
                       const potentialColor = subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-secondary)';
-                      const potentialBg = subdiv === 'High' ? 'rgba(16,185,129,0.08)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.03)';
+                      const potentialBg = subdiv === 'High' ? 'rgba(16,185,129,0.08)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.08)' : 'rgba(15,23,42,0.015)';
                       return (
                         <div style={{
                           background: potentialBg, border: `1px solid ${subdiv === 'High' ? 'rgba(16,185,129,0.2)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.2)' : 'var(--border-glass)'}`,
@@ -1256,7 +1256,7 @@ function App() {
                                     <span style={{ color: 'var(--text-secondary)' }}>{k}</span>
                                     <span style={{ color: 'var(--text-primary)' }}>{Number(v).toFixed(0)}%</span>
                                   </div>
-                                  <div style={{ height: '8px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px' }}>
+                                  <div style={{ height: '8px', background: 'rgba(15,23,42,0.04)', borderRadius: '4px' }}>
                                     <div style={{ height: '100%', width: `${(Number(v)/total*100).toFixed(0)}%`, background: 'var(--accent-purple)', borderRadius: '4px' }} />
                                   </div>
                                 </div>
@@ -1390,7 +1390,7 @@ function App() {
                         <div className="metric-label">Transit Score</div>
                         <div className="metric-value" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span style={{ fontSize: '1.15rem' }}>{((activeSuburb as any).areaSqkm ?? 20) < 10 ? "76/100" : "51/100"}</span>
-                          <span style={{ fontSize: '0.8rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)' }}>
+                          <span style={{ fontSize: '0.8rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(15,23,42,0.02)', color: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)' }}>
                             {((activeSuburb as any).areaSqkm ?? 20) < 10 ? "🟢 Good" : "🟡 Moderate"}
                           </span>
                         </div>
@@ -1489,7 +1489,7 @@ function App() {
                           </div>
                         )}
                       {/* School Catchment Links */}
-                      <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
+                      <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(15,23,42,0.02)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
                         <h4 style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: 'var(--text-primary)' }}>🎓 Official School Catchment Zones</h4>
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0 0 8px 0' }}>Verify local public school enrolment eligibility directly via state government maps:</p>
                         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -1507,7 +1507,7 @@ function App() {
 
                   {/* PANEL B: Demographics (People & Infrastructure) */}
                   <div className="highlights-section" style={{ marginTop: '20px', display: (activeProfileSection === 'people' || activeProfileSection === 'infrastructure') ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'people' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & Lifestyle'}</h3>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-1)', paddingBottom: '10px' }}>{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & Lifestyle'}</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                       <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
                         {(() => {
@@ -1682,14 +1682,14 @@ function App() {
                                     <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>✂️ Subdivision Potential</span>
                                     <span style={{ fontWeight: 700, fontSize: '1rem', color: potentialColor }}>{subdiv}</span>
                                   </div>
-                                  <div style={{ height: '8px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                                  <div style={{ height: '8px', borderRadius: '4px', background: 'rgba(15,23,42,0.03)', overflow: 'hidden' }}>
                                     <div style={{ width: `${potentialPct}%`, height: '100%', borderRadius: '4px', background: `linear-gradient(90deg, ${potentialColor}88, ${potentialColor})`, transition: 'width 0.5s ease' }} />
                                   </div>
                                 </div>
 
                                 {/* DA Precedent & Approvals */}
                                 <div style={{ display: 'grid', gridTemplateColumns: minLot ? '1fr 1fr' : '1fr', gap: '10px' }}>
-                                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
+                                  <div style={{ background: 'rgba(15,23,42,0.015)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
                                     <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Approved DAs (12mo)</div>
                                     <div style={{ fontSize: '1.5rem', fontWeight: 700, color: approvedCount > 0 ? '#10b981' : 'var(--text-secondary)' }}>
                                       {approvedCount > 0 ? approvedCount : '—'}
@@ -1699,7 +1699,7 @@ function App() {
                                     </div>
                                   </div>
                                   {minLot && (
-                                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
+                                    <div style={{ background: 'rgba(15,23,42,0.015)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
                                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Min Lot Size</div>
                                       <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                                         {minLot}<span style={{ fontSize: '0.8rem', fontWeight: 400 }}> sqm</span>
@@ -1713,7 +1713,7 @@ function App() {
 
                                 {/* Lot Size Comparison Bar */}
                                 {minLot && avgBlock && (
-                                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '8px' }}>
+                                  <div style={{ background: 'rgba(15,23,42,0.015)', padding: '14px', borderRadius: '8px' }}>
                                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px' }}>
                                       📐 Lot Size Comparison
                                     </div>
@@ -1724,7 +1724,7 @@ function App() {
                                           <span style={{ color: 'var(--text-secondary)' }}>Min Approved Lot</span>
                                           <span style={{ fontWeight: 600 }}>{minLot} sqm</span>
                                         </div>
-                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(15,23,42,0.03)', overflow: 'hidden' }}>
                                           <div style={{ width: `${Math.min((minLot / Math.max(avgBlock, minLot)) * 100, 100)}%`, height: '100%', borderRadius: '5px', background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }} />
                                         </div>
                                       </div>
@@ -1734,7 +1734,7 @@ function App() {
                                           <span style={{ color: 'var(--text-secondary)' }}>Avg Block Size</span>
                                           <span style={{ fontWeight: 600 }}>{avgBlock} sqm</span>
                                         </div>
-                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(15,23,42,0.03)', overflow: 'hidden' }}>
                                           <div style={{ width: '100%', height: '100%', borderRadius: '5px', background: 'linear-gradient(90deg, #3b82f6, #6366f1)' }} />
                                         </div>
                                       </div>
@@ -1749,7 +1749,7 @@ function App() {
 
                                 {/* Building Approvals */}
                                 {bldApprovals != null && (
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(15,23,42,0.015)', borderRadius: '8px' }}>
                                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🏗️ Building Approvals (12mo)</span>
                                     <span style={{ color: bldApprovals > 0 ? 'var(--accent-cyan)' : 'var(--text-secondary)', fontWeight: 700, fontSize: '1.1rem' }}>{bldApprovals}</span>
                                   </div>
@@ -1760,7 +1760,7 @@ function App() {
                                 )}
                                   
                                 {total > 0 && (
-                                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '8px' }}>
+                                  <div style={{ background: 'rgba(15,23,42,0.015)', padding: '14px', borderRadius: '8px' }}>
                                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.5px' }}>
                                       🗺️ Land Use Within 2.5km ({total.toFixed(3)} km²)
                                     </div>
@@ -1777,7 +1777,7 @@ function App() {
                                   </div>
                                 )}
                                 {bldCount != null && bldCount > 0 && (
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(15,23,42,0.015)', borderRadius: '8px' }}>
                                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🔨 Buildings Under Construction</span>
                                     <span style={{ color: 'var(--warning)', fontWeight: 700, fontSize: '1.1rem' }}>{bldCount}</span>
                                   </div>
@@ -1797,13 +1797,13 @@ function App() {
 
                   {/* PANEL C: Live Listings Feed & Development Potential */}
                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'listings' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'listings' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Evidence Feed & Development Potential</h3>
+                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-1)', paddingBottom: '10px' }}>Evidence Feed & Development Potential</h3>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                      <div style={{ flex: '2 1 400px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto' }}>
+                      <div style={{ flex: '2 1 400px', background: 'rgba(15,23,42,0.01)', padding: '15px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto' }}>
                         <h4 style={{ color: 'var(--accent-purple)', marginBottom: '10px' }}>💰 Recent Comparable Sales</h4>
                         {activeSuburb && (activeSuburb as any).salesSummary && ((activeSuburb as any).salesSummary as any[]).length > 0 ? (
                           ((activeSuburb as any).salesSummary as any[]).map((s: any, i: number) => (
-                            <div key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '8px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div key={i} style={{ background: 'rgba(15,23,42,0.02)', padding: '12px', borderRadius: '8px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <div>
                                 <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{s.address || `Comparable Sale ${i+1}`}</div>
                                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
@@ -1822,7 +1822,7 @@ function App() {
                         )}
                       </div>
                       <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
+                        <div style={{ background: 'rgba(15,23,42,0.01)', padding: '15px', borderRadius: '8px' }}>
                           <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '10px' }}>🏷️ Market Inventory</h4>
                           <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
                             <div>For Sale (Est.): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).house?.stockOnMarket) || ((activeSuburb as any).houseStockOnMarket) || '—'}</strong></div>
@@ -1830,12 +1830,12 @@ function App() {
                             <div>Supply/Demand: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.supplyDemandRatio)?.toFixed(2) || ((activeSuburb as any).supplyDemandRatio)?.toFixed(2) || '—'}</strong></div>
                           </div>
                         </div>
-                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px' }}>
+                        <div style={{ background: 'rgba(15,23,42,0.01)', padding: '15px', borderRadius: '8px' }}>
                           <h4 style={{ color: 'var(--warning)', marginBottom: '10px' }}>🏗️ Development & Social Context</h4>
                           <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
                             <div>Social Housing Density: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).demographics?.socialHousingPct) !== undefined ? `${((activeSuburb as any).demographics?.socialHousingPct)}%` : '—'}</strong></div>
                             <div>Public Housing Dwellings: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).demographics?.publicHousingDwellings) !== undefined ? ((activeSuburb as any).demographics?.publicHousingDwellings)?.toLocaleString() : '—'}</strong></div>
-                            <hr style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '10px 0' }} />
+                            <hr style={{ borderColor: 'var(--border-1)', margin: '10px 0' }} />
                             <div>Approved Subdivisions (12m): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.approvedSubdivisions12m) !== undefined ? ((activeSuburb as any).market?.approvedSubdivisions12m) : '—'}</strong></div>
                             <div>Min Lot Size for Subdivision: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.minApprovedSubdivisionSqm) ? `${((activeSuburb as any).market?.minApprovedSubdivisionSqm)} sqm` : '—'}</strong></div>
                           </div>
@@ -1908,7 +1908,7 @@ function App() {
 
                    {/* INVESTMENT CATALYSTS — moved below AI Committee */}
                    <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'risk' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'risk' }}>
-                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>Investment Catalysts</h3>
+                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-1)', paddingBottom: '10px' }}>Investment Catalysts</h3>
                      <ul className="highlights-list">
                        {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) ? (
                          activeSuburb.highlights
@@ -1959,7 +1959,7 @@ function App() {
                               <div className="school-table-group">
                                 <h3 
                                   onClick={() => setShowPrimarySchools(!showPrimarySchools)}
-                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}
+                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(15,23,42,0.02)', padding: '10px', borderRadius: '8px' }}
                                 >
                                   <span>🏫 Primary Schools ({primaries.length})</span>
                                   <span style={{ fontSize: '0.8rem' }}>{showPrimarySchools ? '▲ Hide' : '▼ Show'}</span>
@@ -1999,7 +1999,7 @@ function App() {
                               <div className="school-table-group" style={{ marginTop: '15px' }}>
                                 <h3 
                                   onClick={() => setShowSecondarySchools(!showSecondarySchools)}
-                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}
+                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(15,23,42,0.02)', padding: '10px', borderRadius: '8px' }}
                                 >
                                   <span>🎓 Secondary Schools ({secondaries.length})</span>
                                   <span style={{ fontSize: '0.8rem' }}>{showSecondarySchools ? '▲ Hide' : '▼ Show'}</span>

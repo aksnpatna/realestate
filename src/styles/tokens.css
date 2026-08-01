@@ -127,6 +127,12 @@
   --border:         var(--border-1);
   --text-tertiary:  var(--text-3);
   --radius-md:      10px;
+  --radius-xs:       4px;
+
+  /* Missing vars referenced in components (added 2026-08-01 audit) */
+  --accent-green:    var(--emerald-600);
+  --accent-primary:  var(--blue-600);
+  --border-color:    var(--border-1);
 }
 
 @media (prefers-reduced-motion: reduce) {

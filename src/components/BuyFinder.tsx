@@ -296,7 +296,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
             </div>
           </div>
 
-          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid var(--border-2)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
               <label className="control-label" style={{ margin: 0 }}>Objective Weights</label>
               <span style={{ fontSize: '0.8rem', background: totalWeight > 100 ? '#ef4444' : 'rgba(16,185,129,0.2)', color: totalWeight > 100 ? '#fff' : '#10b981', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>Total = {totalWeight}%</span>
@@ -324,7 +324,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
               </div>
             </div>
           </div>
-          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid var(--border-2)' }}>
             <div style={{ background: 'rgba(14,165,233,0.08)', color: 'var(--accent-cyan)', padding: '10px 15px', borderRadius: '6px', fontSize: '0.85rem', border: '1px solid rgba(14,165,233,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <strong>Using your financial profile:</strong> ${Math.round(annualIncome/1000)}k Gross Income, ${Math.round(deposit/1000)}k Deposit.
@@ -414,9 +414,9 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Metric</th>
+                    <th style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid var(--border-2)' }}>Metric</th>
                     {comparisonList.map(c => (
-                      <th key={c.suburb_id} style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '150px' }}>
+                      <th key={c.suburb_id} style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid var(--border-2)', minWidth: '150px' }}>
                         <div style={{ fontSize: '1rem', color: 'var(--text-primary)' }}>{c.name}</div>
                         <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{c.state} • {c.postcode}</div>
                       </th>
@@ -425,44 +425,44 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
                 </thead>
                 <tbody>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Buyer Fit Score</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', fontWeight: 'bold', color: 'var(--accent-cyan)' }}>{c.buyer_fit_score.toFixed(0)} / 100</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Buyer Fit Score</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', fontWeight: 'bold', color: 'var(--accent-cyan)' }}>{c.buyer_fit_score.toFixed(0)} / 100</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Data Confidence</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.confidence_label?.toUpperCase() || 'LOW'}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Data Confidence</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.confidence_label?.toUpperCase() || 'LOW'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Median Price</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>${(c.affordability?.purchase_price || 0).toLocaleString()}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Median Price</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>${(c.affordability?.purchase_price || 0).toLocaleString()}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Rental Yield" contextStr="Comparison List">Rental Yield</AiMetricTooltip></td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.components?.income?.score ? (c.components.income.score / 10).toFixed(1) + '%' : 'N/A'}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Rental Yield" contextStr="Comparison List">Rental Yield</AiMetricTooltip></td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.components?.income?.score ? (c.components.income.score / 10).toFixed(1) + '%' : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Capital Growth" contextStr="Comparison List">12m Capital Growth</AiMetricTooltip></td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.['12m_growth'] !== null && c.raw_metrics?.['12m_growth'] !== undefined ? `${c.raw_metrics['12m_growth']}%` : 'N/A'}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Capital Growth" contextStr="Comparison List">12m Capital Growth</AiMetricTooltip></td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.['12m_growth'] !== null && c.raw_metrics?.['12m_growth'] !== undefined ? `${c.raw_metrics['12m_growth']}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Vacancy Rate" contextStr="Comparison List">Vacancy Rate</AiMetricTooltip></td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.vacancy_rate !== null && c.raw_metrics?.vacancy_rate !== undefined ? `${c.raw_metrics.vacancy_rate}%` : 'N/A'}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Vacancy Rate" contextStr="Comparison List">Vacancy Rate</AiMetricTooltip></td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.vacancy_rate !== null && c.raw_metrics?.vacancy_rate !== undefined ? `${c.raw_metrics.vacancy_rate}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Active Listings</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.stock_on_market !== null && c.raw_metrics?.stock_on_market !== undefined ? c.raw_metrics.stock_on_market : 'N/A'}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Active Listings</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.stock_on_market !== null && c.raw_metrics?.stock_on_market !== undefined ? c.raw_metrics.stock_on_market : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Owner Occupier %</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{c.raw_metrics?.owner_occupier_rate !== null && c.raw_metrics?.owner_occupier_rate !== undefined ? `${c.raw_metrics.owner_occupier_rate}%` : 'N/A'}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Owner Occupier %</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.owner_occupier_rate !== null && c.raw_metrics?.owner_occupier_rate !== undefined ? `${c.raw_metrics.owner_occupier_rate}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>Top Growth Driver</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '0.75rem' }}>{c.drivers?.[0] || 'N/A'}</td>)}
+                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Top Growth Driver</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', fontSize: '0.75rem' }}>{c.drivers?.[0] || 'N/A'}</td>)}
                   </tr>
                   <tr>
                     <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Top Risk</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', fontSize: '0.75rem', color: '#ef4444' }}>{c.risks?.[0] || 'None identified'}</td>)}
+                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', fontSize: '0.75rem', color: 'var(--danger)' }}>{c.risks?.[0] || 'None identified'}</td>)}
                   </tr>
                 </tbody>
               </table>

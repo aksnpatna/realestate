@@ -171,7 +171,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   const DiscoveryCards = ({ disc }: { disc: DiscoveryResponse }) => {
     const fmt = (v?: number | null, decimals = 2, suffix = '') => v != null ? `${v.toFixed(decimals)}${suffix}` : '—';
     const fmtPrice = (v?: number | null) => v != null ? `$${(v / 1000).toFixed(0)}k` : '—';
-    const scoreColor = (s: number) => s >= 70 ? '#00e5ff' : s >= 50 ? '#a3e635' : '#f59e0b';
+    const scoreColor = (s: number) => s >= 70 ? 'var(--bg-brand)' : s >= 50 ? '#a3e635' : '#f59e0b';
 
     if (disc.guardrail && disc.message) {
       return (
@@ -207,7 +207,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
               {/* Rank badge */}
               <div style={{
                 position: 'absolute', top: 0, left: 0,
-                background: i === 0 ? 'linear-gradient(135deg,#00e5ff,#0066ff)' : i === 1 ? 'rgba(163,230,53,0.3)' : 'rgba(15,23,42,0.06)',
+                background: i === 0 ? 'linear-gradient(135deg,var(--bg-brand),#0066ff)' : i === 1 ? 'rgba(163,230,53,0.3)' : 'rgba(15,23,42,0.06)',
                 color: i === 0 ? '#000' : 'var(--text-primary)',
                 fontWeight: 800, fontSize: '0.72rem', padding: '3px 10px', borderRadius: '14px 0 8px 0',
               }}>#{i + 1} MATCH</div>
@@ -242,7 +242,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                 )}
                 {r.metrics.school_quality != null && (
                   <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Schools: </span><strong style={{ color: '#00e5ff' }}>{fmt(r.metrics.school_quality, 1)}/10</strong>
+                    <span style={{ color: 'var(--text-secondary)' }}>Schools: </span><strong style={{ color: 'var(--bg-brand)' }}>{fmt(r.metrics.school_quality, 1)}/10</strong>
                   </div>
                 )}
                 {r.metrics.transit_accessibility != null && (
@@ -270,12 +270,12 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                   callQuery(q);
                 }}
                 style={{
-                  background: 'linear-gradient(135deg, #00e5ff22, #0066ff22)', border: '1px solid #00e5ff44',
-                  color: '#00e5ff', borderRadius: 8, padding: '7px 16px', fontSize: '0.8rem',
+                  background: 'linear-gradient(135deg, var(--bg-brand)22, #0066ff22)', border: '1px solid var(--bg-brand)44',
+                  color: 'var(--bg-brand)', borderRadius: 8, padding: '7px 16px', fontSize: '0.8rem',
                   cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'linear-gradient(135deg,#00e5ff33,#0066ff33)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'linear-gradient(135deg,#00e5ff22,#0066ff22)')}
+                onMouseEnter={e => (e.currentTarget.style.background = 'linear-gradient(135deg,var(--bg-brand)33,#0066ff33)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'linear-gradient(135deg,var(--bg-brand)22,#0066ff22)')}
               >
                 📋 Build Full Research Brief →
               </button>
@@ -297,7 +297,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       <div style={{ display: 'grid', gap: 14, marginBottom: 24 }}>
         {verdict.framing === 'clear_leader' && personaLeaders.length > 0 && (
           <div style={{ background: 'rgba(0,210,130,0.05)', border: '1px solid rgba(0,210,130,0.15)', borderRadius: 10, padding: '14px 18px' }}>
-            <p style={{ margin: '0 0 6px', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#00d282', fontWeight: 700 }}>Verdict by persona</p>
+            <p style={{ margin: '0 0 6px', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--success)', fontWeight: 700 }}>Verdict by persona</p>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {personaLeaders.map(p => (
                 <span key={p.persona} style={{ padding: '4px 12px', borderRadius: 20, border: '1px solid rgba(0,210,130,0.3)', fontSize: '0.82rem', background: 'rgba(0,210,130,0.06)' }}>
@@ -355,8 +355,8 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                       {typeof e.value === 'number' ? (e.unit.includes('$') ? `$${e.value.toLocaleString()}` : e.unit === '%' ? `${e.value.toFixed(2)}%` : e.value.toLocaleString()) : String(e.value ?? '—')}
                     </td>
                     <td style={{ ...TD, padding: '4px 10px', color: 'var(--text-secondary)' }}>{e.source}</td>
-                    <td style={{ ...TD, padding: '4px 10px', color: e.is_stale ? '#ffb400' : 'var(--text-secondary)' }}>{e.as_of}{e.is_stale ? ' ⚠ stale' : ''}</td>
-                    <td style={{ ...TD, padding: '4px 10px', color: e.quality === 'verified' ? '#00d282' : 'var(--text-secondary)' }}>{e.quality}</td>
+                    <td style={{ ...TD, padding: '4px 10px', color: e.is_stale ? 'var(--warning)' : 'var(--text-secondary)' }}>{e.as_of}{e.is_stale ? ' ⚠ stale' : ''}</td>
+                    <td style={{ ...TD, padding: '4px 10px', color: e.quality === 'verified' ? 'var(--success)' : 'var(--text-secondary)' }}>{e.quality}</td>
                   </tr>
                 ))}
               </tbody>
@@ -371,8 +371,8 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     const lowSuburbs = Object.entries(dq?.suburbs ?? {}).filter(([, v]: any) => v.dq_score < 70);
     if (!lowSuburbs.length) return null;
     return (
-      <div style={{ padding: '12px 16px', background: 'rgba(255,180,0,0.08)', borderLeft: '4px solid #ffb400', borderRadius: '0 8px 8px 0', marginBottom: 20 }}>
-        <strong style={{ color: '#ffb400', fontSize: '0.88rem' }}>⚠️ Data Quality Alert</strong>
+      <div style={{ padding: '12px 16px', background: 'rgba(255,180,0,0.08)', borderLeft: '4px solid var(--warning)', borderRadius: '0 8px 8px 0', marginBottom: 20 }}>
+        <strong style={{ color: 'var(--warning)', fontSize: '0.88rem' }}>⚠️ Data Quality Alert</strong>
         <p style={{ margin: '6px 0 0', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
           <strong>{lowSuburbs.map(([id]) => id.split('_')[1]).join(', ')}</strong> has limited verified data coverage.
           Figures may be based on fewer sales or older data points — cross-check with a local agent before acting.
@@ -535,7 +535,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                 <span style={{
                   padding: '2px 8px', borderRadius: 4, fontWeight: 700, fontSize: '0.78rem',
                   background: result.research_priority === 'high' ? 'rgba(0,210,130,0.15)' : result.research_priority === 'medium' ? 'rgba(255,180,0,0.12)' : 'rgba(150,150,150,0.1)',
-                  color: result.research_priority === 'high' ? '#00d282' : result.research_priority === 'medium' ? '#ffb400' : 'var(--text-secondary)',
+                  color: result.research_priority === 'high' ? 'var(--success)' : result.research_priority === 'medium' ? 'var(--warning)' : 'var(--text-secondary)',
                 }}>
                   {result.research_priority.replace(/_/g, ' ').toUpperCase()}
                 </span>
@@ -578,7 +578,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           {/* Supports / Risks */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18, marginBottom: 22 }}>
             <div style={{ padding: '16px', background: 'rgba(0,210,130,0.04)', borderRadius: 10, border: '1px solid rgba(0,210,130,0.12)' }}>
-              <h4 style={{ margin: '0 0 10px', color: '#00d282', fontSize: '0.88rem' }}>✅ What supports this decision</h4>
+              <h4 style={{ margin: '0 0 10px', color: 'var(--success)', fontSize: '0.88rem' }}>✅ What supports this decision</h4>
               {result.supports.length ? (
                 <ul style={{ margin: 0, paddingLeft: 18 }}>
                   {result.supports.map((s, i) => <li key={i} style={{ marginBottom: 6, fontSize: '0.86rem', lineHeight: 1.5 }}>{s.claim}</li>)}
