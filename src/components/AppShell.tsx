@@ -44,7 +44,7 @@ const MORE_ITEMS: { id: ViewId; label: string; icon: IconName }[] = [
 ];
 
 export const AppShell: React.FC<AppShellProps> = ({
-  currentView, onViewChange, persona, onPersonaChange, onLogout, showProfile, children,
+  currentView, onViewChange, persona, onPersonaChange, onLogout, showProfile, usage, children,
 }) => {
   const [moreOpen, setMoreOpen] = useState(false);
   const [viewAnnounce, setViewAnnounce] = useState('');
