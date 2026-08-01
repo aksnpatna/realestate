@@ -28,7 +28,7 @@ import { AppShell } from './components/AppShell'
 import type { ViewId } from './components/AppShell'
 
 const viewToTab = (view: string | null): TabName => {
-  const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites'];
+  const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites', 'settings'];
   if (view && validViews.includes(view as TabName)) return view as TabName;
   return 'ask';
 };
@@ -42,8 +42,9 @@ const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
 
 const MyPurchasePlan = lazy(() => import('./components/MyPurchasePlan'))
 const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
+const SettingsPage = lazy(() => import('./components/SettingsPage').then(m => ({ default: m.SettingsPage })))
 
-type TabName = 'ask' | 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap';
+type TabName = 'ask' | 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap' | 'settings';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('is_auth') === 'true')
@@ -675,6 +676,7 @@ function App() {
       /></Suspense>}
       {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
       {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculators...</div>}><Calculators /></Suspense>}
+      {activeTab === 'settings' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading settings...</div>}><SettingsPage persona={persona} onPersonaChange={setPersona as any} financialProfile={financialProfile} onLogout={() => { setIsAuthenticated(false); setAuthMode('landing'); }} /></Suspense>}
       {activeTab === 'heatmap' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading heatmap...</div>}><YieldHeatmap /></Suspense>}
       {activeTab === 'favorites' && (
         <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading favorites...</div>}>

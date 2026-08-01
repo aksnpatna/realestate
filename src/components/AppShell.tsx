@@ -4,7 +4,7 @@ import type { IconName } from './ui';
 import PersonaSwitcher from './PersonaSwitcher';
 import './AppShell.css';
 
-export type ViewId = 'ask' | 'buy-finder' | 'heatmap' | 'profile' | 'portfolio' | 'saved' | 'gearing' | 'purchase-plan' | 'calculators';
+export type ViewId = 'ask' | 'buy-finder' | 'heatmap' | 'profile' | 'portfolio' | 'saved' | 'settings' | 'gearing' | 'purchase-plan' | 'calculators';
 
 interface AppShellProps {
   currentView: ViewId;
@@ -39,6 +39,7 @@ const MORE_ITEMS: { id: ViewId; label: string; icon: IconName }[] = [
   { id: 'gearing', label: 'Cashflow & Gearing', icon: 'brief' },
   { id: 'purchase-plan', label: 'Purchase Plan', icon: 'wallet' },
   { id: 'calculators', label: 'Calculators', icon: 'plus' },
+  { id: 'settings' as ViewId, label: 'Settings', icon: 'settings' as any },
 ];
 
 export const AppShell: React.FC<AppShellProps> = ({
