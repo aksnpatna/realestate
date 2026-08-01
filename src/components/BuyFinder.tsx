@@ -3,6 +3,7 @@ import type { SuburbData } from '../data/suburbs';
 import type { BuyerFitResult } from '../data/buyerFitTypes';
 import { getPersona, type PersonaId } from '../data/personas';
 import AiMetricTooltip from './AiMetricTooltip';
+import './BuyFinder.css';
 
 interface BuyFinderLocalResponse {
   model_version: string
@@ -505,10 +506,11 @@ const BackendResultCard = memo(function BackendResultCard({
   toggleCompare?: () => void;
 }) {
   const [showEvidence, setShowEvidence] = useState(false);
-  const confColor = result.confidence_label === 'high' ? '#10b981' : result.confidence_label === 'medium' ? '#eab308' : '#ef4444';
+  const confClass = result.confidence_label === 'high' ? 'bf-card__score-val--high' : result.confidence_label === 'medium' ? 'bf-card__score-val--mid' : 'bf-card__score-val--low';
   const evidenceLabel = result.confidence_label || 'low';
   const aff = result.affordability || {};
   const serviceabilityPassed = aff.serviceability_passed !== undefined ? aff.serviceability_passed : true;
+  const rankClass = result.rank <= 1 ? 'bf-card__rank--gold' : result.rank <= 2 ? 'bf-card__rank--silver' : result.rank <= 3 ? 'bf-card__rank--bronze' : 'bf-card__rank--default';
 
   const handleOpenSuburb = () => {
     if (onSelectResult && requestMeta) {
@@ -531,94 +533,84 @@ const BackendResultCard = memo(function BackendResultCard({
   }
 
   return (
-    <div className="result-card glass-card" style={{ display: 'flex', flexDirection: 'column', padding: '0' }}>
-      {/* Header Area */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 20px', borderBottom: '1px solid var(--border-glass)' }}>
-        <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-          <span style={{ color: 'var(--text-secondary)', marginRight: '8px', fontSize: '0.9rem' }}>#{result.rank}</span>
-          {result.name}, {result.state}
-        </h4>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <div style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600, background: serviceabilityPassed ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: serviceabilityPassed ? '#10b981' : '#ef4444', border: `1px solid ${serviceabilityPassed ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
-            {serviceabilityPassed ? '✓ Serviceability Passed' : '✗ Serviceability Failed'}
+    <div className="bf-card">
+      <div className="bf-card__header">
+        <div>
+          <div className={`bf-card__rank ${rankClass}`}>#{result.rank}</div>
+          <div className="bf-card__name" onClick={handleOpenSuburb} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter') handleOpenSuburb(); }}>
+            {result.name}, {result.state}
           </div>
-          <div 
-            title="HIGH = good data coverage. Buyer Fit = your personal match score. They measure different things."
-            style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: confColor, border: '1px solid rgba(255,255,255,0.1)', cursor: 'help' }}>
-            📊 Evidence: {evidenceLabel.toUpperCase()}
-          </div>
+          <div className="bf-card__meta">{result.postcode}</div>
+        </div>
+        <div className="bf-card__score">
+          <div className={`bf-card__score-val ${confClass}`}>{result.buyer_fit_score.toFixed(0)}</div>
+          <div className="bf-card__score-label">Buyer Fit</div>
         </div>
       </div>
 
-      {/* Body Area */}
-      <div style={{ padding: '20px', display: 'flex', gap: '20px', flex: 1, position: 'relative' }}>
-          <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer' }}>
-              <input type="checkbox" checked={isCompared} onChange={toggleCompare} style={{ cursor: 'pointer' }} />
-              Compare
-            </label>
-          </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(14,165,233,0.05)', padding: '15px', borderRadius: '12px', minWidth: '90px', border: '1px solid rgba(14,165,233,0.1)' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-cyan)', lineHeight: 1 }}>{result.buyer_fit_score.toFixed(0)}</div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px', fontWeight: 600 }}>Buyer Fit</div>
+      <div className="bf-card__metrics">
+        <div className={`bf-card__metric ${serviceabilityPassed ? 'bf-card__metric--pass' : 'bf-card__metric--fail'}`}>
+          <div className="bf-card__metric-label">Serviceability</div>
+          <div className="bf-card__metric-val">{serviceabilityPassed ? 'Pass' : 'Fail'}</div>
         </div>
-
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-            <div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>Top Supports</div>
-              {result.drivers?.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {result.drivers.slice(0, 3).map((d: string, i: number) => (
-                    <div key={i} style={{ fontSize: '0.75rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                      <span style={{ color: '#10b981', marginTop: '1px' }}>✓</span> {d}
-                    </div>
-                  ))}
-                </div>
-              ) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No strong supports</div>}
-            </div>
-            <div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>Risks to Verify</div>
-              {result.risks?.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {result.risks.slice(0, 2).map((r: string, i: number) => (
-                    <div key={i} style={{ fontSize: '0.75rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                      <span style={{ color: '#ef4444', marginTop: '1px' }}>⚠️</span> {r}
-                    </div>
-                  ))}
-                </div>
-              ) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No major risks identified</div>}
-            </div>
-          </div>
+        <div className="bf-card__metric">
+          <div className="bf-card__metric-label">Evidence</div>
+          <div className="bf-card__metric-val">{evidenceLabel.toUpperCase()}</div>
         </div>
+        {aff.purchase_price != null && (
+          <div className="bf-card__metric">
+            <div className="bf-card__metric-label">Est. Purchase</div>
+            <div className="bf-card__metric-val">${(aff.purchase_price / 1000).toFixed(0)}k</div>
+          </div>
+        )}
+        {aff.borrowing_capacity != null && (
+          <div className="bf-card__metric">
+            <div className="bf-card__metric-label">Borrowing</div>
+            <div className="bf-card__metric-val">${(aff.borrowing_capacity / 1000).toFixed(0)}k</div>
+          </div>
+        )}
       </div>
 
-      {/* Footer Area */}
-      <div style={{ padding: '15px 20px', background: 'rgba(0,0,0,0.2)', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <button onClick={() => setShowEvidence(!showEvidence)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-secondary)', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem' }}>
-          {showEvidence ? 'Hide Model Evidence' : 'Inspect Model Evidence'}
+      <div className="bf-card__driver">
+        <div className="bf-card__driver-label">What supports this</div>
+        {result.drivers?.slice(0, 2).map((d: string, i: number) => (
+          <div key={i} style={{ fontSize: '0.8rem', color: 'var(--text-2)', padding: '2px 0' }}>✓ {d}</div>
+        )) || <div style={{ fontSize: '0.8rem', color: 'var(--text-3)' }}>No strong supports</div>}
+      </div>
+      <div className="bf-card__driver">
+        <div className="bf-card__driver-label">Risks to verify</div>
+        {result.risks?.slice(0, 2).map((r: string, i: number) => (
+          <div key={i} style={{ fontSize: '0.8rem', color: 'var(--danger)' }}>⚠ {r}</div>
+        )) || <div style={{ fontSize: '0.8rem', color: 'var(--text-3)' }}>No major risks</div>}
+      </div>
+
+      <div className="bf-card__actions">
+        <label className={`bf-card__action bf-card__action--compare ${isCompared ? 'bf-card__action--compare--active' : ''}`}>
+          <input type="checkbox" checked={isCompared} onChange={toggleCompare} style={{ marginRight: 4 }} />
+          Compare
+        </label>
+        <button onClick={() => setShowEvidence(!showEvidence)} className="bf-card__action">
+          {showEvidence ? 'Hide evidence' : 'Inspect evidence'}
         </button>
-
-        <button onClick={handleOpenSuburb} style={{ padding: '8px 20px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, boxShadow: '0 4px 12px rgba(14,165,233,0.3)' }}>
-          Open Decision Brief →
+        <button onClick={handleOpenSuburb} className="bf-card__action bf-card__action--primary">
+          Decision Brief →
         </button>
       </div>
 
       {showEvidence && (
-        <div style={{ padding: '15px 20px', background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+        <div style={{ padding: '15px 20px', background: 'var(--bg-surface-sunken)', borderTop: '1px solid var(--border-1)', fontSize: '0.7rem', color: 'var(--text-2)' }}>
           <div><strong>Evidence ID:</strong> {result.evidence_ids?.[0] || 'N/A'}</div>
           {result.affordability?.assumptions && (
             <div style={{ marginTop: '6px' }}>
-              <strong>Assumptions used:</strong> Rate {(result.affordability.assumptions.interest_rate * 100).toFixed(1)}%, Buffer +{(result.affordability.assumptions.serviceability_buffer * 100).toFixed(0)}%, {result.affordability.assumptions.loan_term_years}yr term, {(result.affordability.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% costs
+              <strong>Assumptions:</strong> Rate {(result.affordability.assumptions.interest_rate * 100).toFixed(1)}%, Buffer +{(result.affordability.assumptions.serviceability_buffer * 100).toFixed(0)}%, {result.affordability.assumptions.loan_term_years}yr, {(result.affordability.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% costs
             </div>
           )}
-          <div style={{ marginTop: '6px' }}><strong>Serviceability math:</strong> Loan required ${aff.required_loan?.toLocaleString()} vs Bank borrowing capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}</div>
+          <div style={{ marginTop: '6px' }}><strong>Serviceability:</strong> Loan ${aff.required_loan?.toLocaleString()} vs Capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}</div>
           <div style={{ marginTop: '6px' }}>
-            <strong>Component score weights:</strong> {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
-              <span key={k} style={{ marginRight: '12px' }}>{k}: {v.score.toFixed(0)} (x{v.weight}%)</span>
+            <strong>Weights:</strong> {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
+              <span key={k} style={{ marginRight: '12px' }}>{k}: {v.score.toFixed(0)} (×{v.weight}%)</span>
             ))}
           </div>
-          <div style={{ marginTop: '6px' }}><strong>Unknown variables:</strong> {(result.unknowns || []).join(', ') || 'None'}</div>
         </div>
       )}
     </div>
