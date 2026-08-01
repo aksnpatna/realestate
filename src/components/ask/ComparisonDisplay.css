@@ -1,0 +1,85 @@
+.cd { margin-bottom: 28px; }
+.cd__title {
+  margin: 0 0 10px; font-size: var(--text-xs); text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--text-2); font-weight: 700;
+}
+
+/* ── Desktop table ── */
+.cd__desktop { overflow-x: auto; }
+@media (max-width: 767px) { .cd__desktop { display: none; } }
+
+.cd__table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.cd__table th {
+  text-align: left; padding: 10px 12px; background: var(--bg-surface-sunken);
+  border-bottom: 2px solid var(--border-1); color: var(--text-2);
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
+}
+.cd__table th:not(:first-child) { text-align: right; }
+.cd__table th:nth-child(2) { color: var(--text-1); }
+.cd__table td { padding: 9px 12px; border-bottom: 1px solid var(--border-1); }
+.cd__row--zebra { background: var(--bg-surface-sunken); }
+.cd__metric-label { color: var(--text-2); font-weight: 600; white-space: nowrap; }
+.cd__value { text-align: right; }
+.cd__value--winner { font-weight: 700; color: var(--bg-brand); }
+.cd__edge { text-align: center; font-size: var(--text-xs); font-weight: 600; color: var(--text-2); }
+.cd__edge--winner { color: var(--bg-brand); }
+.cd__verified {
+  margin-left: 8px; padding: 2px 6px; background: var(--bg-brand-subtle);
+  color: var(--bg-brand); border-radius: var(--radius-xs, 4px);
+  font-size: 0.65rem; text-transform: uppercase;
+}
+.cd__stale { margin-left: 6px; font-size: 0.72rem; color: var(--warning); }
+
+.cd__explainer-row td { padding: 4px 12px 10px; }
+.cd__explainer {
+  display: inline-block; padding: 2px 10px; border-radius: 4px;
+  font-size: var(--text-xs); line-height: 1.55; color: var(--text-2);
+  border-left: 3px solid var(--border-1);
+}
+.cd__explainer--good { background: var(--status-success-bg); border-left-color: var(--success); }
+.cd__explainer--bad  { background: var(--status-danger-bg);  border-left-color: var(--danger); }
+
+/* ── Mobile cards ── */
+.cd__mobile { display: none; }
+@media (max-width: 767px) {
+  .cd__mobile {
+    display: grid; gap: 12px;
+  }
+}
+
+.cd-card {
+  background: var(--bg-surface); border: 1px solid var(--border-1);
+  border-radius: var(--radius-md); overflow: hidden;
+}
+.cd-card__name {
+  margin: 0; padding: var(--space-3) var(--space-4);
+  background: var(--bg-surface-sunken); font-size: var(--text-base); font-weight: 700;
+  border-bottom: 1px solid var(--border-1);
+}
+.cd-card__metrics { padding: var(--space-2) 0; }
+.cd-card__row {
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border-1);
+}
+.cd-card__row:last-child { border-bottom: none; }
+.cd-card__row--stale { background: var(--status-warning-bg); }
+
+.cd-card__row-label {
+  font-size: var(--text-xs); color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.04em; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;
+}
+.cd-card__best {
+  padding: 1px 6px; border-radius: var(--radius-full);
+  background: var(--status-success-bg); color: var(--status-success-text);
+  font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+}
+.cd-card__row-value {
+  font-size: var(--text-lg); font-weight: 700; color: var(--text-1);
+}
+.cd-card__row-value--winner { color: var(--bg-brand); }
+.cd-card__row-exp {
+  margin-top: 3px; padding: var(--space-1) var(--space-2);
+  border-radius: 4px; font-size: var(--text-xs); line-height: 1.45; color: var(--text-2);
+}
+.cd-card__row-exp--good { background: var(--status-success-bg); }
+.cd-card__row-exp--bad  { background: var(--status-danger-bg); }

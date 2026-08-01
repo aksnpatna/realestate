@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { ComparisonDisplay } from './ask/ComparisonDisplay';
+import { BriefSkeleton } from './ui/Skeleton';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 interface SuburbMetric {
@@ -75,59 +77,7 @@ interface VerdictBlock { framing: string; per_metric: VerdictEntry[]; by_persona
 interface AffordabilityBlock { serviceability_passed?: boolean | null; borrowing_capacity?: number | null; monthly_repayment?: number | null; stamp_duty?: number | null; }
 interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string;conversation_id?:string}[]; query_understood?: any; discovery?: DiscoveryResponse | null; }
 
-// ─── Metric human explanations ──────────────────────────────────────────────
-interface MetricExplanation { label: string; good: boolean | null; text: string; }
-type ExplainerFn = (val: number | string, unit: string) => MetricExplanation;
-
-const METRIC_EXPLAINERS: Record<string, ExplainerFn> = {
-  'Median House Price': (v) => ({ label: 'Median House Price', good: null,
-    text: `At $${((v as number) / 1000).toFixed(0)}k, ${(v as number) > 1_500_000 ? 'this is a premium suburb — high entry cost but typically strong liquidity and price resilience.' : (v as number) > 900_000 ? 'this is a mid-to-upper tier suburb with a broad but selective buyer pool.' : 'this is relatively accessible, with strong owner-occupier and first-home-buyer interest.'}` }),
-  'Median Unit Price': (v) => ({ label: 'Median Unit Price', good: null,
-    text: `Units at $${((v as number) / 1000).toFixed(0)}k. ${(v as number) > 700_000 ? 'Premium unit market — check strata levies carefully before committing.' : 'Relatively accessible for units.'}` }),
-  'Median House Rent': (v) => ({ label: 'Weekly Rent', good: (v as number) > 600,
-    text: `$${(v as number).toFixed(0)}/week. ${(v as number) > 900 ? 'Very strong rental demand — landlord pricing power is high.' : (v as number) > 600 ? 'Solid rent achievable — healthy tenant pool keeps vacancies low.' : 'Below-average rent may compress yields and cashflow.'}` }),
-  'Gross House Yield': (v) => ({ label: 'Gross Yield', good: (v as number) >= 4,
-    text: `${(v as number).toFixed(2)}% gross yield. ${(v as number) >= 5 ? 'Excellent — likely close to cash-flow neutral or positive after expenses.' : (v as number) >= 4 ? 'Acceptable — will need top-up from salary but manageable for most investors.' : (v as number) >= 3 ? 'Low yield — common in high-growth suburbs. Plan for ongoing out-of-pocket costs.' : 'Very low yield — this is almost purely a capital growth play; cashflow will be negative.'}` }),
-  'Vacancy Rate': (v) => ({ label: 'Vacancy Rate', good: (v as number) < 3,
-    text: `${(v as number).toFixed(2)}% vacancy. ${(v as number) < 1 ? 'Critically tight — strong upward rent pressure, very low risk of extended vacancy.' : (v as number) < 2 ? 'Tight rental market — landlords have meaningful pricing power.' : (v as number) < 3 ? 'Healthy balance — competitive but not oversupplied.' : (v as number) < 5 ? 'Elevated vacancy — negotiating power shifts to tenants; factor in potential rent discounts.' : 'High vacancy — significant oversupply risk. Avoid for pure investment.'}` }),
-  'Population 5Yr CAGR': (v) => ({ label: 'Population Growth (5yr CAGR)', good: (v as number) > 2,
-    text: `${(v as number).toFixed(1)}%/year population growth. ${(v as number) > 8 ? 'Exceptional — infrastructure demand and price support are very strong.' : (v as number) > 5 ? 'Above-average — good long-term demand fundamentals.' : (v as number) > 2 ? 'Solid steady growth — supports price stability and tenant demand.' : (v as number) > 0 ? 'Modest growth — stable but limited demand uplift.' : 'Population stagnant or declining — a meaningful demand risk.'}` }),
-  'Investor Rate': (v) => ({ label: 'Investor Concentration', good: (v as number) < 40,
-    text: `${(v as number).toFixed(0)}% investor-owned. ${(v as number) > 60 ? '⚠️ Very high — vulnerable to mass sell-off if sentiment or interest rates shift.' : (v as number) > 40 ? 'Moderate-high investor presence — monitor supply pipeline closely.' : (v as number) < 20 ? 'Owner-occupier dominated — typically price-stable with lower volatility.' : 'Healthy mix of investors and owner-occupiers.'}` }),
-  'AI News Sentiment': (v) => ({ label: 'AI News Sentiment', good: v === 'Bullish',
-    text: `AI sentiment analysis of recent market news. ${v === 'Bullish' ? 'Positive momentum or infrastructure news detected.' : v === 'Bearish' ? 'Negative catalysts or oversupply risks mentioned in recent media.' : 'Neutral or mixed sentiment in recent news.'}` }),
-};
-
-function explainMetric(m: SuburbMetric): MetricExplanation | null {
-  const fn = METRIC_EXPLAINERS[m.label];
-  return fn ? fn(m.value as any, m.unit) : null;
-}
-
-function formatValue(m: SuburbMetric): string {
-  if (m.value === null) return '—';
-  if (typeof m.value === 'string') return m.value;
-  if (m.unit === '$') return `$${m.value.toLocaleString()}`;
-  if (m.unit === '$/week') return `$${m.value.toFixed(0)}/wk`;
-  if (m.unit === '%') return `${m.value.toFixed(2)}%`;
-  return String(m.value);
-}
-
-function getWinner(metricLabel: string, comparisons: SuburbComparison[]): string | null {
-  if (comparisons.length < 2) return null;
-  const lowerBetter = ['Vacancy Rate', 'Investor Rate'];
-  const vals = comparisons.map(c => ({ name: c.name, v: c.metrics.find(m => m.label === metricLabel)?.value ?? null }));
-  if (vals.some(x => x.v === null)) return null;
-  if (typeof vals[0].v === 'string') return null; // Can't easily math-compare strings like sentiment
-  if (vals[0].v === vals[1].v) return 'tie';
-  const best = lowerBetter.includes(metricLabel)
-    ? vals.reduce((a, b) => (a.v as number) < (b.v as number) ? a : b)
-    : vals.reduce((a, b) => (a.v as number) > (b.v as number) ? a : b);
-  return best.name;
-}
-
-// ─── Intent detection & parsing DELETED per YIELDSENSE_AI_SEARCH_DELIVERY_PLAN.md §Appendix A ───
-// All suburb resolution, goal detection, and metric explainers are now server-side via /api/v3/ask/query.
-// TODO(Phase 2): migrate ComparisonTable explainMetric to use server-provided explanation text from AskResponseV2.
+// ─── Helper functions and explainers moved to ComparisonDisplay ───
 
 // ─── Component ──────────────────────────────────────────────────────────────
 interface AskYieldSenseProps {
@@ -339,80 +289,6 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     );
   };
 
-  const ComparisonTable = ({ comparisons, evidence }: { comparisons: SuburbComparison[], evidence: any[] }) => {
-    if (!comparisons.length) return null;
-    const metrics = comparisons[0].metrics;
-    const multi = comparisons.length > 1;
-
-    return (
-      <div style={{ overflowX: 'auto', marginBottom: 28 }}>
-        <p style={{ margin: '0 0 10px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)', fontWeight: 700 }}>
-          Side-by-side comparison {multi && `· Winner highlighted in cyan`}
-        </p>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
-          <thead>
-            <tr>
-              <th style={TH}>Metric</th>
-              {comparisons.map(c => <th key={c.suburb_id} style={{ ...TH, textAlign: 'right', color: 'var(--text-primary)' }}>{c.name}</th>)}
-              {multi && <th style={{ ...TH, textAlign: 'center', fontSize: '0.75rem' }}>Edge</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {metrics.map((m, idx) => {
-              const winner = getWinner(m.label, comparisons);
-              const exp = explainMetric(m);
-              return (
-                <React.Fragment key={m.label}>
-                  <tr style={{ background: idx % 2 === 0 ? 'rgba(15,23,42,0.012)' : 'transparent' }}>
-                    <td style={{ ...TD, color: 'var(--text-secondary)', fontWeight: 600 }}>
-                      {exp?.label ?? m.label}
-                      {(() => {
-                        const ev = evidence?.find(e => e.metric === m.label);
-                        if (ev?.as_of) {
-                          return <span style={{ marginLeft: 8, padding: '2px 6px', background: 'rgba(0, 210, 255, 0.1)', color: '#00d2ff', borderRadius: 4, fontSize: '0.65rem', textTransform: 'uppercase' }}>Verified {ev.as_of}</span>;
-                        }
-                        return null;
-                      })()}
-                      {m.is_stale && <span style={{ marginLeft: 6, fontSize: '0.72rem', color: '#ffb400' }}>⚠ stale data</span>}
-                    </td>
-                    {comparisons.map(c => {
-                      const cm = c.metrics.find(x => x.label === m.label);
-                      const isW = winner === c.name;
-                      return (
-                        <td key={c.suburb_id} style={{ ...TD, textAlign: 'right', fontWeight: isW ? 700 : 400, color: isW ? 'var(--accent-cyan)' : 'var(--text-primary)' }}>
-                          {cm ? formatValue(cm) : '—'}{isW && multi ? ' ✓' : ''}
-                        </td>
-                      );
-                    })}
-                    {multi && (
-                      <td style={{ ...TD, textAlign: 'center', fontSize: '0.8rem', fontWeight: 600, color: winner && winner !== 'tie' ? 'var(--accent-cyan)' : 'var(--text-secondary)' }}>
-                        {winner === 'tie' ? 'Tie' : winner ?? '—'}
-                      </td>
-                    )}
-                  </tr>
-                  {exp && (
-                    <tr style={{ background: idx % 2 === 0 ? 'rgba(0,0,0,0.06)' : 'rgba(0,0,0,0.03)' }}>
-                      <td colSpan={comparisons.length + (multi ? 2 : 1)} style={{ padding: '4px 12px 10px', fontSize: '0.78rem', lineHeight: 1.55 }}>
-                        <span style={{
-                          display: 'inline-block', padding: '2px 10px', borderRadius: 4,
-                          background: exp.good === true ? 'rgba(0,210,130,0.07)' : exp.good === false ? 'rgba(255,60,60,0.07)' : 'rgba(15,23,42,0.015)',
-                          borderLeft: `3px solid ${exp.good === true ? '#00d282' : exp.good === false ? '#ff4444' : 'var(--border-glass)'}`,
-                          color: 'var(--text-secondary)',
-                        }}>
-                          {exp.text}
-                        </span>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
   const VerdictPanel = ({ verdict }: { verdict: VerdictBlock | null | undefined }) => {
     if (!verdict) return null;
     const personaLeaders = verdict.by_persona?.filter(p => p.leader) || [];
@@ -615,20 +491,20 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       )}
 
       {loading && (
-        <div style={{ marginTop: 28, textAlign: 'center', color: 'var(--text-secondary)', padding: '20px 0' }}>
-          <div style={{ width: 34, height: 34, border: '3px solid rgba(0,210,255,0.2)', borderTop: '3px solid var(--accent-cyan)', borderRadius: '50%', animation: 'ayk-spin 0.8s linear infinite', margin: '0 auto 14px' }} />
-          <p style={{ margin: 0 }}>Pulling verified data and building your research brief…</p>
+        <div aria-busy="true" aria-label="Loading research brief" style={{ marginTop: 28 }}>
+          <BriefSkeleton />
+          <p style={{ textAlign: 'center', color: 'var(--text-3)', fontSize: '0.82rem', marginTop: 12 }}>Pulling verified data and building your research brief…</p>
         </div>
       )}
 
       {error && (
-        <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(255,60,60,0.08)', borderLeft: '4px solid #ff4444', borderRadius: '0 8px 8px 0' }}>
-          <strong style={{ color: '#ff4444' }}>Error: </strong>{error}
+        <div role="alert" aria-live="assertive" style={{ marginTop: 20, padding: '12px 16px', background: 'var(--status-danger-bg)', borderLeft: '4px solid var(--danger)', borderRadius: '0 8px 8px 0' }}>
+          <strong style={{ color: 'var(--danger)' }}>Error: </strong>{error}
         </div>
       )}
 
       {discoveryResult && !loading && (
-        <div style={{ marginTop: 28, borderTop: '1px solid var(--border-glass)', paddingTop: 24 }}>
+        <div aria-live="polite" style={{ marginTop: 28, borderTop: '1px solid var(--border-glass)', paddingTop: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h3 style={{ margin: 0, fontSize: '1.1rem' }}>🗺️ Suburb Discovery Results</h3>
             <button onClick={() => { setDiscoveryResult(null); setQuestion(''); }}
@@ -640,8 +516,8 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         </div>
       )}
 
-      {result && !loading && !discoveryResult && (
-        <div style={{ marginTop: 36, borderTop: '1px solid var(--border-glass)', paddingTop: 28 }}>
+  {result && !loading && !discoveryResult && (
+    <div aria-live="polite" style={{ marginTop: 36, borderTop: '1px solid var(--border-glass)', paddingTop: 28 }}>
 
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22, flexWrap: 'wrap', gap: 10 }}>
@@ -694,7 +570,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           )}
 
           {/* Side-by-side table */}
-          <ComparisonTable comparisons={result.comparison} evidence={result.evidence} />
+          <ComparisonDisplay comparisons={result.comparison} evidence={result.evidence} />
 
           {/* Evidence table (collapsible) */}
           <EvidenceTable evidence={result.evidence} />
@@ -761,8 +637,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         </div>
       )}
 
-      <style>{`@keyframes ayk-spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
+      </div>
   );
 };
 
