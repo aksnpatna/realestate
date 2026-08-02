@@ -249,11 +249,11 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
             "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
         }
 
-    if not city and not state and not regional:
+    if not city and not state and not regional and not budget and not thresholds:
         return {
             "guardrail": True,
-            "message": "I couldn't detect a specific area in your query. Please provide a clear spatial vector (e.g. 'near Melbourne', 'in NSW', or 'regional TAS').",
-            "results": [], "summary": "Missing spatial vector.",
+            "message": "To help me find the best suburbs for you, could you provide a bit more context? For example, you can specify a location (e.g., 'in NSW'), a budget (e.g., 'under 600k'), or your main goal (e.g., 'highest rental yield', 'capital growth', or 'best schools').",
+            "results": [], "summary": "Query too broad; needs clarification.",
             "query_understood": {"city": city, "direction": direction, "km": km, "priorities": priorities}
         }
 
@@ -328,6 +328,18 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
     if filters:
         where_clause += " AND " + " AND ".join(filters)
 
+    order_clause = ""
+    if "yield" in priorities or "cashflow" in priorities:
+        order_clause = "ORDER BY house_gross_rental_yield DESC NULLS LAST"
+    elif "growth" in priorities:
+        order_clause = "ORDER BY house_median_price_12m_change_pct DESC NULLS LAST"
+    elif "safety" in priorities:
+        order_clause = "ORDER BY safety_score DESC NULLS LAST"
+    elif "schools" in priorities:
+        order_clause = "ORDER BY school_quality DESC NULLS LAST"
+    else:
+        order_clause = "ORDER BY house_gross_rental_yield DESC NULLS LAST"
+
     sql = text(f"""
         SELECT id, name, state, postcode, coordinates, house_median_price,
                house_gross_rental_yield, vacancy_rate, population_cagr,
@@ -336,6 +348,7 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
                house_median_price_12m_change_pct
         FROM suburbs_ui_v3
         {where_clause}
+        {order_clause}
         LIMIT 300
     """)
 

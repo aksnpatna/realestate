@@ -73,8 +73,6 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
 
     // Add interactivity
     const showPopup = (e: any) => {
-      // Make it more dynamic: pop up on hover, but stop if zoomed out a lot (e.g. < 6)
-      if (e.type === 'mouseover' && map.getZoom() < 6) return;
       
       const props = e.layer.properties;
       
@@ -112,7 +110,6 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
 
     vectorGrid.on('click', showPopup);
     vectorGrid.on('mouseover', showPopup);
-    vectorGrid.on('mouseout', () => map.closePopup());
 
     vectorGrid.addTo(map);
 
