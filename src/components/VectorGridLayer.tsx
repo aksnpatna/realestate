@@ -27,13 +27,13 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
           let stroke = false;
           
           if (mode === 'yield') {
-            if (yieldPct >= 6) { color = '#10b981'; opacity = 0.9; stroke = true; radius = zoom > 12 ? 32 : (zoom > 8 ? 16 : 8); }
-            else if (yieldPct >= 4) { color = '#f59e0b'; opacity = 0.6; stroke = true; radius = zoom > 12 ? 16 : (zoom > 8 ? 8 : 4); }
+            if (yieldPct >= 6) { color = '#10b981'; opacity = 0.9; stroke = true; radius = zoom > 10 ? 24 : 16; }
+            else if (yieldPct >= 4) { color = '#f59e0b'; opacity = 0.8; stroke = true; radius = zoom > 10 ? 18 : 12; }
             else { return []; } // Filter out poor yield noise entirely
           } else {
             // Growth Mode
-            if (growth >= 10) { color = '#06b6d4'; opacity = 0.9; stroke = true; radius = zoom > 12 ? 32 : (zoom > 8 ? 16 : 8); }
-            else if (growth >= 5) { color = '#3b82f6'; opacity = 0.6; stroke = true; radius = zoom > 12 ? 16 : (zoom > 8 ? 8 : 4); }
+            if (growth >= 10) { color = '#06b6d4'; opacity = 0.9; stroke = true; radius = zoom > 10 ? 24 : 16; }
+            else if (growth >= 5) { color = '#3b82f6'; opacity = 0.8; stroke = true; radius = zoom > 10 ? 18 : 12; }
             else { return []; } // Filter out poor growth noise entirely
           }
           
