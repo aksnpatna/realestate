@@ -72,18 +72,21 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
     });
 
     // Add interactivity
-    vectorGrid.on('click', (e: any) => {
+    const showPopup = (e: any) => {
+      // Make it more dynamic: pop up on hover, but stop if zoomed out a lot (e.g. < 6)
+      if (e.type === 'mouseover' && map.getZoom() < 6) return;
+      
       const props = e.layer.properties;
       
       if (props.sa1_code_2021) {
         L.popup()
           .setContent(`
-            <div style="font-family: sans-serif; min-width: 150px;">
-              <h4 style="margin: 0 0 5px 0; color: #1e293b;">SA1 Pocket</h4>
-              <div style="font-size: 0.9em; color: #475569;">
-                SA1 Code: <strong>${props.sa1_code_2021}</strong><br/>
-                Median Income: <strong>$${props.median_household_income}/wk</strong><br/>
-                Population: <strong>${props.population}</strong>
+            <div style="font-family: sans-serif; min-width: 150px; color: #f8fafc;">
+              <h4 style="margin: 0 0 5px 0; color: #ffffff;">SA1 Pocket</h4>
+              <div style="font-size: 0.9em; color: #cbd5e1;">
+                SA1 Code: <strong style="color: #ffffff;">${props.sa1_code_2021}</strong><br/>
+                Median Income: <strong style="color: #ffffff;">$${props.median_household_income}/wk</strong><br/>
+                Population: <strong style="color: #ffffff;">${props.population}</strong>
               </div>
             </div>
           `)
@@ -94,18 +97,22 @@ export default function VectorGridLayer({ url, zIndex = 400, mode = 'yield', pro
 
       L.popup()
         .setContent(`
-          <div style="font-family: sans-serif; min-width: 150px;">
-            <h4 style="margin: 0 0 5px 0; color: #1e293b;">${props.name} <span style="font-weight: normal; font-size: 0.8em; color: #64748b;">(${propertyType})</span></h4>
-            <div style="font-size: 0.9em; color: #475569;">
-              Yield: <strong>${(propertyType === 'house' ? props.house_gross_rental_yield : props.unit_gross_rental_yield) || 'N/A'}%</strong><br/>
-              Growth (12m): <strong>${Math.round((propertyType === 'house' ? props.house_median_price_12m_change_pct : props.unit_median_price_12m_change_pct) || 0)}%</strong><br/>
-              Median: <strong>$${((propertyType === 'house' ? props.house_median_price : props.unit_median_price) || 0).toLocaleString()}</strong>
+          <div style="font-family: sans-serif; min-width: 150px; color: #f8fafc;">
+            <h4 style="margin: 0 0 5px 0; color: #ffffff;">${props.name} <span style="font-weight: normal; font-size: 0.8em; color: #94a3b8;">(${propertyType})</span></h4>
+            <div style="font-size: 0.9em; color: #cbd5e1;">
+              Yield: <strong style="color: #ffffff;">${(propertyType === 'house' ? props.house_gross_rental_yield : props.unit_gross_rental_yield) || 'N/A'}%</strong><br/>
+              Growth (12m): <strong style="color: #ffffff;">${Math.round((propertyType === 'house' ? props.house_median_price_12m_change_pct : props.unit_median_price_12m_change_pct) || 0)}%</strong><br/>
+              Median: <strong style="color: #ffffff;">$${((propertyType === 'house' ? props.house_median_price : props.unit_median_price) || 0).toLocaleString()}</strong>
             </div>
           </div>
         `)
         .setLatLng(e.latlng)
         .openOn(map);
-    });
+    };
+
+    vectorGrid.on('click', showPopup);
+    vectorGrid.on('mouseover', showPopup);
+    vectorGrid.on('mouseout', () => map.closePopup());
 
     vectorGrid.addTo(map);
 
