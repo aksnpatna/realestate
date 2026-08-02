@@ -40,16 +40,16 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
       <div className="glass-card calculator-card">
         <h2 className="detail-title">Price Ceiling Calculator</h2>
         <p className="subtitle">Determine your true maximum purchase price based on BOTH your deposit and your borrowing capacity.</p>
-        <div style={{ background: 'rgba(14,165,233,0.08)', color: 'var(--accent-cyan)', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem', border: '1px solid rgba(14,165,233,0.2)' }}>
+        <div className="u-e478a671">
           This calculates your serviceability limit using standard HEM expense estimates and an APRA buffer. For a full personalized suburb shortlist, use <strong>Buy Finder</strong>.
         </div>
         {isFHB && (
-          <div style={{ background: 'rgba(168,85,247,0.1)', color: 'var(--accent-purple)', padding: '8px 12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.85rem', border: '1px solid rgba(168,85,247,0.2)', fontWeight: 500 }}>
+          <div className="u-d4255ae4">
             🎉 First Home Buyer state-specific stamp duty concessions and up to 95% LVR are automatically applied in these calculations.
           </div>
         )}
 
-        <div className="calculator-inputs" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+        <div className="calculator-inputs u-b9c3944d">
           <div className="control-group">
             <label className="control-label">Your Deposit (AUD)</label>
             <input type="number" className="premium-input" value={deposit}
@@ -66,7 +66,7 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
             <label className="control-label">Combined Gross Income (Before Tax)</label>
             <input type="number" className="premium-input" value={annualIncome}
               onChange={(e) => updateProfile('annualIncome', Number(e.target.value) || 0)} min={50000} step={5000} placeholder="e.g. 150000" />
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+            <div className="u-9e313976">
               Estimated take-home: ~${Math.round((annualIncome * 0.75) / 12).toLocaleString()}/mo (used in serviceability calc)
             </div>
           </div>
@@ -90,21 +90,21 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
         </div>
 
         {calc && (
-          <div className="state-summary-grid" style={{ marginTop: '20px' }}>
+          <div className="state-summary-grid u-e87e972e">
             {Object.entries(calc).map(([state, c]) => (
               <div key={state} className="state-summary-card" style={{ borderTop: c.limitedBy === 'Serviceability' ? '3px solid #ef4444' : '3px solid var(--accent-cyan)' }}>
                 <div className="state-summary-name">{state}</div>
                 <div className="state-summary-value">${c.maxPrice.toLocaleString()}</div>
                 <div className="state-summary-label">Maximum Purchase Price</div>
-                <div className="state-summary-detail" style={{ marginTop: '8px' }}>Max Borrowing: <strong>${c.maxBorrow.toLocaleString()}</strong></div>
+                <div className="state-summary-detail u-15d9cd55">Max Borrowing: <strong>${c.maxBorrow.toLocaleString()}</strong></div>
                 <div className="state-summary-detail">Upfront Stamp Duty: <strong>${c.stampDutyForMax.toLocaleString()}</strong></div>
                 <div className="state-summary-detail">Est. LMI (Capitalised): <strong>${c.lmiForMax.toLocaleString()}</strong></div>
                 {c.fhbgEligible && (
-                   <div className="state-summary-detail" style={{ color: 'var(--success)', fontWeight: 600, marginTop: '4px' }}>
+                   <div className="state-summary-detail u-8cbe957b">
                      ✓ First Home Guarantee (LMI Waived)
                    </div>
                 )}
-                <div className="state-summary-detail" style={{ color: c.limitedBy === 'Serviceability' ? '#ef4444' : 'var(--accent-cyan)', fontWeight: 600, marginTop: '8px' }}>
+                <div className="state-summary-detail u-34e9f803" style={{color: c.limitedBy === 'Serviceability' ? '#ef4444' : 'var(--accent-cyan)'}}>
                   Limited by: {c.limitedBy}
                 </div>
               </div>
@@ -112,13 +112,13 @@ export default memo(function AffordabilityCalculator({ setActiveTab, financialPr
           </div>
         )}
 
-        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+        <div className="u-63da5dba">
           <button
             onClick={handleOpenBuyFinder}
-            style={{ padding: '10px 20px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem' }}>
+            className="u-5613230d">
             Open Buy Finder for Suburb Ranking
           </button>
-          <div style={{ marginTop: '6px', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+          <div className="u-b4bf56d8">
             This calculator does not rank suburbs. Buy Finder is the only ranking tool.
           </div>
         </div>

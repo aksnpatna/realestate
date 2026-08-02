@@ -209,25 +209,25 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
         <p className="subtitle">
           Backend-ranked buyer-fit tool. Results are deterministically scored from the server.
           {backendResults && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '8px' }}>
+            <span className="u-c190f962">
               (Model: {backendResults.model_version})
             </span>
           )}
         </p>
 
-        <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
-          <div style={{ fontWeight: 600, color: 'var(--accent-cyan)', fontSize: '0.85rem' }}>Saved Profiles:</div>
-          <select className="premium-input small" value={activeClientId} onChange={loadClient} style={{ maxWidth: '250px' }}>
+        <div className="u-67f9100b">
+          <div className="u-778b4244">Saved Profiles:</div>
+          <select value={activeClientId} onChange={loadClient} className="premium-input small u-c5f10a0d">
             <option value="">-- Active Session (Unsaved) --</option>
             {clients.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
-          <button onClick={saveClient} style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>
+          <button onClick={saveClient} className="u-07e9b5a7">
             💾 Save Profile
           </button>
           {activeClientId && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            <span className="u-0533d741">
               Viewing saved constraints for {clients.find(c => c.id === activeClientId)?.name}
             </span>
           )}
@@ -236,9 +236,9 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
         <div className="filter-grid">
           <div className="filter-section">
             <label className="control-label">Buyer Profile & Location</label>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' }}>
-              <div className="control-group" style={{ flex: '1 1 150px' }}>
-                <label className="control-label" style={{ fontSize: '0.7rem' }}>State</label>
+            <div className="u-54677cc4">
+              <div className="control-group u-aad9c0d9">
+                <label className="control-label u-112a0d0d">State</label>
                 <select className="premium-input small" value={state} onChange={e => setState(e.target.value)}>
                   {states.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -281,115 +281,121 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
               {/* FHB specific fields (UI only for now, pending backend model support) */}
               {isFHB && (
                 <>
-                  <div style={{ gridColumn: '1 / -1', padding: '16px', background: 'rgba(217, 119, 6, 0.08)', border: '1px solid rgba(217, 119, 6, 0.2)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontSize: '1.2rem' }}>🏛️</span>
+                  <div className="u-5403a8df">
+                    <div className="u-8773684b">
+                      <span className="u-7bbecc0d">🏛️</span>
                       <div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#d97706' }}>Government Grants & Stamp Duty Concessions</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Automated FHB scheme integration is currently in development.</div>
+                        <div className="u-131b2ce9">Government Grants & Stamp Duty Concessions</div>
+                        <div className="u-a23e1378">Automated FHB scheme integration is currently in development.</div>
                       </div>
                     </div>
-                    <span style={{ fontSize: '0.75rem', background: '#d97706', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>Feature in Q3</span>
+                    <span className="u-d2187ff5">Feature in Q3</span>
                   </div>
                 </>
               )}
             </div>
           </div>
 
-          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid var(--border-2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <label className="control-label" style={{ margin: 0 }}>Objective Weights</label>
-              <span style={{ fontSize: '0.8rem', background: totalWeight > 100 ? '#ef4444' : 'rgba(16,185,129,0.2)', color: totalWeight > 100 ? '#fff' : '#10b981', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>Total = {totalWeight}%</span>
+          <div className="filter-section u-2295f408">
+            <div className="u-47a97aa0">
+              <label className="control-label u-0c1fb0d9">Objective Weights</label>
+              <span className="u-779f3813" style={{background: totalWeight > 100 ? '#ef4444' : 'rgba(16,185,129,0.2)', color: totalWeight > 100 ? '#fff' : '#10b981'}}>Total = {totalWeight}%</span>
             </div>
             <div className="filter-row">
               <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Affordability ({wAffordability}%)</label>
+                <label className="control-label u-4797caa9">Affordability ({wAffordability}%)</label>
                 <input type="range" className="premium-range" min={0} max={100} value={wAffordability} onChange={e => handleWeightChange(setWAffordability, wAffordability, Number(e.target.value))} />
               </div>
               <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Income ({wIncome}%)</label>
+                <label className="control-label u-4797caa9">Income ({wIncome}%)</label>
                 <input type="range" className="premium-range" min={0} max={100} value={wIncome} onChange={e => handleWeightChange(setWIncome, wIncome, Number(e.target.value))} />
               </div>
               <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Livability ({wLivability}%)</label>
+                <label className="control-label u-4797caa9">Livability ({wLivability}%)</label>
                 <input type="range" className="premium-range" min={0} max={100} value={wLivability} onChange={e => handleWeightChange(setWLivability, wLivability, Number(e.target.value))} />
               </div>
               <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Access ({wAccess}%)</label>
+                <label className="control-label u-4797caa9">Access ({wAccess}%)</label>
                 <input type="range" className="premium-range" min={0} max={100} value={wAccess} onChange={e => handleWeightChange(setWAccess, wAccess, Number(e.target.value))} />
               </div>
               <div className="control-group">
-                <label className="control-label" style={{ fontSize: '0.75rem' }}>Evidence ({wEvidence}%)</label>
+                <label className="control-label u-4797caa9">Evidence ({wEvidence}%)</label>
                 <input type="range" className="premium-range" min={0} max={100} value={wEvidence} onChange={e => handleWeightChange(setWEvidence, wEvidence, Number(e.target.value))} />
               </div>
             </div>
           </div>
-          <div className="filter-section" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid var(--border-2)' }}>
-            <div style={{ background: 'rgba(14,165,233,0.08)', color: 'var(--accent-cyan)', padding: '10px 15px', borderRadius: '6px', fontSize: '0.85rem', border: '1px solid rgba(14,165,233,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="filter-section u-2295f408">
+            <div className="u-180d832b">
               <div>
                 <strong>Using your financial profile:</strong> ${Math.round(annualIncome/1000)}k Gross Income, ${Math.round(deposit/1000)}k Deposit.
               </div>
               <button 
                 onClick={() => { if(setActiveTab) setActiveTab('affordability'); }}
-                style={{ background: 'transparent', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}
+                className="u-349be1f5"
               >
                 Edit in Price Ceiling
+              </button>
+              <button
+                className="action-btn-outline"
+                onClick={() => {
+                  setBackendResults(null);
+                }}
+              >
+                Clear Search
               </button>
             </div>
           </div>
           
           <button 
-            className="action-button primary" 
             onClick={handleSearch} 
             disabled={backendLoading}
-            style={{ width: '100%', marginTop: '20px', padding: '14px', fontSize: '1rem' }}
-          >
+           className="action-button primary u-d492d939">
             {backendLoading ? 'Ranking Suburbs...' : 'Calculate Buyer Fit & Search'}
           </button>
         </div>
       <div className="glass-card search-results-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <h3 style={{ margin: 0 }}>
+        <div className="u-47a97aa0">
+          <h3 className="u-0c1fb0d9">
             {backendResults ? `Results (${backendResults.results.length} eligible)` : 'Results'}
           </h3>
           {backendResults && backendResults.results.length > 0 && (
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'right' }}>
+            <div className="u-747fe9e0">
               Others excluded for insufficient data quality or constraints
             </div>
           )}
           <button
             onClick={handleSearch}
             disabled={backendLoading}
-            style={{ padding: '8px 16px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '6px', cursor: backendLoading ? 'not-allowed' : 'pointer', fontWeight: 600, fontSize: '0.8rem' }}
+            className="u-4689b86c" style={{cursor: backendLoading ? 'not-allowed' : 'pointer'}}
           >
             {backendLoading ? 'Ranking...' : 'Search'}
           </button>
         </div>
 
         {backendError && (
-          <div style={{ padding: '16px', background: 'rgba(239,68,68,0.08)', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', marginBottom: '15px' }}>
-            <div style={{ fontSize: '1.5rem', marginBottom: '8px', textAlign: 'center' }}>⚠️</div>
-            <div style={{ color: '#ef4444', fontWeight: 600, marginBottom: '4px', textAlign: 'center' }}>Data Unavailable</div>
-            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textAlign: 'center' }}>{backendError}</div>
-            <div style={{ textAlign: 'center', marginTop: '8px' }}>
-              <button onClick={handleSearch} style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' }}>Retry</button>
+          <div className="u-f5a91fe3">
+            <div className="u-ec8c35fd">⚠️</div>
+            <div className="u-c2b3e2d1">Data Unavailable</div>
+            <div className="u-3d3cb745">{backendError}</div>
+            <div className="u-2246e654">
+              <button onClick={handleSearch} className="u-6617684f">Retry</button>
             </div>
           </div>
         )}
 
         {backendLoading && backendResults === null && !backendError && (
-          <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <div style={{ width: '32px', height: '32px', border: '3px solid var(--border-glass)', borderTopColor: 'var(--accent-cyan)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+          <div className="u-1aeb18d0">
+            <div className="u-cd6224ee" />
             Ranking eligible suburbs...
           </div>
         )}
 
         {backendResults && backendResults.results.length === 0 && (
-          <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🔍</div>
-            <div style={{ fontWeight: 600, marginBottom: '4px' }}>No Eligible Suburbs Found</div>
-            <div style={{ fontSize: '0.85rem', marginBottom: '12px' }}>No suburbs in {state} meet all of your current criteria.</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'left', maxWidth: '380px', margin: '0 auto', lineHeight: 1.7 }}>
+          <div className="u-1aeb18d0">
+            <div className="u-e21f7216">🔍</div>
+            <div className="u-15928e4e">No Eligible Suburbs Found</div>
+            <div className="u-59dba6b0">No suburbs in {state} meet all of your current criteria.</div>
+            <div className="u-0f314042">
               <div>Try one of these adjustments:</div>
               <div>• Reduce your minimum yield requirement (or set it to <em>Any</em>)</div>
               <div>• Increase your budget to access more eligible suburbs</div>
@@ -399,70 +405,70 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
           </div>
         )}
         {comparisonList.length > 0 && (
-          <div className="glass-card" style={{ marginBottom: '20px', border: '1px solid var(--accent-cyan)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-              <h3 style={{ margin: 0, color: 'var(--accent-cyan)' }}>Side-by-Side Comparison ({comparisonList.length}/5)</h3>
+          <div className="glass-card u-b5331256">
+            <div className="u-2a64d94f">
+              <h3 className="u-8ca79ebe">Side-by-Side Comparison ({comparisonList.length}/5)</h3>
               <button 
                 onClick={() => window.print()}
-                style={{ padding: '6px 12px', background: 'var(--bg-glass)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
+                className="u-098673da"
               >
                 🖨️ Export Decision Brief (PDF)
               </button>
             </div>
             
-            <div style={{ overflowX: 'auto', paddingBottom: '10px' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <div className="u-d09cc8a0">
+              <table className="u-7ad7b8f2">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid var(--border-2)' }}>Metric</th>
+                    <th className="u-26c54198">Metric</th>
                     {comparisonList.map(c => (
-                      <th key={c.suburb_id} style={{ textAlign: 'left', padding: '10px', borderBottom: '1px solid var(--border-2)', minWidth: '150px' }}>
-                        <div style={{ fontSize: '1rem', color: 'var(--text-primary)' }}>{c.name}</div>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{c.state} • {c.postcode}</div>
+                      <th key={c.suburb_id} className="u-e69bb577">
+                        <div className="u-4ee7fc87">{c.name}</div>
+                        <div className="u-af9b3a94">{c.state} • {c.postcode}</div>
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Buyer Fit Score</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', fontWeight: 'bold', color: 'var(--accent-cyan)' }}>{c.buyer_fit_score.toFixed(0)} / 100</td>)}
+                    <td className="u-8767e76f">Buyer Fit Score</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-3658f2e4">{c.buyer_fit_score.toFixed(0)} / 100</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Data Confidence</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.confidence_label?.toUpperCase() || 'LOW'}</td>)}
+                    <td className="u-8767e76f">Data Confidence</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-2a104b4e">{c.confidence_label?.toUpperCase() || 'LOW'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Median Price</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>${(c.affordability?.purchase_price || 0).toLocaleString()}</td>)}
+                    <td className="u-8767e76f">Median Price</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-2a104b4e">${(c.affordability?.purchase_price || 0).toLocaleString()}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Rental Yield" contextStr="Comparison List">Rental Yield</AiMetricTooltip></td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.components?.income?.score ? (c.components.income.score / 10).toFixed(1) + '%' : 'N/A'}</td>)}
+                    <td className="u-8767e76f"><AiMetricTooltip metricName="Rental Yield" contextStr="Comparison List">Rental Yield</AiMetricTooltip></td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-2a104b4e">{c.components?.income?.score ? (c.components.income.score / 10).toFixed(1) + '%' : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Capital Growth" contextStr="Comparison List">12m Capital Growth</AiMetricTooltip></td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.['12m_growth'] !== null && c.raw_metrics?.['12m_growth'] !== undefined ? `${c.raw_metrics['12m_growth']}%` : 'N/A'}</td>)}
+                    <td className="u-8767e76f"><AiMetricTooltip metricName="Capital Growth" contextStr="Comparison List">12m Capital Growth</AiMetricTooltip></td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-2a104b4e">{c.raw_metrics?.['12m_growth'] !== null && c.raw_metrics?.['12m_growth'] !== undefined ? `${c.raw_metrics['12m_growth']}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}><AiMetricTooltip metricName="Vacancy Rate" contextStr="Comparison List">Vacancy Rate</AiMetricTooltip></td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.vacancy_rate !== null && c.raw_metrics?.vacancy_rate !== undefined ? `${c.raw_metrics.vacancy_rate}%` : 'N/A'}</td>)}
+                    <td className="u-8767e76f"><AiMetricTooltip metricName="Vacancy Rate" contextStr="Comparison List">Vacancy Rate</AiMetricTooltip></td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-2a104b4e">{c.raw_metrics?.vacancy_rate !== null && c.raw_metrics?.vacancy_rate !== undefined ? `${c.raw_metrics.vacancy_rate}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Active Listings</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.stock_on_market !== null && c.raw_metrics?.stock_on_market !== undefined ? c.raw_metrics.stock_on_market : 'N/A'}</td>)}
+                    <td className="u-8767e76f">Active Listings</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-2a104b4e">{c.raw_metrics?.stock_on_market !== null && c.raw_metrics?.stock_on_market !== undefined ? c.raw_metrics.stock_on_market : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Owner Occupier %</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)' }}>{c.raw_metrics?.owner_occupier_rate !== null && c.raw_metrics?.owner_occupier_rate !== undefined ? `${c.raw_metrics.owner_occupier_rate}%` : 'N/A'}</td>)}
+                    <td className="u-8767e76f">Owner Occupier %</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-2a104b4e">{c.raw_metrics?.owner_occupier_rate !== null && c.raw_metrics?.owner_occupier_rate !== undefined ? `${c.raw_metrics.owner_occupier_rate}%` : 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', color: 'var(--text-secondary)' }}>Top Growth Driver</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', borderBottom: '1px solid var(--border-1)', fontSize: '0.75rem' }}>{c.drivers?.[0] || 'N/A'}</td>)}
+                    <td className="u-8767e76f">Top Growth Driver</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-70df3452">{c.drivers?.[0] || 'N/A'}</td>)}
                   </tr>
                   <tr>
-                    <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Top Risk</td>
-                    {comparisonList.map(c => <td key={c.suburb_id} style={{ padding: '10px', fontSize: '0.75rem', color: 'var(--danger)' }}>{c.risks?.[0] || 'None identified'}</td>)}
+                    <td className="u-56ec24dc">Top Risk</td>
+                    {comparisonList.map(c => <td key={c.suburb_id} className="u-69907d0c">{c.risks?.[0] || 'None identified'}</td>)}
                   </tr>
                 </tbody>
               </table>
@@ -574,19 +580,19 @@ const BackendResultCard = memo(function BackendResultCard({
       <div className="bf-card__driver">
         <div className="bf-card__driver-label">What supports this</div>
         {result.drivers?.slice(0, 2).map((d: string, i: number) => (
-          <div key={i} style={{ fontSize: '0.8rem', color: 'var(--text-2)', padding: '2px 0' }}>✓ {d}</div>
-        )) || <div style={{ fontSize: '0.8rem', color: 'var(--text-3)' }}>No strong supports</div>}
+          <div key={i} className="u-850e21ff">✓ {d}</div>
+        )) || <div className="u-c49bb1e7">No strong supports</div>}
       </div>
       <div className="bf-card__driver">
         <div className="bf-card__driver-label">Risks to verify</div>
         {result.risks?.slice(0, 2).map((r: string, i: number) => (
-          <div key={i} style={{ fontSize: '0.8rem', color: 'var(--danger)' }}>⚠ {r}</div>
-        )) || <div style={{ fontSize: '0.8rem', color: 'var(--text-3)' }}>No major risks</div>}
+          <div key={i} className="u-be1aa47b">⚠ {r}</div>
+        )) || <div className="u-c49bb1e7">No major risks</div>}
       </div>
 
       <div className="bf-card__actions">
         <label className={`bf-card__action bf-card__action--compare ${isCompared ? 'bf-card__action--compare--active' : ''}`}>
-          <input type="checkbox" checked={isCompared} onChange={toggleCompare} style={{ marginRight: 4 }} />
+          <input type="checkbox" checked={isCompared} onChange={toggleCompare} className="u-6860a898" />
           Compare
         </label>
         <button onClick={() => setShowEvidence(!showEvidence)} className="bf-card__action">
@@ -598,17 +604,17 @@ const BackendResultCard = memo(function BackendResultCard({
       </div>
 
       {showEvidence && (
-        <div style={{ padding: '15px 20px', background: 'var(--bg-surface-sunken)', borderTop: '1px solid var(--border-1)', fontSize: '0.7rem', color: 'var(--text-2)' }}>
+        <div className="u-92e1eb31">
           <div><strong>Evidence ID:</strong> {result.evidence_ids?.[0] || 'N/A'}</div>
           {result.affordability?.assumptions && (
-            <div style={{ marginTop: '6px' }}>
+            <div className="u-1ce527f1">
               <strong>Assumptions:</strong> Rate {(result.affordability.assumptions.interest_rate * 100).toFixed(1)}%, Buffer +{(result.affordability.assumptions.serviceability_buffer * 100).toFixed(0)}%, {result.affordability.assumptions.loan_term_years}yr, {(result.affordability.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% costs
             </div>
           )}
-          <div style={{ marginTop: '6px' }}><strong>Serviceability:</strong> Loan ${aff.required_loan?.toLocaleString()} vs Capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}</div>
-          <div style={{ marginTop: '6px' }}>
+          <div className="u-1ce527f1"><strong>Serviceability:</strong> Loan ${aff.required_loan?.toLocaleString()} vs Capacity ${aff.estimated_borrowing_capacity?.toLocaleString()}</div>
+          <div className="u-1ce527f1">
             <strong>Weights:</strong> {Object.entries(result.components || {}).map(([k, v]: [string, any]) => (
-              <span key={k} style={{ marginRight: '12px' }}>{k}: {v.score.toFixed(0)} (×{v.weight}%)</span>
+              <span key={k} className="u-478d8a29">{k}: {v.score.toFixed(0)} (×{v.weight}%)</span>
             ))}
           </div>
         </div>

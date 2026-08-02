@@ -35,22 +35,10 @@ const PersonaSwitcher = memo(function PersonaSwitcher({ activePersona, onChange 
 
   return (
     <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '4px',
-        flexShrink: 0,
-      }}
+      className="u-72b4a711"
     >
       <span
-        style={{
-          fontSize: '0.8rem',
-          color: 'var(--text-secondary)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-          marginRight: '4px',
-          whiteSpace: 'nowrap',
-        }}
+        className="u-fb84eb0b"
       >
         View as:
       </span>
@@ -63,19 +51,7 @@ const PersonaSwitcher = memo(function PersonaSwitcher({ activePersona, onChange 
             type="button"
             title={p.description}
             onClick={() => handleChange(id)}
-            style={{
-              padding: '4px 10px',
-              fontSize: '0.72rem',
-              fontWeight: active ? 600 : 400,
-              border: active ? '1px solid var(--accent-cyan)' : '1px solid var(--border-glass)',
-              borderRadius: '20px',
-              background: active ? 'rgba(59,130,246,0.12)' : 'var(--bg-card)',
-              color: active ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-              cursor: 'pointer',
-              transition: 'all 0.15s',
-              whiteSpace: 'nowrap',
-              lineHeight: 1.3,
-            }}
+            className="u-1e7c8323" style={{fontWeight: active ? 600 : 400, border: active ? '1px solid var(--accent-cyan)' : '1px solid var(--border-glass)', background: active ? 'rgba(59,130,246,0.12)' : 'var(--bg-card)', color: active ? 'var(--accent-cyan)' : 'var(--text-secondary)'}}
           >
             {icons[id]} {p.label}
           </button>

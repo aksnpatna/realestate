@@ -84,16 +84,10 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
   };
 
   const renderStepIndicator = () => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '2px', background: 'rgba(255,255,255,0.1)', zIndex: 0 }}></div>
+    <div className="u-65b2947c">
+      <div className="u-2bad0c43"></div>
       {[1, 2, 3, 4, 5, 6].map(s => (
-        <div key={s} style={{ 
-          width: '30px', height: '30px', borderRadius: '50%', 
-          background: s <= step ? 'var(--accent-purple)' : 'var(--bg-card)',
-          color: s <= step ? '#fff' : 'var(--text-muted)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontWeight: 'bold', zIndex: 1, border: '2px solid var(--bg-dark)'
-        }}>
+        <div key={s} className="u-dadbcf09" style={{background: s <= step ? 'var(--accent-purple)' : 'var(--bg-card)', color: s <= step ? '#fff' : 'var(--text-muted)'}}>
           {s}
         </div>
       ))}
@@ -101,31 +95,26 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
   );
 
   return (
-    <div className="content-wrapper animate-fade-in" style={{ padding: '20px' }}>
-      <div className="glass-card" style={{ maxWidth: '900px', margin: '0 auto', minHeight: '600px', display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>My Purchase Plan</h2>
+    <div className="content-wrapper animate-fade-in u-3e72e63f">
+      <div className="glass-card u-07c22548">
+        <h2 className="u-f4f4fabb">My Purchase Plan</h2>
         {renderStepIndicator()}
 
-        <div style={{ flex: 1 }}>
+        <div className="u-52dcacf6">
           {step === 1 && (
             <div className="animate-fade-in">
-              <h3 style={{ textAlign: 'center', marginBottom: '30px' }}>Step 1: Who Are You?</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+              <h3 className="u-d5785af4">Step 1: Who Are You?</h3>
+              <div className="u-261e09f5">
                 {(['First Home Buyer', 'Upgrader', 'Investor', 'SMSF Investor'] as BuyerProfile[]).map(p => (
                   <div 
                     key={p}
                     onClick={() => setProfile(p)}
-                    style={{ 
-                      padding: '30px', borderRadius: '12px', textAlign: 'center', cursor: 'pointer',
-                      background: profile === p ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255,255,255,0.02)',
-                      border: profile === p ? '2px solid var(--accent-purple)' : '2px solid transparent',
-                      transition: 'all 0.3s ease'
-                    }}
+                    className="u-7e3709c3" style={{background: profile === p ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255,255,255,0.02)', border: profile === p ? '2px solid var(--accent-purple)' : '2px solid transparent'}}
                   >
-                    <div style={{ fontSize: '2rem', marginBottom: '10px' }}>
+                    <div className="u-a1831ecd">
                       {p === 'First Home Buyer' ? '🏠' : p === 'Upgrader' ? '🚀' : p === 'Investor' ? '📈' : '🏦'}
                     </div>
-                    <h4 style={{ margin: 0 }}>{p}</h4>
+                    <h4 className="u-0c1fb0d9">{p}</h4>
                   </div>
                 ))}
               </div>
@@ -134,9 +123,9 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
 
           {step === 2 && (
             <div className="animate-fade-in">
-              <h3 style={{ textAlign: 'center', marginBottom: '30px' }}>Step 2: Income, Expenses & Serviceability</h3>
-              <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+              <h3 className="u-d5785af4">Step 2: Income, Expenses & Serviceability</h3>
+              <div className="u-a632a27f">
+                <div className="u-261e09f5">
                   <div className="input-group">
                     <label>Gross Annual Salary ($)</label>
                     <input type="number" value={salary} onChange={e => setSalary(Number(e.target.value))} />
@@ -147,7 +136,7 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
                   </div>
                 </div>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div className="u-261e09f5">
                   <div className="input-group">
                     <label>Monthly Living Expenses ($)</label>
                     <input type="number" value={monthlyExpenses} onChange={e => setMonthlyExpenses(Number(e.target.value))} />
@@ -158,7 +147,7 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div className="u-261e09f5">
                   <div className="input-group">
                     <label>Available Cash Savings ($)</label>
                     <input type="number" value={savings} onChange={e => setSavings(Number(e.target.value))} />
@@ -171,25 +160,25 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
                   )}
                 </div>
 
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '20px', borderRadius: '8px', marginTop: '20px' }}>
-                  <h4 style={{ color: 'var(--accent-purple)', marginBottom: '15px' }}>Serviceability Outcome (Stress Tested at {(currentRate + 3).toFixed(2)}%)</h4>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div className="u-d7840f87">
+                  <h4 className="u-30da33aa">Serviceability Outcome (Stress Tested at {(currentRate + 3).toFixed(2)}%)</h4>
+                  <div className="u-476b1f75">
                     <span>Net Disposable Income (Monthly):</span>
                     <strong style={{ color: serviceability.netDisposableIncome > 0 ? 'var(--accent-green)' : '#ef4444' }}>
                       ${Math.round(serviceability.netDisposableIncome).toLocaleString()}
                     </strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <div className="u-476b1f75">
                     <span>Max Borrowing Capacity:</span>
                     <strong>${Math.round(serviceability.maxLoanAmount).toLocaleString()}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <div className="u-476b1f75">
                     <span>Max Purchase (by 20% Deposit):</span>
-                    <strong style={{ color: 'var(--text-secondary)' }}>${serviceability.maxPurchaseByDeposit.toLocaleString()}</strong>
+                    <strong className="u-c7477801">${serviceability.maxPurchaseByDeposit.toLocaleString()}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div className="u-0ef25f2b">
                     <span>True Max Purchase Price:</span>
-                    <strong style={{ color: 'var(--accent-cyan)', fontSize: '1.2rem' }}>
+                    <strong className="u-b408d827">
                       ${Math.round(serviceability.trueMaxPurchase).toLocaleString()}
                     </strong>
                   </div>
@@ -200,44 +189,44 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
 
           {step === 3 && (
             <div className="animate-fade-in">
-              <h3 style={{ textAlign: 'center', marginBottom: '15px' }}>Step 3: Suburb Shortlist</h3>
-              <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '20px' }}>Select up to 3 suburbs to compare side by side.</p>
+              <h3 className="u-f0ee6a56">Step 3: Suburb Shortlist</h3>
+              <p className="u-ae14ae16">Select up to 3 suburbs to compare side by side.</p>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+              <div className="u-79bf16b1">
                 <div>
                   <input 
                     type="text" 
                     placeholder="Search suburbs..." 
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: 'none', marginBottom: '15px', background: 'rgba(255,255,255,0.1)', color: '#fff' }}
+                    className="u-78480f28"
                   />
-                  <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div className="u-b2ba53e2">
                     {availableSuburbs.slice(0, 50).map(s => (
                       <div 
                         key={s.id} 
                         onClick={() => toggleShortlist(s.id)}
-                        style={{ padding: '10px 15px', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between' }}
+                        className="u-5736570a"
                       >
                         <span>{s.name}, {s.state} {s.postcode}</span>
-                        <span style={{ color: 'var(--accent-purple)' }}>+</span>
+                        <span className="u-6d81fac3">+</span>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <h4 style={{ marginBottom: '15px', color: 'var(--accent-cyan)' }}>Your Shortlist ({shortlist.length}/3)</h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <h4 className="u-6f328805">Your Shortlist ({shortlist.length}/3)</h4>
+                  <div className="u-b4339806">
                     {shortlistedSuburbs.map(s => (
-                      <div key={s.id} style={{ padding: '15px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--accent-green)', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div key={s.id} className="u-c4c28a5e">
                         <div>
-                          <div style={{ fontWeight: 'bold' }}>{s.name}</div>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Median: ${(s.metrics?.medianPrice ?? 0).toLocaleString()}</div>
+                          <div className="u-7c61704e">{s.name}</div>
+                          <div className="u-fc193050">Median: ${(s.metrics?.medianPrice ?? 0).toLocaleString()}</div>
                         </div>
-                        <button onClick={() => toggleShortlist(s.id)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.2rem' }}>×</button>
+                        <button onClick={() => toggleShortlist(s.id)} className="u-42d2512a">×</button>
                       </div>
                     ))}
-                    {shortlist.length === 0 && <div style={{ color: 'var(--text-muted)' }}>No suburbs selected yet.</div>}
+                    {shortlist.length === 0 && <div className="u-28c62109">No suburbs selected yet.</div>}
                   </div>
                 </div>
               </div>
@@ -246,12 +235,12 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
 
           {step === 4 && (
             <div className="animate-fade-in">
-              <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>Step 4: Run the Numbers</h3>
+              <h3 className="u-f4f4fabb">Step 4: Run the Numbers</h3>
               {shortlist.length === 0 ? (
-                <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Please go back and select at least one suburb.</div>
+                <div className="u-319fa64e">Please go back and select at least one suburb.</div>
               ) : (
                 <div>
-                  <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', paddingBottom: '10px' }}>
+                  <div className="u-a0deb022">
                     {shortlistedSuburbs.map(s => {
                       const depositReq = (s.metrics?.medianPrice ?? 0) * 0.2;
                       const stampDuty = (s.metrics?.medianPrice ?? 0) * 0.05; // rough 5% proxy
@@ -259,22 +248,22 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
                       const shortfall = (savings + equity) - totalCashReq;
                       
                       return (
-                        <div key={s.id} style={{ flex: '1', minWidth: '250px', background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '8px' }}>
-                          <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>{s.name}</h4>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                            <span style={{ color: 'var(--text-secondary)' }}>Median Price:</span>
+                        <div key={s.id} className="u-43cf51c8">
+                          <h4 className="u-95621eaa">{s.name}</h4>
+                          <div className="u-474527c6">
+                            <span className="u-c7477801">Median Price:</span>
                             <strong>${(s.metrics?.medianPrice ?? 0).toLocaleString()}</strong>
                           </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                            <span style={{ color: 'var(--text-secondary)' }}>20% Deposit:</span>
+                          <div className="u-474527c6">
+                            <span className="u-c7477801">20% Deposit:</span>
                             <strong>${depositReq.toLocaleString()}</strong>
                           </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                            <span style={{ color: 'var(--text-secondary)' }}>Est. Stamp Duty:</span>
+                          <div className="u-474527c6">
+                            <span className="u-c7477801">Est. Stamp Duty:</span>
                             <strong>${stampDuty.toLocaleString()}</strong>
                           </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                            <span style={{ color: 'var(--text-secondary)' }}>Cash Result:</span>
+                          <div className="u-0ef25f2b">
+                            <span className="u-c7477801">Cash Result:</span>
                             <strong style={{ color: shortfall >= 0 ? 'var(--accent-green)' : '#ef4444' }}>
                               {shortfall >= 0 ? 'Affordable ✓' : `Shortfall $${Math.abs(shortfall).toLocaleString()}`}
                             </strong>
@@ -290,38 +279,38 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
 
           {step === 5 && (
             <div className="animate-fade-in">
-              <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>Step 5: Due Diligence Checklist</h3>
+              <h3 className="u-f4f4fabb">Step 5: Due Diligence Checklist</h3>
               {shortlist.length === 0 ? (
-                <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Please go back and select at least one suburb.</div>
+                <div className="u-319fa64e">Please go back and select at least one suburb.</div>
               ) : (
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <div className="u-ce73808e">
+                  <table className="u-003e541c">
                     <thead>
-                      <tr style={{ borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
-                        <th style={{ padding: '10px' }}>Metric</th>
-                        {shortlistedSuburbs.map(s => <th key={s.id} style={{ padding: '10px', color: 'var(--accent-cyan)' }}>{s.name}</th>)}
+                      <tr className="u-a336e8b4">
+                        <th className="u-8572bc84">Metric</th>
+                        {shortlistedSuburbs.map(s => <th key={s.id} className="u-535ffa06">{s.name}</th>)}
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Growth Score</td>
-                        {shortlistedSuburbs.map(s => <td key={s.id} style={{ padding: '10px' }}>{(s.growthScore ?? 0).toFixed(1)}</td>)}
+                      <tr className="u-916e7eda">
+                        <td className="u-56ec24dc">Growth Score</td>
+                        {shortlistedSuburbs.map(s => <td key={s.id} className="u-8572bc84">{(s.growthScore ?? 0).toFixed(1)}</td>)}
                       </tr>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Good Schools?</td>
-                        {shortlistedSuburbs.map(s => <td key={s.id} style={{ padding: '10px' }}>{(s.schools || s.acara_schools || []).length > 0 ? '✅ Yes' : '❌ No'}</td>)}
+                      <tr className="u-916e7eda">
+                        <td className="u-56ec24dc">Good Schools?</td>
+                        {shortlistedSuburbs.map(s => <td key={s.id} className="u-8572bc84">{(s.schools || s.acara_schools || []).length > 0 ? '✅ Yes' : '❌ No'}</td>)}
                       </tr>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Transit / Train</td>
-                        {shortlistedSuburbs.map(s => <td key={s.id} style={{ padding: '10px' }}>{(s.metrics?.transitAccessibility ?? 0) > 6 ? '✅ Strong' : '⚠️ Average'}</td>)}
+                      <tr className="u-916e7eda">
+                        <td className="u-56ec24dc">Transit / Train</td>
+                        {shortlistedSuburbs.map(s => <td key={s.id} className="u-8572bc84">{(s.metrics?.transitAccessibility ?? 0) > 6 ? '✅ Strong' : '⚠️ Average'}</td>)}
                       </tr>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Rental Yield</td>
-                        {shortlistedSuburbs.map(s => <td key={s.id} style={{ padding: '10px' }}>{s.metrics?.rentalYield ?? '—'}%</td>)}
+                      <tr className="u-916e7eda">
+                        <td className="u-56ec24dc">Rental Yield</td>
+                        {shortlistedSuburbs.map(s => <td key={s.id} className="u-8572bc84">{s.metrics?.rentalYield ?? '—'}%</td>)}
                       </tr>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>Stock on Market</td>
-                        {shortlistedSuburbs.map(s => <td key={s.id} style={{ padding: '10px' }}>{s.metrics?.stockOnMarket || '—'}</td>)}
+                      <tr className="u-916e7eda">
+                        <td className="u-56ec24dc">Stock on Market</td>
+                        {shortlistedSuburbs.map(s => <td key={s.id} className="u-8572bc84">{s.metrics?.stockOnMarket || '—'}</td>)}
                       </tr>
                     </tbody>
                   </table>
@@ -331,21 +320,17 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
           )}
 
           {step === 6 && (
-            <div className="animate-fade-in" style={{ textAlign: 'center' }}>
-              <h3 style={{ marginBottom: '20px', color: 'var(--accent-green)' }}>🎉 Plan Complete!</h3>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>Your institutional-grade investment summary is ready.</p>
-              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '30px', borderRadius: '12px', display: 'inline-block', textAlign: 'left', minWidth: '300px' }}>
-                 <div style={{ marginBottom: '10px' }}><strong>Profile:</strong> {profile}</div>
-                 <div style={{ marginBottom: '10px' }}><strong>Target Deposit:</strong> ${(savings + equity).toLocaleString()}</div>
-                 <div style={{ marginBottom: '20px' }}><strong>Target Suburbs:</strong> {shortlistedSuburbs.map(s => s.name).join(', ')}</div>
+            <div className="animate-fade-in u-e2e1e078">
+              <h3 className="u-6e4d9ed1">🎉 Plan Complete!</h3>
+              <p className="u-d819ecc7">Your institutional-grade investment summary is ready.</p>
+              <div className="u-bb314dea">
+                 <div className="u-8e545338"><strong>Profile:</strong> {profile}</div>
+                 <div className="u-8e545338"><strong>Target Deposit:</strong> ${(savings + equity).toLocaleString()}</div>
+                 <div className="u-19fd7aee"><strong>Target Suburbs:</strong> {shortlistedSuburbs.map(s => s.name).join(', ')}</div>
                  
                  <button 
                    onClick={() => window.print()}
-                   style={{ 
-                     width: '100%', padding: '15px', background: 'var(--accent-purple)', 
-                     color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer',
-                     fontWeight: 'bold', fontSize: '1rem'
-                   }}
+                   className="u-54948cf0"
                  >
                    Export PDF Summary
                  </button>
@@ -355,15 +340,11 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
         </div>
 
         {/* Navigation Buttons */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="u-09cdaaee">
           <button 
             onClick={prevStep} 
             disabled={step === 1}
-            style={{ 
-              padding: '10px 20px', background: 'transparent', color: step === 1 ? 'var(--text-muted)' : '#fff', 
-              border: '1px solid ' + (step === 1 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.3)'), 
-              borderRadius: '6px', cursor: step === 1 ? 'default' : 'pointer' 
-            }}
+            className="u-3d089930" style={{color: step === 1 ? 'var(--text-muted)' : '#fff', border: '1px solid ' + (step === 1 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.3)'), cursor: step === 1 ? 'default' : 'pointer'}}
           >
             Back
           </button>
@@ -371,11 +352,7 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
           <button 
             onClick={nextStep} 
             disabled={step === 6 || (step === 1 && !profile) || (step === 3 && shortlist.length === 0)}
-            style={{ 
-              padding: '10px 30px', background: 'var(--accent-purple)', color: '#fff', 
-              border: 'none', borderRadius: '6px', cursor: (step === 6 || (step === 1 && !profile) || (step === 3 && shortlist.length === 0)) ? 'not-allowed' : 'pointer',
-              opacity: (step === 6 || (step === 1 && !profile) || (step === 3 && shortlist.length === 0)) ? 0.5 : 1
-            }}
+            className="u-f5142e14" style={{cursor: (step === 6 || (step === 1 && !profile) || (step === 3 && shortlist.length === 0)) ? 'not-allowed' : 'pointer', opacity: (step === 6 || (step === 1 && !profile) || (step === 3 && shortlist.length === 0)) ? 0.5 : 1}}
           >
             {step === 6 ? 'Finish' : 'Next'}
           </button>

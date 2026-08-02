@@ -49,7 +49,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
     <Card className="sp__section">
       <h3 className="sp__heading">Plan & Usage</h3>
       <p className="sp__desc">Free tier — 5 research briefs per month. Past briefs remain readable forever.</p>
-      <Button variant="primary" size="sm" style={{ marginTop: 'var(--space-3)' }}>Upgrade</Button>
+      <Button variant="primary" size="sm" className="u-4c670167">Upgrade</Button>
     </Card>
 
     <Card className="sp__section">

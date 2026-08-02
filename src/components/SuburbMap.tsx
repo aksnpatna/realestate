@@ -114,37 +114,37 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
 
   return (
     <div className="map-wrapper glass-card">
-      <h3 className="map-title" style={{ marginBottom: '5px' }}>Local Infrastructure & Heatmaps</h3>
-      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>
+      <h3 className="map-title u-f3e72d99">Local Infrastructure & Heatmaps</h3>
+      <p className="u-47805062">
         <strong>Interactive Vector Heatmap:</strong> A live nationwide overlay of all 13,000+ suburbs is rendered dynamically via PostGIS. Zoom out to see the national yield distribution, and click on any coloured point to inspect its live data. Use the layer control (top right) to toggle base maps and overlays.
       </p>
       
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="u-d5518865">
         <button 
           onClick={() => setHeatmapMode('yield')}
-          style={{ padding: '6px 12px', background: heatmapMode === 'yield' ? 'var(--accent-purple)' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'yield' ? '#fff' : 'var(--text-primary, #334155)', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
+          className="u-39eab3d3" style={{background: heatmapMode === 'yield' ? 'var(--accent-purple)' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'yield' ? '#fff' : 'var(--text-primary, #334155)'}}
         >
           💰 Rental Yield Hotspots
         </button>
         <button 
           onClick={() => setHeatmapMode('growth')}
-          style={{ padding: '6px 12px', background: heatmapMode === 'growth' ? 'var(--accent-cyan)' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'growth' ? '#000' : 'var(--text-primary, #334155)', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
+          className="u-39eab3d3" style={{background: heatmapMode === 'growth' ? 'var(--accent-cyan)' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'growth' ? '#000' : 'var(--text-primary, #334155)'}}
         >
           📈 Capital Growth Outliers
         </button>
         <button 
           onClick={() => setHeatmapMode('sa1_income')}
-          style={{ padding: '6px 12px', background: heatmapMode === 'sa1_income' ? '#10b981' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'sa1_income' ? '#fff' : 'var(--text-primary, #334155)', border: '1px solid var(--border-color, #cbd5e1)', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
+          className="u-39eab3d3" style={{background: heatmapMode === 'sa1_income' ? '#10b981' : 'var(--bg-card, #f1f5f9)', color: heatmapMode === 'sa1_income' ? '#fff' : 'var(--text-primary, #334155)'}}
         >
           🏘️ Micro-Market (SA1) Income
         </button>
-        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary, #64748b)', marginLeft: '10px', fontWeight: 500 }}>
+        <span className="u-e4da0b73">
           💡 Click on any school marker (🎓/🎒/🧸) to see its official catchment zone.
         </span>
       </div>
 
-      <div className="map-container-inner" style={{ background: '#e5e5e5' }}>
-        <MapContainer center={derivedCenter} zoom={13} style={{ height: '100%', width: '100%', borderRadius: '12px' }}>
+      <div className="map-container-inner u-7886241b">
+        <MapContainer center={derivedCenter} zoom={13} className="u-77bf76c3">
           
           <ChangeView center={derivedCenter} />
           
@@ -199,13 +199,7 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
             <GeoJSON 
               key={suburbName} 
               data={geoData} 
-              style={{
-                color: '#ff0000',
-                weight: 3,
-                opacity: 0.8,
-                fillColor: '#ff0000',
-                fillOpacity: 0.1
-              }} 
+               
             />
           )}
           
@@ -217,7 +211,7 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
               <Marker key={`poi-${idx}`} position={pos as [number, number]} icon={getIconForType(poi.type)}>
                 <Popup className="premium-popup">
                   <strong>{poi.name}</strong><br/>
-                  <span style={{textTransform: 'capitalize'}}>{poi.type}</span>
+                  <span className="u-044f69bb">{poi.type}</span>
                 </Popup>
               </Marker>
             );
@@ -258,19 +252,19 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
                 }}
               >
                 <Popup className="premium-popup">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
+                  <div className="u-72fa2a14">
                     <div>
                       <strong>{school.name}</strong><br/>
-                      <span style={{textTransform: 'capitalize'}}>{typeStr}</span>
+                      <span className="u-044f69bb">{typeStr}</span>
                     </div>
-                    <div style={{ background: gradeColor, color: '#fff', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                    <div className="u-8627cee6" style={{background: gradeColor}}>
                       {mockGrade}
                     </div>
                   </div>
-                  <div style={{color: '#94a3b8', marginTop: '4px', fontSize: '0.85rem'}}>
+                  <div className="u-5106857b">
                     {school.stateRank ? `State Rank: #${school.stateRank} | Score: ${school.score}/100 (Est.)` : 'OSM Extracted Data'}
                   </div>
-                  <div style={{color: '#8b5cf6', fontSize: '0.8em', marginTop: '4px'}}>
+                  <div className="u-f555fd52">
                     Click marker to load Official Catchment Zone
                   </div>
                 </Popup>
@@ -301,13 +295,13 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
       </div>
       
       <div className="map-legend">
-        <div className="legend-item"><span className="legend-color" style={{backgroundColor: '#eab308'}}></span> Primary</div>
-        <div className="legend-item"><span className="legend-color" style={{backgroundColor: '#8b5cf6'}}></span> High School</div>
-        <div className="legend-item"><span className="legend-color" style={{backgroundColor: '#00f0ff'}}></span> Transit</div>
-        <div className="legend-item"><span className="legend-color" style={{backgroundColor: '#10b981'}}></span> Retail</div>
-        <div className="legend-item"><span className="legend-color" style={{backgroundColor: '#f97316'}}></span> Cafe</div>
-        <div className="legend-item"><span className="legend-color" style={{backgroundColor: '#22c55e'}}></span> Park</div>
-        <div className="legend-item"><span className="legend-color" style={{backgroundColor: '#ff0000', borderRadius: '0', height: '4px', width: '20px', display: 'inline-block'}}></span> Boundary</div>
+        <div className="legend-item"><span className="legend-color u-ce921c0d"></span> Primary</div>
+        <div className="legend-item"><span className="legend-color u-50edd103"></span> High School</div>
+        <div className="legend-item"><span className="legend-color u-123ca395"></span> Transit</div>
+        <div className="legend-item"><span className="legend-color u-4425a42a"></span> Retail</div>
+        <div className="legend-item"><span className="legend-color u-d9858fb6"></span> Cafe</div>
+        <div className="legend-item"><span className="legend-color u-63ffe0be"></span> Park</div>
+        <div className="legend-item"><span className="legend-color u-cea0a49d"></span> Boundary</div>
       </div>
     </div>
   );

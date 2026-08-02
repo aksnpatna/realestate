@@ -88,38 +88,29 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
 
   if (!sqmData || !chartData.length) {
     return (
-      <div style={{ padding: '20px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-glass)', textAlign: 'center', color: 'var(--text-secondary)' }}>
+      <div className="u-44d7b424">
         No historical market data available for this region.
       </div>
     );
   }
 
   return (
-    <div style={{ marginTop: '20px', padding: '20px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
-      <h3 style={{ fontSize: '1.05rem', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: 'var(--text-primary)' }}>
-        <span style={{ fontSize: '1.1rem' }}>📈</span> 15-Year Vacancy & Stock History
+    <div className="u-e995d5ba">
+      <h3 className="u-3cbf0169">
+        <span className="u-ce0fd88b">📈</span> 15-Year Vacancy & Stock History
       </h3>
-      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+      <p className="u-9ce7e2f5">
         Rental market supply and demand trends
       </p>
 
       {aiInsights && (
-        <div style={{ 
-          marginBottom: '16px', 
-          padding: '12px 14px', 
-          background: 'rgba(2, 132, 199, 0.06)', 
-          borderLeft: '3px solid var(--accent-cyan)',
-          borderRadius: '6px',
-          color: 'var(--text-primary)',
-          fontSize: '0.88rem',
-          lineHeight: '1.5'
-        }}>
-          <strong style={{ color: 'var(--accent-cyan)', display: 'block', marginBottom: '4px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🤖 Market Analysis</strong>
+        <div className="u-6e82986b">
+          <strong className="u-de7d56da">🤖 Market Analysis</strong>
           {aiInsights}
         </div>
       )}
 
-      <div style={{ height: '300px', width: '100%' }}>
+      <div className="u-df6b2905">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
@@ -208,17 +199,17 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
       </div>
 
       {/* Vacancy interpretation guide */}
-      <div style={{ display: 'flex', gap: '12px', marginTop: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-        <span style={{ fontSize: '0.72rem', color: '#059669', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span style={{ width: '10px', height: '3px', background: '#059669', borderRadius: '2px', display: 'inline-block' }} />
+      <div className="u-5ba97460">
+        <span className="u-b98e583d">
+          <span className="u-97b23a5f" />
           &lt;2% Landlord market
         </span>
-        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span style={{ width: '10px', height: '3px', background: 'var(--text-muted)', borderRadius: '2px', display: 'inline-block' }} />
+        <span className="u-893a4e24">
+          <span className="u-c90dc131" />
           2-3% Balanced
         </span>
-        <span style={{ fontSize: '0.72rem', color: '#DC2626', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span style={{ width: '10px', height: '3px', background: '#DC2626', borderRadius: '2px', display: 'inline-block' }} />
+        <span className="u-f853e331">
+          <span className="u-880f516d" />
           &gt;3% Tenant-favourable
         </span>
       </div>

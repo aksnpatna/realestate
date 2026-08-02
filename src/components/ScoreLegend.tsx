@@ -93,56 +93,28 @@ export const ScoreInlineHint = memo(function ScoreInlineHint({
   if (!meta) return null;
   const label = compact ? meta.name : `${meta.name} (${meta.range})`;
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '6px', position: 'relative' }}>
+    <span className="u-134ac6e2">
       <button
         type="button"
         aria-label={`What does ${meta.name} mean?`}
         onClick={() => setOpen(o => !o)}
-        style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid var(--border-glass)',
-          color: 'var(--text-secondary)',
-          borderRadius: '50%',
-          width: '16px',
-          height: '16px',
-          fontSize: '0.75rem',
-          cursor: 'pointer',
-          padding: 0,
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+        className="u-2267f0c3"
       >
         ?
       </button>
       {open && (
         <span
           role="tooltip"
-          style={{
-            position: 'absolute',
-            top: '20px',
-            left: '0',
-            zIndex: 50,
-            width: '240px',
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-glass)',
-            borderRadius: '8px',
-            padding: '10px',
-            fontSize: '0.72rem',
-            color: 'var(--text-primary)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-            lineHeight: 1.4,
-            textAlign: 'left',
-          }}
+          className="u-80cf4558"
         >
-          <strong style={{ color: 'var(--accent-cyan)' }}>{label}</strong>
-          <div style={{ marginTop: '4px' }}>{meta.meaning}</div>
-          <div style={{ marginTop: '6px', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+          <strong className="u-d03afae3">{label}</strong>
+          <div className="u-073259d9">{meta.meaning}</div>
+          <div className="u-c496d3a7">
             {meta.caveat}
           </div>
           {value != null && (
-            <div style={{ marginTop: '6px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              This suburb: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(value)}</strong>
+            <div className="u-3a8b0b2c">
+              This suburb: <strong className="u-c154f6c6">{Math.round(value)}</strong>
             </div>
           )}
         </span>
@@ -174,72 +146,55 @@ export const ScoreLegendPanel = memo(function ScoreLegendPanel({ growthFactors }
 
   return (
     <div
-      className="glass-card"
-      style={{ padding: '14px', marginBottom: '16px', animation: 'fadeIn 0.3s' }}
+      className="glass-card u-dda199cc"
       data-testid="score-legend-panel"
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ margin: 0, fontSize: '0.95rem' }}>Score Legend</h3>
+      <div className="u-69f9d299">
+        <h3 className="u-b5fda34d">Score Legend</h3>
         <button
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Dismiss"
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-secondary)',
-            cursor: 'pointer',
-            fontSize: '1rem',
-          }}
+          className="u-3f29a9d5"
         >
           ×
         </button>
       </div>
-      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+      <p className="u-f7c5ce41">
         This app shows three different numbers. Each measures something different — they are never interchangeable.
       </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+      <div className="u-138a9a93">
         {ordered.map(({ key, m }) => (
           <div
             key={key}
-            style={{
-              padding: '8px 10px',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid var(--border-glass)',
-              borderRadius: '6px',
-            }}
+            className="u-8e63dd34"
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <strong style={{ color: 'var(--accent-cyan)' }}>{m.name}</strong>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{m.range}</span>
+            <div className="u-0b9a8f0f">
+              <strong className="u-d03afae3">{m.name}</strong>
+              <span className="u-af9b3a94">{m.range}</span>
             </div>
-            <div style={{ fontSize: '0.78rem', marginTop: '3px' }}>{m.meaning}</div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '3px' }}>
+            <div className="u-9cdead24">{m.meaning}</div>
+            <div className="u-d8d7ffb0">
               {m.caveat}
             </div>
           </div>
         ))}
       </div>
       {growthFactors && growthFactors.length > 0 && (
-        <div style={{ marginTop: '12px', borderTop: '1px solid var(--border-glass)', paddingTop: '10px' }}>
-          <h4 style={{ margin: '0 0 6px 0', fontSize: '0.8rem' }}>Market Momentum drivers (this suburb)</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div className="u-b8adc50b">
+          <h4 className="u-712f20a9">Market Momentum drivers (this suburb)</h4>
+          <div className="u-ac060ff3">
             {growthFactors
               .filter(f => f.value !== 0 || f.key === 'base')
               .map(f => (
                 <div
                   key={f.key}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'baseline',
-                    fontSize: '0.75rem',
-                  }}
+                  className="u-49a21d58"
                 >
-                  <span style={{ color: 'var(--text-secondary)' }}>{f.label}</span>
+                  <span className="u-c7477801">{f.label}</span>
                   <span>
                     <strong>{typeof f.value === 'number' ? (f.value > 0 ? '+' : '') + f.value : f.value}</strong>
-                    {f.max ? <span style={{ color: 'var(--text-secondary)', marginLeft: '3px' }}>/ {f.max}</span> : null}
+                    {f.max ? <span className="u-56fd35b0">/ {f.max}</span> : null}
                   </span>
                 </div>
               ))}

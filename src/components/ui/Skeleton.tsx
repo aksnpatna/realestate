@@ -20,14 +20,14 @@ export const Skeleton: React.FC<SkeletonProps> = ({ variant = 'text', width, hei
 export const BriefSkeleton: React.FC = () => (
   <div className="ui-skel-brief">
     <Skeleton variant="text" height={24} width="60%" />
-    <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+    <div className="u-b9ecfa35">
       <Skeleton variant="rect" width={80} height={22} />
       <Skeleton variant="rect" width={60} height={22} />
     </div>
-    <Skeleton variant="text" height={16} width="90%" style={{ marginTop: 16 }} />
+    <Skeleton variant="text" height={16} width="90%" className="u-4a682385" />
     <Skeleton variant="text" height={16} width="85%" />
     <Skeleton variant="text" height={16} width="70%" />
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginTop: 16 }}>
+    <div className="u-24009b5f">
       <Skeleton variant="rect" height={60} />
       <Skeleton variant="rect" height={60} />
       <Skeleton variant="rect" height={60} />

@@ -175,89 +175,80 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
 
     if (disc.guardrail && disc.message) {
       return (
-        <div style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.4)', borderRadius: 12, padding: '20px 22px', marginBottom: 18 }}>
-          <p style={{ margin: 0, fontSize: '0.95rem', color: '#fbbf24', fontWeight: 600 }}>{disc.message}</p>
-          <p style={{ margin: '8px 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Try a different direction, or use Buy Finder to scan a broader area.</p>
+        <div className="u-14ec60a4">
+          <p className="u-2ea84e9c">{disc.message}</p>
+          <p className="u-631f2e9a">Try a different direction, or use Buy Finder to scan a broader area.</p>
         </div>
       );
     }
 
     if (!disc.results.length) {
       return (
-        <div style={{ background: 'rgba(15,23,42,0.02)', borderRadius: 12, padding: 20, marginBottom: 18, textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{disc.message || 'No suburbs found matching your criteria.'}</p>
+        <div className="u-92ab79f3">
+          <p className="u-8773805e">{disc.message || 'No suburbs found matching your criteria.'}</p>
         </div>
       );
     }
 
     return (
-      <div style={{ marginBottom: 24 }}>
+      <div className="u-7cf9359d">
         {disc.summary && (
-          <p style={{ margin: '0 0 14px', fontSize: '0.82rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+          <p className="u-c386a236">
             🔍 {disc.summary}
           </p>
         )}
-        <div style={{ display: 'grid', gap: 14 }}>
+        <div className="u-a240973f">
           {disc.results.map((r, i) => (
-            <div key={r.suburb_id || r.name} style={{
-              background: 'rgba(15,23,42,0.02)', border: '1px solid rgba(15,23,42,0.06)',
-              borderRadius: 14, padding: '18px 20px', position: 'relative', overflow: 'hidden',
-              transition: 'box-shadow 0.2s',
-            }}>
+            <div key={r.suburb_id || r.name} className="u-3ffe173d">
               {/* Rank badge */}
-              <div style={{
-                position: 'absolute', top: 0, left: 0,
-                background: i === 0 ? 'linear-gradient(135deg,var(--bg-brand),#0066ff)' : i === 1 ? 'rgba(163,230,53,0.3)' : 'rgba(15,23,42,0.06)',
-                color: i === 0 ? '#000' : 'var(--text-primary)',
-                fontWeight: 800, fontSize: '0.72rem', padding: '3px 10px', borderRadius: '14px 0 8px 0',
-              }}>#{i + 1} MATCH</div>
+              <div className="u-60e611d1" style={{background: i === 0 ? 'linear-gradient(135deg,var(--bg-brand),#0066ff)' : i === 1 ? 'rgba(163,230,53,0.3)' : 'rgba(15,23,42,0.06)', color: i === 0 ? '#000' : 'var(--text-primary)'}}>#{i + 1} MATCH</div>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 8 }}>
+              <div className="u-9317c41f">
                 <div>
-                  <h3 style={{ margin: '0 0 2px', fontSize: '1.1rem', fontWeight: 700 }}>{r.name}</h3>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{r.state}{r.postcode ? ` ${r.postcode}` : ''}{r.dist_km ? ` · ${r.dist_km.toFixed(0)}km away` : ''}</span>
+                  <h3 className="u-135f1010">{r.name}</h3>
+                  <span className="u-48dd3199">{r.state}{r.postcode ? ` ${r.postcode}` : ''}{r.dist_km ? ` · ${r.dist_km.toFixed(0)}km away` : ''}</span>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 800, color: scoreColor(r.match_score) }}>{r.match_score.toFixed(0)}</div>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>match score</div>
+                <div className="u-f66ceb1f">
+                  <div className="u-4be59b4a" style={{color: scoreColor(r.match_score)}}>{r.match_score.toFixed(0)}</div>
+                  <div className="u-821d205a">match score</div>
                 </div>
               </div>
 
               {/* Why selected bullets */}
-              <ul style={{ margin: '12px 0 12px', padding: '0 0 0 16px', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                {r.why_selected.map((w, wi) => <li key={wi} style={{ marginBottom: 3 }}>{w}</li>)}
+              <ul className="u-7fe74b16">
+                {r.why_selected.map((w, wi) => <li key={wi} className="u-08080c96">{w}</li>)}
               </ul>
 
               {/* Metrics row */}
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
+              <div className="u-20d07d50">
                 {r.metrics.median_price != null && (
-                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Price: </span><strong>{fmtPrice(r.metrics.median_price)}</strong>
+                  <div className="u-d22a77f0">
+                    <span className="u-c7477801">Price: </span><strong>{fmtPrice(r.metrics.median_price)}</strong>
                   </div>
                 )}
                 {r.metrics.yield_pct != null && (
-                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Yield: </span><strong style={{ color: '#a3e635' }}>{fmt(r.metrics.yield_pct)}%</strong>
+                  <div className="u-d22a77f0">
+                    <span className="u-c7477801">Yield: </span><strong className="u-9cfc9e7b">{fmt(r.metrics.yield_pct)}%</strong>
                   </div>
                 )}
                 {r.metrics.school_quality != null && (
-                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Schools: </span><strong style={{ color: 'var(--bg-brand)' }}>{fmt(r.metrics.school_quality, 1)}/10</strong>
+                  <div className="u-d22a77f0">
+                    <span className="u-c7477801">Schools: </span><strong className="u-62513c38">{fmt(r.metrics.school_quality, 1)}/10</strong>
                   </div>
                 )}
                 {r.metrics.transit_accessibility != null && (
-                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Transit: </span><strong>{fmt(r.metrics.transit_accessibility, 1)}/10</strong>
+                  <div className="u-d22a77f0">
+                    <span className="u-c7477801">Transit: </span><strong>{fmt(r.metrics.transit_accessibility, 1)}/10</strong>
                   </div>
                 )}
                 {r.metrics.vacancy_rate != null && (
-                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Vacancy: </span><strong>{fmt(r.metrics.vacancy_rate)}%</strong>
+                  <div className="u-d22a77f0">
+                    <span className="u-c7477801">Vacancy: </span><strong>{fmt(r.metrics.vacancy_rate)}%</strong>
                   </div>
                 )}
                 {r.metrics.population_cagr != null && (
-                  <div style={{ background: 'rgba(15,23,42,0.03)', borderRadius: 8, padding: '6px 10px', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Growth: </span><strong style={{ color: '#f472b6' }}>{fmt(r.metrics.population_cagr, 1)}%pa</strong>
+                  <div className="u-d22a77f0">
+                    <span className="u-c7477801">Growth: </span><strong className="u-0f1f9356">{fmt(r.metrics.population_cagr, 1)}%pa</strong>
                   </div>
                 )}
               </div>
@@ -269,11 +260,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                   setQuestion(q);
                   callQuery(q);
                 }}
-                style={{
-                  background: 'linear-gradient(135deg, var(--bg-brand)22, #0066ff22)', border: '1px solid var(--bg-brand)44',
-                  color: 'var(--bg-brand)', borderRadius: 8, padding: '7px 16px', fontSize: '0.8rem',
-                  cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s',
-                }}
+                className="u-25f6e955"
                 onMouseEnter={e => (e.currentTarget.style.background = 'linear-gradient(135deg,var(--bg-brand)33,#0066ff33)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'linear-gradient(135deg,var(--bg-brand)22,#0066ff22)')}
               >
@@ -282,7 +269,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
             </div>
           ))}
         </div>
-        <p style={{ margin: '12px 0 0', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+        <p className="u-1b691f4f">
           General research only — not financial, legal, or valuation advice. Data sourced from verified CoreLogic/ABS datasets.
         </p>
       </div>
@@ -294,24 +281,24 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     const personaLeaders = verdict.by_persona?.filter(p => p.leader) || [];
     const tradeoffs = verdict.tradeoffs || [];
     return (
-      <div style={{ display: 'grid', gap: 14, marginBottom: 24 }}>
+      <div className="u-4fcf13a0">
         {verdict.framing === 'clear_leader' && personaLeaders.length > 0 && (
-          <div style={{ background: 'rgba(0,210,130,0.05)', border: '1px solid rgba(0,210,130,0.15)', borderRadius: 10, padding: '14px 18px' }}>
-            <p style={{ margin: '0 0 6px', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--success)', fontWeight: 700 }}>Verdict by persona</p>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <div className="u-75752c45">
+            <p className="u-902912d1">Verdict by persona</p>
+            <div className="u-b8d6408e">
               {personaLeaders.map(p => (
-                <span key={p.persona} style={{ padding: '4px 12px', borderRadius: 20, border: '1px solid rgba(0,210,130,0.3)', fontSize: '0.82rem', background: 'rgba(0,210,130,0.06)' }}>
-                  <strong style={{ textTransform: 'capitalize' }}>{p.persona.replace(/_/g, ' ')}:</strong> {p.leader}
+                <span key={p.persona} className="u-1f83e095">
+                  <strong className="u-044f69bb">{p.persona.replace(/_/g, ' ')}:</strong> {p.leader}
                 </span>
               ))}
             </div>
           </div>
         )}
         {tradeoffs.length > 0 && (
-          <div style={{ background: 'rgba(251,191,36,0.04)', border: '1px solid rgba(251,191,36,0.12)', borderRadius: 10, padding: '14px 18px' }}>
-            <p style={{ margin: '0 0 8px', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#fbbf24', fontWeight: 700 }}>Trade-offs to consider</p>
-            <ul style={{ margin: 0, paddingLeft: 18 }}>
-              {tradeoffs.map((t, i) => <li key={i} style={{ marginBottom: 5, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{t}</li>)}
+          <div className="u-a83567c9">
+            <p className="u-0db58b59">Trade-offs to consider</p>
+            <ul className="u-7a06743f">
+              {tradeoffs.map((t, i) => <li key={i} className="u-adf77c35">{t}</li>)}
             </ul>
           </div>
         )}
@@ -323,40 +310,36 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     const [expanded, setExpanded] = useState(false);
     if (!evidence?.length) return null;
     return (
-      <div style={{ marginBottom: 22, borderTop: '1px solid var(--border-glass)', paddingTop: 16 }}>
+      <div className="u-a54379e3">
         <button
           onClick={() => setExpanded(!expanded)}
-          style={{
-            background: 'none', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer',
-            fontSize: '0.82rem', fontWeight: 700, padding: 0,
-            textDecoration: 'underline', textUnderlineOffset: 3,
-          }}
+          className="u-d0f2fa42"
           aria-expanded={expanded}
         >
           {expanded ? '▾ Hide evidence sources' : '▸ Show evidence sources'} ({evidence.length} metrics)
         </button>
         {expanded && (
-          <div style={{ marginTop: 10, overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+          <div className="u-93c1dcb4">
+            <table className="u-67712a5e">
               <thead>
                 <tr>
-                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>Metric</th>
-                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'right' }}>Value</th>
-                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>Source</th>
-                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>As of</th>
-                  <th style={{ ...TH, padding: '6px 10px', textAlign: 'left' }}>Quality</th>
+                  <th className="u-03a5e9c1" style={{...TH}}>Metric</th>
+                  <th className="u-f55501b1" style={{...TH}}>Value</th>
+                  <th className="u-03a5e9c1" style={{...TH}}>Source</th>
+                  <th className="u-03a5e9c1" style={{...TH}}>As of</th>
+                  <th className="u-03a5e9c1" style={{...TH}}>Quality</th>
                 </tr>
               </thead>
               <tbody>
                 {evidence.slice(0, 30).map((e, i) => (
                   <tr key={e.id || i} style={{ background: i % 2 === 0 ? 'rgba(15,23,42,0.01)' : 'transparent' }}>
-                    <td style={{ ...TD, padding: '4px 10px', fontWeight: 600 }}>{e.metric}</td>
-                    <td style={{ ...TD, padding: '4px 10px', textAlign: 'right' }}>
+                    <td className="u-021047db" style={{...TD}}>{e.metric}</td>
+                    <td className="u-cd0dfebc" style={{...TD}}>
                       {typeof e.value === 'number' ? (e.unit.includes('$') ? `$${e.value.toLocaleString()}` : e.unit === '%' ? `${e.value.toFixed(2)}%` : e.value.toLocaleString()) : String(e.value ?? '—')}
                     </td>
-                    <td style={{ ...TD, padding: '4px 10px', color: 'var(--text-secondary)' }}>{e.source}</td>
-                    <td style={{ ...TD, padding: '4px 10px', color: e.is_stale ? 'var(--warning)' : 'var(--text-secondary)' }}>{e.as_of}{e.is_stale ? ' ⚠ stale' : ''}</td>
-                    <td style={{ ...TD, padding: '4px 10px', color: e.quality === 'verified' ? 'var(--success)' : 'var(--text-secondary)' }}>{e.quality}</td>
+                    <td className="u-af2c87ef" style={{...TD}}>{e.source}</td>
+                    <td className="u-a471707d" style={{...TD, color: e.is_stale ? 'var(--warning)' : 'var(--text-secondary)'}}>{e.as_of}{e.is_stale ? ' ⚠ stale' : ''}</td>
+                    <td className="u-a471707d" style={{...TD, color: e.quality === 'verified' ? 'var(--success)' : 'var(--text-secondary)'}}>{e.quality}</td>
                   </tr>
                 ))}
               </tbody>
@@ -371,9 +354,9 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     const lowSuburbs = Object.entries(dq?.suburbs ?? {}).filter(([, v]: any) => v.dq_score < 70);
     if (!lowSuburbs.length) return null;
     return (
-      <div style={{ padding: '12px 16px', background: 'rgba(255,180,0,0.08)', borderLeft: '4px solid var(--warning)', borderRadius: '0 8px 8px 0', marginBottom: 20 }}>
-        <strong style={{ color: 'var(--warning)', fontSize: '0.88rem' }}>⚠️ Data Quality Alert</strong>
-        <p style={{ margin: '6px 0 0', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+      <div className="u-991e4622">
+        <strong className="u-6a850c01">⚠️ Data Quality Alert</strong>
+        <p className="u-61be7e23">
           <strong>{lowSuburbs.map(([id]) => id.split('_')[1]).join(', ')}</strong> has limited verified data coverage.
           Figures may be based on fewer sales or older data points — cross-check with a local agent before acting.
         </p>
@@ -382,65 +365,56 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   };
 
   return (
-    <div data-build="v2-loadingfix" style={{ padding: '28px', marginBottom: '24px', borderRadius: '16px', border: '1px solid var(--border-glass)', background: 'var(--bg-card)', maxWidth: 1100, margin: '0 auto 24px' }}>
-      <div style={{ marginBottom: 22 }}>
-        <h2 style={{ margin: '0 0 6px', fontSize: '1.55rem', fontWeight: 800 }}>Ask YieldSense ✨</h2>
-        <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Natural-language property research powered by verified data — not opinions.</p>
+    <div data-build="v2-loadingfix" className="u-ca2f13f6">
+      <div className="u-9f1799ee">
+        <h2 className="u-0800748b">Ask YieldSense ✨</h2>
+        <p className="u-472b060e">Natural-language property research powered by verified data — not opinions.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <textarea value={question} onChange={e => setQuestion(e.target.value)}
           placeholder="Describe what you're deciding… e.g. 'Compare Kenmore and Indooroopilly for a $1.5M family home'"
-          rows={3} style={{
-            width: '100%', padding: '13px 14px', borderRadius: '10px', boxSizing: 'border-box',
-            border: '1.5px solid var(--border-glass)', background: 'var(--slate-50)',
-            color: 'var(--text-primary)', fontFamily: 'inherit', resize: 'vertical', fontSize: '0.93rem', lineHeight: 1.5, marginBottom: 12,
-          }} />
+          rows={3} className="u-afcddc8d" />
 
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
+        <div className="u-afdb53fe">
           {EXAMPLES.map((ex, i) => (
             <button key={i} type="button" onClick={() => setQuestion(ex)}
-              style={{ padding: '5px 12px', borderRadius: 20, border: '1px solid var(--accent-cyan)', background: 'transparent', color: 'var(--accent-cyan)', fontSize: '0.8rem', cursor: 'pointer' }}>
+              className="u-6c42c4bb">
               {ex}
             </button>
           ))}
         </div>
 
-        <div style={{ marginBottom: 16 }}>
+        <div className="u-602ac9f4">
           <button type="button" onClick={() => setShowScenarios(s => !s)}
-            style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: 0, textDecoration: 'underline', fontSize: '0.83rem' }}>
+            className="u-8124ec93">
             {showScenarios ? 'Hide scenario controls' : 'Set budget & income (optional)'}
           </button>
           {showScenarios && (
-            <div style={{ display: 'flex', gap: 16, marginTop: 12, flexWrap: 'wrap' }}>
+            <div className="u-26f282ae">
               {[
                 { lbl: 'Budget ($)', val: budget, set: setBudget, step: 50000 },
                 { lbl: 'Deposit ($)', val: deposit, set: setDeposit, step: 20000 },
                 { lbl: 'Income ($)', val: income, set: setIncome, step: 20000 }
               ].map(({ lbl, val, set, step }) => (
                 <div key={lbl}>
-                  <label style={{ display: 'block', fontSize: '0.78rem', marginBottom: 4, color: 'var(--text-secondary)' }}>{lbl}</label>
+                  <label className="u-7dd83fa6">{lbl}</label>
                   <input type="number" step={step} value={val} onChange={e => set(e.target.value)}
-                    style={{ padding: '7px 10px', borderRadius: 6, border: '1px solid var(--border-glass)', background: 'var(--slate-50)', color: 'var(--text-primary)', width: 120 }} />
+                    className="u-48624ea5" />
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <div className="u-5e4aeb76">
           <button type="submit" disabled={loading || !question.trim()}
-            style={{
-              padding: '11px 26px', borderRadius: 8, background: 'var(--accent-cyan)', color: '#000',
-              border: 'none', fontWeight: 700, fontSize: '0.93rem',
-              cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
-              opacity: loading || !question.trim() ? 0.6 : 1, transition: 'opacity 0.2s',
-            }}>
+            className="u-81dbffd4" style={{cursor: loading || !question.trim() ? 'not-allowed' : 'pointer', opacity: loading || !question.trim() ? 0.6 : 1}}>
             {loading ? 'Researching…' : 'Build research brief'}
           </button>
           {loading && (
             <button type="button" onClick={() => { abortRef.current?.abort(); setLoading(false); }}
-              style={{ background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer', textDecoration: 'underline', fontSize: '0.85rem' }}>
+              className="u-7c2adef2">
               Cancel
             </button>
           )}
@@ -449,11 +423,11 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
 
       {/* Clarifying question */}
       {pendingClarify && !loading && (
-        <div style={{ marginTop: 28, padding: '20px 22px', background: 'rgba(0,210,255,0.05)', borderRadius: 12, border: '1px solid rgba(0,210,255,0.18)' }}>
-          <p style={{ margin: '0 0 6px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--accent-cyan)', fontWeight: 700 }}>Follow-up question</p>
-          <p style={{ margin: '0 0 14px', fontSize: '0.95rem', lineHeight: 1.6 }}>{pendingClarify.clarifyingQ}</p>
+        <div className="u-ea3a4416">
+          <p className="u-a40cc8df">Follow-up question</p>
+          <p className="u-e9ab25c2">{pendingClarify.clarifyingQ}</p>
           {(pendingClarify as any).clarification?.options?.length ? (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+            <div className="u-eaa8aff8">
               {(pendingClarify as any).clarification.options.map((opt: any, i: number) => (
                 <button
                   key={i}
@@ -463,26 +437,22 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
                     setPendingClarify(null);
                     callQuery(fullQ);
                   }}
-                  style={{
-                    padding: '8px 16px', borderRadius: 8, border: '1px solid var(--accent-cyan)',
-                    background: 'rgba(0,210,255,0.08)', color: 'var(--accent-cyan)',
-                    cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem',
-                  }}
+                  className="u-375bf78a"
                 >
                   {opt.name}{opt.state ? ` (${opt.state})` : ''}
                 </button>
               ))}
             </div>
           ) : (
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div className="u-ee38c967">
               <input value={clarifyAnswer} onChange={e => setClarifyAnswer(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleClarify()}
                 placeholder="Your answer…"
-                style={{ flex: 1, padding: '10px 13px', borderRadius: 8, border: '1px solid var(--border-glass)', background: 'var(--slate-50)', color: 'var(--text-primary)', fontSize: '0.9rem' }}
+                className="u-ca79edbb"
                 aria-label="Your answer"
               />
               <button onClick={handleClarify} disabled={!clarifyAnswer.trim()}
-                style={{ padding: '10px 20px', borderRadius: 8, background: 'var(--accent-cyan)', color: '#000', border: 'none', fontWeight: 700, cursor: clarifyAnswer.trim() ? 'pointer' : 'not-allowed', opacity: clarifyAnswer.trim() ? 1 : 0.5 }}>
+                className="u-eaded6b1" style={{cursor: clarifyAnswer.trim() ? 'pointer' : 'not-allowed', opacity: clarifyAnswer.trim() ? 1 : 0.5}}>
                 Continue →
               </button>
             </div>
@@ -491,24 +461,24 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       )}
 
       {loading && (
-        <div aria-busy="true" aria-label="Loading research brief" style={{ marginTop: 28 }}>
+        <div aria-busy="true" aria-label="Loading research brief" className="u-026fcc60">
           <BriefSkeleton />
-          <p style={{ textAlign: 'center', color: 'var(--text-3)', fontSize: '0.82rem', marginTop: 12 }}>Pulling verified data and building your research brief…</p>
+          <p className="u-d61a8080">Pulling verified data and building your research brief…</p>
         </div>
       )}
 
       {error && (
-        <div role="alert" aria-live="assertive" style={{ marginTop: 20, padding: '12px 16px', background: 'var(--status-danger-bg)', borderLeft: '4px solid var(--danger)', borderRadius: '0 8px 8px 0' }}>
-          <strong style={{ color: 'var(--danger)' }}>Error: </strong>{error}
+        <div role="alert" aria-live="assertive" className="u-cbb4dd02">
+          <strong className="u-01e80e86">Error: </strong>{error}
         </div>
       )}
 
       {discoveryResult && !loading && (
-        <div aria-live="polite" style={{ marginTop: 28, borderTop: '1px solid var(--border-glass)', paddingTop: 24 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>🗺️ Suburb Discovery Results</h3>
+        <div aria-live="polite" className="u-ee232963">
+          <div className="u-c96434f2">
+            <h3 className="u-4b18be9b">🗺️ Suburb Discovery Results</h3>
             <button onClick={() => { setDiscoveryResult(null); setQuestion(''); }}
-              style={{ background: 'none', border: '1px solid var(--border-glass)', color: 'var(--text-secondary)', borderRadius: 6, padding: '6px 14px', cursor: 'pointer', fontSize: '0.8rem' }}>
+              className="u-c4349989">
               ↺ New question
             </button>
           </div>
@@ -517,32 +487,28 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       )}
 
   {result && !loading && !discoveryResult && (
-    <div aria-live="polite" style={{ marginTop: 36, borderTop: '1px solid var(--border-glass)', paddingTop: 28 }}>
+    <div aria-live="polite" className="u-1fe873cd">
 
           {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22, flexWrap: 'wrap', gap: 10 }}>
+          <div className="u-3f0291ab">
             <div>
-              <h3 style={{ margin: '0 0 5px', fontSize: '1.15rem' }}>
+              <h3 className="u-d2b7079c">
                 {(result as AskResponseV2).headline || 'Research Brief'}
               </h3>
               {(result as AskResponseV2).query_understood?.data_as_of && (
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginTop: 2 }}>
+                <span className="u-3e7ca611">
                   Data as of: {(result as AskResponseV2).query_understood.data_as_of}
                 </span>
               )}
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+              <span className="u-fc193050">
                 Status: <strong>{result.status.replace(/_/g, ' ')}</strong>&ensp;|&ensp;Priority:&nbsp;
-                <span style={{
-                  padding: '2px 8px', borderRadius: 4, fontWeight: 700, fontSize: '0.78rem',
-                  background: result.research_priority === 'high' ? 'rgba(0,210,130,0.15)' : result.research_priority === 'medium' ? 'rgba(255,180,0,0.12)' : 'rgba(150,150,150,0.1)',
-                  color: result.research_priority === 'high' ? 'var(--success)' : result.research_priority === 'medium' ? 'var(--warning)' : 'var(--text-secondary)',
-                }}>
+                <span className="u-9ba7a398" style={{background: result.research_priority === 'high' ? 'rgba(0,210,130,0.15)' : result.research_priority === 'medium' ? 'rgba(255,180,0,0.12)' : 'rgba(150,150,150,0.1)', color: result.research_priority === 'high' ? 'var(--success)' : result.research_priority === 'medium' ? 'var(--warning)' : 'var(--text-secondary)'}}>
                   {result.research_priority.replace(/_/g, ' ').toUpperCase()}
                 </span>
               </span>
             </div>
             <button onClick={() => { setResult(null); setQuestion(''); }}
-              style={{ background: 'none', border: '1px solid var(--border-glass)', color: 'var(--text-secondary)', borderRadius: 6, padding: '6px 14px', cursor: 'pointer', fontSize: '0.8rem' }}>
+              className="u-c4349989">
               ↺ New question
             </button>
           </div>
@@ -550,9 +516,9 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           <DQWarning dq={result.data_quality} />
 
           {/* AI Summary */}
-          <div style={{ background: 'rgba(0,210,255,0.04)', border: '1px solid rgba(0,210,255,0.12)', borderRadius: 10, padding: '16px 20px', marginBottom: 26, lineHeight: 1.7 }}>
-            <p style={{ margin: '0 0 4px', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--accent-cyan)', fontWeight: 700 }}>AI Summary</p>
-            <p style={{ margin: 0, fontSize: '0.93rem' }}>{result.summary}</p>
+          <div className="u-715fbe67">
+            <p className="u-fee19256">AI Summary</p>
+            <p className="u-4f1ddc89">{result.summary}</p>
           </div>
 
           {/* Verdict panel (v2) */}
@@ -560,9 +526,9 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
 
           {/* Assumptions pills */}
           {result.assumptions.length > 0 && (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 22 }}>
+            <div className="u-88bbc9da">
               {result.assumptions.map((a, i) => (
-                <span key={i} style={{ padding: '4px 12px', borderRadius: 20, border: '1px solid var(--border-glass)', fontSize: '0.8rem', background: 'rgba(15,23,42,0.02)' }}>
+                <span key={i} className="u-b48dfa69">
                   {a.label}: <strong>{a.value}</strong>
                 </span>
               ))}
@@ -576,43 +542,43 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           <EvidenceTable evidence={result.evidence} />
 
           {/* Supports / Risks */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18, marginBottom: 22 }}>
-            <div style={{ padding: '16px', background: 'rgba(0,210,130,0.04)', borderRadius: 10, border: '1px solid rgba(0,210,130,0.12)' }}>
-              <h4 style={{ margin: '0 0 10px', color: 'var(--success)', fontSize: '0.88rem' }}>✅ What supports this decision</h4>
+          <div className="u-bb40eaf7">
+            <div className="u-460c1403">
+              <h4 className="u-72815528">✅ What supports this decision</h4>
               {result.supports.length ? (
-                <ul style={{ margin: 0, paddingLeft: 18 }}>
-                  {result.supports.map((s, i) => <li key={i} style={{ marginBottom: 6, fontSize: '0.86rem', lineHeight: 1.5 }}>{s.claim}</li>)}
+                <ul className="u-7a06743f">
+                  {result.supports.map((s, i) => <li key={i} className="u-d732226a">{s.claim}</li>)}
                 </ul>
-              ) : <p style={{ margin: 0, color: 'var(--text-secondary)', fontStyle: 'italic', fontSize: '0.84rem' }}>No positives identified with current data.</p>}
+              ) : <p className="u-3a34bc30">No positives identified with current data.</p>}
             </div>
-            <div style={{ padding: '16px', background: 'rgba(255,60,60,0.04)', borderRadius: 10, border: '1px solid rgba(255,60,60,0.12)' }}>
-              <h4 style={{ margin: '0 0 10px', color: '#ff4444', fontSize: '0.88rem' }}>⚠️ Risks & counterarguments</h4>
-              <ul style={{ margin: 0, paddingLeft: 18 }}>
-                {result.risks.map((r, i) => <li key={i} style={{ marginBottom: 6, fontSize: '0.86rem', lineHeight: 1.5 }}>{r.claim}</li>)}
+            <div className="u-2f9afa62">
+              <h4 className="u-6e252633">⚠️ Risks & counterarguments</h4>
+              <ul className="u-7a06743f">
+                {result.risks.map((r, i) => <li key={i} className="u-d732226a">{r.claim}</li>)}
               </ul>
             </div>
           </div>
 
           {/* Unknowns + Next steps */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18, marginBottom: 26 }}>
+          <div className="u-ee27d730">
             <div>
-              <h4 style={{ margin: '0 0 8px', fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Material unknowns</h4>
-              <ul style={{ margin: 0, paddingLeft: 18 }}>
-                {result.unknowns.map((u, i) => <li key={i} style={{ marginBottom: 5, fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{u}</li>)}
+              <h4 className="u-1ced0647">Material unknowns</h4>
+              <ul className="u-7a06743f">
+                {result.unknowns.map((u, i) => <li key={i} className="u-d9580577">{u}</li>)}
               </ul>
             </div>
             <div>
-              <h4 style={{ margin: '0 0 8px', fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Your next actions</h4>
-              <ol style={{ margin: 0, paddingLeft: 18 }}>
-                {result.next_steps.map((n, i) => <li key={i} style={{ marginBottom: 5, fontSize: '0.85rem', fontWeight: 600, lineHeight: 1.5 }}>{n}</li>)}
+              <h4 className="u-1ced0647">Your next actions</h4>
+              <ol className="u-7a06743f">
+                {result.next_steps.map((n, i) => <li key={i} className="u-15627afb">{n}</li>)}
               </ol>
             </div>
           </div>
 
           {/* Follow-up chips */}
-          <div style={{ background: 'rgba(0,0,0,0.12)', borderRadius: 10, padding: '14px 16px', marginBottom: 18 }}>
-            <p style={{ margin: '0 0 10px', fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Ask a follow-up:</p>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div className="u-d9708e68">
+            <p className="u-30dd8ef9">Ask a follow-up:</p>
+            <div className="u-7b08bd4f">
               {((result as AskResponseV2).follow_ups || []).map((fu, i) => (
                 <button key={i} onClick={() => { setQuestion(fu.question); callQuery(fu.question, (fu as any).conversation_id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={CHIP_STYLE}>{fu.label}</button>
               ))}
@@ -631,7 +597,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
             </div>
           </div>
 
-          <p style={{ margin: 0, fontSize: '0.73rem', color: 'var(--text-secondary)', fontStyle: 'italic', textAlign: 'center', borderTop: '1px dashed var(--border-glass)', paddingTop: 14 }}>
+          <p className="u-b7b2d403">
             {result.disclaimer}
           </p>
         </div>

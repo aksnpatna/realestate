@@ -22,33 +22,25 @@ interface Props {
 
 function indicatorGrid(indicators: Indicator[]) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+    <div className="u-df4e9190">
       {indicators.map(ind => (
         <div
           key={ind.key}
-          style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid var(--border-glass)',
-            borderRadius: '6px',
-            padding: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '3px',
-          }}
+          className="u-1cfb76fe"
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+          <div className="u-4beeb81e">
+            <span className="u-bee728a3">
               {ind.label}
             </span>
-            {ind.trend === 'up' && <span style={{ color: '#10b981', fontSize: '0.7rem' }}>▲</span>}
-            {ind.trend === 'down' && <span style={{ color: '#ef4444', fontSize: '0.7rem' }}>▼</span>}
+            {ind.trend === 'up' && <span className="u-cd42902e">▲</span>}
+            {ind.trend === 'down' && <span className="u-8944d43a">▼</span>}
           </div>
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+          <span className="u-ebd22f0e">
             {ind.value != null ? ind.value : '—'}
           </span>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{ind.impact}</span>
+          <span className="u-fc193050">{ind.impact}</span>
           {ind.source && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+            <span className="u-0c79bce7">
               Source: {ind.source}
             </span>
           )}
@@ -186,56 +178,52 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
   ]
 
   return (
-    <div className="glass-card" style={{ padding: '16px', marginBottom: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h3 style={{ margin: 0, fontSize: '0.95rem' }}>Technical & Provenance</h3>
-        <span style={{ fontSize: '0.8rem', background: 'rgba(139,92,246,0.12)', color: '#8b5cf6', padding: '2px 8px', borderRadius: '4px' }}>
+    <div className="glass-card u-ca1a383a">
+      <div className="u-7d62c6a4">
+        <h3 className="u-b5fda34d">Technical & Provenance</h3>
+        <span className="u-8fd86d46">
           Buyer's Agent View
         </span>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div className="u-31b0223f">
         <div>
-          <h4 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+          <h4 className="u-4cdf1ffb">
             🛡️ Crime & Safety
           </h4>
           {indicatorGrid(crimeIndicators)}
         </div>
         <div>
-          <h4 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+          <h4 className="u-4cdf1ffb">
             🏘️ Social Housing (ABS Census 2021)
           </h4>
           {indicatorGrid(housingIndicators)}
         </div>
         <div>
-          <h4 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+          <h4 className="u-4cdf1ffb">
             📐 Subdivision Precedent
           </h4>
           {indicatorGrid(subdivIndicators)}
         </div>
         <div>
-          <h4 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+          <h4 className="u-4cdf1ffb">
             🏗️ Development Activity (OSM)
           </h4>
           {indicatorGrid(devIndicators)}
         </div>
-        <div style={{ borderTop: '1px solid var(--border-glass)', paddingTop: '12px' }}>
-          <h4 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+        <div className="u-75baa306">
+          <h4 className="u-4cdf1ffb">
             📋 Data Provenance & Quality
           </h4>
           {indicatorGrid(provenanceIndicators)}
         </div>
         {s.dqIssues && s.dqIssues.length > 0 && (
-          <div style={{
-            marginTop: '4px', padding: '10px',
-            background: 'rgba(245,158,11,0.04)', border: '1px solid rgba(245,158,11,0.2)',
-            borderRadius: '6px',
-          }}>
-            <h4 style={{ fontSize: '0.8rem', color: '#f59e0b', marginBottom: '6px' }}>
+          <div className="u-174a489e">
+            <h4 className="u-586c2214">
               ⚠ DQ Alerts ({s.dqIssues.length})
             </h4>
             {s.dqIssues.map((issue: any, i: number) => (
-              <div key={i} style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '2px' }}>
+              <div key={i} className="u-eeaef089">
                 <strong>{issue.field}</strong>: {issue.issue} ({issue.severity})
               </div>
             ))}

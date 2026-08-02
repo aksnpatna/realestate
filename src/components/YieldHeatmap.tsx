@@ -10,48 +10,44 @@ export default memo(function YieldHeatmap() {
   const [propertyType, setPropertyType] = useState<'house' | 'unit'>('house');
 
   return (
-    <div className="glass-card" style={{ height: 'calc(100vh - 200px)', minHeight: '600px', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '20px', borderBottom: '1px solid var(--border-glass)' }}>
-        <h2 style={{ margin: '0 0 10px 0', fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+    <div className="glass-card u-930e5b1a">
+      <div className="u-873a84fa">
+        <h2 className="u-575561fc">
           🗺️ National Yield & Growth Explorer
         </h2>
-        <p style={{ color: 'var(--text-secondary)', margin: '0 0 20px 0', fontSize: '0.95rem' }}>
+        <p className="u-565a9983">
           Explore the live distribution of capital growth and rental yield across 13,000+ suburbs in Australia. 
           Powered by PostGIS vector tiles. Click any colored point to see the live metrics.
         </p>
         
-        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="u-afd6810c">
+          <div className="u-bccf3703">
             <button 
               onClick={() => setHeatmapMode('yield')}
-              className={heatmapMode === 'yield' ? 'tab-btn tab-active' : 'tab-btn'}
-              style={{ padding: '8px 16px', borderRadius: '8px' }}
+              className={`u-2248a78d ${heatmapMode === 'yield' ? 'tab-btn tab-active' : 'tab-btn'}`}
             >
               💰 Rental Yield
             </button>
             <button 
               onClick={() => setHeatmapMode('growth')}
-              className={heatmapMode === 'growth' ? 'tab-btn tab-active' : 'tab-btn'}
-              style={{ padding: '8px 16px', borderRadius: '8px' }}
+              className={`u-2248a78d ${heatmapMode === 'growth' ? 'tab-btn tab-active' : 'tab-btn'}`}
             >
               📈 Capital Growth
             </button>
           </div>
           
-          <div style={{ width: '1px', height: '30px', background: 'var(--border-glass)' }}></div>
+          <div className="u-e5fae9ee"></div>
           
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="u-bccf3703">
             <button 
               onClick={() => setPropertyType('house')}
-              className={propertyType === 'house' ? 'tab-btn tab-active' : 'tab-btn'}
-              style={{ padding: '8px 16px', borderRadius: '8px', background: propertyType === 'house' ? 'rgba(255,255,255,0.1)' : 'transparent' }}
+              className={`u-2248a78d ${propertyType === 'house' ? 'tab-btn tab-active' : 'tab-btn'}`} style={{background: propertyType === 'house' ? 'rgba(255,255,255,0.1)' : 'transparent'}}
             >
               🏠 Houses
             </button>
             <button 
               onClick={() => setPropertyType('unit')}
-              className={propertyType === 'unit' ? 'tab-btn tab-active' : 'tab-btn'}
-              style={{ padding: '8px 16px', borderRadius: '8px', background: propertyType === 'unit' ? 'rgba(255,255,255,0.1)' : 'transparent' }}
+              className={`u-2248a78d ${propertyType === 'unit' ? 'tab-btn tab-active' : 'tab-btn'}`} style={{background: propertyType === 'unit' ? 'rgba(255,255,255,0.1)' : 'transparent'}}
             >
               🏢 Units
             </button>
@@ -59,8 +55,8 @@ export default memo(function YieldHeatmap() {
         </div>
       </div>
       
-      <div style={{ flex: 1, position: 'relative' }}>
-        <MapContainer center={AUSTRALIA_CENTER} zoom={5} style={{ height: '100%', width: '100%' }}>
+      <div className="u-d882e5b3">
+        <MapContainer center={AUSTRALIA_CENTER} zoom={5} className="u-d7d5c0b4">
           <LayersControl position="topright">
             <LayersControl.BaseLayer name="Dark Theme">
               <TileLayer
@@ -87,28 +83,28 @@ export default memo(function YieldHeatmap() {
           </LayersControl>
         </MapContainer>
         
-        <div style={{ position: 'absolute', bottom: '20px', left: '20px', zIndex: 1000, background: 'rgba(30, 41, 59, 0.9)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
-          <h4 style={{ margin: '0 0 10px 0', fontSize: '0.9rem' }}>Legend ({heatmapMode === 'yield' ? 'Yield' : 'Growth'})</h4>
+        <div className="u-6cc56b36">
+          <h4 className="u-d83e0017">Legend ({heatmapMode === 'yield' ? 'Yield' : 'Growth'})</h4>
           {heatmapMode === 'yield' ? (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
-                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', border: '2px solid black' }}></div>
-                <span style={{ fontSize: '0.8rem' }}>High (≥ 6%)</span>
+              <div className="u-9fc60153">
+                <div className="u-2d4e4033"></div>
+                <span className="u-c0024dfb">High (≥ 6%)</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#f59e0b', border: '2px solid black' }}></div>
-                <span style={{ fontSize: '0.8rem' }}>Medium (4% - 6%)</span>
+              <div className="u-6e6177ef">
+                <div className="u-8fe38c67"></div>
+                <span className="u-c0024dfb">Medium (4% - 6%)</span>
               </div>
             </>
           ) : (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
-                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#06b6d4', border: '2px solid black' }}></div>
-                <span style={{ fontSize: '0.8rem' }}>High (≥ 10%)</span>
+              <div className="u-9fc60153">
+                <div className="u-cc832044"></div>
+                <span className="u-c0024dfb">High (≥ 10%)</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#3b82f6', border: '2px solid black' }}></div>
-                <span style={{ fontSize: '0.8rem' }}>Medium (5% - 10%)</span>
+              <div className="u-6e6177ef">
+                <div className="u-a5871954"></div>
+                <span className="u-c0024dfb">Medium (5% - 10%)</span>
               </div>
             </>
           )}

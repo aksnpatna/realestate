@@ -27,18 +27,18 @@ const MacroBenchmarkPanel = memo(function MacroBenchmarkPanel() {
   if (benchmarks.length === 0) return null;
 
   return (
-    <div className="glass-card" style={{ padding: '24px', marginBottom: '20px', marginTop: '20px', borderTop: '4px solid var(--accent-cyan)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--accent-cyan)' }}>Investor Opportunity Benchmarks</h3>
-        <span style={{ fontSize: '0.8rem', background: 'rgba(59,130,246,0.12)', color: '#3b82f6', padding: '4px 10px', borderRadius: '4px', fontWeight: 600 }}>
+    <div className="glass-card u-9333892f">
+      <div className="u-47a97aa0">
+        <h3 className="u-6b179248">Investor Opportunity Benchmarks</h3>
+        <span className="u-356ee263">
           Live Market Data
         </span>
       </div>
-      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.5 }}>
+      <p className="u-a0cc7bbe">
         Assess the true opportunity cost of your capital. Compare residential property performance against risk-free rates, commercial REITs, and broad equities.
       </p>
       
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px' }}>
+      <div className="u-73a09d8f">
         {benchmarks.map(b => {
           let icon = '📈';
           let borderColor = 'var(--border-glass)';
@@ -64,21 +64,21 @@ const MacroBenchmarkPanel = memo(function MacroBenchmarkPanel() {
               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '1.2rem' }}>{icon}</span>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: 600, letterSpacing: '0.5px' }}>
+              <div className="u-69f9d299">
+                <div className="u-6e6177ef">
+                  <span className="u-7bbecc0d">{icon}</span>
+                  <span className="u-a4398e98">
                     {b.symbol}
                   </span>
                 </div>
-                <span style={{ color: b.growth_1y_pct > 0 ? '#10b981' : '#ef4444', fontSize: '1.1rem', fontWeight: 'bold', background: 'rgba(0,0,0,0.2)', padding: '2px 8px', borderRadius: '4px' }}>
+                <span className="u-03b9692a" style={{color: b.growth_1y_pct > 0 ? '#10b981' : '#ef4444'}}>
                   {b.growth_1y_pct > 0 ? '+' : ''}{b.growth_1y_pct.toFixed(2)}%
                 </span>
               </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              <div className="u-1d76bdc4">
                 {b.name}
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '4px' }}>
+              <div className="u-643e53e9">
                 {b.note}
               </div>
             </div>

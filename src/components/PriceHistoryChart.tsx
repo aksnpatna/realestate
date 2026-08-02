@@ -67,42 +67,33 @@ export default function PriceHistoryChart({ history10yr, historyRent10yr }: Pric
 
   if (!chartData || !chartData.length) {
     return (
-      <div style={{ padding: '20px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-glass)', textAlign: 'center', color: 'var(--text-secondary)' }}>
+      <div className="u-08d2e316">
         No historical price data available for this region.
       </div>
     );
   }
 
   return (
-    <div style={{ marginTop: '20px', padding: '20px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        <h3 style={{ fontSize: '1.05rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: 'var(--text-primary)' }}>
-          <span style={{ fontSize: '1.1rem' }}>💰</span> 10-Year Capital Growth & Rent History
+    <div className="u-e995d5ba">
+      <div className="u-b3de5e53">
+        <h3 className="u-45113675">
+          <span className="u-ce0fd88b">💰</span> 10-Year Capital Growth & Rent History
         </h3>
         {aiInsights && (
-          <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#059669', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+          <div className="u-51e5e267">
             {aiInsights.cagr}% CAGR
           </div>
         )}
       </div>
 
       {aiInsights && (
-        <div style={{ 
-          marginBottom: '16px', 
-          padding: '12px 14px', 
-          background: 'rgba(16, 185, 129, 0.06)', 
-          borderLeft: '3px solid #10b981',
-          borderRadius: '6px',
-          color: 'var(--text-primary)',
-          fontSize: '0.88rem',
-          lineHeight: '1.5'
-        }}>
-          <strong style={{ color: '#059669', display: 'block', marginBottom: '4px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🤖 Market Analysis</strong>
+        <div className="u-29ba20c2">
+          <strong className="u-ae4f9a74">🤖 Market Analysis</strong>
           {aiInsights.text}
         </div>
       )}
 
-      <div style={{ height: '300px', width: '100%' }}>
+      <div className="u-df6b2905">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />

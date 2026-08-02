@@ -14,35 +14,14 @@ export default function PromoBanner() {
   if (!isVisible) return null;
 
   return (
-    <div style={{
-      background: 'var(--accent-purple)',
-      color: '#fff',
-      padding: '10px 20px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: '15px',
-      position: 'relative',
-      zIndex: 100,
-      fontSize: '0.9rem',
-      fontWeight: 500
-    }}>
+    <div className="u-f28497a5">
       <span>🎉 <strong>New:</strong> Real subdivision minimum lot sizes now available for 5,000+ NSW suburbs.</span>
       <button 
         onClick={() => {
           localStorage.setItem('dismissed_banner', BANNER_ID);
           setIsVisible(false);
         }}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: 'rgba(255,255,255,0.7)',
-          cursor: 'pointer',
-          position: 'absolute',
-          right: '15px',
-          fontSize: '1.2rem',
-          padding: '0 5px'
-        }}
+        className="u-6fddf3e7"
         aria-label="Dismiss banner"
       >
         ×

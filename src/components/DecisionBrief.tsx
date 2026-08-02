@@ -81,7 +81,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
         </div>
 
         {selectedResult.drivers.length > 0 && (
-          <div className="db__drivers" style={{ marginTop: 16, textAlign: 'left' }}>
+          <div className="db__drivers u-8dd66ad5">
             {selectedResult.drivers.slice(0, 3).map((d, i) => (
               <div key={i} className="db__driver"><span className="db__driver-icon">✓</span> {d}</div>
             ))}
@@ -91,12 +91,12 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
           </div>
         )}
 
-        <details style={{ marginTop: 16, textAlign: 'left' }}>
-          <summary onClick={() => setShowAssumptions(!showAssumptions)} style={{ cursor: 'pointer', fontSize: '0.8rem', color: 'var(--text-2)', fontWeight: 600 }}>
+        <details className="u-8dd66ad5">
+          <summary onClick={() => setShowAssumptions(!showAssumptions)} className="u-45ee2661">
             {showAssumptions ? 'Hide' : 'Show'} loan assumptions
           </summary>
           {aff?.assumptions && (
-            <div style={{ marginTop: 8, fontSize: '0.8rem', color: 'var(--text-3)', lineHeight: 1.6 }}>
+            <div className="u-8563b935">
               <div>Rate: {(aff.assumptions.interest_rate * 100).toFixed(1)}% · Buffer: +{(aff.assumptions.serviceability_buffer * 100).toFixed(0)}% · {aff.assumptions.loan_term_years}yr</div>
               <div>Costs: {(aff.assumptions.purchase_cost_allowance_pct * 100).toFixed(0)}% · Income: ${aff.assumptions.annual_income?.toLocaleString()}</div>
               {requestMeta?.request_id && <div>Decision ID: {requestMeta.request_id}</div>}
@@ -104,7 +104,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
           )}
         </details>
 
-        <div className="db__actions" style={{ justifyContent: 'center', marginTop: 16 }}>
+        <div className="db__actions u-d55bf967">
           <button onClick={() => setActiveTab('buy-finder')} className="bf-card__action">Back to Results</button>
           <button onClick={() => setActiveTab('gearing')} className="bf-card__action bf-card__action--primary">View Cashflow</button>
           <button onClick={async (e) => {
@@ -143,15 +143,11 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
         </div>
 
         {/* Closed-Loop Referral Funnel (Monetize the Exit) */}
-        <div style={{
-          marginTop: '16px', padding: '14px',
-          background: 'linear-gradient(145deg, rgba(14,165,233,0.1) 0%, rgba(139,92,246,0.1) 100%)',
-          border: '1px solid rgba(139,92,246,0.3)', borderRadius: '8px'
-        }}>
-          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#a78bfa', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+        <div className="u-308c109c">
+          <div className="u-a2786881">
             🏦 Pre-Approval & Broker Handoff
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '12px' }}>
+          <div className="u-ea633243">
             Your <strong>Buyer Fit</strong> is high and the <strong>ASX Market Predictor</strong> indicates a score of {selectedResult.market_timing_score || 50}/100 for this suburb's capital growth phase. 
             Lock in your borrowing capacity to action this brief.
           </div>
@@ -167,7 +163,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
                 btn.style.color = '#10b981';
               }, 1500);
             }}
-            style={{ width: '100%', padding: '10px', background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.5)', color: '#c4b5fd', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, transition: 'all 0.2s ease' }}
+            className="u-ec63ee45"
             onMouseOver={(e) => e.currentTarget.style.background = 'rgba(139,92,246,0.3)'}
             onMouseOut={(e) => e.currentTarget.style.background = 'rgba(139,92,246,0.2)'}
           >
@@ -176,16 +172,16 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
         </div>
 
         {/* Responsible Next Steps */}
-        <div className="db__compliance" style={{ marginTop: 16 }}>
+        <div className="db__compliance u-4a682385">
           <div className="db__compliance-title">Responsible Next Steps — outside this app</div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          <div className="u-df6a5298">
             <div>1. Obtain a formal serviceability assessment from a licensed broker or lender.</div>
             <div>2. Inspect actual listings and compare recent sales prices in this suburb.</div>
             <div>3. Arrange strata, building, planning, flood and bushfire checks as relevant.</div>
             <div>4. Verify current rent, vacancy rates and outgoings with local property managers.</div>
             <div>5. Seek legal, tax and financial advice appropriate to your circumstances.</div>
           </div>
-          <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+          <div className="u-ff6484f1">
             This tool is a decision-support aid. It is not lender approval, financial advice, a property valuation or a price forecast.
           </div>
         </div>
@@ -195,7 +191,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
 
   if (loading) {
     return (
-      <div style={{ marginTop: '15px', padding: '16px', background: 'rgba(0,0,0,0.1)', border: '1px solid var(--border-glass)', borderRadius: '10px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+      <div className="u-b7b0b0a6">
         Loading decision brief...
       </div>
     )
@@ -203,9 +199,9 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
 
   if (error) {
     return (
-      <div style={{ marginTop: '15px', padding: '16px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px' }}>
-        <div style={{ color: '#ef4444', fontWeight: 600, fontSize: '0.85rem', marginBottom: '4px' }}>Decision Brief Unavailable</div>
-        <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{error}</div>
+      <div className="u-5458c56e">
+        <div className="u-f95cf852">Decision Brief Unavailable</div>
+        <div className="u-0d850f7d">{error}</div>
       </div>
     )
   }
@@ -213,69 +209,62 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
   if (!snapshot) return null
 
   return (
-    <div style={{
-      marginTop: '15px', padding: '16px',
-      background: 'linear-gradient(145deg, rgba(14,165,233,0.04) 0%, rgba(16,185,129,0.04) 100%)',
-      border: '1px solid var(--border-glass)', borderRadius: '10px',
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+    <div className="u-244d1d60">
+      <div className="u-7d62c6a4">
+        <h3 className="u-bcab2b1e">
           General Market Snapshot
         </h3>
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Not based on your Buy Finder inputs — open Buy Finder for personalised results</span>
+        <span className="u-c49bb1e7">Not based on your Buy Finder inputs — open Buy Finder for personalised results</span>
       </div>
-      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-        <div style={{ flex: '0 0 auto', textAlign: 'center', padding: '10px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-secondary)' }}>
+      <div className="u-95149f3d">
+        <div className="u-9235e700">
+          <div className="u-b0002f2f">
             {Math.round(snapshot.score)}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="u-b735c10a">
             Fit (default assumptions)
             <ScoreInlineHint scoreKey="buyer_fit" value={snapshot.score} />
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: '200px' }}>
+        <div className="u-6d7d28dd">
           {snapshot.drivers.length > 0 && (
-            <div style={{ marginBottom: '8px' }}>
-              <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600, marginBottom: '4px' }}>+ Supports</div>
+            <div className="u-e50f284b">
+              <div className="u-8f58520d">+ Supports</div>
               {snapshot.drivers.slice(0, 3).map((d: string, i: number) => (
-                <div key={i} style={{ fontSize: '0.8rem', color: 'var(--text-primary)', paddingLeft: '8px' }}>{d}</div>
+                <div key={i} className="u-609b445a">{d}</div>
               ))}
             </div>
           )}
         </div>
       </div>
-      <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+      <div className="u-20393731">
         <button
           onClick={() => setActiveTab('buy-finder')}
-          style={{ padding: '4px 10px', background: 'var(--accent-cyan)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600 }}
+          className="u-97f8612f"
         >
           Open Buy Finder
         </button>
         <button
           onClick={() => setActiveTab('gearing')}
-          style={{ padding: '4px 10px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', color: 'var(--text-primary)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem' }}
+          className="u-74dc5c0f"
         >
           View Cashflow
         </button>
       </div>
 
       {/* Responsible Next Steps — Journey 7 */}
-      <div style={{
-        marginTop: '16px', padding: '12px 14px',
-        background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '8px'
-      }}>
-        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#eab308', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div className="u-019240f4">
+        <div className="u-41b6eb3e">
           📋 Responsible Next Steps — outside this app
         </div>
-        <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+        <div className="u-df6a5298">
           <div>1. Obtain a formal serviceability assessment from a licensed broker or lender.</div>
           <div>2. Inspect actual listings and compare recent sales prices in this suburb.</div>
           <div>3. Arrange strata, building, planning, flood and bushfire checks as relevant.</div>
           <div>4. Verify current rent, vacancy rates and outgoings with local property managers.</div>
           <div>5. Seek legal, tax and financial advice appropriate to your circumstances.</div>
         </div>
-        <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+        <div className="u-ff6484f1">
           This tool is a decision-support aid. It is not lender approval, financial advice, a property valuation or a price forecast.
         </div>
       </div>

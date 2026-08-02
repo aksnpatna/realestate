@@ -37,8 +37,8 @@ export default memo(function MarketCycleClock({ suburb }: Props) {
   const handY = center + (radius - 15) * Math.sin(angle);
 
   return (
-    <div className="glass-card" style={{ padding: '20px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '30px', flexWrap: 'wrap' }}>
-      <div style={{ flex: '0 0 auto', position: 'relative', width: '180px', height: '180px' }}>
+    <div className="glass-card u-1ac939ea">
+      <div className="u-3c60f7f3">
         <svg width="180" height="180" viewBox="0 0 180 180" role="img" aria-label={`Market cycle clock showing ${clockState.label}: ${clockState.desc}`}>
           {/* Clock face */}
           <circle cx={center} cy={center} r={radius} fill="rgba(0,0,0,0.2)" stroke="var(--border-glass)" strokeWidth="4" />
@@ -69,16 +69,16 @@ export default memo(function MarketCycleClock({ suburb }: Props) {
         </svg>
       </div>
       
-      <div style={{ flex: 1, minWidth: '200px' }}>
-        <h3 style={{ margin: '0 0 5px 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Market Cycle Indicator</h3>
-        <div style={{ fontSize: '1.4rem', fontWeight: 700, color: clockState.color, marginBottom: '8px' }}>
+      <div className="u-6d7d28dd">
+        <h3 className="u-b5904635">Market Cycle Indicator</h3>
+        <div className="u-4b8d349b" style={{color: clockState.color}}>
           {clockState.label}
         </div>
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)', margin: '0 0 10px 0', lineHeight: 1.5 }}>
+        <p className="u-dced4861">
           {clockState.desc}
         </p>
         
-        <div style={{ display: 'flex', gap: '15px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+        <div className="u-6bedbca1">
           <div>
             <strong>12m Growth:</strong> <span style={{ color: priceChange > 0 ? '#10b981' : '#ef4444' }}>{priceChange > 0 ? '+' : ''}{priceChange}%</span>
           </div>

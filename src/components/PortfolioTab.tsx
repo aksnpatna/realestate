@@ -78,31 +78,31 @@ export default function PortfolioTab({ suburbsData }: PortfolioTabProps) {
   };
 
   return (
-    <div className="portfolio-container" style={{ padding: '20px', color: 'var(--text)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+    <div className="portfolio-container u-ad4e8983">
+      <div className="u-e1fcf348">
         <div>
           <h2>Your Property Portfolio</h2>
-          <p style={{ color: 'var(--text-secondary)' }}>Track your real-time estimated equity based on live market data.</p>
+          <p className="u-c7477801">Track your real-time estimated equity based on live market data.</p>
         </div>
         <button 
           onClick={() => setShowAddForm(!showAddForm)}
-          style={{ padding: '10px 20px', background: 'var(--accent)', color: 'black', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
+          className="u-74abb916"
         >
           {showAddForm ? 'Cancel' : '+ Add Property'}
         </button>
       </div>
 
       {showAddForm && (
-        <form onSubmit={handleAddProperty} style={{ background: 'var(--surface)', padding: '20px', borderRadius: '12px', marginBottom: '30px', border: '1px solid var(--border)' }}>
+        <form onSubmit={handleAddProperty} className="u-672ceb74">
           <h3>Add a Property</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+          <div className="u-5b85ed1b">
             <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Suburb</label>
+              <label className="u-0eaebd20">Suburb</label>
               <select 
                 required
                 value={newProp.suburb_id}
                 onChange={e => setNewProp({...newProp, suburb_id: e.target.value})}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)' }}
+                className="u-fa331ade"
               >
                 <option value="">Select a suburb...</option>
                 {suburbsData.map(s => (
@@ -111,77 +111,77 @@ export default function PortfolioTab({ suburbsData }: PortfolioTabProps) {
               </select>
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Address</label>
+              <label className="u-0eaebd20">Address</label>
               <input 
                 required
                 type="text" 
                 placeholder="123 Fake Street"
                 value={newProp.address}
                 onChange={e => setNewProp({...newProp, address: e.target.value})}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)' }}
+                className="u-fa331ade"
               />
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Purchase Price</label>
+              <label className="u-0eaebd20">Purchase Price</label>
               <input 
                 required
                 type="number" 
                 placeholder="e.g. 750000"
                 value={newProp.purchase_price}
                 onChange={e => setNewProp({...newProp, purchase_price: e.target.value})}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)' }}
+                className="u-fa331ade"
               />
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Purchase Date</label>
+              <label className="u-0eaebd20">Purchase Date</label>
               <input 
                 required
                 type="date" 
                 value={newProp.purchase_date}
                 onChange={e => setNewProp({...newProp, purchase_date: e.target.value})}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)' }}
+                className="u-fa331ade"
               />
             </div>
           </div>
-          <button type="submit" style={{ padding: '10px 20px', background: 'var(--accent)', color: 'black', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Save Property</button>
+          <button type="submit" className="u-82479b55">Save Property</button>
         </form>
       )}
 
       {loading ? (
         <div>Loading your portfolio...</div>
       ) : properties.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '50px', background: 'var(--surface)', borderRadius: '12px' }}>
+        <div className="u-44864b57">
           <h3>No properties saved yet!</h3>
-          <p style={{ color: 'var(--text-secondary)' }}>Click "Add Property" to track your real estate equity.</p>
+          <p className="u-c7477801">Click "Add Property" to track your real estate equity.</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '20px' }}>
+        <div className="u-0cc0da79">
           {properties.map(prop => {
             const equity = calculateEquity(prop);
             const suburb = suburbsData.find(s => s.id === prop.suburb_id);
             const currentEst = suburb?.metrics?.medianPrice;
             
             return (
-              <div key={prop.id} style={{ background: 'var(--surface)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)' }}>
-                <h3 style={{ margin: '0 0 10px 0', color: 'var(--accent)' }}>{prop.address}</h3>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>{suburb?.name}, {suburb?.state}</div>
+              <div key={prop.id} className="u-14cd4b60">
+                <h3 className="u-e7d0cf43">{prop.address}</h3>
+                <div className="u-8ba3c0a0">{suburb?.name}, {suburb?.state}</div>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '15px' }}>
+                <div className="u-64fdd282">
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Purchase Price</div>
-                    <div style={{ fontWeight: 600 }}>{formatCurrency(prop.purchase_price)}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>on {prop.purchase_date}</div>
+                    <div className="u-fc193050">Purchase Price</div>
+                    <div className="u-e0cfe6f3">{formatCurrency(prop.purchase_price)}</div>
+                    <div className="u-fc193050">on {prop.purchase_date}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Current Est. Value</div>
-                    <div style={{ fontWeight: 600 }}>{currentEst ? formatCurrency(currentEst) : 'N/A'}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>based on median</div>
+                    <div className="u-fc193050">Current Est. Value</div>
+                    <div className="u-e0cfe6f3">{currentEst ? formatCurrency(currentEst) : 'N/A'}</div>
+                    <div className="u-fc193050">based on median</div>
                   </div>
                 </div>
 
-                <div style={{ padding: '15px', background: 'var(--bg)', borderRadius: '8px', borderLeft: equity && equity > 0 ? '4px solid #10b981' : (equity && equity < 0 ? '4px solid #ef4444' : '4px solid var(--border)') }}>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Estimated Equity</div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: equity && equity > 0 ? '#10b981' : (equity && equity < 0 ? '#ef4444' : 'var(--text)') }}>
+                <div className="u-00146d2c" style={{borderLeft: equity && equity > 0 ? '4px solid #10b981' : (equity && equity < 0 ? '4px solid #ef4444' : '4px solid var(--border)')}}>
+                  <div className="u-1b947f92">Estimated Equity</div>
+                  <div className="u-ecf38f3d" style={{color: equity && equity > 0 ? '#10b981' : (equity && equity < 0 ? '#ef4444' : 'var(--text)')}}>
                     {equity !== null ? (equity > 0 ? '+' : '') + formatCurrency(equity) : 'Calculating...'}
                   </div>
                 </div>

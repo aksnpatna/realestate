@@ -200,29 +200,29 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
         <div className="gearing-grid">
           {/* LEFT: Inputs */}
           <div className="gearing-inputs">
-            <div className="control-group" style={{ marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '4px' }}>
+            <div className="control-group u-b8ad2309">
+              <div className="u-98edd301">
                 <button 
-                  className={`premium-select ${purchaseType === 'personal' ? 'active-type' : ''}`}
-                  style={{ flex: 1, border: 'none', background: purchaseType === 'personal' ? 'var(--accent-purple)' : 'transparent', color: purchaseType === 'personal' ? '#fff' : 'var(--text-secondary)' }}
+                  className={`premium-select u-7067ca4e ${purchaseType === 'personal' ? 'active-type' : ''}`}
+                  style={{background: purchaseType === 'personal' ? 'var(--accent-purple)' : 'transparent', color: purchaseType === 'personal' ? '#fff' : 'var(--text-secondary)'}}
                   onClick={() => setPurchaseType('personal')}
                 >
                   Personal Investment
                 </button>
                 <button 
-                  className={`premium-select ${purchaseType === 'smsf' ? 'active-type' : ''}`}
-                  style={{ flex: 1, border: 'none', background: purchaseType === 'smsf' ? 'var(--accent-cyan)' : 'transparent', color: purchaseType === 'smsf' ? '#000' : 'var(--text-secondary)' }}
+                  className={`premium-select u-7067ca4e ${purchaseType === 'smsf' ? 'active-type' : ''}`}
+                  style={{background: purchaseType === 'smsf' ? 'var(--accent-cyan)' : 'transparent', color: purchaseType === 'smsf' ? '#000' : 'var(--text-secondary)'}}
                   onClick={() => setPurchaseType('smsf')}
                 >
                   SMSF Purchase (LRBA)
                 </button>
               </div>
               {purchaseType === 'smsf' ? (
-                <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', marginTop: '8px', padding: '8px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '4px' }}>
+                <div className="u-8ca754e8">
                   <strong>SMSF Rules applied:</strong> 30% min deposit, 15% tax rate, 8.85% ATO Safe Harbour LRBA interest rate default.
                 </div>
               ) : (
-                <div className="input-row" style={{ marginTop: '0.5rem' }}>
+                <div className="input-row u-9cd276e6">
                   <div className="control-group">
                     <label className="control-label">Gross Income $/yr (Tax Bracket)</label>
                     <input type="number" className="premium-input small" value={salary} onChange={(e) => setSalary(Number(e.target.value) || 0)} step={10000} />
@@ -237,11 +237,11 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
 
             <div className="control-group">
               <label className="control-label">Select Suburb (auto-fills data)</label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <select className="premium-select" style={{ flex: 1 }} value={filterState} onChange={(e) => { setFilterState(e.target.value); setSelectedSuburbId(''); }}>
+              <div className="u-e797cbd1">
+                <select className="premium-select u-52dcacf6" value={filterState} onChange={(e) => { setFilterState(e.target.value); setSelectedSuburbId(''); }}>
                   {stateOptions.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
-                <select className="premium-select" style={{ flex: 2 }} value={selectedSuburbId} onChange={(e) => setSelectedSuburbId(e.target.value)}>
+                <select className="premium-select u-dcecc409" value={selectedSuburbId} onChange={(e) => setSelectedSuburbId(e.target.value)}>
                   <option value="">-- Manual Entry --</option>
                   {suburbOptions.map(s => <option key={s.id} value={s.id}>{s.name} (${(s.metrics?.medianPrice ?? 0).toLocaleString()})</option>)}
                 </select>
@@ -266,13 +266,13 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
                   <input type="range" className="premium-range" min={20} max={50} step={5} value={depositPct} onChange={(e) => setDepositPct(Number(e.target.value))} />
                   <span className="range-value">{depositPct}%</span>
                 </div>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                <div className="u-0c414398">
                   Max LVR 80% (investment loan standard)
                 </div>
               </div>
               <div className="control-group">
                 <label className="control-label">
-                  Interest Rate % p.a. {rateLoading && <span style={{fontSize: '0.8em', color: 'var(--accent-cyan)'}}>(Live fetching...)</span>}
+                  Interest Rate % p.a. {rateLoading && <span className="u-9f8c6aa7">(Live fetching...)</span>}
                 </label>
                 <input type="number" className="premium-input" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value) || 0)} step={0.05} min={1} max={15} />
               </div>
@@ -298,7 +298,7 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
               <div className="control-group">
                 <label className="control-label">
                   Vacancy (weeks/year)
-                  {vacancyFromAPI != null && <span style={{ color: 'var(--success)', fontSize: '0.7rem', marginLeft: '6px' }}>📊 {vacancyFromAPI}% real data</span>}
+                  {vacancyFromAPI != null && <span className="u-390ede4e">📊 {vacancyFromAPI}% real data</span>}
                 </label>
                 <input type="number" className="premium-input small" value={vacancyWeeks} onChange={(e) => setVacancyWeeks(Number(e.target.value) || 0)} min={0} max={8} step={0.5} />
               </div>
@@ -308,19 +308,19 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
               </div>
             </div>
 
-            <div className="input-row" style={{ marginTop: '0.5rem' }}>
-              <div className="control-group" style={{ flex: '0 0 50%' }}>
+            <div className="input-row u-9cd276e6">
+              <div className="control-group u-069a1064">
                 <label className="control-label">Maintenance % /yr</label>
                 <input type="number" className="premium-input small" value={maintenancePct} onChange={(e) => setMaintenancePct(Number(e.target.value) || 0)} min={0} max={5} step={0.05} />
               </div>
             </div>
 
-            <label className="toggle-label" style={{ marginTop: '0.5rem' }}>
+            <label className="toggle-label u-9cd276e6">
               <input type="checkbox" checked={customCosts} onChange={(e) => setCustomCosts(e.target.checked)} />
               <span>Custom holding costs</span>
             </label>
             {customCosts && (
-              <div className="input-row" style={{ marginTop: '0.5rem' }}>
+              <div className="input-row u-9cd276e6">
                 <div className="control-group">
                   <label className="control-label">Rates $/yr</label>
                   <input type="number" className="premium-input small" value={ratesBill} onChange={(e) => setRatesBill(Number(e.target.value) || 0)} />
@@ -341,7 +341,7 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
           <div className="gearing-results">
             {result ? (
               <>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '10px', padding: '6px 10px', background: 'rgba(234,179,8,0.06)', borderRadius: '6px', border: '1px solid rgba(234,179,8,0.1)' }}>
+                <div className="u-142b2a7d">
                   Illustrative only — not financial or tax advice. Single marginal-rate assumption; excludes Medicare levy, land tax, state-specific surcharges, CGT discounting, and capital works/plant depreciation separation. Consult an accountant before relying on after-tax figures.
                 </div>
                 <div className={`gearing-status-banner ${result.gearingStatus}`}>
@@ -389,14 +389,14 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
                   <div className="gmetric">
                     <div className="gmetric-label">Annual Expenses</div>
                     <div className="gmetric-value">${result.annualExpenses.toLocaleString()}</div>
-                    <div className="gmetric-detail" style={{ marginTop: '0.5rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                    <div className="gmetric-detail u-9cd276e6">
+                      <div className="u-ebfffddc">
                         <span>Property Mgmt:</span><span>${result.pmFee.toLocaleString()}</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                      <div className="u-ebfffddc">
                         <span>Maintenance:</span><span>${result.maintenance.toLocaleString()}</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                      <div className="u-ebfffddc">
                         <span>Fixed (Rates/Ins):</span><span>${result.fixedCosts.toLocaleString()}</span>
                       </div>
                     </div>
@@ -424,8 +424,8 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
                   </div>
                 </div>
 
-                <div className="gearing-breakdown" style={{ marginTop: '2rem', height: '250px' }}>
-                  <h4 style={{ color: 'var(--text-secondary)', marginBottom: '1rem', textAlign: 'center' }}>Annual Cashflow Waterfall</h4>
+                <div className="gearing-breakdown u-c73113f9">
+                  <h4 className="u-1c006e8b">Annual Cashflow Waterfall</h4>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={[

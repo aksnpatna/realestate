@@ -22,27 +22,21 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          minHeight: '60vh', padding: '40px', textAlign: 'center'
-        }}>
-          <h2 style={{ marginBottom: '16px', color: 'var(--warning, #ef4444)' }}>Something went wrong</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', maxWidth: '500px' }}>
+        <div className="u-869e508f">
+          <h2 className="u-7de39474">Something went wrong</h2>
+          <p className="u-51ba052a">
             The app encountered an unexpected error. This may happen if data failed to load or the backend is unavailable.
           </p>
           <button
             onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload(); }}
-            style={{
-              padding: '10px 24px', background: 'var(--accent-purple, #8b5cf6)', color: '#fff',
-              border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'
-            }}
+            className="u-3ee40fda"
           >
             Reload Page
           </button>
           {this.state.error && (
-            <details style={{ marginTop: '20px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              <summary style={{ cursor: 'pointer' }}>Technical details</summary>
-              <pre style={{ textAlign: 'left', whiteSpace: 'pre-wrap', marginTop: '8px' }}>
+            <details className="u-14bc528b">
+              <summary className="u-62113f1d">Technical details</summary>
+              <pre className="u-cd6e7aa1">
                 {this.state.error.message}
               </pre>
             </details>

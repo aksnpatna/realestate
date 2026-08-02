@@ -54,61 +54,49 @@ export default memo(function Calculators() {
   ].filter(d => d.value > 0) : [];
 
   return (
-    <div className="dashboard-content" style={{ animation: 'fadeIn 0.5s ease-out' }}>
-      <div className="header-section" style={{ textAlign: 'center', marginBottom: '30px' }}>
+    <div className="dashboard-content u-bf9ca78e">
+      <div className="header-section u-d5785af4">
         <h2>Financial Calculators</h2>
-        <p style={{ color: 'var(--text-secondary)' }}>Plan better with clear insights and reliable numbers for informed property planning.</p>
+        <p className="u-c7477801">Plan better with clear insights and reliable numbers for informed property planning.</p>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '30px' }}>
+      <div className="u-ecbe3da7">
         <button
           onClick={() => setActiveCalc('repayment')}
-          style={{
-            background: activeCalc === 'repayment' ? 'var(--accent-cyan)' : 'var(--bg-card)',
-            color: activeCalc === 'repayment' ? '#000' : 'var(--text-primary)',
-            padding: '10px 20px', border: '1px solid var(--border-glass)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold'
-          }}>Loan Repayment</button>
+          className="u-5faddcca" style={{background: activeCalc === 'repayment' ? 'var(--accent-cyan)' : 'var(--bg-card)', color: activeCalc === 'repayment' ? '#000' : 'var(--text-primary)'}}>Loan Repayment</button>
         <button
           onClick={() => setActiveCalc('borrowing')}
-          style={{
-            background: activeCalc === 'borrowing' ? 'var(--accent-purple)' : 'var(--bg-card)',
-            color: activeCalc === 'borrowing' ? '#fff' : 'var(--text-primary)',
-            padding: '10px 20px', border: '1px solid var(--border-glass)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold'
-          }}>Borrowing Power</button>
+          className="u-5faddcca" style={{background: activeCalc === 'borrowing' ? 'var(--accent-purple)' : 'var(--bg-card)', color: activeCalc === 'borrowing' ? '#fff' : 'var(--text-primary)'}}>Borrowing Power</button>
         <button
           onClick={() => setActiveCalc('stamp_duty')}
-          style={{
-            background: activeCalc === 'stamp_duty' ? 'var(--warning)' : 'var(--bg-card)',
-            color: activeCalc === 'stamp_duty' ? '#000' : 'var(--text-primary)',
-            padding: '10px 20px', border: '1px solid var(--border-glass)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold'
-          }}>Stamp Duty & FHOG</button>
+          className="u-5faddcca" style={{background: activeCalc === 'stamp_duty' ? 'var(--warning)' : 'var(--bg-card)', color: activeCalc === 'stamp_duty' ? '#000' : 'var(--text-primary)'}}>Stamp Duty & FHOG</button>
       </div>
 
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', padding: '30px', maxWidth: '900px', margin: '0 auto' }}>
+      <div className="u-b0a96210">
 
         {activeCalc === 'repayment' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+          <div className="u-79bf16b1">
             <div>
               <h3>Loan Details</h3>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Loan Amount ($)</label>
-                <input type="number" value={loanAmount} onChange={e => setLoanAmount(Number(e.target.value))} style={{ width: '100%', padding: '10px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', color: '#fff', borderRadius: '4px' }} />
+              <div className="u-127b72f0">
+                <label className="u-359af586">Loan Amount ($)</label>
+                <input type="number" value={loanAmount} onChange={e => setLoanAmount(Number(e.target.value))} className="u-ea6906e8" />
               </div>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Interest Rate (%)</label>
-                <input type="number" step="0.1" value={interestRate} onChange={e => setInterestRate(Number(e.target.value))} style={{ width: '100%', padding: '10px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', color: '#fff', borderRadius: '4px' }} />
+              <div className="u-127b72f0">
+                <label className="u-359af586">Interest Rate (%)</label>
+                <input type="number" step="0.1" value={interestRate} onChange={e => setInterestRate(Number(e.target.value))} className="u-ea6906e8" />
               </div>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Loan Term (Years)</label>
-                <input type="number" value={loanTerm} onChange={e => setLoanTerm(Number(e.target.value))} style={{ width: '100%', padding: '10px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', color: '#fff', borderRadius: '4px' }} />
+              <div className="u-127b72f0">
+                <label className="u-359af586">Loan Term (Years)</label>
+                <input type="number" value={loanTerm} onChange={e => setLoanTerm(Number(e.target.value))} className="u-ea6906e8" />
               </div>
             </div>
-            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-              <h3 style={{ color: 'var(--text-secondary)', marginBottom: '10px' }}>Estimated Monthly Repayment</h3>
-              <div style={{ fontSize: '3rem', color: 'var(--accent-cyan)', fontWeight: 'bold' }}>
+            <div className="u-65f56cda">
+              <h3 className="u-850c2233">Estimated Monthly Repayment</h3>
+              <div className="u-a770908b">
                 {formatCurrency(calculateRepayment())}
               </div>
-              <p style={{ color: 'var(--text-secondary)', marginTop: '20px', textAlign: 'center' }}>
+              <p className="u-5c250845">
                 Total Interest Payable: {formatCurrency(Math.round(calculateRepayment() * loanTerm * 12) - loanAmount)}
               </p>
             </div>
@@ -116,24 +104,24 @@ export default memo(function Calculators() {
         )}
 
         {activeCalc === 'borrowing' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+          <div className="u-79bf16b1">
             <div>
               <h3>Income & Expenses</h3>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Annual Income ($)</label>
-                <input type="number" value={income} onChange={e => setIncome(Number(e.target.value))} style={{ width: '100%', padding: '10px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', color: '#fff', borderRadius: '4px' }} />
+              <div className="u-127b72f0">
+                <label className="u-359af586">Annual Income ($)</label>
+                <input type="number" value={income} onChange={e => setIncome(Number(e.target.value))} className="u-ea6906e8" />
               </div>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Annual Expenses ($)</label>
-                <input type="number" value={expenses} onChange={e => setExpenses(Number(e.target.value))} style={{ width: '100%', padding: '10px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', color: '#fff', borderRadius: '4px' }} />
+              <div className="u-127b72f0">
+                <label className="u-359af586">Annual Expenses ($)</label>
+                <input type="number" value={expenses} onChange={e => setExpenses(Number(e.target.value))} className="u-ea6906e8" />
               </div>
             </div>
-            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-              <h3 style={{ color: 'var(--text-secondary)', marginBottom: '10px' }}>Estimated Borrowing Power</h3>
-              <div style={{ fontSize: '3rem', color: 'var(--accent-purple)', fontWeight: 'bold' }}>
+            <div className="u-65f56cda">
+              <h3 className="u-850c2233">Estimated Borrowing Power</h3>
+              <div className="u-f863562f">
                 {formatCurrency(Math.max(0, calculateBorrowing()))}
               </div>
-              <p style={{ color: 'var(--text-secondary)', marginTop: '20px', textAlign: 'center' }}>
+              <p className="u-5c250845">
                 Based on a 6.5% stress-test interest rate over 30 years.
               </p>
             </div>
@@ -142,77 +130,72 @@ export default memo(function Calculators() {
 
         {activeCalc === 'stamp_duty' && (
           <div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+            <div className="u-79bf16b1">
               <div>
                 <h3>Property Details</h3>
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Value of Property ($)</label>
-                  <input type="number" value={propertyValue} onChange={e => setPropertyValue(Number(e.target.value))} style={{ width: '100%', padding: '10px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', color: '#fff', borderRadius: '4px' }} />
+                <div className="u-127b72f0">
+                  <label className="u-359af586">Value of Property ($)</label>
+                  <input type="number" value={propertyValue} onChange={e => setPropertyValue(Number(e.target.value))} className="u-ea6906e8" />
                 </div>
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>State</label>
-                  <select value={state} onChange={e => setState(e.target.value)} style={{ width: '100%', padding: '10px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', color: '#fff', borderRadius: '4px' }}>
+                <div className="u-127b72f0">
+                  <label className="u-359af586">State</label>
+                  <select value={state} onChange={e => setState(e.target.value)} className="u-ea6906e8">
                     {STATE_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Property Type</label>
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="u-127b72f0">
+                  <label className="u-359af586">Property Type</label>
+                  <div className="u-ac734d21">
                     {([['established', 'Established'], ['new_home', 'New Home'], ['vacant_land', 'Vacant Land']] as const).map(([val, label]) => (
                       <button
                         key={val}
                         onClick={() => setPropertyType(val as PropertyType)}
-                        style={{
-                          flex: 1, padding: '8px 6px', fontSize: '0.8rem',
-                          background: propertyType === val ? 'var(--warning)' : 'rgba(0,0,0,0.2)',
-                          color: propertyType === val ? '#000' : '#fff',
-                          border: '1px solid var(--border-glass)', borderRadius: '4px', cursor: 'pointer'
-                        }}>{label}</button>
+                        className="u-09d72e1c" style={{background: propertyType === val ? 'var(--warning)' : 'rgba(0,0,0,0.2)', color: propertyType === val ? '#000' : '#fff'}}>{label}</button>
                     ))}
                   </div>
                 </div>
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={{ display: 'block', marginBottom: '5px', color: 'var(--text-secondary)' }}>Are you a First Home Buyer?</label>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button onClick={() => setIsFirstHome(true)} style={{ flex: 1, padding: '10px', background: isFirstHome ? 'var(--warning)' : 'rgba(0,0,0,0.2)', color: isFirstHome ? '#000' : '#fff', border: '1px solid var(--border-glass)', borderRadius: '4px' }}>Yes</button>
-                    <button onClick={() => setIsFirstHome(false)} style={{ flex: 1, padding: '10px', background: !isFirstHome ? 'var(--warning)' : 'rgba(0,0,0,0.2)', color: !isFirstHome ? '#000' : '#fff', border: '1px solid var(--border-glass)', borderRadius: '4px' }}>No</button>
+                <div className="u-127b72f0">
+                  <label className="u-359af586">Are you a First Home Buyer?</label>
+                  <div className="u-bccf3703">
+                    <button onClick={() => setIsFirstHome(true)} className="u-c3799eb7" style={{background: isFirstHome ? 'var(--warning)' : 'rgba(0,0,0,0.2)', color: isFirstHome ? '#000' : '#fff'}}>Yes</button>
+                    <button onClick={() => setIsFirstHome(false)} className="u-c3799eb7" style={{background: !isFirstHome ? 'var(--warning)' : 'rgba(0,0,0,0.2)', color: !isFirstHome ? '#000' : '#fff'}}>No</button>
                   </div>
                 </div>
               </div>
-              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '8px' }}>
-                <h3 style={{ color: 'var(--text-secondary)', marginBottom: '15px' }}>Government Fees</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-glass)' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Stamp Duty on Property</span>
-                    <span style={{ color: 'var(--warning)', fontWeight: 'bold' }}>{formatCurrency(stampDutyResult.duty)}</span>
+              <div className="u-f82c65a7">
+                <h3 className="u-d9526865">Government Fees</h3>
+                <div className="u-20f7f541">
+                  <div className="u-cfd43a34">
+                    <span className="u-c7477801">Stamp Duty on Property</span>
+                    <span className="u-cf8b7bbd">{formatCurrency(stampDutyResult.duty)}</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-glass)' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Mortgage Registration</span>
-                    <span style={{ color: 'var(--text-primary)' }}>{formatCurrency(stampDutyResult.mortgageReg)}</span>
+                  <div className="u-cfd43a34">
+                    <span className="u-c7477801">Mortgage Registration</span>
+                    <span className="u-c154f6c6">{formatCurrency(stampDutyResult.mortgageReg)}</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-glass)' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Transfer Fee</span>
-                    <span style={{ color: 'var(--text-primary)' }}>{formatCurrency(stampDutyResult.transferFee)}</span>
+                  <div className="u-cfd43a34">
+                    <span className="u-c7477801">Transfer Fee</span>
+                    <span className="u-c154f6c6">{formatCurrency(stampDutyResult.transferFee)}</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '2px solid var(--warning)' }}>
-                    <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>Total Government Fees</span>
-                    <span style={{ fontWeight: 'bold', color: 'var(--warning)', fontSize: '1.3rem' }}>{formatCurrency(stampDutyResult.totalGovtFees)}</span>
+                  <div className="u-b5dc4301">
+                    <span className="u-b29509c8">Total Government Fees</span>
+                    <span className="u-129a3ad5">{formatCurrency(stampDutyResult.totalGovtFees)}</span>
                   </div>
                 </div>
-                <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(16,185,129,0.1)', borderRadius: '8px', border: '2px solid rgba(16,185,129,0.4)', boxShadow: '0 4px 12px rgba(16,185,129,0.15)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="u-645ce92d">
+                  <div className="u-69f9d299">
                     <div>
-                      <div style={{ color: '#10b981', fontWeight: 800, fontSize: '1.1rem' }}>First Home Owner Grant</div>
-                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '2px' }}>Government contribution towards your deposit</div>
+                      <div className="u-4b7090c8">First Home Owner Grant</div>
+                      <div className="u-57d45d6e">Government contribution towards your deposit</div>
                     </div>
-                    <span style={{ color: '#10b981', fontWeight: 'bold', fontSize: '1.4rem' }}>{formatCurrency(stampDutyResult.fhog)}</span>
+                    <span className="u-6b44e65f">{formatCurrency(stampDutyResult.fhog)}</span>
                   </div>
                 </div>
               </div>
             </div>
             {chartData.length > 0 && (
-              <div style={{ marginTop: '30px' }}>
-                <h4 style={{ color: 'var(--text-secondary)', marginBottom: '15px', textAlign: 'center' }}>Fee Breakdown</h4>
+              <div className="u-7ac6ee99">
+                <h4 className="u-65b09a4a">Fee Breakdown</h4>
                 <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
                     <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, value }) => `${name}: ${formatCurrency(value)}`}>
@@ -224,7 +207,7 @@ export default memo(function Calculators() {
                 </ResponsiveContainer>
               </div>
             )}
-            <p style={{ color: 'var(--text-secondary)', marginTop: '20px', textAlign: 'center', fontSize: '0.85rem' }}>
+            <p className="u-6532d914">
               Disclaimer: This is an approximation based on {state} state revenue office rates for 2026-2027. Actual fees may vary. Please consult a professional for accurate figures.
             </p>
           </div>

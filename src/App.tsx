@@ -538,8 +538,8 @@ function App() {
 
   if (isCheckingAuth) {
     return (
-      <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
-        <div className="title-glow" style={{ fontSize: '1.5rem', fontWeight: 600 }}>Loading YieldSense...</div>
+      <div className="app-container u-25c05ceb">
+        <div className="title-glow u-27972ce9">Loading YieldSense...</div>
       </div>
     )
   }
@@ -558,23 +558,23 @@ function App() {
     const strengthColor = passwordStrength === 'Strong' ? 'var(--success)' : passwordStrength === 'Medium' ? 'var(--warning)' : 'var(--danger)'
     
     return (
-      <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
-        <div className="glass-card" style={{ padding: '40px', maxWidth: '460px', width: '100%', background: 'var(--bg-card)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h1 className="title-glow" style={{ fontSize: '1.8rem', margin: 0, fontWeight: 800 }}>YieldSense</h1>
-            <button onClick={() => setAuthMode('landing')} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>Back</button>
+      <div className="app-container u-25c05ceb">
+        <div className="glass-card u-7395aece">
+          <div className="u-a1f2efe4">
+            <h1 className="title-glow u-1d992e33">YieldSense</h1>
+            <button onClick={() => setAuthMode('landing')} className="u-ae9cf90d">Back</button>
           </div>
-          <p className="subtitle" style={{ marginBottom: '24px' }}>
+          <p className="subtitle u-70cb1db7">
             {isRegistering ? 'Create your professional account' : 'Welcome back'}
           </p>
-          <form onSubmit={isRegistering ? handleRegister : handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <form onSubmit={isRegistering ? handleRegister : handleLogin} className="u-31b0223f">
             {isRegistering && (
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <div className="control-group" style={{ flex: 1 }}>
+              <div className="u-bccf3703">
+                <div className="control-group u-52dcacf6">
                   <label className="control-label">First Name</label>
                   <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} className="premium-input" required />
                 </div>
-                <div className="control-group" style={{ flex: 1 }}>
+                <div className="control-group u-52dcacf6">
                   <label className="control-label">Last Name</label>
                   <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} className="premium-input" required />
                 </div>
@@ -590,11 +590,11 @@ function App() {
               <label className="control-label">Password</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="premium-input" required autoComplete={isRegistering ? 'new-password' : 'current-password'} />
               {isRegistering && password.length > 0 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                  <div style={{ flex: 1, height: '4px', background: 'rgba(0,0,0,0.1)', borderRadius: '2px' }}>
-                    <div style={{ height: '100%', width: Math.min(100, password.length * 8) + '%', background: strengthColor, borderRadius: '2px', transition: 'width 0.2s' }} />
+                <div className="u-e54c72b1">
+                  <div className="u-ea8c11ee">
+                    <div className="u-a1f6c608" style={{width: Math.min(100, password.length * 8) + '%', background: strengthColor}} />
                   </div>
-                  <span style={{ fontSize: '0.7rem', color: strengthColor, fontWeight: 600 }}>{passwordStrength}</span>
+                  <span className="u-a168b724" style={{color: strengthColor}}>{passwordStrength}</span>
                 </div>
               )}
             </div>
@@ -607,7 +607,7 @@ function App() {
                 </div>
                 <div className="control-group">
                   <label className="control-label">I am a...</label>
-                  <select value={userType} onChange={e => setUserType(e.target.value)} className="premium-input" style={{ appearance: 'auto' }}>
+                  <select value={userType} onChange={e => setUserType(e.target.value)} className="premium-input u-3e9309dc">
                     <option value="First Home Buyer">First Home Buyer</option>
                     <option value="Investor">Investor</option>
                     <option value="Buyer's Agent">Buyer's Agent</option>
@@ -615,13 +615,13 @@ function App() {
                   </select>
                 </div>
                 
-                <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                    <input type="checkbox" checked={privacyConsent} onChange={e => setPrivacyConsent(e.target.checked)} style={{ marginTop: '3px' }} />
-                    <span>I agree to the <a href="#" style={{ color: 'var(--accent-cyan)' }}>Privacy Policy</a> and <a href="#" style={{ color: 'var(--accent-cyan)' }}>Terms of Use</a>. *</span>
+                <div className="u-db674293">
+                  <label className="u-f3a0ea00">
+                    <input type="checkbox" checked={privacyConsent} onChange={e => setPrivacyConsent(e.target.checked)} className="u-b45e067a" />
+                    <span>I agree to the <a href="#" className="u-d03afae3">Privacy Policy</a> and <a href="#" className="u-d03afae3">Terms of Use</a>. *</span>
                   </label>
-                  <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                    <input type="checkbox" checked={marketingConsent} onChange={e => setMarketingConsent(e.target.checked)} style={{ marginTop: '3px' }} />
+                  <label className="u-f3a0ea00">
+                    <input type="checkbox" checked={marketingConsent} onChange={e => setMarketingConsent(e.target.checked)} className="u-b45e067a" />
                     <span>I'd like to receive product updates and market insights.</span>
                   </label>
                 </div>
@@ -629,22 +629,22 @@ function App() {
             )}
             
             {verificationMessage && (
-              <div style={{ padding: '10px', background: '#D1FAE5', border: '1px solid #10B981', borderRadius: '6px', color: '#047857', fontSize: '13px', textAlign: 'center' }}>
+              <div className="u-d0428345">
                 {verificationMessage}
               </div>
             )}
             {loginError && (
-              <div style={{ padding: '10px', background: '#FEE2E2', border: '1px solid #EF4444', borderRadius: '6px', color: '#B91C1C', fontSize: '13px', textAlign: 'center' }}>
+              <div className="u-149fd8bd">
                 {loginError}
               </div>
             )}
             
-            <button type="submit" style={{ width: '100%', marginTop: '10px', padding: '12px', background: 'var(--accent-cyan)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', fontSize: '1rem' }}>
+            <button type="submit" className="u-2c476195">
               {isRegistering ? 'Create Account' : 'Log In'}
             </button>
             
-            <div style={{ textAlign: 'center', marginTop: '12px' }}>
-              <button type="button" onClick={() => { setIsRegistering(!isRegistering); setLoginError(''); setConfirmPassword(''); }} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 }}>
+            <div className="u-4560a4ac">
+              <button type="button" onClick={() => { setIsRegistering(!isRegistering); setLoginError(''); setConfirmPassword(''); }} className="u-7246f6a5">
                 {isRegistering ? 'Already have an account? Log in' : "Don't have an account? Start Free Trial"}
               </button>
             </div>
@@ -667,21 +667,21 @@ function App() {
       <PromoBanner />
       <TermsOfUseModal />
 
-      {activeTab === 'ask' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading Ask YieldSense...</div>}><AskYieldSense financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
-      {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
-      {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading cashflow analysis...</div>}><CashflowGearing 
+      {activeTab === 'ask' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Ask YieldSense...</div>}><AskYieldSense financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
+      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
+      {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
+      {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
         defaultSuburbId={activeSuburb?.id}
         defaultPrice={selectedBuyerFitResult?.affordability?.purchase_price || (activeSuburb as any)?.houseMedianPrice || (activeSuburb as any)?.medianPrice || undefined}
         defaultRent={(activeSuburb as any)?.houseMedianRent || (activeSuburb as any)?.weeklyRent || undefined}
       /></Suspense>}
-      {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
-      {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading calculators...</div>}><Calculators /></Suspense>}
-      {activeTab === 'settings' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading settings...</div>}><SettingsPage persona={persona} onPersonaChange={setPersona as any} financialProfile={financialProfile} onLogout={() => { setIsAuthenticated(false); setAuthMode('landing'); }} /></Suspense>}
-      {activeTab === 'heatmap' && <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading heatmap...</div>}><YieldHeatmap /></Suspense>}
+      {activeTab === 'purchase-plan' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading purchase plan...</div>}><MyPurchasePlan suburbsData={suburbsData} /></Suspense>}
+      {activeTab === 'calculators' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading calculators...</div>}><Calculators /></Suspense>}
+      {activeTab === 'settings' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading settings...</div>}><SettingsPage persona={persona} onPersonaChange={setPersona as any} financialProfile={financialProfile} onLogout={() => { setIsAuthenticated(false); setAuthMode('landing'); }} /></Suspense>}
+      {activeTab === 'heatmap' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading heatmap...</div>}><YieldHeatmap /></Suspense>}
       {activeTab === 'favorites' && (
-        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading favorites...</div>}>
+        <Suspense fallback={<div className="glass-card u-207f86dd">Loading favorites...</div>}>
           <UserFavoritesTab 
             suburbsData={suburbsData} 
             onSelectSuburb={(suburb) => {
@@ -692,7 +692,7 @@ function App() {
         </Suspense>
       )}
       {activeTab === 'portfolio' && (
-        <Suspense fallback={<div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>Loading portfolio...</div>}>
+        <Suspense fallback={<div className="glass-card u-207f86dd">Loading portfolio...</div>}>
           <PortfolioTab suburbsData={suburbsData} />
         </Suspense>
       )}
@@ -701,14 +701,14 @@ function App() {
         <div className="main-grid">
           <aside className="sidebar glass-card">
             {loadingData ? (
-              <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+              <div className="u-a4f43f78">
                 Loading database...
               </div>
             ) : suburbsData.length === 0 ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>⚠️</div>
-                <div style={{ color: '#ef4444', fontWeight: 600, marginBottom: '4px' }}>Data Unavailable</div>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+              <div className="u-889dc3af">
+                <div className="u-e21f7216">⚠️</div>
+                <div className="u-e7df25b4">Data Unavailable</div>
+                <div className="u-8d12c3c6">
                   No suburbs could be loaded from the API. Check that the backend is running and the database is populated.
                 </div>
               </div>
@@ -718,7 +718,7 @@ function App() {
                 <div className="control-group">
                   <label className="control-label">State</label>
                   <div className="custom-select-wrapper">
-                    <select className="premium-select" value={activeState} onChange={(e) => setActiveState(e.target.value)} style={{ fontSize: '0.95rem' }}>
+                    <select className="premium-select u-350d646d" value={activeState} onChange={(e) => setActiveState(e.target.value)}>
                       {states.map(state => <option key={state} value={state}>{getStateName(state)}</option>)}
                     </select>
                   </div>
@@ -772,8 +772,8 @@ function App() {
                                   >
                                     <span className="suburb-dropdown-name">
                                       {suburb.name}
-                                      <span style={{ fontWeight: 400, color: 'var(--text-secondary)', marginLeft: 4 }}>({suburb.postcode})</span>
-                                      {(dq == null || dq < 70) && <span style={{ marginLeft: 4, fontSize: '0.7rem' }} title="Data quality warning">⚠️</span>}
+                                      <span className="u-54ec8b59">({suburb.postcode})</span>
+                                      {(dq == null || dq < 70) && <span className="u-53f169b7" title="Data quality warning">⚠️</span>}
                                     </span>
                                     <span className="suburb-dropdown-meta">
                                       {yield_ ? `${yield_}% yield` : cbd ? `${cbd}km CBD` : ''}
@@ -805,14 +805,10 @@ function App() {
                 </div>
 
 
-            <div className="control-group" style={{ marginTop: '20px' }}>
+            <div className="control-group u-e87e972e">
               <button 
                 onClick={() => window.open(`/api/v3/export?state=${activeState}`, '_blank')}
-                style={{
-                  width: '100%', padding: '12px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)',
-                  color: 'var(--text-primary)', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'center',
-                  alignItems: 'center', gap: '8px', fontWeight: '500', transition: 'all 0.2s'
-                }}
+                className="u-8de5ace3"
                 onMouseOver={(e) => e.currentTarget.style.background = 'rgba(15,23,42,0.06)'}
                 onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
               >
@@ -832,23 +828,23 @@ function App() {
                     {`${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`}
                   </p>
                 )}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '10px', fontSize: '0.8rem' }}>
+                <div className="u-db408676">
                   {(activeSuburb as any).dqScore != null && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--text-secondary)' }}>DQ</span>
-                      <span style={{ color: (activeSuburb as any).dqScore >= 80 ? '#10b981' : (activeSuburb as any).dqScore >= 60 ? '#f59e0b' : '#ef4444', fontWeight: 600 }}>{Math.round((activeSuburb as any).dqScore)}/100</span>
+                    <div className="u-0b9a8f0f">
+                      <span className="u-c7477801">DQ</span>
+                      <span className="u-e0cfe6f3" style={{color: (activeSuburb as any).dqScore >= 80 ? '#10b981' : (activeSuburb as any).dqScore >= 60 ? '#f59e0b' : '#ef4444'}}>{Math.round((activeSuburb as any).dqScore)}/100</span>
                     </div>
                   )}
                   {(activeSuburb as any).houseGrossRentalYield != null && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--text-secondary)' }}>Yield</span>
-                      <span style={{ fontWeight: 600 }}>{(activeSuburb as any).houseGrossRentalYield}%</span>
+                    <div className="u-0b9a8f0f">
+                      <span className="u-c7477801">Yield</span>
+                      <span className="u-e0cfe6f3">{(activeSuburb as any).houseGrossRentalYield}%</span>
                     </div>
                   )}
                   {(activeSuburb as any).houseDaysOnMarket != null && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--text-secondary)' }}>DOM</span>
-                      <span style={{ fontWeight: 600 }}>{(activeSuburb as any).houseDaysOnMarket}d</span>
+                    <div className="u-0b9a8f0f">
+                      <span className="u-c7477801">DOM</span>
+                      <span className="u-e0cfe6f3">{(activeSuburb as any).houseDaysOnMarket}d</span>
                     </div>
                   )}
                 </div>
@@ -862,25 +858,25 @@ function App() {
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card" {...{ [SECTION_ATTR]: 'overview' }}>
-                    <div className="detail-header" style={{ paddingBottom: '24px', display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '20px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
+                    <div className="detail-header u-a8ad98bf">
+                      <div className="u-50bac25d">
                         {/* Left Column: Title & Subtitle */}
-                        <div style={{ flex: '1 1 400px', minWidth: 0 }}>
-                          <h2 style={{ margin: 0, fontSize: '2.1rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1, letterSpacing: '-0.5px' }}>
+                        <div className="u-88f597de">
+                          <h2 className="u-7e222d6e">
                             {activeSuburb.name}, {activeSuburb.state}
                           </h2>
-                          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginTop: '12px', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
-                            <span style={{ fontWeight: 600 }}>{activeSuburb.postcode}</span>
+                          <div className="u-9d43798d">
+                            <span className="u-e0cfe6f3">{activeSuburb.postcode}</span>
                             {(activeSuburb as any).cbdDistance && (
                               <>
-                                <span style={{ color: 'var(--border-glass)' }}>•</span>
+                                <span className="u-98fed34e">•</span>
                                 <span>{`${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`}</span>
                               </>
                             )}
                             {(activeSuburb as any).lastUpdated && (
                               <>
-                                <span style={{ color: 'var(--border-glass)' }}>•</span>
-                                <span style={{ fontSize: '0.85rem' }}>
+                                <span className="u-98fed34e">•</span>
+                                <span className="u-355bd10b">
                                   Updated {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
                                 </span>
                               </>
@@ -896,7 +892,7 @@ function App() {
                             const narrative = (activeSuburb.metrics as any)?.growthNarrative ||
                               `${activeSuburb.name} is a ${activeSuburb.growthScore > 70 ? 'high-momentum' : 'stable'} suburb ${(activeSuburb as any).cbdDistance ? `${(activeSuburb as any).cbdDistance} mins from the CBD` : 'in a well-connected region'}.${priceStr}${yieldStr ? yieldStr + ',' : ''} it presents a compelling profile for ${persona === 'first_home_buyer' ? 'home buyers' : 'investors'}.`;
                             return (
-                              <div style={{ marginTop: '16px', fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic', borderLeft: '3px solid var(--accent-cyan)', paddingLeft: '14px' }}>
+                              <div className="u-4e9e8cec">
                                 {narrative}
                               </div>
                             );
@@ -904,20 +900,10 @@ function App() {
                         </div>
 
                         {/* Right Column: Actions & Scorecard */}
-                        <div className="profile-action-btns" style={{ display: 'flex', gap: '10px', flexShrink: 0, alignItems: 'center' }}>
-                          <div style={{ 
-                            background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', 
-                            color: '#fff', 
-                            padding: '6px 14px', 
-                            borderRadius: '8px', 
-                            fontWeight: 800, 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '6px',
-                            boxShadow: '0 2px 8px rgba(139,92,246,0.3)'
-                          }} title="PropertyIQ Scorecard — composite of Momentum, Yield & Vacancy">
-                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.9 }}>Score</span>
-                            <span style={{ fontSize: '1.2rem' }}>
+                        <div className="profile-action-btns u-ce81da38">
+                          <div className="u-d147c587" title="PropertyIQ Scorecard — composite of Momentum, Yield & Vacancy">
+                            <span className="u-4fa05460">Score</span>
+                            <span className="u-7bbecc0d">
                               {(() => {
                                 const score = activeSuburb.growthScore ?? 50;
                                 const yield_ = (activeSuburb as any).houseGrossRentalYield ?? 0;
@@ -931,77 +917,63 @@ function App() {
                             </span>
                           </div>
                           <button
-                            className="profile-action-btn"
+                            className="favorite-btn u-fd5181a8" style={{background: favorites.includes(activeSuburb.id) ? 'rgba(239,68,68,0.08)' : 'var(--bg-dark)', color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-primary)'}}
                             onClick={() => toggleFavorite(activeSuburb.id)}
-                            style={{
-                              background: favorites.includes(activeSuburb.id) ? 'rgba(239,68,68,0.08)' : 'var(--bg-dark)',
-                              border: '1px solid var(--border-glass)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
-                              color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-primary)',
-                              transition: 'all 0.2s', padding: '8px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px'
-                            }}
                             title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
                           >
-                            <span style={{ fontSize: '1.1rem' }}>{favorites.includes(activeSuburb.id) ? '♥' : '♡'}</span>
+                            <span className="u-ce0fd88b">{favorites.includes(activeSuburb.id) ? '♥' : '♡'}</span>
                             <span className="profile-action-text">{favorites.includes(activeSuburb.id) ? 'Saved' : 'Save'}</span>
                           </button>
                           
-                          <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                          <div className="u-ca64bf6a">
                             <ShareReport suburbName={`${activeSuburb.name}, ${activeSuburb.state}`} suburbId={activeSuburb.id} />
                           </div>
 
                           <button
-                            className="profile-action-btn"
+                            className="close-panel-btn u-3b2300ad"
                             onClick={() => setActiveTab('buy-finder')}
-                            style={{
-                              background: 'var(--accent-cyan)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
-                              color: '#fff', transition: 'all 0.2s', padding: '8px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px'
-                            }}
                             title="Find similar suburbs based on your criteria"
                           >
-                            <span style={{ fontSize: '1rem' }}>🔍</span>
+                            <span className="u-5ffc2c6d">🔍</span>
                             <span className="profile-action-text">Compare</span>
                           </button>
                         </div>
                       </div>
 
                       {/* Row 2: Data Provenance Ribbon (simplified) */}
-                      <div className="profile-badge-ribbon" style={{ 
-                        display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center',
-                        padding: '10px 16px', background: 'var(--bg-dark)', borderRadius: '8px', border: '1px solid var(--border-glass)'
-                      }}>
-                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)', marginRight: '4px', fontWeight: 600 }}>Data Sources</span>
+                      <div className="profile-badge-ribbon u-b6087144">
+                        <span className="u-fb1cea66">Data Sources</span>
                         
                         {/* Data Quality */}
                         {(() => {
                           const dq = (activeSuburb as any).dqScore;
                           const dqColor = dq >= 80 ? 'var(--success)' : dq >= 60 ? 'var(--warning)' : 'var(--danger)';
                           return (
-                            <span style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', background: 'rgba(15,23,42,0.02)', borderRadius: '4px' }}>
-                              <span style={{ color: 'var(--text-secondary)' }}>Data Quality</span>
-                              <span style={{ color: dqColor, fontWeight: 700 }}>{dq != null ? `${Math.round(dq)}/100` : 'Low'}</span>
+                            <span className="u-723496b9">
+                              <span className="u-c7477801">Data Quality</span>
+                              <span className="u-fdec1e77" style={{color: dqColor}}>{dq != null ? `${Math.round(dq)}/100` : 'Low'}</span>
                             </span>
                           );
                         })()}
 
                         {/* ABS Verified */}
                         {(activeSuburb as any).absDemographicsSourced && (
-                          <span style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 600, padding: '2px 8px', background: 'rgba(16,185,129,0.08)', borderRadius: '4px', border: '1px solid rgba(16,185,129,0.2)' }}>✓ ABS Census</span>
+                          <span className="u-fc148b65">✓ ABS Census</span>
                         )}
 
                         {/* Last Updated */}
                         {(activeSuburb as any).lastUpdated && (
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: '4px' }}>
+                          <span className="u-451867e1">
                             Updated {new Date((activeSuburb as any).lastUpdated).toLocaleDateString('en-AU', { month: 'short', year: 'numeric' })}
                           </span>
                         )}
 
                         {/* Cashflow CTA — compact */}
                         {persona !== 'first_home_buyer' && (
-                          <div style={{ marginLeft: 'auto' }}>
+                          <div className="u-73ab3db5">
                             <button
                               onClick={() => setActiveTab('gearing')}
-                              className="badge-pill"
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 14px', borderRadius: '20px', background: 'var(--accent-cyan)', border: 'none', fontSize: '0.8rem', fontWeight: 600, color: '#fff', cursor: 'pointer', transition: 'opacity 0.2s', boxShadow: '0 2px 4px rgba(2,132,199,0.2)' }}
+                              className="badge-pill u-d3432ab0"
                             >
                               💰 Run Cashflow →
                             </button>
@@ -1013,67 +985,67 @@ function App() {
 
                   {/* Evidence-backed highlights — split Strengths / Cautions */}
                   {(activeSuburb.highlights || []).length > 0 ? (
-                    <div style={{ marginBottom: '20px', background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
-                      <h4 style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.5px' }}>Why consider {activeSuburb.name}?</h4>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="u-f78d8d69">
+                      <h4 className="u-e4df4f18">Why consider {activeSuburb.name}?</h4>
+                      <div className="u-6597c4ce">
                         {(activeSuburb.highlights || []).slice(0, 2).map((h, i) => (
-                          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.9rem', color: 'var(--text-primary)', padding: '8px 10px', background: 'rgba(16,185,129,0.06)', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.15)' }}>
-                            <span style={{ color: '#10b981', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                          <div key={i} className="u-e242cbbc">
+                            <span className="u-74e4f6bb">✓</span>
                             <span>{h}</span>
                           </div>
                         ))}
                         {(activeSuburb.highlights || []).slice(2, 3).map((h, i) => (
-                          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.9rem', color: 'var(--text-primary)', padding: '8px 10px', background: 'rgba(245,158,11,0.06)', borderRadius: '6px', border: '1px solid rgba(245,158,11,0.15)' }}>
-                            <span style={{ color: '#f59e0b', fontWeight: 700, flexShrink: 0 }}>⚠</span>
+                          <div key={i} className="u-11f4b57e">
+                            <span className="u-6b3ea7b2">⚠</span>
                             <span>{h}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   ) : (
-                    <div style={{ marginBottom: '20px', padding: '12px 16px', background: 'rgba(15,23,42,0.01)', borderRadius: '8px', border: '1px dashed var(--border-glass)', color: 'var(--text-secondary)', fontSize: '0.85rem', fontStyle: 'italic' }}>
+                    <div className="u-f45b738e">
                       AI key drivers will appear here once analysis is complete.
                     </div>
                   )}
 
-                  <div className="metrics-grid" style={{ gap: '12px' }}>
-                    <div className="metric-box" style={{ padding: '12px 16px' }}>
-                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>House Median Price</div>
-                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px', fontSize: '1.15rem' }}>
-                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : <span style={{color:'var(--text-muted)'}}>—</span>}
+                  <div className="metrics-grid u-ff12444b">
+                    <div className="metric-box u-f5f90c74">
+                      <div className="metric-label u-112a0d0d">House Median Price</div>
+                      <div className="metric-value u-da5d5cd3">
+                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : <span className="u-28c62109">—</span>}
                         {(() => {
                           const change = Number((activeSuburb as any).houseMedianPrice12mChangePct) || 0;
                           if (change) {
-                            return <span style={{ fontSize: '0.85rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
+                            return <span className="u-355bd10b" style={{color: change > 0 ? 'var(--success)' : 'var(--danger)'}}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
                           }
                           return null;
                         })()}
                       </div>
                     </div>
-                    <div className="metric-box" style={{ padding: '12px 16px' }}>
-                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Unit Median Price</div>
-                      <div className="metric-value" style={{ display: 'flex', alignItems: 'baseline', gap: '8px', fontSize: '1.15rem' }}>
-                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : <span style={{color:'var(--text-muted)'}}>—</span>}
+                    <div className="metric-box u-f5f90c74">
+                      <div className="metric-label u-112a0d0d">Unit Median Price</div>
+                      <div className="metric-value u-da5d5cd3">
+                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : <span className="u-28c62109">—</span>}
                         {(() => {
                           const change = Number((activeSuburb as any).unitMedianPrice12mChangePct) || 0;
                           if (change) {
-                            return <span style={{ fontSize: '0.85rem', color: change > 0 ? 'var(--success)' : 'var(--danger)' }}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
+                            return <span className="u-355bd10b" style={{color: change > 0 ? 'var(--success)' : 'var(--danger)'}}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
                           }
                           return null;
                         })()}
                       </div>
                     </div>
-                    <div className="metric-box" style={{ padding: '12px 16px' }}>
-                      <div className="metric-label" style={{ fontSize: '0.7rem' }}>Avg Rental Yield</div>
-                      <div className="metric-value" style={{ fontSize: '1.15rem', color: 'var(--accent-cyan)', fontWeight: 700 }}>
+                    <div className="metric-box u-f5f90c74">
+                      <div className="metric-label u-112a0d0d">Avg Rental Yield</div>
+                      <div className="metric-value u-8103896e">
                         {(activeSuburb as any).houseGrossRentalYield
                           ? `${(activeSuburb as any).houseGrossRentalYield}%`
                           : (activeSuburb as any).rentalYield
                           ? `${(activeSuburb as any).rentalYield}%`
-                          : <span style={{color:'var(--text-muted)'}}>—</span>}
+                          : <span className="u-28c62109">—</span>}
                       </div>
                       {activeSuburb.vacancyRate != null && (
-                        <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                        <div className="u-1e74caee">
                           Vacancy {Number(activeSuburb.vacancyRate).toFixed(1)}%
                         </div>
                       )}
@@ -1084,12 +1056,12 @@ function App() {
 
                     <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
-                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'overview' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'overview' }}>
+                   <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'overview' ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'overview' }}>
                     
                     {/* Quick ROI Calculator — Promoted inside Overview tab */}
 
                     {persona !== 'first_home_buyer' && (
-                      <Suspense fallback={<div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Loading ROI...</div>}>
+                      <Suspense fallback={<div className="u-66be495e">Loading ROI...</div>}>
                         <QuickRoiCalculator 
                           medianPrice={(activeSuburb as any).houseMedianPrice || 0} 
                           medianRent={(activeSuburb as any).houseMedianRent || (activeSuburb as any).weeklyRent || 0} 
@@ -1119,29 +1091,29 @@ function App() {
                           display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '15px', alignItems: 'center'
                         }}>
                           <div>
-                            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>✂️ Subdivision Potential</div>
-                            <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: potentialColor }}>{subdiv || 'Unknown'}</div>
+                            <div className="u-bc4ee6cd">✂️ Subdivision Potential</div>
+                            <div className="u-85958e43" style={{color: potentialColor}}>{subdiv || 'Unknown'}</div>
                           </div>
                           {approvedCount > 0 && (
                             <div>
-                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Approved (12mo)</div>
-                              <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#10b981' }}>{approvedCount} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)' }}>DAs</span></div>
+                              <div className="u-bc4ee6cd">Approved (12mo)</div>
+                              <div className="u-71368d1f">{approvedCount} <span className="u-192d3ffc">DAs</span></div>
                             </div>
                           )}
                           {minLot && (
                             <div>
-                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Min Lot Size</div>
-                              <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{minLot} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)' }}>sqm</span></div>
+                              <div className="u-bc4ee6cd">Min Lot Size</div>
+                              <div className="u-9a063d22">{minLot} <span className="u-192d3ffc">sqm</span></div>
                             </div>
                           )}
                           {avgBlock && (
                             <div>
-                              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Avg Block</div>
-                              <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{avgBlock} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)' }}>sqm</span></div>
+                              <div className="u-bc4ee6cd">Avg Block</div>
+                              <div className="u-9a063d22">{avgBlock} <span className="u-192d3ffc">sqm</span></div>
                             </div>
                           )}
                           {minLot && avgBlock && avgBlock >= minLot * 2 && (
-                            <div style={{ gridColumn: '1 / -1', fontSize: '0.75rem', color: '#10b981', background: 'rgba(16,185,129,0.06)', padding: '8px 12px', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.15)' }}>
+                            <div className="u-21575ba7">
                               💡 Avg block ({avgBlock} sqm) is ≥ 2× minimum lot ({minLot} sqm) — properties in this suburb may have subdivision potential
                             </div>
                           )}
@@ -1155,11 +1127,11 @@ function App() {
                     <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
                     
                     {/* Score Legend — Moved to bottom of overview tab */}
-                    <details style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', marginTop: '20px', overflow: 'hidden' }}>
-                      <summary style={{ padding: '12px 16px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', outline: 'none' }}>
+                    <details className="u-8ff959d6">
+                      <summary className="u-942b3663">
                         ℹ️ Understanding Our Scores
                       </summary>
-                      <div style={{ padding: '0 16px 16px', borderTop: '1px solid var(--border-glass)' }}>
+                      <div className="u-7ce0ede0">
                         <ScoreLegendPanel growthFactors={((activeSuburb as any).growthFactorsLabeled) as GrowthFactorLabeled[] | undefined} />
                       </div>
                     </details>
@@ -1168,14 +1140,14 @@ function App() {
                     <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
                       {/* Market Baselines — Moved to Market tab */}
                       {benchmarks && benchmarks.length > 0 && (
-                        <div style={{ padding: '16px 20px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '12px', marginBottom: '20px' }}>
-                          <h4 style={{ margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}>
+                        <div className="u-4b6cb09b">
+                          <h4 className="u-304ebc1b">
                             📈 Market Baselines
                           </h4>
-                          <p style={{ margin: '0 0 12px 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                          <p className="u-76c9b108">
                             Compare suburb growth against market benchmarks to identify genuine alpha.
                           </p>
-                          <div className="profile-grid-auto" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                          <div className="profile-grid-auto u-df4e9190">
                             {benchmarks.map((bm, i) => (
                               <div key={i} style={{ 
                                 padding: '12px', 
@@ -1187,19 +1159,15 @@ function App() {
                                     : 'var(--warning)'
                                 }`
                               }}>
-                                <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textTransform: 'uppercase' }}>{bm.symbol}</div>
-                                <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: 'bold', margin: '2px 0' }}>{bm.name}</div>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
-                                  <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>1Y Return</span>
-                                  <span style={{ 
-                                    fontSize: '1rem', 
-                                    color: bm.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)', 
-                                    fontWeight: 'bold' 
-                                  }}>
+                                <div className="u-6baf8a4c">{bm.symbol}</div>
+                                <div className="u-240770f2">{bm.name}</div>
+                                <div className="u-4b1cd156">
+                                  <span className="u-fc193050">1Y Return</span>
+                                  <span className="u-e506d4ee" style={{color: bm.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)'}}>
                                     {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
                                   </span>
                                 </div>
-                                <div style={{ marginTop: '4px', fontSize: '0.78rem', color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)' }}>
+                                <div className="u-6c2db771" style={{color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)'}}>
                                   {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '✓ Outperforming' : '↓ Underperforming'}
                                 </div>
                               </div>
@@ -1213,18 +1181,18 @@ function App() {
                     </div>
 
                     {/* Visuals Grid (Charts) */}
-                    <details className="expandable-section" style={{ marginTop: '20px', display: activeProfileSection === 'market' ? 'block' : 'none', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '10px' }}>
-                      <summary style={{ cursor: 'pointer', fontWeight: 'bold', color: 'var(--accent-cyan)', padding: '10px', outline: 'none' }}>
+                    <details className="expandable-section u-df8a09d2" style={{display: activeProfileSection === 'market' ? 'block' : 'none'}}>
+                      <summary className="u-b337f919">
                         📊 View Detailed Demographics & Charts
                       </summary>
-                      <div style={{ marginTop: '15px' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+                      <div className="u-791db4a4">
+                        <div className="u-ce4f0a7b">
                           {/* Left Column */}
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      <div className="u-ce3bd1ca">
                         {/* House vs Unit bar chart */}
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '15px', color: 'var(--text-primary)' }}>Median Price: House vs Unit</h4>
-                          <div style={{ height: '180px' }}>
+                        <div className="u-0f479549">
+                          <h4 className="u-6427c277">Median Price: House vs Unit</h4>
+                          <div className="u-23f9d4e9">
                             <ResponsiveContainer width="100%" height="100%">
                               <BarChart data={[
                                 { name: 'House', value: typeof activeSuburb.houseMedianPrice === 'number' ? activeSuburb.houseMedianPrice : (typeof activeSuburb.metrics?.medianPrice === 'number' ? activeSuburb.metrics.medianPrice : 0) },
@@ -1238,25 +1206,25 @@ function App() {
                               </BarChart>
                             </ResponsiveContainer>
                           </div>
-                          <div style={{ textAlign: 'center', marginTop: '15px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                          <div className="u-5e7d5a2d">
                             House: {activeSuburb.houseMedianPrice12mChangePct ? `${Number(activeSuburb.houseMedianPrice12mChangePct) > 0 ? '+' : ''}${Number(activeSuburb.houseMedianPrice12mChangePct).toFixed(2)}%` : '—'} | Unit: {activeSuburb.unitMedianPrice12mChangePct ? `${Number(activeSuburb.unitMedianPrice12mChangePct) > 0 ? '+' : ''}${Number(activeSuburb.unitMedianPrice12mChangePct).toFixed(2)}%` : '—'}
                           </div>
                         </div>
 
                         {/* Household Types */}
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px' }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '15px', color: 'var(--text-primary)' }}>Household Types</h4>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div className="u-0f479549">
+                          <h4 className="u-6427c277">Household Types</h4>
+                          <div className="u-20f7f541">
                             {(() => {
                               const hhData = ((activeSuburb as any).demographicsDetailV3?.household_distribution) || {}
                               const total = Object.values(hhData).reduce((a:number,b:any) => a + Number(b), 0) || 1
                               return Object.entries(hhData).map(([k,v]) => (
                                 <div key={k}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '4px' }}>
-                                    <span style={{ color: 'var(--text-secondary)' }}>{k}</span>
-                                    <span style={{ color: 'var(--text-primary)' }}>{Number(v).toFixed(0)}%</span>
+                                  <div className="u-aa88afa9">
+                                    <span className="u-c7477801">{k}</span>
+                                    <span className="u-c154f6c6">{Number(v).toFixed(0)}%</span>
                                   </div>
-                                  <div style={{ height: '8px', background: 'rgba(15,23,42,0.04)', borderRadius: '4px' }}>
+                                  <div className="u-84787244">
                                     <div style={{ height: '100%', width: `${(Number(v)/total*100).toFixed(0)}%`, background: 'var(--accent-purple)', borderRadius: '4px' }} />
                                   </div>
                                 </div>
@@ -1267,11 +1235,11 @@ function App() {
                       </div>
 
                       {/* Right Column */}
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <div className="u-787001c0">
                         {/* Household Income Bands */}
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '15px', color: 'var(--text-primary)' }}>Household Income Bands</h4>
-                          <div style={{ flex: 1, minHeight: '300px' }}>
+                        <div className="u-d2756792">
+                          <h4 className="u-6427c277">Household Income Bands</h4>
+                          <div className="u-b999c49c">
                             <ResponsiveContainer width="100%" height="100%">
                               <BarChart data={(() => {
                                 const incData = ((activeSuburb as any).demographicsDetailV3?.income_distribution) || {}
@@ -1290,13 +1258,13 @@ function App() {
                     </div>
 
                   {/* BUYER AGENT SUMMARY */}
-                  <div className="highlights-section" style={{ marginTop: '20px' }}>
-                    <details style={{ background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', borderRadius: '12px', overflow: 'hidden' }}>
-                      <summary style={{ padding: '15px 20px', cursor: 'pointer', fontWeight: 600, color: 'var(--text-primary)', outline: 'none' }}>
+                  <div className="highlights-section u-e87e972e">
+                    <details className="u-6c1c1e50">
+                      <summary className="u-a5fb4c99">
                         📊 Quick Reference
                       </summary>
-                      <div style={{ padding: '0 20px 20px', borderTop: '1px solid var(--border-glass)' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '15px' }}>
+                      <div className="u-832440d0">
+                        <div className="u-0cb1fcb0">
                       {(() => {
                         const s = activeSuburb
                         const demo = ((s as any).demographicsDetailV3) || {}
@@ -1331,17 +1299,14 @@ function App() {
                           ]},
                         ]
                         return indicators.flatMap((section) => [
-                          <div key={section.label} style={{ 
-                            background: 'var(--bg-card)', border: '1px solid var(--border-glass)', 
-                            padding: '12px', borderRadius: '8px', gridColumn: 'span 1'
-                          }}>
-                            <div style={{ color: 'var(--accent-cyan)', fontSize: '0.75rem', fontWeight: 700, marginBottom: '8px' }}>
+                          <div key={section.label} className="u-a9fc8628">
+                            <div className="u-03a2fcc2">
                               {section.label}
                             </div>
                             {section.items.map((item) => (
-                              <div key={item.label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'4px' }}>
-                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{item.icon} {item.label}</span>
-                                <span style={{ color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 600 }}>
+                              <div key={item.label} className="u-85fc9968">
+                                <span className="u-f3d28ad1">{item.icon} {item.label}</span>
+                                <span className="u-e125b86d">
                                   {item.value}
                                 </span>
                               </div>
@@ -1354,13 +1319,13 @@ function App() {
                     </details>
                   </div>
                     {/* Bottom Row: Charts */}
-                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                    <div className="u-8f5d5c7e">
                       {/* 10-Year Historical Chart */}
                       {activeSuburb.history && activeSuburb.history.length >= 2 && (
-                        <div style={{ flex: '1 1 400px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px' }}>
-                          <h4 style={{ textAlign: 'center', marginBottom: '2px' }}>10-Year Historical Median Price</h4>
-                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>House median price tracking over time</p>
-                          <div style={{ height: '220px' }}>
+                        <div className="u-89b1b35e">
+                          <h4 className="u-e65a1c30">10-Year Historical Median Price</h4>
+                          <p className="u-dc5b9519">House median price tracking over time</p>
+                          <div className="u-171e172a">
                             <ResponsiveContainer width="100%" height="100%">
                               <LineChart data={(activeSuburb.history as any[]).map((pt: any) => ({
                                 year: typeof pt.date === 'string' ? pt.date.substring(0, 4) : String(pt.date || ''),
@@ -1382,15 +1347,15 @@ function App() {
                   </details>
 
                    {/* NEW LIVABILITY SECTION */}
-                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'infrastructure' }}>
+                   <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'infrastructure' ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'infrastructure' }}>
                     
                     {/* NEW METRICS: Transit, NBN, Safety */}
-                    <div className="metrics-grid" style={{ marginBottom: '20px' }}>
+                    <div className="metrics-grid u-19fd7aee">
                       <div className="metric-box" style={{ borderColor: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)' }}>
                         <div className="metric-label">Transit Score</div>
-                        <div className="metric-value" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '1.15rem' }}>{((activeSuburb as any).areaSqkm ?? 20) < 10 ? "76/100" : "51/100"}</span>
-                          <span style={{ fontSize: '0.8rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(15,23,42,0.02)', color: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)' }}>
+                        <div className="metric-value u-6e6177ef">
+                          <span className="u-567aafdf">{((activeSuburb as any).areaSqkm ?? 20) < 10 ? "76/100" : "51/100"}</span>
+                          <span className="u-4717078b" style={{color: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)'}}>
                             {((activeSuburb as any).areaSqkm ?? 20) < 10 ? "🟢 Good" : "🟡 Moderate"}
                           </span>
                         </div>
@@ -1405,48 +1370,43 @@ function App() {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="u-69f9d299">
                       <h3>Livability & Amenities</h3>
                       {livabilityData && (
                         <button
                           onClick={() => setShowAmenitiesOnMap(!showAmenitiesOnMap)}
-                          style={{
-                            background: showAmenitiesOnMap ? 'var(--accent-cyan)' : 'var(--bg-glass)', 
-                            color: showAmenitiesOnMap ? '#000' : 'var(--text-primary)', 
-                            border: '1px solid var(--border-glass)', 
-                            padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold'
-                          }}
+                          className="u-32ffb623" style={{background: showAmenitiesOnMap ? 'var(--accent-cyan)' : 'var(--bg-glass)', color: showAmenitiesOnMap ? '#000' : 'var(--text-primary)'}}
                         >
                           {showAmenitiesOnMap ? 'Hide Amenities from Map' : 'Show Amenities on Map'}
                         </button>
                       )}
                     </div>
                     {loadingLivability && (
-                      <div style={{ marginTop: '15px' }}>
-                        <p style={{ color: 'var(--text-secondary)' }}>Scanning neighborhood via OpenStreetMap...</p>
-                        <div className="metrics-grid" style={{ marginBottom: '15px' }}>
+                      <div className="u-791db4a4">
+                        <p className="u-c7477801">Scanning neighborhood via OpenStreetMap...</p>
+                        <div className="metrics-grid u-127b72f0">
                           <div className="metric-box">
                             <div className="metric-label">Walkability Score</div>
-                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                            <div className="metric-value u-c7477801">—</div>
                           </div>
                           <div className="metric-box">
                             <div className="metric-label">Cafes & Dining</div>
-                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                            <div className="metric-value u-c7477801">—</div>
                           </div>
                           <div className="metric-box">
                             <div className="metric-label">Parks & Leisure</div>
-                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                            <div className="metric-value u-c7477801">—</div>
                           </div>
                           <div className="metric-box">
                             <div className="metric-label">Transit Stops</div>
-                            <div className="metric-value" style={{ color: 'var(--text-secondary)' }}>—</div>
+                            <div className="metric-value u-c7477801">—</div>
                           </div>
                         </div>
                       </div>
                     )}
                     {livabilityData && !loadingLivability && (
-                      <div style={{ marginTop: '15px' }}>
-                        <div className="metrics-grid" style={{ marginBottom: '15px' }}>
+                      <div className="u-791db4a4">
+                        <div className="metrics-grid u-127b72f0">
                           <div className="metric-box">
                             <div className="metric-label">Walkability Score</div>
                             <div className="metric-value highlight-cyan">{livabilityData.walkabilityScore}/100</div>
@@ -1465,17 +1425,17 @@ function App() {
                           </div>
                         </div>
                         {livabilityData.cafes.length > 0 && (
-                          <div style={{ marginBottom: '10px' }}>
+                          <div className="u-8e545338">
                             <strong>Popular Spots: </strong>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                            <span className="u-2007e35f">
                               {livabilityData.cafes.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.cafes.length > 5 ? '...' : ''}
                             </span>
                           </div>
                         )}
                         {livabilityData.schools.length > 0 && (
-                          <div style={{ marginBottom: '10px' }}>
+                          <div className="u-8e545338">
                             <strong>Local Schools (OSM): </strong>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                            <span className="u-2007e35f">
                               {livabilityData.schools.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.schools.length > 5 ? '...' : ''}
                             </span>
                           </div>
@@ -1483,22 +1443,22 @@ function App() {
                         {livabilityData.train_stations.length > 0 && (
                           <div>
                             <strong>Local Train Stations: </strong>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                            <span className="u-2007e35f">
                               {livabilityData.train_stations.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.train_stations.length > 5 ? '...' : ''}
                             </span>
                           </div>
                         )}
                       {/* School Catchment Links */}
-                      <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(15,23,42,0.02)', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
-                        <h4 style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: 'var(--text-primary)' }}>🎓 Official School Catchment Zones</h4>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: '0 0 8px 0' }}>Verify local public school enrolment eligibility directly via state government maps:</p>
-                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                          {activeSuburb.state === 'VIC' && <a href="https://www.findmyschool.vic.gov.au/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>VIC: FindMySchool →</a>}
-                          {activeSuburb.state === 'NSW' && <a href="https://schoolfinder.education.nsw.gov.au/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>NSW: School Finder →</a>}
-                          {activeSuburb.state === 'QLD' && <a href="https://www.qgso.qld.gov.au/maps/edmap/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>QLD: EdMap →</a>}
-                          {activeSuburb.state === 'SA' && <a href="https://www.education.sa.gov.au/parents-and-families/enrol-school-or-preschool/find-a-school-zone-or-preschool-catchment-area" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>SA: Location SA →</a>}
-                          {activeSuburb.state === 'TAS' && <a href="https://www.decyp.tas.gov.au/learning/enrolment/" target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', textDecoration: 'none' }}>TAS: DECYP Directory →</a>}
-                          {['WA', 'NT', 'ACT'].includes(activeSuburb.state) && <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Check local education department for {activeSuburb.state} catchments.</span>}
+                      <div className="u-9ab97fc2">
+                        <h4 className="u-d30f9d05">🎓 Official School Catchment Zones</h4>
+                        <p className="u-b6bdaa2d">Verify local public school enrolment eligibility directly via state government maps:</p>
+                        <div className="u-47622ea7">
+                          {activeSuburb.state === 'VIC' && <a href="https://www.findmyschool.vic.gov.au/" target="_blank" rel="noreferrer" className="u-1d8c43c5">VIC: FindMySchool →</a>}
+                          {activeSuburb.state === 'NSW' && <a href="https://schoolfinder.education.nsw.gov.au/" target="_blank" rel="noreferrer" className="u-1d8c43c5">NSW: School Finder →</a>}
+                          {activeSuburb.state === 'QLD' && <a href="https://www.qgso.qld.gov.au/maps/edmap/" target="_blank" rel="noreferrer" className="u-1d8c43c5">QLD: EdMap →</a>}
+                          {activeSuburb.state === 'SA' && <a href="https://www.education.sa.gov.au/parents-and-families/enrol-school-or-preschool/find-a-school-zone-or-preschool-catchment-area" target="_blank" rel="noreferrer" className="u-1d8c43c5">SA: Location SA →</a>}
+                          {activeSuburb.state === 'TAS' && <a href="https://www.decyp.tas.gov.au/learning/enrolment/" target="_blank" rel="noreferrer" className="u-1d8c43c5">TAS: DECYP Directory →</a>}
+                          {['WA', 'NT', 'ACT'].includes(activeSuburb.state) && <span className="u-a23e1378">Check local education department for {activeSuburb.state} catchments.</span>}
                         </div>
                       </div>
                     </div>
@@ -1506,10 +1466,10 @@ function App() {
                   </div>
 
                   {/* PANEL B: Demographics (People & Infrastructure) */}
-                  <div className="highlights-section" style={{ marginTop: '20px', display: (activeProfileSection === 'people' || activeProfileSection === 'infrastructure') ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'people' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-1)', paddingBottom: '10px' }}>{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & Lifestyle'}</h3>
-                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                      <div style={{ flex: '2 1 500px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
+                  <div className="highlights-section u-e87e972e" style={{display: (activeProfileSection === 'people' || activeProfileSection === 'infrastructure') ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'people' }}>
+                    <h3 className="u-d5c2d613">{activeProfileSection === 'infrastructure' ? 'Infrastructure & Development' : 'Demographics & Lifestyle'}</h3>
+                    <div className="u-8f5d5c7e">
+                      <div className="u-a8211e4b" style={{display: activeProfileSection === 'people' ? 'block' : 'none'}}>
                         {(() => {
                           const ageData = ((activeSuburb as any).demographicsDetailV3?.age_distribution) || {};
                           const chartData = Object.entries(ageData)
@@ -1535,9 +1495,9 @@ function App() {
                           );
                         })()}
                       </div>
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Owner vs Renter Ratio</h4>
-                        <div style={{ height: '180px' }}>
+                      <div className="u-d33bbd39" style={{display: activeProfileSection === 'people' ? 'block' : 'none'}}>
+                        <h4 className="u-18ca3e6b">Owner vs Renter Ratio</h4>
+                        <div className="u-23f9d4e9">
                           <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                               <Pie data={[
@@ -1551,38 +1511,38 @@ function App() {
                             </PieChart>
                           </ResponsiveContainer>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', fontSize: '0.75rem', marginTop: '5px' }}>
-                          <span style={{ color: 'var(--accent-purple)' }}>Owner: {(activeSuburb.ownerOccupierRate || 65.5).toFixed(2)}%</span>
-                          <span style={{ color: 'var(--accent-cyan)' }}>Renter: {(100 - (activeSuburb.ownerOccupierRate || 65.5)).toFixed(2)}%</span>
+                        <div className="u-6d1d1585">
+                          <span className="u-6d81fac3">Owner: {(activeSuburb.ownerOccupierRate || 65.5).toFixed(2)}%</span>
+                          <span className="u-d03afae3">Renter: {(100 - (activeSuburb.ownerOccupierRate || 65.5)).toFixed(2)}%</span>
                         </div>
                       </div>
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'people' ? 'block' : 'none' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Macro Indicators (ABS)</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px', padding: '0 10px' }}>
+                      <div className="u-d33bbd39" style={{display: activeProfileSection === 'people' ? 'block' : 'none'}}>
+                        <h4 className="u-18ca3e6b">Macro Indicators (ABS)</h4>
+                        <div className="u-b38fc809">
                           <div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>Unemployment Rate</div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--warning)' }}>
+                            <div className="u-154d8356">Unemployment Rate</div>
+                            <div className="u-a15536a6">
                               {activeSuburb.unemploymentRate ? `${activeSuburb.unemploymentRate}%` : 'N/A'}
                             </div>
                           </div>
                           <div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>Building Approvals (12m)</div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-cyan)' }}>
+                            <div className="u-154d8356">Building Approvals (12m)</div>
+                            <div className="u-eb76efc5">
                               {activeSuburb.buildingApprovals12m ? activeSuburb.buildingApprovals12m.toLocaleString() : 'N/A'}
                             </div>
                           </div>
                           <div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>Major Infrastructure</div>
-                            <div style={{ fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-primary)', lineHeight: '1.4' }}>
+                            <div className="u-154d8356">Major Infrastructure</div>
+                            <div className="u-2d5606dc">
                               {activeSuburb.infrastructureInvestment || 'No major projects identified'}
                             </div>
                           </div>
                         </div>
                       </div>
                       {/* 🏛️ Social Infrastructure */}
-                      <div style={{ flex: '1 1 300px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>🏛️ Social Infrastructure</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.8rem' }}>
+                      <div className="u-d33bbd39" style={{display: activeProfileSection === 'infrastructure' ? 'block' : 'none'}}>
+                        <h4 className="u-18ca3e6b">🏛️ Social Infrastructure</h4>
+                        <div className="u-2c6ef56c">
                           {(() => {
                             const s = activeSuburb as any
                             const worshipTotal = s.worshipTotal || 0
@@ -1600,23 +1560,23 @@ function App() {
                               { label: 'Retirement Homes', icon: '🧓', value: s.retirementHomeCount },
                             ].filter(item => item.value != null)
                             if ((worshipTotal === 0 || worshipTotal == null) && social.length === 0)
-                              return <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center' }}>No data</span>
+                              return <span className="u-2d8e228c">No data</span>
                             return (
                               <>
                                 {worshipTotal > 0 && (
-                                  <div style={{ marginBottom: '8px' }}>
-                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                                  <div className="u-e50f284b">
+                                    <div className="u-586d8158">
                                       ⛪ Places of Worship ({worshipTotal})
                                     </div>
-                                    <div style={{ display: 'flex', height: '14px', borderRadius: '7px', overflow: 'hidden' }}>
+                                    <div className="u-e49a63a8">
                                       {religions.map(r => (
                                         <div key={r.label} title={`${r.label}: ${r.val}`}
-                                          style={{ flex: r.val, backgroundColor: r.color, minWidth: '2px' }} />
+                                          className="u-40f7d2c4" style={{flex: r.val, backgroundColor: r.color}} />
                                       ))}
                                     </div>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '4px' }}>
+                                    <div className="u-b58c553f">
                                       {religions.map(r => (
-                                        <span key={r.label} style={{ fontSize: '0.8rem', color: r.color }}>
+                                        <span key={r.label} className="u-c0024dfb" style={{color: r.color}}>
                                           {r.label} {r.val}
                                         </span>
                                       ))}
@@ -1624,26 +1584,26 @@ function App() {
                                   </div>
                                 )}
                                 {social.map(item => (
-                                  <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{item.icon} {item.label}</span>
-                                    <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.8rem' }}>{item.value}</span>
+                                  <div key={item.label} className="u-69f9d299">
+                                    <span className="u-f3d28ad1">{item.icon} {item.label}</span>
+                                    <span className="u-e8ad2fda">{item.value}</span>
                                   </div>
                                 ))}
                                 {(s.socialHousingPct != null && s.socialHousingPct > 0) && (
-                                  <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px solid var(--border-glass)' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🏘️ Social Housing</span>
-                                      <span style={{ color: s.socialHousingPct > 10 ? '#ef4444' : 'var(--text-primary)', fontWeight: 600, fontSize: '0.8rem' }}>
+                                  <div className="u-e6f5fceb">
+                                    <div className="u-69f9d299">
+                                      <span className="u-f3d28ad1">🏘️ Social Housing</span>
+                                      <span className="u-cc8325c1" style={{color: s.socialHousingPct > 10 ? '#ef4444' : 'var(--text-primary)'}}>
                                         {s.socialHousingPct.toFixed(1)}%
                                       </span>
                                     </div>
                                     {s.publicHousingDwellings != null && (
-                                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                      <div className="u-0f5cef51">
                                         {s.publicHousingDwellings} public · {s.communityHousingDwellings || 0} community
                                       </div>
                                     )}
                                     {s.absG37Sourced && (
-                                      <div style={{ fontSize: '0.75rem', color: '#10b981', marginTop: '2px' }}>✓ ABS Census</div>
+                                      <div className="u-b9b8cd02">✓ ABS Census</div>
                                     )}
                                   </div>
                                 )}
@@ -1653,9 +1613,9 @@ function App() {
                         </div>
                       </div>
                       {/* 🏗️ Development & Subdivision Dashboard — Enhanced */}
-                      <div style={{ flex: '1 1 450px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '8px', display: activeProfileSection === 'infrastructure' ? 'block' : 'none' }}>
-                        <h4 style={{ textAlign: 'center', marginBottom: '15px', fontSize: '1rem' }}>🏗️ Development & Subdivision Dashboard</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.8rem' }}>
+                      <div className="u-dda6ee83" style={{display: activeProfileSection === 'infrastructure' ? 'block' : 'none'}}>
+                        <h4 className="u-434f4d7d">🏗️ Development & Subdivision Dashboard</h4>
+                        <div className="u-46eb6c82">
                           {(() => {
                             const s = activeSuburb as any
                             const constr = s.constructionSqkm || 0
@@ -1678,33 +1638,33 @@ function App() {
                               <>
                                 {/* Subdivision Potential Gauge */}
                                 <div style={{ background: potentialBg, border: `1px solid ${potentialColor}33`, padding: '14px', borderRadius: '10px' }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>✂️ Subdivision Potential</span>
-                                    <span style={{ fontWeight: 700, fontSize: '1rem', color: potentialColor }}>{subdiv}</span>
+                                  <div className="u-85844839">
+                                    <span className="u-11056260">✂️ Subdivision Potential</span>
+                                    <span className="u-0c4c20bd" style={{color: potentialColor}}>{subdiv}</span>
                                   </div>
-                                  <div style={{ height: '8px', borderRadius: '4px', background: 'rgba(15,23,42,0.03)', overflow: 'hidden' }}>
+                                  <div className="u-4de68730">
                                     <div style={{ width: `${potentialPct}%`, height: '100%', borderRadius: '4px', background: `linear-gradient(90deg, ${potentialColor}88, ${potentialColor})`, transition: 'width 0.5s ease' }} />
                                   </div>
                                 </div>
 
                                 {/* DA Precedent & Approvals */}
-                                <div style={{ display: 'grid', gridTemplateColumns: minLot ? '1fr 1fr' : '1fr', gap: '10px' }}>
-                                  <div style={{ background: 'rgba(15,23,42,0.015)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Approved DAs (12mo)</div>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: approvedCount > 0 ? '#10b981' : 'var(--text-secondary)' }}>
+                                <div className="u-ae7865f2" style={{gridTemplateColumns: minLot ? '1fr 1fr' : '1fr'}}>
+                                  <div className="u-c64713d4">
+                                    <div className="u-4101d4bb">Approved DAs (12mo)</div>
+                                    <div className="u-febb6665" style={{color: approvedCount > 0 ? '#10b981' : 'var(--text-secondary)'}}>
                                       {approvedCount > 0 ? approvedCount : '—'}
                                     </div>
-                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                    <div className="u-0f5cef51">
                                       {approvedCount > 0 ? 'subdivisions' : 'no data'}
                                     </div>
                                   </div>
                                   {minLot && (
-                                    <div style={{ background: 'rgba(15,23,42,0.015)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
-                                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Min Lot Size</div>
-                                      <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                                        {minLot}<span style={{ fontSize: '0.8rem', fontWeight: 400 }}> sqm</span>
+                                    <div className="u-c64713d4">
+                                      <div className="u-4101d4bb">Min Lot Size</div>
+                                      <div className="u-08e5312b">
+                                        {minLot}<span className="u-18bf9285"> sqm</span>
                                       </div>
-                                      <div style={{ fontSize: '0.8rem', color: approvedCount > 0 ? '#10b981' : '#f59e0b', marginTop: '2px' }}>
+                                      <div className="u-4d170586" style={{color: approvedCount > 0 ? '#10b981' : '#f59e0b'}}>
                                         {approvedCount > 0 ? '✓ real precedent' : 'proxy estimate'}
                                       </div>
                                     </div>
@@ -1713,34 +1673,34 @@ function App() {
 
                                 {/* Lot Size Comparison Bar */}
                                 {minLot && avgBlock && (
-                                  <div style={{ background: 'rgba(15,23,42,0.015)', padding: '14px', borderRadius: '8px' }}>
-                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px' }}>
+                                  <div className="u-55f14def">
+                                    <div className="u-45fc650f">
                                       📐 Lot Size Comparison
                                     </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <div className="u-6597c4ce">
                                       {/* Min lot bar */}
                                       <div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '3px' }}>
-                                          <span style={{ color: 'var(--text-secondary)' }}>Min Approved Lot</span>
-                                          <span style={{ fontWeight: 600 }}>{minLot} sqm</span>
+                                        <div className="u-a59fdd48">
+                                          <span className="u-c7477801">Min Approved Lot</span>
+                                          <span className="u-e0cfe6f3">{minLot} sqm</span>
                                         </div>
-                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(15,23,42,0.03)', overflow: 'hidden' }}>
+                                        <div className="u-1f2d01a9">
                                           <div style={{ width: `${Math.min((minLot / Math.max(avgBlock, minLot)) * 100, 100)}%`, height: '100%', borderRadius: '5px', background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }} />
                                         </div>
                                       </div>
                                       {/* Avg block bar */}
                                       <div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '3px' }}>
-                                          <span style={{ color: 'var(--text-secondary)' }}>Avg Block Size</span>
-                                          <span style={{ fontWeight: 600 }}>{avgBlock} sqm</span>
+                                        <div className="u-a59fdd48">
+                                          <span className="u-c7477801">Avg Block Size</span>
+                                          <span className="u-e0cfe6f3">{avgBlock} sqm</span>
                                         </div>
-                                        <div style={{ height: '10px', borderRadius: '5px', background: 'rgba(15,23,42,0.03)', overflow: 'hidden' }}>
-                                          <div style={{ width: '100%', height: '100%', borderRadius: '5px', background: 'linear-gradient(90deg, #3b82f6, #6366f1)' }} />
+                                        <div className="u-1f2d01a9">
+                                          <div className="u-c3407319" />
                                         </div>
                                       </div>
                                     </div>
                                     {avgBlock >= minLot * 2 && (
-                                      <div style={{ marginTop: '10px', fontSize: '0.72rem', color: '#10b981', background: 'rgba(16,185,129,0.06)', padding: '8px 10px', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.15)' }}>
+                                      <div className="u-857f2895">
                                         💡 Avg block is {(avgBlock / minLot).toFixed(1)}× the minimum lot — high subdivision feasibility
                                       </div>
                                     )}
@@ -1749,41 +1709,41 @@ function App() {
 
                                 {/* Building Approvals */}
                                 {bldApprovals != null && (
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(15,23,42,0.015)', borderRadius: '8px' }}>
-                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🏗️ Building Approvals (12mo)</span>
-                                    <span style={{ color: bldApprovals > 0 ? 'var(--accent-cyan)' : 'var(--text-secondary)', fontWeight: 700, fontSize: '1.1rem' }}>{bldApprovals}</span>
+                                  <div className="u-cc72d3ab">
+                                    <span className="u-f3d28ad1">🏗️ Building Approvals (12mo)</span>
+                                    <span className="u-b6872c2a" style={{color: bldApprovals > 0 ? 'var(--accent-cyan)' : 'var(--text-secondary)'}}>{bldApprovals}</span>
                                   </div>
                                 )}
                                   
                                 {total === 0 && bldCount == null && !minLot && !avgBlock && (
-                                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', textAlign: 'center', display: 'block' }}>No development data available for this suburb</span>
+                                  <span className="u-c4f34b4b">No development data available for this suburb</span>
                                 )}
                                   
                                 {total > 0 && (
-                                  <div style={{ background: 'rgba(15,23,42,0.015)', padding: '14px', borderRadius: '8px' }}>
-                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.5px' }}>
+                                  <div className="u-55f14def">
+                                    <div className="u-a3f91f62">
                                       🗺️ Land Use Within 2.5km ({total.toFixed(3)} km²)
                                     </div>
-                                    <div style={{ display: 'flex', height: '18px', borderRadius: '9px', overflow: 'hidden' }}>
-                                      {constr > 0 && <div title={`Construction: ${constr.toFixed(3)} km²`} style={{ flex: constr, backgroundColor: '#ef4444', minWidth: '2px' }} />}
-                                      {brown > 0 && <div title={`Brownfield: ${brown.toFixed(3)} km²`} style={{ flex: brown, backgroundColor: '#f59e0b', minWidth: '2px' }} />}
-                                      {green > 0 && <div title={`Greenfield: ${green.toFixed(3)} km²`} style={{ flex: green, backgroundColor: '#10b981', minWidth: '2px' }} />}
+                                    <div className="u-b7a1de0b">
+                                      {constr > 0 && <div title={`Construction: ${constr.toFixed(3)} km²`} className="u-908acfd2" style={{flex: constr}} />}
+                                      {brown > 0 && <div title={`Brownfield: ${brown.toFixed(3)} km²`} className="u-7e922fad" style={{flex: brown}} />}
+                                      {green > 0 && <div title={`Greenfield: ${green.toFixed(3)} km²`} className="u-f45953b3" style={{flex: green}} />}
                                     </div>
-                                    <div style={{ display: 'flex', gap: '12px', marginTop: '6px', flexWrap: 'wrap' }}>
-                                      {constr > 0 && <span style={{ fontSize: '0.68rem', color: '#ef4444' }}>🔴 Construction {constr.toFixed(3)} km²</span>}
-                                      {brown > 0 && <span style={{ fontSize: '0.68rem', color: '#f59e0b' }}>🟡 Brownfield {brown.toFixed(3)} km²</span>}
-                                      {green > 0 && <span style={{ fontSize: '0.68rem', color: '#10b981' }}>🟢 Greenfield {green.toFixed(3)} km²</span>}
+                                    <div className="u-dcda70d0">
+                                      {constr > 0 && <span className="u-bfead528">🔴 Construction {constr.toFixed(3)} km²</span>}
+                                      {brown > 0 && <span className="u-0ce679a0">🟡 Brownfield {brown.toFixed(3)} km²</span>}
+                                      {green > 0 && <span className="u-b5e3c3ba">🟢 Greenfield {green.toFixed(3)} km²</span>}
                                     </div>
                                   </div>
                                 )}
                                 {bldCount != null && bldCount > 0 && (
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(15,23,42,0.015)', borderRadius: '8px' }}>
-                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>🔨 Buildings Under Construction</span>
-                                    <span style={{ color: 'var(--warning)', fontWeight: 700, fontSize: '1.1rem' }}>{bldCount}</span>
+                                  <div className="u-cc72d3ab">
+                                    <span className="u-f3d28ad1">🔨 Buildings Under Construction</span>
+                                    <span className="u-78377f03">{bldCount}</span>
                                   </div>
                                 )}
                                 {bldCount != null && bldCount === 0 && total > 0 && (
-                                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'center', padding: '8px' }}>
+                                  <div className="u-8d08922a">
                                     No active building construction detected
                                   </div>
                                 )}
@@ -1796,48 +1756,48 @@ function App() {
                   </div>
 
                   {/* PANEL C: Live Listings Feed & Development Potential */}
-                  <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'listings' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'listings' }}>
-                    <h3 style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-1)', paddingBottom: '10px' }}>Evidence Feed & Development Potential</h3>
-                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                      <div style={{ flex: '2 1 400px', background: 'rgba(15,23,42,0.01)', padding: '15px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto' }}>
-                        <h4 style={{ color: 'var(--accent-purple)', marginBottom: '10px' }}>💰 Recent Comparable Sales</h4>
+                  <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'listings' ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'listings' }}>
+                    <h3 className="u-d5c2d613">Evidence Feed & Development Potential</h3>
+                    <div className="u-8f5d5c7e">
+                      <div className="u-c34a8700">
+                        <h4 className="u-2a460efc">💰 Recent Comparable Sales</h4>
                         {activeSuburb && (activeSuburb as any).salesSummary && ((activeSuburb as any).salesSummary as any[]).length > 0 ? (
                           ((activeSuburb as any).salesSummary as any[]).map((s: any, i: number) => (
-                            <div key={i} style={{ background: 'rgba(15,23,42,0.02)', padding: '12px', borderRadius: '8px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div key={i} className="u-7e3191b4">
                               <div>
-                                <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{s.address || `Comparable Sale ${i+1}`}</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                                <div className="u-2bdaffa6">{s.address || `Comparable Sale ${i+1}`}</div>
+                                <div className="u-fa681d48">
                                   {s.beds ? `${s.beds} Bed` : ''}{s.baths ? ` / ${s.baths} Bath` : ''}{s.type ? ` • ${s.type}` : ''} 
-                                  <span style={{ margin: '0 8px', color: 'var(--text-tertiary)' }}>|</span> 
+                                  <span className="u-daf545a8">|</span> 
                                   Sold {s.saleDate || 'Recently'}
                                 </div>
                               </div>
-                              <div style={{ color: '#10b981', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                              <div className="u-d7c4af4d">
                                 {s.salePrice ? `$${s.salePrice.toLocaleString()}` : 'Price N/A'}
                               </div>
                             </div>
                           ))
                         ) : (
-                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No recent sales evidence available in database</div>
+                          <div className="u-8d12c3c6">No recent sales evidence available in database</div>
                         )}
                       </div>
-                      <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ background: 'rgba(15,23,42,0.01)', padding: '15px', borderRadius: '8px' }}>
-                          <h4 style={{ color: 'var(--accent-cyan)', marginBottom: '10px' }}>🏷️ Market Inventory</h4>
-                          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
-                            <div>For Sale (Est.): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).house?.stockOnMarket) || ((activeSuburb as any).houseStockOnMarket) || '—'}</strong></div>
-                            <div>Sold (12m): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).house?.sold12m)?.toLocaleString() || ((activeSuburb as any).houseSold12m)?.toLocaleString() || '—'}</strong></div>
-                            <div>Supply/Demand: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.supplyDemandRatio)?.toFixed(2) || ((activeSuburb as any).supplyDemandRatio)?.toFixed(2) || '—'}</strong></div>
+                      <div className="u-0f1ccee2">
+                        <div className="u-cb89a99b">
+                          <h4 className="u-5086da32">🏷️ Market Inventory</h4>
+                          <div className="u-f3b30b0d">
+                            <div>For Sale (Est.): <strong className="u-c154f6c6">{((activeSuburb as any).house?.stockOnMarket) || ((activeSuburb as any).houseStockOnMarket) || '—'}</strong></div>
+                            <div>Sold (12m): <strong className="u-c154f6c6">{((activeSuburb as any).house?.sold12m)?.toLocaleString() || ((activeSuburb as any).houseSold12m)?.toLocaleString() || '—'}</strong></div>
+                            <div>Supply/Demand: <strong className="u-c154f6c6">{((activeSuburb as any).market?.supplyDemandRatio)?.toFixed(2) || ((activeSuburb as any).supplyDemandRatio)?.toFixed(2) || '—'}</strong></div>
                           </div>
                         </div>
-                        <div style={{ background: 'rgba(15,23,42,0.01)', padding: '15px', borderRadius: '8px' }}>
-                          <h4 style={{ color: 'var(--warning)', marginBottom: '10px' }}>🏗️ Development & Social Context</h4>
-                          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
-                            <div>Social Housing Density: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).demographics?.socialHousingPct) !== undefined ? `${((activeSuburb as any).demographics?.socialHousingPct)}%` : '—'}</strong></div>
-                            <div>Public Housing Dwellings: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).demographics?.publicHousingDwellings) !== undefined ? ((activeSuburb as any).demographics?.publicHousingDwellings)?.toLocaleString() : '—'}</strong></div>
-                            <hr style={{ borderColor: 'var(--border-1)', margin: '10px 0' }} />
-                            <div>Approved Subdivisions (12m): <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.approvedSubdivisions12m) !== undefined ? ((activeSuburb as any).market?.approvedSubdivisions12m) : '—'}</strong></div>
-                            <div>Min Lot Size for Subdivision: <strong style={{ color: 'var(--text-primary)' }}>{((activeSuburb as any).market?.minApprovedSubdivisionSqm) ? `${((activeSuburb as any).market?.minApprovedSubdivisionSqm)} sqm` : '—'}</strong></div>
+                        <div className="u-cb89a99b">
+                          <h4 className="u-11046430">🏗️ Development & Social Context</h4>
+                          <div className="u-f3b30b0d">
+                            <div>Social Housing Density: <strong className="u-c154f6c6">{((activeSuburb as any).demographics?.socialHousingPct) !== undefined ? `${((activeSuburb as any).demographics?.socialHousingPct)}%` : '—'}</strong></div>
+                            <div>Public Housing Dwellings: <strong className="u-c154f6c6">{((activeSuburb as any).demographics?.publicHousingDwellings) !== undefined ? ((activeSuburb as any).demographics?.publicHousingDwellings)?.toLocaleString() : '—'}</strong></div>
+                            <hr className="u-903c557c" />
+                            <div>Approved Subdivisions (12m): <strong className="u-c154f6c6">{((activeSuburb as any).market?.approvedSubdivisions12m) !== undefined ? ((activeSuburb as any).market?.approvedSubdivisions12m) : '—'}</strong></div>
+                            <div>Min Lot Size for Subdivision: <strong className="u-c154f6c6">{((activeSuburb as any).market?.minApprovedSubdivisionSqm) ? `${((activeSuburb as any).market?.minApprovedSubdivisionSqm)} sqm` : '—'}</strong></div>
                           </div>
                         </div>
                       </div>
@@ -1845,9 +1805,9 @@ function App() {
                   </div>
 
                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
-                  <div style={{ marginTop: '20px', display: activeProfileSection === 'ai' ? 'block' : 'none' }}>
-                    <h3 style={{ marginBottom: '15px', color: 'var(--accent-cyan)' }}>🧠 AI Committee (Debate & Sentiment)</h3>
-                    <div style={{ padding: '20px' }} id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>
+                  <div className="u-e87e972e" style={{display: activeProfileSection === 'ai' ? 'block' : 'none'}}>
+                    <h3 className="u-6f328805">🧠 AI Committee (Debate & Sentiment)</h3>
+                    <div className="u-3e72e63f" id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>
                       <AIInsightPanel
                         activeSuburb={activeSuburb}
                         setActiveSuburb={setActiveSuburb}
@@ -1856,9 +1816,9 @@ function App() {
                   </div>
 
                   {/* K-Means Clustering: Similar Suburbs */}
-                  <div style={{ marginTop: '20px', display: activeProfileSection === 'pockets' ? 'block' : 'none' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <h4 style={{ fontSize: '0.95rem', color: 'var(--accent-cyan)' }}>🔍 Find Similar Suburbs (K-Means Clustering)</h4>
+                  <div className="u-e87e972e" style={{display: activeProfileSection === 'pockets' ? 'block' : 'none'}}>
+                    <div className="u-7d62c6a4">
+                      <h4 className="u-e1346169">🔍 Find Similar Suburbs (K-Means Clustering)</h4>
                       <button
                         disabled={isClustering}
                         onClick={async () => {
@@ -1875,40 +1835,37 @@ function App() {
                           } catch(e){ console.error(e) }
                           finally { setIsClustering(false) }
                         }}
-                        style={{
-                          padding: '6px 14px', background: 'var(--accent-cyan)', color: '#000',
-                          border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem'
-                        }}
+                        className="u-953a2ec0"
                       >
                         {isClustering ? 'Clustering...' : 'Find Similar'}
                       </button>
                     </div>
                     {clusteringResults && clusteringResults.length > 0 ? (
-                      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <div className="u-e9243ed9">
                         {clusteringResults.map((s: any, i: number) => (
-                          <div key={i} style={{ flex: '1 1 220px', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '12px', borderRadius: '8px' }}>
-                            <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{s.suburb}, {s.state}</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{s.postcode}</div>
-                            <div style={{ display: 'flex', gap: '8px', marginTop: '8px', fontSize: '0.8rem' }}>
+                          <div key={i} className="u-94a2bdf2">
+                            <div className="u-0fc8282b">{s.suburb}, {s.state}</div>
+                            <div className="u-a23e1378">{s.postcode}</div>
+                            <div className="u-7cf1b7ff">
                               <span>🏷️ ${Math.round(s.price).toLocaleString()}</span>
-                              <span style={{color:'var(--accent-cyan)'}}>{s.similarity}% match</span>
+                              <span className="u-d03afae3">{s.similarity}% match</span>
                             </div>
-                            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                            <div className="u-63071edf">
                               ICSEA {s.icsea} • Yield {s.yield}%
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : clusteringResults === null ? null : (
-                      <div style={{ padding: '10px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                      <div className="u-f8b8db12">
                         No similar cheaper suburbs found in this cluster.
                       </div>
                     )}
                   </div>
 
                    {/* INVESTMENT CATALYSTS — moved below AI Committee */}
-                   <div className="highlights-section" style={{ marginTop: '20px', display: activeProfileSection === 'risk' ? 'block' : 'none' }} {...{ [SECTION_ATTR]: 'risk' }}>
-                     <h3 style={{ marginBottom: '15px', borderBottom: '1px solid var(--border-1)', paddingBottom: '10px' }}>Investment Catalysts</h3>
+                   <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'risk' ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'risk' }}>
+                     <h3 className="u-d5c2d613">Investment Catalysts</h3>
                      <ul className="highlights-list">
                        {activeSuburb.highlights && activeSuburb.highlights.length > 0 && !activeSuburb.highlights.every((h: string) => h.includes('N/A') || h.includes('Data Unavailable') || h.includes('generated') || h.includes('Pending')) ? (
                          activeSuburb.highlights
@@ -1917,7 +1874,7 @@ function App() {
                              <li key={index}>{highlight}</li>
                            ))
                        ) : (
-                         <li style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Run AI Committee above to generate investment catalysts for this suburb.</li>
+                         <li className="u-05cf9b90">Run AI Committee above to generate investment catalysts for this suburb.</li>
                        )}
                      </ul>
                    </div>
@@ -1929,25 +1886,25 @@ function App() {
                   )}
 
                   {activeSuburb.schools && activeSuburb.schools.length > 0 && (
-                    <div className="schools-section" style={{ display: activeProfileSection === 'infrastructure' ? 'block' : 'none', marginTop: '20px' }}>
+                    <div className="schools-section u-e87e972e" style={{display: activeProfileSection === 'infrastructure' ? 'block' : 'none'}}>
                       {/* 5. School Summary Banner */}
-                      <div style={{ padding: '16px 20px', marginBottom: '20px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div className="u-0c36bba7">
                         <div>
-                          <h4 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+                          <h4 className="u-9832b3c8">
                             {activeSuburb.schools?.length || 0} Schools in {activeSuburb.name}
                           </h4>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                          <div className="u-1b947f92">
                             Top-ranking school: {[...activeSuburb.schools].sort((a,b)=>((b as any).icsea||0)-((a as any).icsea||0))[0]?.name || 'N/A'}
                           </div>
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
+                        <div className="u-f66ceb1f">
+                          <div className="u-c9785778">
                             {(() => {
                               const avgIcsea = activeSuburb.schools!.reduce((acc,s)=>acc+((s as any).icsea||0),0) / (activeSuburb.schools!.length || 1);
                               return avgIcsea > 1100 ? 'A+ | Top 10%' : avgIcsea > 1050 ? 'A | Top 25%' : avgIcsea > 1000 ? 'B+ | Above Avg' : 'B | Average';
                             })()}
                           </div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Suburb Average (ICSEA)</div>
+                          <div className="u-a23e1378">Suburb Average (ICSEA)</div>
                         </div>
                       </div>
                       {((() => {
@@ -1959,13 +1916,13 @@ function App() {
                               <div className="school-table-group">
                                 <h3 
                                   onClick={() => setShowPrimarySchools(!showPrimarySchools)}
-                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(15,23,42,0.02)', padding: '10px', borderRadius: '8px' }}
+                                  className="u-398ade49"
                                 >
                                   <span>🏫 Primary Schools ({primaries.length})</span>
-                                  <span style={{ fontSize: '0.8rem' }}>{showPrimarySchools ? '▲ Hide' : '▼ Show'}</span>
+                                  <span className="u-c0024dfb">{showPrimarySchools ? '▲ Hide' : '▼ Show'}</span>
                                 </h3>
                                 {showPrimarySchools && (
-                                  <div className="table-responsive" style={{ marginTop: '10px' }}>
+                                  <div className="table-responsive u-66b0f03a">
                                     <table className="schools-table">
                                       <thead>
                                         <tr>
@@ -1984,7 +1941,7 @@ function App() {
                                             <td data-label="Score">
                                               <div className="score-bar-wrapper">
                                                 <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
-                                                <span>{school.score}/100 <span style={{fontSize: '0.7rem', color: '#94a3b8'}}>(Est.)</span></span>
+                                                <span>{school.score}/100 <span className="u-abd7f7c4">(Est.)</span></span>
                                               </div>
                                             </td>
                                           </tr>
@@ -1996,16 +1953,16 @@ function App() {
                               </div>
                             )}
                             {secondaries.length > 0 && (
-                              <div className="school-table-group" style={{ marginTop: '15px' }}>
+                              <div className="school-table-group u-791db4a4">
                                 <h3 
                                   onClick={() => setShowSecondarySchools(!showSecondarySchools)}
-                                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(15,23,42,0.02)', padding: '10px', borderRadius: '8px' }}
+                                  className="u-398ade49"
                                 >
                                   <span>🎓 Secondary Schools ({secondaries.length})</span>
-                                  <span style={{ fontSize: '0.8rem' }}>{showSecondarySchools ? '▲ Hide' : '▼ Show'}</span>
+                                  <span className="u-c0024dfb">{showSecondarySchools ? '▲ Hide' : '▼ Show'}</span>
                                 </h3>
                                 {showSecondarySchools && (
-                                  <div className="table-responsive" style={{ marginTop: '10px' }}>
+                                  <div className="table-responsive u-66b0f03a">
                                     <table className="schools-table">
                                       <thead>
                                         <tr>
@@ -2028,7 +1985,7 @@ function App() {
                                             <td data-label="Score">
                                               <div className="score-bar-wrapper">
                                                 <div className="score-bar-bg"><div className="score-bar-fill" style={{ width: `${school.score}%`, background: school.score >= 90 ? 'var(--success)' : school.score >= 80 ? 'var(--accent-cyan)' : 'var(--warning)' }}></div></div>
-                                                <span>{school.score}/100 <span style={{fontSize: '0.7rem', color: '#94a3b8'}}>(Est.)</span></span>
+                                                <span>{school.score}/100 <span className="u-abd7f7c4">(Est.)</span></span>
                                               </div>
                                             </td>
                                           </tr>
@@ -2083,9 +2040,9 @@ function App() {
           </main>
         </div>
       )}
-      <footer style={{ marginTop: '40px', padding: '20px', fontSize: '0.75rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--border)', textAlign: 'center', lineHeight: '1.5' }}>
+      <footer className="u-864cf9fe">
         <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational purposes only and does not constitute financial, investment, or real estate advice. Forecasts are statistical models based on historical data and do not guarantee future performance.</p>
-        <p style={{ marginTop: '10px' }}><strong>State Data Attributions:</strong> 
+        <p className="u-66b0f03a"><strong>State Data Attributions:</strong> 
           (NSW) Contains property sales information provided under licence from the Valuer General NSW. 
           (VIC) The State of Victoria owns the copyright in the Property Sales Data and reproduction without consent will constitute a breach of the Copyright Act 1968 (Cth). 
           (QLD) Based on or contains data provided by the State of Queensland (Department of Resources).

@@ -101,17 +101,17 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
     <>
       <MarketCycleClock suburb={suburb} />
       
-      <div className="glass-card" style={{ padding: '16px', marginBottom: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <h3 style={{ margin: 0, fontSize: '0.95rem' }}>Market Indicators</h3>
-        <span style={{ fontSize: '0.8rem', background: 'rgba(245,158,11,0.12)', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px' }}>
+      <div className="glass-card u-ca1a383a">
+      <div className="u-47a97aa0">
+        <h3 className="u-b5fda34d">Market Indicators</h3>
+        <span className="u-c140bfd4">
           Investor View
         </span>
       </div>
-      <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+      <p className="u-547cbd02">
         Each indicator contributes to the capital-growth picture. Green = tailwind (positive signal). Red = headwind.
       </p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
+      <div className="u-aa1ef56a">
         {indicators.map(ind => {
           const borderColor = ind.key_metric
             ? 'var(--accent-cyan)'
@@ -129,18 +129,18 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
                 gap: '3px',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+              <div className="u-4beeb81e">
+                <span className="u-65b450cb">
                   {ind.label}
                 </span>
-                {ind.trend === 'up' && <span style={{ color: '#10b981', fontSize: '0.75rem' }}>▲</span>}
-                {ind.trend === 'down' && <span style={{ color: '#ef4444', fontSize: '0.75rem' }}>▼</span>}
-                {ind.trend === 'neutral' && <span style={{ color: '#f59e0b', fontSize: '0.75rem' }}>◆</span>}
+                {ind.trend === 'up' && <span className="u-3d3df2b8">▲</span>}
+                {ind.trend === 'down' && <span className="u-b4891944">▼</span>}
+                {ind.trend === 'neutral' && <span className="u-f294072d">◆</span>}
               </div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <div className="u-5dcc8599">
                 {ind.value}
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+              <div className="u-fc193050">
                 {ind.impact}
               </div>
             </div>

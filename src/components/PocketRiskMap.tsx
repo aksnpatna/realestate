@@ -68,7 +68,7 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
 
   if (loading) {
     return (
-      <div className="glass-card" style={{ padding: '16px', marginBottom: '16px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+      <div className="glass-card u-475af511">
         Loading pocket risk analysis...
       </div>
     )
@@ -76,7 +76,7 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
 
   if (error || !data) {
     return (
-      <div className="glass-card" style={{ padding: '16px', marginBottom: '16px', textAlign: 'center', color: '#ef4444' }}>
+      <div className="glass-card u-db7aa9c1">
         Pocket risk data unavailable: {error || 'No data'}
       </div>
     )
@@ -92,25 +92,19 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
   }
 
   return (
-    <div className="glass-card" style={{ padding: '16px', marginBottom: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <h3 style={{ margin: 0, fontSize: '0.95rem' }}>
+    <div className="glass-card u-ca1a383a">
+      <div className="u-47a97aa0">
+        <h3 className="u-b5fda34d">
           🗺️ Where to look inside {data.suburb_name}
         </h3>
         <span
-          style={{
-            fontSize: '0.75rem',
-            padding: '2px 8px',
-            borderRadius: '4px',
-            background: 'rgba(245,158,11,0.12)',
-            color: '#f59e0b',
-          }}
+          className="u-f505939c"
         >
           {data.precision.toUpperCase()} approximation
         </span>
       </div>
 
-      <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+      <p className="u-8212ad41">
         {data.precision_note}
       </p>
 
@@ -129,10 +123,10 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
             borderRadius: '8px',
           }}
         >
-          <h4 style={{ margin: '0 0 6px 0', fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+          <h4 className="u-87aec9b6">
             ⚠ Avoid Advisory
           </h4>
-          <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+          <ul className="u-3d7a0d31">
             {data.avoid_advisory.map((item, i) => (
               <li key={i}>{item}</li>
             ))}
@@ -141,7 +135,7 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
       )}
 
       {/* Layer Toggles */}
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
+      <div className="u-652a39d3">
         {data.features.map(f => (
           <button
             key={f.properties.layer}
@@ -184,8 +178,8 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
               marginBottom: '6px',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <div className="u-4beeb81e">
+              <span className="u-5cc8fb11">
                 {f.properties.label}
               </span>
               <span
@@ -200,20 +194,20 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
                 {f.properties.severity.toUpperCase()}
               </span>
             </div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)', margin: '4px 0' }}>
+            <div className="u-efe24597">
               {f.properties.value}
             </div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
+            <div className="u-62688933">
               {f.properties.impact}
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '4px' }}>
+            <div className="u-7adad620">
               Source: {f.properties.source}
             </div>
           </div>
         )
       })}
 
-      <div style={{ marginTop: '10px', fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+      <div className="u-bc2f819d">
         This analysis is decision-aiding guidance, not a property-level verdict. Verify with due diligence.
       </div>
     </div>

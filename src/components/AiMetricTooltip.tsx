@@ -37,54 +37,26 @@ export default function AiMetricTooltip({ metricName, contextStr, children }: Ai
   };
 
   return (
-    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+    <div className="u-0e44c33d">
       {children}
       <button 
         onClick={handleClick}
         title={`AI Explanation for ${metricName}`}
-        style={{ 
-          background: 'var(--accent)', 
-          color: 'black', 
-          border: 'none', 
-          borderRadius: '50%', 
-          width: '20px', 
-          height: '20px', 
-          fontSize: '12px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontWeight: 'bold',
-          padding: 0
-        }}
+        className="u-2b48cf67"
       >
         ?
       </button>
 
       {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          marginTop: '8px',
-          width: '250px',
-          background: '#1e293b',
-          border: '1px solid var(--accent)',
-          padding: '12px',
-          borderRadius: '8px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.8)',
-          zIndex: 9999,
-          color: 'white'
-        }}>
-          <div style={{ fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '4px', display: 'flex', justifyContent: 'space-between' }}>
+        <div className="u-591134d7">
+          <div className="u-f55dc2cc">
             <span>🤖 AI Insight</span>
-            <button onClick={() => setIsOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>×</button>
+            <button onClick={() => setIsOpen(false)} className="u-ae9cf90d">×</button>
           </div>
           {loading ? (
-            <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Asking AI...</div>
+            <div className="u-341d7b94">Asking AI...</div>
           ) : (
-            <div style={{ fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>{explanation}</div>
+            <div className="u-6c4f7c02">{explanation}</div>
           )}
         </div>
       )}

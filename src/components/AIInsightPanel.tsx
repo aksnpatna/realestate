@@ -176,49 +176,25 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
   const hasVerdict = !!suburb.aiVerdict
 
   return (
-    <div className="glass-card" style={{ 
-      marginTop: '20px', 
-      position: 'relative', 
-      overflow: 'hidden',
-      borderColor: 'var(--accent-cyan)',
-      boxShadow: '0 4px 20px rgba(2, 132, 199, 0.1)'
-    }}>
+    <div className="glass-card u-330b0d34">
       {/* Decorative gradient orb for AI feel */}
-      <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(2, 132, 199, 0.15) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+      <div className="u-db5288b0" />
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid var(--border-glass)', paddingBottom: '15px', position: 'relative', zIndex: 1 }}>
-        <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--accent-cyan)' }}>
+      <div className="u-9d364016">
+        <h3 className="u-6b179248">
           <span title="AI-powered analysis of market sentiment and investment potential">✨ AI Insights</span>
         </h3>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="u-ac734d21">
           <button
             onClick={() => setActiveTab('sentiment')}
-            style={{
-              padding: '6px 14px',
-              background: activeTab === 'sentiment' ? 'var(--accent-cyan)' : 'var(--bg-glass)',
-              color: activeTab === 'sentiment' ? '#000' : 'var(--text-primary)',
-              border: '1px solid var(--border-glass)',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: activeTab === 'sentiment' ? 'bold' : 'normal',
-              fontSize: '0.85rem',
-            }}
+            className="u-4f776c24" style={{background: activeTab === 'sentiment' ? 'var(--accent-cyan)' : 'var(--bg-glass)', color: activeTab === 'sentiment' ? '#000' : 'var(--text-primary)', fontWeight: activeTab === 'sentiment' ? 'bold' : 'normal'}}
             title="News-based market sentiment score (0-10)"
           >
             📰 News Sentiment
           </button>
           <button
             onClick={() => setActiveTab('committee')}
-            style={{
-              padding: '6px 14px',
-              background: activeTab === 'committee' ? 'var(--accent-purple)' : 'var(--bg-glass)',
-              color: activeTab === 'committee' ? '#fff' : 'var(--text-primary)',
-              border: '1px solid var(--border-glass)',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontWeight: activeTab === 'committee' ? 'bold' : 'normal',
-              fontSize: '0.85rem',
-            }}
+            className="u-4f776c24" style={{background: activeTab === 'committee' ? 'var(--accent-purple)' : 'var(--bg-glass)', color: activeTab === 'committee' ? '#fff' : 'var(--text-primary)', fontWeight: activeTab === 'committee' ? 'bold' : 'normal'}}
             title="Multi-agent investment committee (Bull/Bear/Urban Planner)"
           >
             🏛️ Committee
@@ -227,22 +203,11 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
       </div>
 
       {error && (
-        <div style={{
-          padding: '12px 16px',
-          background: 'rgba(239,68,68,0.08)',
-          border: '1px solid rgba(239,68,68,0.3)',
-          borderRadius: '8px',
-          color: '#ef4444',
-          fontSize: '0.9rem',
-          marginBottom: '15px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
+        <div className="u-ae550027">
           <span>⚠ {error}</span>
           <button
             onClick={() => setError(null)}
-            style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}
+            className="u-3aec070c"
           >
             ✕
           </button>
@@ -250,22 +215,15 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
       )}
 
       {aiDisabled && (
-        <div style={{
-          padding: '16px',
-          background: 'rgba(234,179,8,0.1)',
-          border: '1px solid rgba(234,179,8,0.3)',
-          borderRadius: '8px',
-          marginBottom: '15px',
-          textAlign: 'center',
-        }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: '6px' }}>🔧</div>
-          <div style={{ color: '#eab308', fontWeight: 600, marginBottom: '4px' }}>AI Insights Temporarily Unavailable</div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+        <div className="u-433be8e1">
+          <div className="u-70c8c981">🔧</div>
+          <div className="u-5a43b74e">AI Insights Temporarily Unavailable</div>
+          <div className="u-8d12c3c6">
             The AI engine is undergoing maintenance. Cached results (shown below if available) may be up to 10 minutes old.
           </div>
           <button 
             onClick={() => activeTab === 'sentiment' ? handleSentiment() : handleCommittee()} 
-            style={{ marginTop: '10px', padding: '6px 16px', background: '#eab308', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
+            className="u-35ba7bb0">
             Retry Connection
           </button>
         </div>
@@ -273,23 +231,9 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
 
       {/* Loading spinner with step messages */}
       {((isAnalyzingAI && analysisStep !== 'idle') || isAnalyzingNews) && (
-        <div style={{
-          padding: '20px',
-          textAlign: 'center',
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border-glass)',
-          borderRadius: '8px',
-          marginBottom: '15px',
-        }}>
-          <div style={{
-            width: '32px', height: '32px',
-            border: '3px solid var(--border-glass)',
-            borderTopColor: 'var(--accent-cyan)',
-            borderRadius: '50%',
-            animation: 'spin 0.8s linear infinite',
-            margin: '0 auto 10px',
-          }} />
-          <div style={{ color: 'var(--accent-cyan)', fontSize: '0.9rem', fontWeight: 500 }}>
+        <div className="u-13741b25">
+          <div className="u-5d180d25" />
+          <div className="u-336d1c8d">
             {isAnalyzingNews ? 'Fetching news and analyzing sentiment...' : stepMessages[analysisStep]}
           </div>
         </div>
@@ -297,59 +241,41 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
 
       {/* News Sentiment Tab */}
       {activeTab === 'sentiment' && (
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '20px', borderRadius: '8px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+        <div className="u-88cefd40">
+          <div className="u-2a64d94f">
             <div>
-              <span style={{ fontWeight: 600, fontSize: '1rem' }}>Market Sentiment Score</span>
-              <span title="0-10 score derived from live news media. ≥7 Bullish, 4-6 Neutral, <4 Bearish. Uses AI transformer for accuracy with keyword fallback." style={{ color: 'var(--text-secondary)', marginLeft: '6px', cursor: 'help', fontSize: '0.9rem' }}>ⓘ</span>
+              <span className="u-a8922ee9">Market Sentiment Score</span>
+              <span title="0-10 score derived from live news media. ≥7 Bullish, 4-6 Neutral, <4 Bearish. Uses AI transformer for accuracy with keyword fallback." className="u-9b96534b">ⓘ</span>
             </div>
             <button
               disabled={isAnalyzingNews}
               onClick={handleSentiment}
-              style={{
-                background: isAnalyzingNews ? 'var(--bg-glass)' : 'var(--accent-cyan)',
-                color: isAnalyzingNews ? 'var(--text-secondary)' : '#000',
-                border: 'none',
-                padding: '6px 14px',
-                borderRadius: '4px',
-                cursor: isAnalyzingNews ? 'not-allowed' : 'pointer',
-                fontSize: '0.85rem',
-                fontWeight: 'bold',
-              }}
+              className="u-93cbfad3" style={{background: isAnalyzingNews ? 'var(--bg-glass)' : 'var(--accent-cyan)', color: isAnalyzingNews ? 'var(--text-secondary)' : '#000', cursor: isAnalyzingNews ? 'not-allowed' : 'pointer'}}
             >
               {isAnalyzingNews ? 'Analyzing...' : hasSentiment ? 'Refresh Sentiment' : 'Analyze Live News'}
             </button>
           </div>
 
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '12px',
-          }}>
-            <div style={{
-              fontSize: '2.5rem', fontWeight: 800,
-              color: newsScore >= 7 ? '#10b981' : newsScore >= 4 ? 'var(--accent-cyan)' : '#ef4444',
-              minWidth: '80px',
-            }}>
+          <div className="u-ebf3e731">
+            <div className="u-ff49b83f" style={{color: newsScore >= 7 ? '#10b981' : newsScore >= 4 ? 'var(--accent-cyan)' : '#ef4444'}}>
               {hasSentiment ? `${newsScore}/10` : '—'}
             </div>
             <div>
-              <div style={{
-                fontSize: '1.1rem', fontWeight: 600,
-                color: newsScore >= 7 ? '#10b981' : newsScore >= 4 ? 'var(--text-primary)' : '#ef4444',
-              }}>
+              <div className="u-8092f1b8" style={{color: newsScore >= 7 ? '#10b981' : newsScore >= 4 ? 'var(--text-primary)' : '#ef4444'}}>
                 {suburb.metrics?.aiNewsSentiment || 'Run analysis'}
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+              <div className="u-fc193050">
                 {suburb.metrics?.aiNewsSummary || 'Click "Analyze Live News" to scan media for market sentiment'}
               </div>
             </div>
           </div>
 
           {/* Score bar visualization */}
-          <div style={{ marginTop: '15px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+          <div className="u-791db4a4">
+            <div className="u-3df7ab94">
               <span>Bearish (1-3)</span><span>Neutral (4-6)</span><span>Bullish (7-10)</span>
             </div>
-            <div style={{ height: '8px', background: 'var(--bg-glass)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div className="u-aeb0a61e">
               <div style={{
                 height: '100%',
                 width: `${hasSentiment ? (newsScore / 10) * 100 : 50}%`,
@@ -362,21 +288,14 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
 
           {/* Explanation tooltip */}
           {suburb.metrics?._newsExplanation && suburb.metrics._newsExplanation.length > 0 && (
-            <div style={{ marginTop: '10px', padding: '8px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'help' }}
+            <div className="u-83337499">
+              <span className="u-6f606600"
                     title="Top keywords driving this sentiment score">
                 ⓘ Why this score?
               </span>
-              <div style={{ display: 'flex', gap: '6px', marginTop: '6px', flexWrap: 'wrap' }}>
+              <div className="u-6c47f7df">
                 {suburb.metrics._newsExplanation.map((exp: any, i: number) => (
-                  <span key={i} style={{
-                    padding: '2px 8px',
-                    background: exp.sentiment === 'positive' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
-                    color: exp.sentiment === 'positive' ? '#10b981' : '#ef4444',
-                    borderRadius: '4px',
-                    fontSize: '0.7rem',
-                    fontWeight: 600,
-                  }}>
+                  <span key={i} className="u-8f3c2907" style={{background: exp.sentiment === 'positive' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', color: exp.sentiment === 'positive' ? '#10b981' : '#ef4444'}}>
                     {exp.token} ({exp.occurrences})
                   </span>
                 ))}
@@ -389,84 +308,69 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
       {/* Investment Committee Tab */}
       {activeTab === 'committee' && (
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-            <span style={{ fontWeight: 600, fontSize: '1rem' }}>
+          <div className="u-2a64d94f">
+            <span className="u-a8922ee9">
               Multi-Agent Committee
-              <span title="Simulated investment committee with Bull, Bear, and Urban Planner agents debating the suburb's potential." style={{ color: 'var(--text-secondary)', marginLeft: '6px', cursor: 'help', fontSize: '0.9rem' }}>ⓘ</span>
+              <span title="Simulated investment committee with Bull, Bear, and Urban Planner agents debating the suburb's potential." className="u-9b96534b">ⓘ</span>
             </span>
             <button
               disabled={isAnalyzingAI}
               onClick={handleCommittee}
-              style={{
-                padding: '8px 16px',
-                background: 'var(--accent-purple)',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: isAnalyzingAI ? 'not-allowed' : 'pointer',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-              }}
+              className="u-e88f821f" style={{cursor: isAnalyzingAI ? 'not-allowed' : 'pointer'}}
             >
               {isAnalyzingAI ? 'Convening...' : hasVerdict ? 'Refresh AI Committee' : 'Run AI Committee'}
             </button>
           </div>
 
           {hasVerdict ? (
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <div style={{ flex: '1 1 100%', background: 'var(--bg-card)', border: '1px solid var(--border-glass)', padding: '15px', borderRadius: '8px', marginBottom: '8px' }}>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>Consensus Verdict</div>
-                <div style={{
-                  fontWeight: 800, fontSize: '1.3rem',
-                  color: suburb.aiVerdict?.includes('BUY') ? '#10b981'
+            <div className="u-95149f3d">
+              <div className="u-41a509d4">
+                <div className="u-7f2c974e">Consensus Verdict</div>
+                <div className="u-9beee884" style={{color: suburb.aiVerdict?.includes('BUY') ? '#10b981'
                     : suburb.aiVerdict?.includes('SELL') ? '#ef4444'
-                    : 'var(--accent-cyan)',
-                }}>
+                    : 'var(--accent-cyan)'}}>
                   {suburb.aiVerdict}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
-                  Risk: <span style={{ fontWeight: 600, color: 'var(--warning)' }}>{suburb.aiRiskLevel || '—'}</span>
+                <div className="u-0532d2dc">
+                  Risk: <span className="u-6d7b5c0d">{suburb.aiRiskLevel || '—'}</span>
                   {suburb._riskAssessment && (
                     <>
                       {' • '}
-                      <span title="Monte Carlo scenario simulation (5,000 iterations) — model scenario only, not calibrated against historical outcomes" style={{ cursor: 'help', borderBottom: '1px dotted var(--text-secondary)' }}>
-                        Scenario Risk: <span style={{
-                          fontWeight: 700,
-                          color: suburb._riskAssessment.risk_rating === 'Low' ? '#10b981'
-                            : suburb._riskAssessment.risk_rating === 'Medium' ? '#eab308' : '#ef4444',
-                        }}>{suburb._riskAssessment.risk_rating}</span>
+                      <span title="Monte Carlo scenario simulation (5,000 iterations) — model scenario only, not calibrated against historical outcomes" className="u-fc3978f9">
+                        Scenario Risk: <span className="u-fdec1e77" style={{color: suburb._riskAssessment.risk_rating === 'Low' ? '#10b981'
+                            : suburb._riskAssessment.risk_rating === 'Medium' ? '#eab308' : '#ef4444'}}>{suburb._riskAssessment.risk_rating}</span>
                       </span>
                       {' '}(~{Math.round((suburb._riskAssessment.price_decline_scenario ?? suburb._riskAssessment.price_decline_probability ?? 0) * 100)}% price-decline scenario)
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                      <div className="u-76a5e5b1">
                         Illustrative simulated range midpoint: ${((suburb._riskAssessment.projected_range?.[1]) / 1000).toFixed(0)}k ({suburb._riskAssessment.expected_return}% illustrative scenario change) — model scenario only
                       </div>
                     </>
                   )}
                 </div>
               </div>
-              <div style={{ flex: '1 1 250px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '15px', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#10b981', marginBottom: '4px' }}>🐂 Bull — Anna</div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{suburb.aiBullView || 'Awaiting analysis'}</div>
+              <div className="u-5aa686c7">
+                <div className="u-012a45d4">🐂 Bull — Anna</div>
+                <div className="u-7eef0854">{suburb.aiBullView || 'Awaiting analysis'}</div>
               </div>
-              <div style={{ flex: '1 1 250px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '15px', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#ef4444', marginBottom: '4px' }}>🐻 Bear — Alex</div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{suburb.aiBearView || 'Awaiting analysis'}</div>
+              <div className="u-fc07ed5a">
+                <div className="u-7b3ea3b3">🐻 Bear — Alex</div>
+                <div className="u-7eef0854">{suburb.aiBearView || 'Awaiting analysis'}</div>
               </div>
-              <div style={{ flex: '1 1 250px', background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', padding: '15px', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#8b5cf6', marginBottom: '4px' }}>🏙️ Urban Planner</div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', maxHeight: '120px', overflowY: 'auto' }}>{suburb.aiUrbanView || 'Awaiting analysis'}</div>
+              <div className="u-004af4b0">
+                <div className="u-78bec1c5">🏙️ Urban Planner</div>
+                <div className="u-7eef0854">{suburb.aiUrbanView || 'Awaiting analysis'}</div>
               </div>
               {suburb.aiConsensus && (
-                <div style={{ flex: '1 1 100%', background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', padding: '15px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', marginBottom: '4px' }}>📋 Investor CEO Playbook</div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap', maxHeight: '200px', overflowY: 'auto' }}>{suburb.aiConsensus}</div>
+                <div className="u-c40cc6c3">
+                  <div className="u-3e341d2a">📋 Investor CEO Playbook</div>
+                  <div className="u-f89c33d9">{suburb.aiConsensus}</div>
                 </div>
               )}
               {suburb._policyWarnings?.length > 0 && (
-                <div style={{ flex: '1 1 100%', marginTop: '8px', padding: '12px', background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.75rem', color: '#eab308', fontWeight: 600, marginBottom: '6px' }}>⚠️ Policy & Regulatory Notices</div>
+                <div className="u-fa5c9d76">
+                  <div className="u-32a9a2b8">⚠️ Policy & Regulatory Notices</div>
                   {suburb._policyWarnings.map((w: any, i: number) => (
-                    <div key={i} style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', display: 'flex', gap: '6px' }}>
+                    <div key={i} className="u-428c07e0">
                       <span style={{ color: w.action === 'downgrade' ? '#ef4444' : '#eab308' }}>{w.action === 'downgrade' ? '🔴' : '🟡'}</span>
                       <span>{w.message}</span>
                     </div>
@@ -474,27 +378,19 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                 </div>
               )}
               {suburb._sourceSnippets?.length > 0 && (
-                <div style={{ flex: '1 1 100%', marginTop: '8px' }}>
+                <div className="u-85354bb0">
                   <button
                     onClick={() => setShowSources(!showSources)}
-                    style={{
-                      padding: '6px 12px',
-                      background: 'var(--bg-glass)',
-                      color: 'var(--text-secondary)',
-                      border: '1px solid var(--border-glass)',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem',
-                    }}
+                    className="u-35bda7af"
                   >
                     {showSources ? 'Hide' : 'Show'} Source Excerpts ({suburb._sourceSnippets.length})
                   </button>
                   {showSources && (
-                    <div style={{ marginTop: '10px', maxHeight: '200px', overflowY: 'auto' }}>
+                    <div className="u-40eb4f07">
                       {suburb._sourceSnippets.map((s: any, i: number) => (
-                        <div key={i} style={{ padding: '8px', marginBottom: '6px', background: 'rgba(255,255,255,0.03)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>{s.title}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{s.snippet}</div>
+                        <div key={i} className="u-793248e2">
+                          <div className="u-82b3824d">{s.title}</div>
+                          <div className="u-1dc906e0">{s.snippet}</div>
                         </div>
                       ))}
                     </div>
@@ -502,76 +398,57 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                 </div>
               )}
               {hasVerdict && (
-                <div style={{ flex: '1 1 100%', marginTop: '10px' }}>
+                <div className="u-070e66f1">
                   <button
                     onClick={() => setWhatIfOpen(!whatIfOpen)}
-                    style={{
-                      padding: '6px 12px',
-                      background: 'var(--bg-glass)',
-                      color: 'var(--accent-cyan)',
-                      border: '1px solid var(--border-glass)',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                    }}
+                    className="u-d3c7de87"
                   >
                     {whatIfOpen ? 'Hide' : '🔮 What-If Simulator'}
                   </button>
                   {whatIfOpen && (
-                    <div style={{ marginTop: '10px', padding: '12px', background: 'rgba(14,165,233,0.06)', border: '1px solid rgba(14,165,233,0.15)', borderRadius: '8px' }}>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                    <div className="u-baf8b056">
+                      <div className="u-23bfdb56">
                         Tweak market parameters and recalculate scenarios using backend model
                       </div>
-                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '10px' }}>
-                        <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                      <div className="u-512f28f0">
+                        <label className="u-dd4520e1">
                           Interest Rate {whatIfRate}%
                           <input type="range" min="2" max="12" step="0.25" value={whatIfRate}
                             onChange={e => { setWhatIfRate(Number(e.target.value)); setWhatIfResult(null); }}
-                            style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
+                            className="u-e6a447a2" />
                         </label>
-                        <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                        <label className="u-dd4520e1">
                           Rental Yield {whatIfYield}%
                           <input type="range" min="1" max="10" step="0.25" value={whatIfYield}
                             onChange={e => { setWhatIfYield(Number(e.target.value)); setWhatIfResult(null); }}
-                            style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
+                            className="u-e6a447a2" />
                         </label>
-                        <label style={{ flex: '1 1 150px', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                        <label className="u-dd4520e1">
                           Vacancy Rate {whatIfVacancy}%
                           <input type="range" min="0" max="15" step="0.5" value={whatIfVacancy}
                             onChange={e => { setWhatIfVacancy(Number(e.target.value)); setWhatIfResult(null); }}
-                            style={{ width: '100%', accentColor: 'var(--accent-cyan)' }} />
+                            className="u-e6a447a2" />
                         </label>
                       </div>
                       <button
                         onClick={handleWhatIf}
                         disabled={whatIfLoading}
-                        style={{
-                          padding: '6px 12px',
-                          background: 'var(--accent-cyan)',
-                          color: '#000',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: whatIfLoading ? 'not-allowed' : 'pointer',
-                          fontWeight: 600,
-                          fontSize: '0.8rem',
-                          marginBottom: '10px',
-                        }}
+                        className="u-3bb1fe51" style={{cursor: whatIfLoading ? 'not-allowed' : 'pointer'}}
                       >
                         {whatIfLoading ? 'Calculating...' : 'Run Scenario'}
                       </button>
                       {whatIfResult && (
-                        <div style={{ textAlign: 'center', padding: '10px', background: 'rgba(0,0,0,0.15)', borderRadius: '6px' }}>
-                          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Scenario Risk: </span>
-                          <span style={{ fontWeight: 800, fontSize: '1.1rem', color: whatIfResult.risk_rating === 'Low' ? '#10b981' : whatIfResult.risk_rating === 'Medium' ? '#eab308' : '#ef4444' }}>{whatIfResult.risk_rating}</span>
-                          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginLeft: '6px' }}>(~{Math.round((whatIfResult.price_decline_scenario || 0) * 100)}% estimated downside)</span>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                        <div className="u-6badb680">
+                          <span className="u-af9b3a94">Scenario Risk: </span>
+                          <span className="u-84151f52" style={{color: whatIfResult.risk_rating === 'Low' ? '#10b981' : whatIfResult.risk_rating === 'Medium' ? '#eab308' : '#ef4444'}}>{whatIfResult.risk_rating}</span>
+                          <span className="u-9ea11918">(~{Math.round((whatIfResult.price_decline_scenario || 0) * 100)}% estimated downside)</span>
+                          <div className="u-fa681d48">
                             {whatIfResult.calibration_note || 'Model scenario — not validated against historical outcomes'}
                           </div>
                         </div>
                       )}
                       {!whatIfResult && !whatIfLoading && (
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '8px' }}>
+                        <div className="u-786ad581">
                           Click "Run Scenario" to calculate using the backend risk model
                         </div>
                       )}
@@ -581,18 +458,11 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
               )}
             </div>
           ) : (
-            <div style={{
-              padding: '30px',
-              textAlign: 'center',
-              color: 'var(--text-secondary)',
-              background: 'var(--bg-card)',
-              borderRadius: '8px',
-              border: '1px solid var(--border-glass)',
-            }}>
-              <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🏛️</div>
+            <div className="u-632878cd">
+              <div className="u-a1831ecd">🏛️</div>
               Click "Run AI Committee" to convene the multi-agent investment committee.
               <br />
-              <span style={{ fontSize: '0.8rem' }}>3 agents will debate {activeSuburb.name}'s investment potential.</span>
+              <span className="u-c0024dfb">3 agents will debate {activeSuburb.name}'s investment potential.</span>
             </div>
           )}
         </div>
