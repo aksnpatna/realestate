@@ -133,8 +133,15 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
       });
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
-      if (data.status === 'needs_clarification' && data.intent?.clarification?.questions?.length) {
-        setPendingClarify({ ...data.intent, clarifyingQ: data.intent.clarification.questions[0] } as any);
+      if (data.status === 'needs_clarification') {
+        if (data.intent?.clarification?.questions?.length) {
+          setPendingClarify({ ...data.intent, clarifyingQ: data.intent.clarification.questions[0] } as any);
+        } else {
+          setPendingClarify({ 
+            ...data.intent, 
+            clarifyingQ: "I need a bit more context. Could you specify a state, city, or area (e.g., 'in QLD' or 'near Sydney') to help me narrow down the search?" 
+          } as any);
+        }
         setLoading(false);
         return;
       }
