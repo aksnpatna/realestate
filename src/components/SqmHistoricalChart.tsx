@@ -288,7 +288,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
           <h4 style={{ marginBottom: '1rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Rent Trends</h4>
           <div className="u-df6b2905">
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
+              <LineChart data={chartData.filter(d => d.houseRent != null || d.unitRent != null)} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
                 <XAxis 
                   dataKey="dateStr" 
@@ -356,7 +356,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
           <h4 style={{ marginBottom: '1rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Price Trends</h4>
           <div className="u-df6b2905">
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
+              <LineChart data={chartData.filter(d => d.housePrice != null || d.unitPrice != null)} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
                 <XAxis 
                   dataKey="dateStr" 
