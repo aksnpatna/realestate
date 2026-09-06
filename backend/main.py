@@ -1323,8 +1323,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "crimeRate": v3.crime_rate or 5000.0,
         # Content
         "highlights": v3.highlights or [],
-        "history": formatted_history if formatted_history else (v3.history_10yr or []),
-        "historyRent": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
+        "history10yr": formatted_history if formatted_history else (v3.history_10yr or []),
+        "historyRent10yr": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
         "historyPocNote": "Historical charts use existing dataset. Source rights and observation accuracy not yet validated for POC. Future forecasts not yet enabled.",
         "demographics": v3.demographics_detail or {},
         "demographicsDetailV3": v3.demographics_detail or {},

@@ -72,4 +72,5 @@ To reflect changes to `realestate.akstest.win`:
 ### Delta Changes Log
 *(Future changes to be recorded here)*
 - **2026-09-06**: Fixed memory exhaustion in `get_suburbs` endpoint by introducing a 500-record-per-state limit. Offloaded news sentiment generation to external LLM to save 2GB RAM. Added `SqmDashboard`, `MarketPulseTab`, and `SoldScatterplot` React components.
+- **2026-09-06 (UI Bug Fixes)**: Fixed empty/broken historical charts in the Market Tab (`SqmHistoricalChart.tsx`). Addressed missing `total` fields in SQM stock data by dynamically summing buckets (`r30`, `r60`, etc.), normalized inconsistent date formats between monthly/weekly data, and enabled `connectNulls` on Recharts to prevent disjointed datasets from rendering blank charts. Pushed changes to frontend docker container.
 

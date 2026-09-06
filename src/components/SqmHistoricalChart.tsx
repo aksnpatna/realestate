@@ -14,7 +14,13 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
     // Process all available data types
     const dataTypes = [
       { key: 'vacancy', dateFields: ['year', 'month'], process: (d: any) => ({ vacancyRate: parseFloat(d.vr) * 100 }) },
-      { key: 'stock', dateFields: ['year', 'month'], process: (d: any) => ({ stock: parseInt(d.total, 10) }) },
+      { key: 'stock', dateFields: ['year', 'month'], process: (d: any) => {
+        let total = parseInt(d.total, 10);
+        if (isNaN(total)) {
+          total = (parseInt(d.r30, 10) || 0) + (parseInt(d.r60, 10) || 0) + (parseInt(d.r90, 10) || 0) + (parseInt(d.r180, 10) || 0) + (parseInt(d.r180p, 10) || 0);
+        }
+        return { stock: total > 0 ? total : null };
+      } },
       { key: 'rents', dateFields: ['date'], process: (d: any) => ({
         houseRent: parseFloat(d.houses_all) || null,
         unitRent: parseFloat(d.units_all) || null
@@ -40,10 +46,15 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
           const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
           displayDate = `${monthNames[item.month - 1]} ${item.year}`;
         } else if (dateFields.includes('date')) {
-          date = new Date(item.date);
-          dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // Normalize to YYYY-MM format
-          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          displayDate = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+          const parts = item.date.split('-');
+          if (parts.length >= 2) {
+            dateStr = `${parts[0]}-${parts[1]}`;
+            date = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1);
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            displayDate = `${monthNames[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
+          } else {
+            return;
+          }
         } else {
           return;
         }
@@ -232,6 +243,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                     stroke={vacancyColor} 
                     strokeWidth={2.5}
                     dot={false}
+                    connectNulls={true}
                     activeDot={{ r: 5, strokeWidth: 2, fill: 'var(--bg-card)' }} 
                   />
                 )}
@@ -244,6 +256,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                     stroke="#8b5cf6" 
                     strokeWidth={2}
                     dot={false}
+                    connectNulls={true}
                     strokeDasharray="5 3"
                   />
                 )}
@@ -317,6 +330,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                       stroke="#10b981" 
                       strokeWidth={2}
                       dot={false}
+                      connectNulls={true}
                     />
                     <Line 
                       type="monotone" 
@@ -325,6 +339,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                       stroke="#f59e0b" 
                       strokeWidth={2}
                       dot={false}
+                      connectNulls={true}
                       strokeDasharray="5 3"
                     />
                   </>
@@ -383,6 +398,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                       stroke="#3b82f6" 
                       strokeWidth={2}
                       dot={false}
+                      connectNulls={true}
                     />
                     <Line 
                       type="monotone" 
@@ -391,6 +407,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                       stroke="#ec4899" 
                       strokeWidth={2}
                       dot={false}
+                      connectNulls={true}
                       strokeDasharray="5 3"
                     />
                   </>
