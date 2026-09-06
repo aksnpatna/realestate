@@ -18,8 +18,7 @@ interface AppShellProps {
 }
 
 const DESKTOP_TABS: { id: ViewId; label: string; icon: IconName }[] = [
-  { id: 'ask', label: 'Ask', icon: 'search' },
-  { id: 'buy-finder', label: 'Buy Finder', icon: 'home' },
+  { id: 'ask', label: 'Search', icon: 'search' },
   { id: 'heatmap', label: 'Heatmap', icon: 'map' },
   { id: 'profile', label: 'Suburb Profile', icon: 'chart' },
   { id: 'portfolio', label: 'Portfolio', icon: 'wallet' },
@@ -27,8 +26,7 @@ const DESKTOP_TABS: { id: ViewId; label: string; icon: IconName }[] = [
 ];
 
 const MOBILE_TABS: { id: string; label: string; icon: IconName; view?: ViewId }[] = [
-  { id: 'ask', label: 'Ask', icon: 'search', view: 'ask' },
-  { id: 'buy-finder', label: 'Buy', icon: 'home', view: 'buy-finder' },
+  { id: 'ask', label: 'Search', icon: 'search', view: 'ask' },
   { id: 'heatmap', label: 'Map', icon: 'map', view: 'heatmap' },
   { id: 'saved', label: 'Saved', icon: 'heart', view: 'saved' },
   { id: 'more', label: 'More', icon: 'more' },

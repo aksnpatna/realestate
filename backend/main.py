@@ -867,7 +867,7 @@ def get_suburbs(state: str = None, db: Session = Depends(get_db), current_user =
         v3_records = query.order_by(SuburbUIV3.name.asc()).all()
     else:
         # If no state is specified, return up to 50 suburbs per state (5 states = 250 total)
-        states = ['VIC', 'NSW', 'QLD', 'TAS', 'SA']
+        states = ['VIC', 'NSW', 'QLD', 'TAS', 'SA', 'WA', 'NT', 'ACT']
         v3_records = []
         for state_name in states:
             query = db.query(SuburbUIV3).filter(

@@ -325,7 +325,7 @@ function App() {
 
   const states = ['NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
   const stateSuburbs = useMemo(() =>
-    filteredSuburbsData.filter(s => s.state === activeState).sort((a, b) => a.name.localeCompare(b.name)),
+    filteredSuburbsData.filter(s => activeState === '' || s.state === activeState).sort((a, b) => a.name.localeCompare(b.name)),
     [activeState, filteredSuburbsData]
   )
 
@@ -718,6 +718,7 @@ function App() {
                   <label className="control-label">State</label>
                   <div className="custom-select-wrapper">
                     <select className="premium-select u-350d646d" value={activeState} onChange={(e) => setActiveState(e.target.value)}>
+                      <option value="">All areas</option>
                       {states.map(state => <option key={state} value={state}>{getStateName(state)}</option>)}
                     </select>
                   </div>

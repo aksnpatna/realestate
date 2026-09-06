@@ -194,6 +194,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                   yAxisId="right" 
                   orientation="right" 
                   stroke="var(--text-muted)" 
+                  domain={['auto', 'auto']}
                   tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(1)}k` : String(val)}
                   label={{ value: 'Active Listings', angle: 90, position: 'insideRight', offset: 5, fill: 'var(--text-muted)', fontSize: 11, style: { textAnchor: 'middle' } }}
@@ -285,10 +286,10 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
       {/* Rent Trends Chart */}
       {sqmData.rents ? (
         <div style={{ marginBottom: '2rem' }}>
-          <h4 style={{ marginBottom: '1rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Rent Trends</h4>
+          <h4 style={{ marginBottom: "1rem", fontSize: "0.95rem", color: "var(--text-secondary)" }}>Rent Trends {chartData.filter(d => d.houseRent != null || d.unitRent != null).length} items. First: {JSON.stringify(chartData.filter(d => d.houseRent != null || d.unitRent != null)[0])}</h4>
           <div className="u-df6b2905">
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={chartData.filter(d => d.houseRent != null || d.unitRent != null)} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
                 <XAxis 
                   dataKey="dateStr" 
@@ -300,6 +301,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                 />
                 <YAxis 
                   stroke="var(--text-muted)" 
+                  domain={['auto', 'auto']}
                   tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   tickFormatter={(val) => `$${Number(val).toLocaleString()}`}
                   label={{ value: 'Weekly Rent ($)', angle: -90, position: 'insideLeft', offset: 5, fill: 'var(--text-muted)', fontSize: 11, style: { textAnchor: 'middle' } }}
@@ -356,7 +358,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
           <h4 style={{ marginBottom: '1rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Price Trends</h4>
           <div className="u-df6b2905">
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={chartData.filter(d => d.housePrice != null || d.unitPrice != null)} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
                 <XAxis 
                   dataKey="dateStr" 
@@ -368,6 +370,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                 />
                 <YAxis 
                   stroke="var(--text-muted)" 
+                  domain={['auto', 'auto']}
                   tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   tickFormatter={(val) => `$${(Number(val)/1000).toFixed(0)}k`}
                   label={{ value: 'Median Price ($)', angle: -90, position: 'insideLeft', offset: 5, fill: 'var(--text-muted)', fontSize: 11, style: { textAnchor: 'middle' } }}
