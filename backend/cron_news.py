@@ -7,7 +7,16 @@ from datetime import datetime, timedelta
 # Add backend directory to path if running outside
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from main import SessionLocal
+# Lightweight DB session — do NOT import main.py here (it pulls in FastAPI + all
+# AI models which wastes 2GB+ of RAM in a cron process that only needs a DB conn)
+from dotenv import load_dotenv
+load_dotenv()
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+_db_url = os.environ.get("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
+_engine = create_engine(_db_url, pool_size=2, max_overflow=0, pool_timeout=10)
+SessionLocal = sessionmaker(bind=_engine)
+
 from models_v3 import SuburbUIV3
 from ai_agent import get_news_sentiment
 

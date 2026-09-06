@@ -58,6 +58,18 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
       impact: '<2% = tight rental market. Low vacancy supports rental yield and investor demand.',
     },
     {
+      label: 'Price 1M Change',
+      value: s.houseMedianPrice1mChangePct != null ? `${Number(s.houseMedianPrice1mChangePct) > 0 ? '+' : ''}${Number(s.houseMedianPrice1mChangePct).toFixed(1)}%` : '—',
+      trend: s.houseMedianPrice1mChangePct != null ? (s.houseMedianPrice1mChangePct > 0 ? 'up' : 'down') : null,
+      impact: 'Recent price momentum. Shows short-term market direction over the last 30 days.',
+    },
+    {
+      label: 'Price 3M Change',
+      value: s.houseMedianPrice3mChangePct != null ? `${Number(s.houseMedianPrice3mChangePct) > 0 ? '+' : ''}${Number(s.houseMedianPrice3mChangePct).toFixed(1)}%` : '—',
+      trend: s.houseMedianPrice3mChangePct != null ? (s.houseMedianPrice3mChangePct > 0 ? 'up' : 'down') : null,
+      impact: 'Quarterly price trend. Indicates emerging market patterns and seasonal effects.',
+    },
+    {
       label: 'Price 12M Change',
       value: s.houseMedianPrice12mChangePct != null ? `${Number(s.houseMedianPrice12mChangePct) > 0 ? '+' : ''}${Number(s.houseMedianPrice12mChangePct).toFixed(1)}%` : '—',
       trend: s.houseMedianPrice12mChangePct != null ? (s.houseMedianPrice12mChangePct > 0 ? 'up' : 'down') : null,

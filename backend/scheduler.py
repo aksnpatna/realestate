@@ -28,11 +28,8 @@ class UpdateScheduler:
 
     def __init__(self):
         self.running = True
-        self.last_monthly: datetime | None = None
-        self.last_quarterly: datetime | None = None
+        self.last_run: datetime | None = None
         self.startup_delay = 60
-        self.monthly_interval = 30 * 24 * 60 * 60      # 30 days
-        self.quarterly_interval = 90 * 24 * 60 * 60    # 90 days
         self._thread: threading.Thread | None = None
 
     def _bust_cache(self):
@@ -43,42 +40,28 @@ class UpdateScheduler:
         except Exception as e:
             print(f"[scheduler] Cache bust skipped: {e}")
 
-    def _run_v3_monthly_metro(self):
+    def _run_v3_full_refresh(self):
         print(f"\n{'='*60}")
-        print(f"[{datetime.now()}] SCHEDULER: Monthly Metro Update (~3,953 live suburbs)")
+        print(f"[{datetime.now()}] SCHEDULER: Full Refresh")
         print(f"{'='*60}")
         subprocess.run(
-            [sys.executable, os.path.join(BASE_DIR, "v3_scheduler.py"), "--monthly"]
+            [sys.executable, os.path.join(BASE_DIR, "v3_scheduler.py"), "--run"]
         )
-        self.last_monthly = datetime.now()
-        self._bust_cache()
-
-    def _run_v3_quarterly_full(self):
-        print(f"\n{'='*60}")
-        print(f"[{datetime.now()}] SCHEDULER: Quarterly Full National Refresh (13,150 suburbs)")
-        print(f"{'='*60}")
-        subprocess.run(
-            [sys.executable, os.path.join(BASE_DIR, "v3_scheduler.py"), "--quarterly"]
-        )
-        self.last_quarterly = datetime.now()
+        self.last_run = datetime.now()
         self._bust_cache()
 
     def _loop(self):
         time.sleep(self.startup_delay)
 
-        # Run quarterly on first startup (if data is stale)
-        self._run_v3_quarterly_full()
+        # Run on first startup
+        self._run_v3_full_refresh()
 
         while self.running:
             now = datetime.now()
 
-            if self.last_quarterly is None or \
-               (now - self.last_quarterly).total_seconds() >= self.quarterly_interval:
-                self._run_v3_quarterly_full()
-
-            if self.last_monthly is None or \
-               (now - self.last_monthly).total_seconds() >= self.monthly_interval:
-                self._run_v3_monthly_metro()
+            if self.last_run is None or \
+               (now - self.last_run).total_seconds() >= 30 * 24 * 60 * 60:  # 30 days
+                self._run_v3_full_refresh()
 
             for _ in range(360):
                 if not self.running:

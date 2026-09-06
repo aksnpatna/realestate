@@ -12,6 +12,7 @@ import ProfileSectionNav, { SECTION_ATTR } from './components/ProfileSectionNav'
 import MarketIndicatorsSection from './components/MarketIndicatorsSection'
 import SqmHistoricalChart from './components/SqmHistoricalChart'
 import PriceHistoryChart from './components/PriceHistoryChart'
+import SqmDashboard from './components/SqmDashboard'
 import PocketRiskMap from './components/PocketRiskMap'
 import YieldHeatmap from './components/YieldHeatmap'
 import type { PersonaId, ProfileSectionId } from './data/personas'
@@ -226,7 +227,7 @@ function App() {
   useEffect(() => {
     if (isAuthenticated) {
       setLoadingData(true)
-      fetch('/api/suburbs', { credentials: 'include' })
+      fetch(`/api/suburbs?state=${activeState}`, { credentials: 'include' })
         .then(res => res.json())
         .then(apiData => {
           if (apiData && apiData.length > 0) {
@@ -2016,6 +2017,9 @@ function App() {
                       <MacroBenchmarkPanel />
                     </>
                   )}
+                </div>
+                <div style={{ display: activeProfileSection === 'market_pulse' ? 'block' : 'none' }}>
+                  <SqmDashboard suburbId={activeSuburb.id} />
                 </div>
                 <div style={{ display: activeProfileSection === 'pockets' ? 'block' : 'none' }}>
                   <PocketRiskMap suburbId={activeSuburb.id} />

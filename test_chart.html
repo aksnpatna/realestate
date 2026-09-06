@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQM Chart Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🔍 SQM Chart Display Test</h1>
+    
+    <div class="test-section">
+        <h2>API Connection Test</h2>
+        <div id="api-status">Loading...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>SQM Dashboard Test</h2>
+        <p>To verify the charts are working, navigate to:</p>
+        <p><a href="http://localhost:8082/?view=profile" target="_blank">http://localhost:8082/?view=profile</a></p>
+        <p><strong>Steps to verify:</strong></p>
+        <ol>
+            <li>Login with test@test.com / test123</li>
+            <li>Select a suburb (e.g., Point Cook, VIC 3030)</li>
+            <li>Click on "Market Pulse" (💓) tab in the profile section</li>
+            <li>Check if all three charts are displaying data:</li>
+            <ul>
+                <li>Vacancy & Stock Trends (blue & purple lines)</li>
+                <li>Rent Trends (green & orange lines)</li>
+                <li>Price Trends (blue & pink lines)</li>
+            </ul>
+        </li>
+    </div>
+
+    <script>
+        // Simple API test
+        async function testAPI() {
+            const statusDiv = document.getElementById('api-status');
+            try {
+                const loginRes = await fetch('http://localhost:8100/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'test@test.com', password: 'test123' })
+                });
+                
+                if (!loginRes.ok) {
+                    throw new Error(`Login failed: ${loginRes.status}`);
+                }
+                
+                const sqmRes = await fetch('http://localhost:8100/api/suburbs/VIC_POINT_COOK_3030/sqm', {
+                    credentials: 'include'
+                });
+                
+                if (!sqmRes.ok) {
+                    throw new Error(`SQM data failed: ${sqmRes.status}`);
+                }
+                
+                const data = await sqmRes.json();
+                statusDiv.innerHTML = `
+                    <div class="success">✅ API Connection Successful</div>
+                    <div>Has SQM Data: <strong>${data.has_sqm_data}</strong></div>
+                    <div>Rents Data Points: <strong>${data.data?.rents?.length || 0}</strong></div>
+                    <div>Prices Data Points: <strong>${data.data?.prices?.length || 0}</strong></div>
+                    <div>Vacancy Data Points: <strong>${data.data?.vacancy?.length || 0}</strong></div>
+                    <div>Stock Data Points: <strong>${data.data?.stock?.length || 0}</strong></div>
+                `;
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error">❌ ${error.message}</div>`;
+            }
+        }
+
+        // Run API test on load
+        window.addEventListener('load', testAPI);
+    </script>
+</body>
+</html>

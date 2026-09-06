@@ -70,6 +70,8 @@ class SuburbUIV3(Base):
 
     # ---- HOUSE METRICS ----
     house_median_price = Column(Float)
+    house_median_price_1m_change_pct = Column(Float)           # 1-month % change
+    house_median_price_3m_change_pct = Column(Float)           # 3-month % change
     house_median_price_12m_change = Column(Float)             # 12-month $ change
     house_median_price_12m_change_pct = Column(Float)          # 12-month % change
     house_median_rent = Column(Float)                          # Weekly rent

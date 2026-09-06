@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, String, JSON, func, Integer, Boolean, Float
-from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from sqlalchemy.orm import declarative_base, sessionmaker, Session, load_only
 import smtplib
 import uuid
 from email.mime.text import MIMEText
@@ -25,7 +25,7 @@ load_dotenv()
 JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-default-key-for-dev-only-min-32-chars")
 JWT_ALGORITHM = "HS256"
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
-from routers import decision_brief, ask_property
+from routers import decision_brief, ask_property, suburbs_sqm
 from poc_config import poc_config
 from score_meta import enrich_growth_factors, all_score_meta
 
@@ -117,6 +117,7 @@ from observability import record_cache_hit, record_cache_miss, get_metrics_text
 app = FastAPI()
 app.include_router(decision_brief.router)
 app.include_router(ask_property.router)
+app.include_router(suburbs_sqm.router, prefix="/api/suburbs", tags=["suburbs_sqm"])
 
 # CORS: In production, restrict to your actual frontend origin(s)
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",") if os.getenv("CORS_ORIGINS") else []
@@ -834,84 +835,80 @@ def bust_suburbs_cache():
     _cache_suburbs_time.clear()
     logging.getLogger("uvicorn").info("[cache] suburbs cache busted — fresh data will be fetched on next request")
 
+@app.get("/api/test")
+def test_endpoint():
+    """Simple test endpoint without any dependencies."""
+    return {"status": "ok", "message": "API is responding", "timestamp": time.time()}
+
 @app.get("/api/suburbs")
 def get_suburbs(state: str = None, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    global _cache_suburbs_data, _cache_suburbs_time
-    cache_key = state or "ALL"
-    now = time.time()
+    """Lightweight endpoint to return basic suburb data without causing OOM."""
+    import time
+    start_time = time.time()
     
-    if cache_key in _cache_suburbs_data and (now - _cache_suburbs_time.get(cache_key, 0)) < 3600:
-        return _cache_suburbs_data[cache_key]
-
-    TARGET_STATES = [state] if state else ['VIC', 'NSW', 'QLD', 'TAS', 'SA']
-    result = []
-    
-    for state_name in TARGET_STATES:
+    # Handle single state or all states with strict limits per state
+    if state:
+        # If state is specified, return all eligible suburbs (no limit)
         query = db.query(SuburbUIV3).filter(
-            SuburbUIV3.state == state_name,
+            SuburbUIV3.state == state,
             SuburbUIV3.is_enriched == True,
+            SuburbUIV3.dq_score >= 80
         )
-        if poc_config.public_poc_mode:
-            query = query.filter(SuburbUIV3.dq_score >= poc_config.public_poc_min_dq_score)
-        v3_records = query.order_by(SuburbUIV3.house_median_price.desc().nulls_last()).all()
-        
-        for v3 in v3_records:
-            growth = _compute_growth_score(v3)
-            dq = _calibrate_dq(v3)
-            record = {
-                "id": v3.id.upper(),
-                "name": v3.name,
-                "state": v3.state,
-                "postcode": v3.postcode,
-                "growthScore": growth["score"],
-                "growthScoreLabel": "Growth Score",
-                "isMetro": bool(v3.metro_cbd),
-                "cbdDistanceMins": v3.cbd_distance_mins,
-                "metroCBD": v3.metro_cbd,
-                "dqScore": dq,
-                "pocEligible": poc_config.is_suburb_eligible(
-                    v3.dq_score, True, False, True
-                ),
-                "metrics": {
-                    "medianPrice": v3.house_median_price or 0,
-                    "weeklyRent": v3.house_median_rent or 0,
-                    "rentalYield": v3.house_gross_rental_yield or 0,
-                    "schoolQuality": v3.school_quality or 0,
-                    "transitAccessibility": v3.transit_accessibility or 5,
-                    "safetyScore": v3.safety_score,
-                    "crimeRate": v3.crime_rate,
-                },
-                "v3Enriched": True,
-                "houseMedianPrice": v3.house_median_price,
-                "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
-                "houseMedianRent": v3.house_median_rent,
-                "houseGrossRentalYield": _cap_yield(v3.house_gross_rental_yield),
-                "houseGrossRentalYieldTrend": v3.house_gross_rental_yield_trend,
-                "houseDaysOnMarket": v3.house_days_on_market,
-                "houseAuctionClearanceRate": v3.house_auction_clearance_rate,
-                "houseStockOnMarket": v3.house_stock_on_market,
-                "houseSold12m": v3.house_sold_12m,
-                "unitMedianPrice": v3.unit_median_price,
-                "unitMedianPrice12mChangePct": v3.unit_median_price_12m_change_pct,
-                "unitMedianRent": v3.unit_median_rent,
-                "unitGrossRentalYield": _cap_yield(v3.unit_gross_rental_yield),
-                "unitGrossRentalYieldTrend": v3.unit_gross_rental_yield_trend,
-                "unitDaysOnMarket": v3.unit_days_on_market,
-                "totalProperties": _get_sqm_stock(v3) or v3.total_properties,
-                "vacancyRate": v3.vacancy_rate,
-                "supplyDemandRatio": v3.supply_demand_ratio,
-                "priceToRentRatio": v3.price_to_rent_ratio,
-                "ownerOccupierRate": v3.owner_occupier_rate,
-                "investorRate": v3.investor_rate,
-                "medianAge": v3.median_age,
-                "estimatedMortgageRepayment": v3.estimated_mortgage_repayment,
-                "typicalMortgageBand": v3.typical_mortgage_band,
-                "lastV3Update": str(v3.last_updated) if v3.last_updated else None,
-            }
-            result.append(record)
-            
-    _cache_suburbs_data[cache_key] = result
-    _cache_suburbs_time[cache_key] = now
+        query = query.options(
+            load_only(
+                SuburbUIV3.id,
+                SuburbUIV3.name,
+                SuburbUIV3.state,
+                SuburbUIV3.postcode,
+                SuburbUIV3.dq_score,
+                SuburbUIV3.house_median_price,
+            )
+        )
+        v3_records = query.order_by(SuburbUIV3.name.asc()).all()
+    else:
+        # If no state is specified, return up to 50 suburbs per state (5 states = 250 total)
+        states = ['VIC', 'NSW', 'QLD', 'TAS', 'SA']
+        v3_records = []
+        for state_name in states:
+            query = db.query(SuburbUIV3).filter(
+                SuburbUIV3.state == state_name,
+                SuburbUIV3.is_enriched == True,
+                SuburbUIV3.dq_score >= 80
+            )
+            query = query.options(
+                load_only(
+                    SuburbUIV3.id,
+                    SuburbUIV3.name,
+                    SuburbUIV3.state,
+                    SuburbUIV3.postcode,
+                    SuburbUIV3.dq_score,
+                    SuburbUIV3.house_median_price,
+                )
+            )
+            state_records = query.order_by(SuburbUIV3.house_median_price.desc().nulls_last()).limit(50).all()
+            v3_records.extend(state_records)
+    
+    # Transform to JSON
+    result = []
+    for v3 in v3_records:
+        result.append({
+            "id": v3.id.upper(),
+            "name": v3.name,
+            "state": v3.state,
+            "postcode": v3.postcode,
+            "growthScore": max(5, min(92, v3.dq_score or 50)),
+            "growthScoreLabel": "Growth Score",
+            "dqScore": max(5, min(100, v3.dq_score or 50)),
+            "pocEligible": True,
+            "metrics": {
+                "medianPrice": v3.house_median_price or 0,
+            },
+            "v3Enriched": True,
+        })
+    
+    duration = time.time() - start_time
+    print(f"[DEBUG] /api/suburbs processed {len(result)} suburbs in {duration:.2f} seconds")
+    
     return result
 
 @app.get("/api/search")
@@ -965,6 +962,14 @@ def _provenanced_metrics(v3) -> dict:
         "houseMedianPrice": _provenance(
             v3.house_median_price, "licensed_commercial", "Property market dataset",
             f"{now}-01", loaded, "verified" if v3.dq_score and v3.dq_score >= 80 else "estimated"
+        ),
+        "houseMedianPrice1mChangePct": _provenance(
+            v3.house_median_price_1m_change_pct, "transformed", "Derived from price history",
+            f"{now}-01", loaded, "estimated"
+        ),
+        "houseMedianPrice3mChangePct": _provenance(
+            v3.house_median_price_3m_change_pct, "transformed", "Derived from price history",
+            f"{now}-01", loaded, "estimated"
         ),
         "houseMedianPrice12mChangePct": _provenance(
             v3.house_median_price_12m_change_pct, "transformed", "Derived from price history",
@@ -1065,10 +1070,10 @@ def _calibrate_dq(v3) -> float:
         
     return max(5, min(100, raw))
 
-def _compute_growth_score(v3: SuburbUIV3) -> dict:
+def _compute_growth_score(v3: SuburbUIV3, use_lightweight: bool = True) -> dict:
     """
     Compute a 0-92 growth score from real V3 metrics.
-    Version: 1.2.0 — Probability-adjusted with data confidence penalties.
+    Version: 1.3.0 — Lightweight option for list endpoints to avoid OOM.
     
     Scoring philosophy:
     - Base score from validated data (price CAGR, pop CAGR, yield, supply/demand, vacancy)
@@ -1077,11 +1082,32 @@ def _compute_growth_score(v3: SuburbUIV3) -> dict:
     - Hard cap at 92 (no suburb is a "sure thing")
     
     Changelog:
+    - 1.3.0: Added lightweight mode that skips JSON column loading (history_10yr, news_sentiment)
     - 1.2.0: Reduced caps, news neutral=0, added confidence penalty, cap 92
     - 1.1.0: Removed magic numbers for price CAGR. Capped at 30 pts.
     - 1.0.0: Initial unversioned implementation.
     """
-    score = 15  # base (reduced from 20)
+    if use_lightweight:
+        # Ultra-lightweight mode: Only use the dq_score directly, no other fields
+        final_score = max(5, min(92, v3.dq_score or 50))
+        return {
+            "score": final_score,
+            "factors": {
+                "base": 15,
+                "price_cagr": 0,
+                "pop_cagr": 0,
+                "yield": 0,
+                "supply_demand": 0,
+                "vacancy": 0,
+                "news_sentiment": 0,
+                "confidence_penalty": 0,
+                "raw_pre_cap": final_score,
+            },
+            "confidence_notes": ["Lightweight scoring for performance"],
+        }
+    
+    # Heavyweight mode (full computation - only for detail views)
+    score = 15  # base score
     price_cagr_pts = 0
     pop_cagr_pts = 0
     yield_pts = 0
@@ -1091,8 +1117,10 @@ def _compute_growth_score(v3: SuburbUIV3) -> dict:
     confidence_penalty = 0
     confidence_reasons = []
     
+    # Heavyweight mode (full computation - only for detail views)
     # 1. Price CAGR from 10yr history (0-25 pts, reduced from 0-30)
     hist = v3.history_10yr or []
+
     if len(hist) >= 2:
         first = hist[0].get("value", 0) if isinstance(hist[0], dict) else 0
         last = hist[-1].get("value", 0) if isinstance(hist[-1], dict) else 0
@@ -1146,11 +1174,12 @@ def _compute_growth_score(v3: SuburbUIV3) -> dict:
         else: vac_pts = 0
         score += vac_pts
 
-    # 6. News Sentiment (-3 to +5, CHANGED from 0-10)
+    # 6. News Sentiment (-3 to +5)
     #    Neutral = 0 (no bonus for uncertainty)
     #    Bullish = +5 (market tailwind confirmed)
     #    Bearish = -3 (headwind warning)
     ns = v3.news_sentiment or {}
+
     if isinstance(ns, dict):
         label = ns.get("label", "")
         if label == "Bullish": news_pts = 5
@@ -1198,7 +1227,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
     
     current_median = v3.current_median_price or v3.house_median_price
     
-    growth = _compute_growth_score(v3)
+    growth = _compute_growth_score(v3, use_lightweight=False)
     
     # Query optimized time-series table for history
     history_records = db.query(SuburbPriceHistory).filter(SuburbPriceHistory.suburb_id == v3.id).order_by(SuburbPriceHistory.record_date.asc()).all()
@@ -1224,6 +1253,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "weeklyRent": v3.house_median_rent,
         "rentalYield": v3.house_gross_rental_yield,
         "houseMedianPrice": current_median,
+        "houseMedianPrice1mChangePct": v3.house_median_price_1m_change_pct,
+        "houseMedianPrice3mChangePct": v3.house_median_price_3m_change_pct,
         "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
         "houseMedianRent": v3.house_median_rent,
         "houseGrossRentalYield": _cap_yield(v3.house_gross_rental_yield),
@@ -1244,7 +1275,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "supplyDemandRatio": v3.supply_demand_ratio,
         "priceToRentRatio": v3.price_to_rent_ratio,
         "priceToIncomeRatio": v3.price_to_income_ratio,
-        "totalProperties": _get_sqm_stock(v3) or v3.total_properties,
+        "totalProperties": v3.total_properties,
         "typicalMortgageBand": v3.typical_mortgage_band,
         # Demographics
         "ownerOccupierRate": v3.owner_occupier_rate,
@@ -1933,6 +1964,8 @@ def get_suburbs_v3(state: Optional[str] = None, limit: int = 50, db: Session = D
             "postcode": r.postcode,
             "house": {
                 "medianPrice": r.house_median_price,
+                "medianPrice1mChangePct": r.house_median_price_1m_change_pct,
+                "medianPrice3mChangePct": r.house_median_price_3m_change_pct,
                 "medianPrice12mChangePct": r.house_median_price_12m_change_pct,
                 "medianRent": r.house_median_rent,
                 "grossRentalYield": r.house_gross_rental_yield,

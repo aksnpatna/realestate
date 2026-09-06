@@ -12,6 +12,7 @@ interface Section {
 export const ALL_SECTIONS: Section[] = [
   { id: 'overview', label: 'Overview', icon: '📊' },
   { id: 'market', label: 'Market', icon: '📈' },
+  { id: 'market_pulse', label: 'Market Pulse', icon: '💓' },
   { id: 'people', label: 'People', icon: '👥' },
   { id: 'infrastructure', label: 'Infrastructure', icon: '🏗️' },
   { id: 'listings', label: 'Listings', icon: '🏠' },
