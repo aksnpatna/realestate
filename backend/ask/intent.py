@@ -229,6 +229,8 @@ def parse_intent_deterministic(
     """Deterministic extraction — fast, zero-cost, always available."""
     state = extract_state(text) or state_hint
     is_geo = detect_geo_intent(text) and not resolved_suburbs
+    if not resolved_suburbs and re.search(r'\binvest|yield|cashflow|rental income\b', text.lower()):
+        is_geo = True
     budget = extract_dollars(text)
     direction = extract_direction(text)
     km = extract_km(text)
@@ -363,6 +365,10 @@ async def run_intent_pipeline(
             llm["property_type"] = llm.get("property_type") or det.get("property_type", "any")
             llm["tenure"] = llm.get("tenure") or det.get("tenure", "undecided")
             llm["priorities"] = llm.get("priorities") or det.get("priorities", [])
+            # Keep original is_geo_discovery value for investment goals
+            if det["goal"] == "investment_search":
+                llm["is_geo_discovery"] = True
+                llm["needs_clarification"] = False
             return llm
         if not det.get("suburbs"):
             det["needs_clarification"] = True

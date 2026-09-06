@@ -53,9 +53,9 @@ Also verified: repeat of the comparison query (#12's seed) returned in **5 ms** 
 
 4. **Brisbane unit query asked for clarification** despite extracting unit + QLD + implicit budget. Clarification threshold appears too eager when no explicit suburb name is present — the UI then shows nothing (the `console.log` bug below).
 
-**Frontend bugs observed in `UnifiedSearchView.tsx` (found during testing):**
-- Clarification questions are only sent to `console.log` — the user sees nothing (spinner stops, no message). This makes every `needs_clarification` result look like a silent failure. (lines 160–167)
-- The DQ/data-quality "excluded" list from rank results is never rendered.
+**Frontend bugs fixed in `UnifiedSearchView.tsx`:**
+- ✅ **Clarification questions visible**: Added a visible clarification card with yellow border (lines 276–281) to replace the console.log
+- ✅ **Excluded DQ list rendered**: Added support for displaying the number of excluded suburbs due to data quality issues (lines 381–385)
 
 ## 2. Manual Ranking Path (`/api/buy-finder/rank`) — 10 tests
 
@@ -63,10 +63,22 @@ Also verified: repeat of the comparison query (#12's seed) returned in **5 ms** 
 
 | # | Test | Status | Verdict |
 |---|------|--------|---------|
-| 1 | Default FHB, VIC, $800k | 200 (28.6 s) | ✅ 50 results, DQ threshold 80, `total_evaluated` 2925, excluded list provided with reasons |
-| 2–10 | Investor QLD/NSW, SA/TAS, low budget, degenerate weights, serviceability stress, determinism | _(in progress — results appended below when complete)_ | — |
+| 1 | Default FHB, VIC, $800k | 200 (35.7 s) | ✅ 50 results, DQ threshold 80, 2,925 evaluated, exclusions carry explicit reasons (`dq_below_threshold`) |
+| 2 | Investor QLD, $900k, yield ≥ 4% | — | ❌ **Connection reset by server after repeated retries (~90 s)** — request never completes, no error body returned |
+| 3 | Investor NSW, $700k, units | — | ❌ Same failure as QLD — connection dropped, retried 4×, never returns |
+| 4 | FHB SA, $500k | 200 (9.3 s) | ✅ Top: Keith, Belair, Bordertown |
+| 5 | FHB TAS, $450k | 200 (4.9 s) | ✅ Top: Queenstown, Kingston, Sandy Bay |
+| 6 | Ultra-low budget $150k / $30k deposit | 200 (47.4 s) | ⚠️ Still returns **50 results whose estimated prices reach $2.26M** — budget/serviceability filtering is not excluding unaffordable suburbs |
+| 7 | Weights all zero | 200 (54.4 s) | ⚠️ Accepted; every suburb scores **0.0 fit**. No validation error |
+| 8 | Weights summing to 200% | 200 (34.5 s) | ⚠️ Accepted silently (UI warns, backend doesn't); scores still computed |
+| 9 | Low income ($55k, $400k budget) | 200 (46.1 s) | ✅ 50 results; serviceability flags present per result |
+| 10 | Determinism: repeat of test 1 | 200 (34.1 s) | ✅ Identical top-5 order and scores |
 
-**Note on latency:** the first rank call took ~28.6 s (cold compute across ~2,900 suburbs). The deterministic button in the UI has no per-request warning for this; worth monitoring warm-cache latency.
+**Findings:**
+- **Rank latency is 5–55 s per call** with no caching visible for new parameter sets. The UI button ("Compute Quantitative Fit") will appear hung; there is no timeout or progress handling.
+- **QLD and NSW profiles kill the connection** (backend worker is killed mid-request — connection reset without an HTTP response). VIC/SA/TAS complete. This is a consistent, reproducible crash class — likely the state's suburb set making the compute exceed the server worker timeout, or an unhandled error that takes the worker down. Either way the client gets *nothing*, not even a 500.
+- **Budget is not enforced as a filter** at the extremes: a $150k budget surfaced suburbs with estimated prices above $2.2M in the top 5.
+- **Weight validation is absent server-side** (0% total and 200% total both accepted). The UI badge warns about >100%, but the API trust boundary is missing.
 
 ## 3. Security & robustness
 

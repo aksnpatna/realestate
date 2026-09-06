@@ -2677,6 +2677,9 @@ def buy_finder_rank(request: BuyFinderRequest, db: Session = Depends(get_db), cu
         for fname, fval in request.weights.dict().items():
             if fval < 0 or not math.isfinite(fval):
                 raise HTTPException(422, f"weight {fname} must be non-negative and finite")
+        total = sum(request.weights.dict().values())
+        if total <= 0 or total > 1000:
+            raise HTTPException(422, f"weights sum must be >0 and ≤1000 (got {total})")
     from buyfinder import rank_suburbs, BuyFinderRequest as BFR, BuyFinderWeights
     from persona_presets import get_persona
 

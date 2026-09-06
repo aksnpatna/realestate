@@ -142,9 +142,12 @@ export default memo(function UnifiedSearchView({
     'Moving interstate: where do I start?',
   ];
 
+   const [clarificationQuestion, setClarificationQuestion] = useState<string | null>(null);
+
   // ─── NLP Query Execution ─────────────────────────────────
   const callQuery = async (q: string, convId?: string) => {
     setNlpLoading(true);  setNlpResult(null); setDiscoveryResult(null); 
+    setClarificationQuestion(null);
     if (abortRef.current) abortRef.current.abort();
     abortRef.current = new AbortController();
     try {
@@ -158,11 +161,11 @@ export default memo(function UnifiedSearchView({
       const data = await res.json();
       
       if (data.status === 'needs_clarification') {
+        let qText = "I need a bit more context. Could you specify a state, city, or area?";
         if (data.intent?.clarification?.questions?.length) {
-          console.log({ ...data.intent, clarifyingQ: data.intent.clarification.questions[0] } as any);
-        } else {
-          console.log({ ...data.intent, clarifyingQ: "I need a bit more context. Could you specify a state, city, or area?" } as any);
+          qText = data.intent.clarification.questions[0];
         }
+        setClarificationQuestion(qText);
         setNlpLoading(false);
         return;
       }
@@ -269,6 +272,13 @@ export default memo(function UnifiedSearchView({
             <p className="u-d61a8080">Extracting constraints and building research brief…</p>
           </div>
         )}
+
+        {clarificationQuestion && !nlpLoading && (
+          <div className="glass-card" style={{marginTop: '1rem', borderLeft: '4px solid var(--accent-yellow)'}}>
+            <h3 className="u-d2b7079c">Need a little more detail</h3>
+            <p className="u-4f1ddc89">{clarificationQuestion}</p>
+          </div>
+        )}
       </div>
 
       {/* ─── MANUAL FILTERS (Collapsible) ─── */}
@@ -363,23 +373,29 @@ export default memo(function UnifiedSearchView({
         </div>
       )}
 
-      {/* ─── RANKING RESULTS PORTION ─── */}
-      {backendResults && (
-        <div className="glass-card search-results-card" style={{marginTop: '1rem'}}>
-          <h3 className="u-0c1fb0d9">Deterministic Results ({backendResults.results.length} eligible)</h3>
-          
-          <div className="search-results-grid" style={{marginTop: '1rem'}}>
-            {backendResults.results.map((r: any) => (
-              <BackendResultCard 
-                key={r.suburb_id} result={r} 
-                setActiveSuburb={setActiveSuburb} setActiveTab={setActiveTab} onSelectResult={onSelectResult} 
-                requestMeta={{ request_id: backendResults.request_id, model_version: backendResults.model_version }} 
-                isCompared={comparisonList.some(c => c.suburb_id === r.suburb_id)} toggleCompare={() => toggleCompare(r)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+       {/* ─── RANKING RESULTS PORTION ─── */}
+       {backendResults && (
+         <div className="glass-card search-results-card" style={{marginTop: '1rem'}}>
+           <h3 className="u-0c1fb0d9">Deterministic Results ({backendResults.results.length} eligible)</h3>
+           
+           {backendResults.excluded_count > 0 && (
+             <div style={{marginBottom: '1rem', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', fontSize: '0.9rem'}}>
+               <strong>{backendResults.excluded_count} suburbs excluded</strong> due to data quality issues (below DQ threshold: {backendResults.dq_threshold}).
+             </div>
+           )}
+           
+           <div className="search-results-grid" style={{marginTop: '1rem'}}>
+             {backendResults.results.map((r: any) => (
+               <BackendResultCard 
+                 key={r.suburb_id} result={r} 
+                 setActiveSuburb={setActiveSuburb} setActiveTab={setActiveTab} onSelectResult={onSelectResult} 
+                 requestMeta={{ request_id: backendResults.request_id, model_version: backendResults.model_version }} 
+                 isCompared={comparisonList.some(c => c.suburb_id === r.suburb_id)} toggleCompare={() => toggleCompare(r)}
+               />
+             ))}
+           </div>
+         </div>
+       )}
     </div>
   );
 });

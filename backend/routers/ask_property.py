@@ -139,7 +139,8 @@ async def ask_query(
             ))
 
     # 3. Route
-    if goal == "suburb_discovery" or goal == "interstate_discovery":
+    if goal in ("suburb_discovery", "interstate_discovery", "investment_search"):
+        from ask.geo_discovery import discover_suburbs
         from ask.geo_discovery import discover_suburbs
         disc = discover_suburbs(db, req.question, budget=budget)
         disc_results = []

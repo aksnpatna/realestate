@@ -73,4 +73,7 @@ To reflect changes to `realestate.akstest.win`:
 *(Future changes to be recorded here)*
 - **2026-09-06**: Fixed memory exhaustion in `get_suburbs` endpoint by introducing a 500-record-per-state limit. Offloaded news sentiment generation to external LLM to save 2GB RAM. Added `SqmDashboard`, `MarketPulseTab`, and `SoldScatterplot` React components.
 - **2026-09-06 (UI Bug Fixes)**: Fixed empty/broken historical charts in the Market Tab (`SqmHistoricalChart.tsx`). Addressed missing `total` fields in SQM stock data by dynamically summing buckets (`r30`, `r60`, etc.), normalized inconsistent date formats between monthly/weekly data, and enabled `connectNulls` on Recharts to prevent disjointed datasets from rendering blank charts. Pushed changes to frontend docker container.
+- **2026-09-06 (Unified Search Fixes)**: 
+  - **Clarification Questions Visible**: Fixed the issue where clarification questions were only logged to console.log instead of being displayed to the user. Added a visible clarification card with yellow border in `UnifiedSearchView.tsx:276-281`.
+  - **Excluded DQ List Rendered**: Added support for displaying the number of excluded suburbs due to data quality issues. The UI now shows: "X suburbs excluded due to data quality issues (below DQ threshold: Y)" in `UnifiedSearchView.tsx:381-385`.
 

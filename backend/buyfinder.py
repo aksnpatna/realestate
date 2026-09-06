@@ -181,6 +181,11 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
     if rent is None or rent < 0: unknowns.append("median_rent")
 
     if eligibility["eligible"]:
+        # Explicit budget check — must precede other filters
+        if price > req.budget:
+            return _excluded_result(v3, "purchase_price_exceeds_budget", 
+                                   {"actual_price": round(price,0), "max_budget": req.budget})
+
         # Property Type Noise Filtering
         if req.property_type == "house":
             # Exclude unit-dominated suburbs like Southbank or CBDs if looking for houses

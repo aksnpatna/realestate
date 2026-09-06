@@ -53,8 +53,18 @@ class UpdateScheduler:
     def _loop(self):
         time.sleep(self.startup_delay)
 
-        # Run on first startup
-        self._run_v3_full_refresh()
+        # Check if data was recently updated to avoid massive DB load on every container restart
+        try:
+            from db.database import SessionLocal
+            from models.suburb_ui import SuburbUIV3
+            with SessionLocal() as session:
+                latest = session.query(SuburbUIV3.last_updated).filter(SuburbUIV3.last_updated != None).order_by(SuburbUIV3.last_updated.desc()).first()
+                if latest and latest[0]:
+                    if (datetime.now() - latest[0]).total_seconds() < 30 * 24 * 60 * 60:
+                        print(f"[{datetime.now()}] SCHEDULER: Data is fresh (updated {latest[0]}). Skipping startup refresh.")
+                        self.last_run = latest[0]
+        except Exception as e:
+            print(f"[{datetime.now()}] SCHEDULER: Error checking last update time: {e}")
 
         while self.running:
             now = datetime.now()
