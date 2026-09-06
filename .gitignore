@@ -26,3 +26,7 @@ dist-ssr
 __pycache__/
 test_poc.db
 *.zip
+
+# Test files
+run_unified_search_tests.cjs
+test-results/
