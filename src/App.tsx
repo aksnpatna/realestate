@@ -37,8 +37,7 @@ const viewToTab = (view: string | null): TabName => {
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
-const BuyFinder = lazy(() => import('./components/BuyFinder'))
-const AskYieldSense = lazy(() => import('./components/AskYieldSense').then(module => ({ default: module.AskYieldSense })))
+const UnifiedSearchView = lazy(() => import('./components/UnifiedSearchView'))
 const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
 const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
 
@@ -324,7 +323,7 @@ function App() {
     return suburbsData;
   }, [suburbsData]);
 
-  const states = useMemo(() => Array.from(new Set(filteredSuburbsData.map(s => s.state))).sort(), [filteredSuburbsData])
+  const states = ['NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
   const stateSuburbs = useMemo(() =>
     filteredSuburbsData.filter(s => s.state === activeState).sort((a, b) => a.name.localeCompare(b.name)),
     [activeState, filteredSuburbsData]
@@ -668,8 +667,7 @@ function App() {
       <PromoBanner />
       <TermsOfUseModal />
 
-      {activeTab === 'ask' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Ask YieldSense...</div>}><AskYieldSense financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} /></Suspense>}
-      {activeTab === 'buy-finder' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading...</div>}><BuyFinder suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result, meta) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
+      {(activeTab === 'ask' || activeTab === 'buy-finder') && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Search...</div>}><UnifiedSearchView suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result: any, meta: any) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
