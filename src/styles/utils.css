@@ -1615,6 +1615,9 @@
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 
 .u-eeaef089 {
