@@ -30,3 +30,6 @@ test_poc.db
 # Test files
 run_unified_search_tests.cjs
 test-results/
+
+# Python virtual environment
+venv/
