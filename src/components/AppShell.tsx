@@ -28,6 +28,7 @@ const SIDEBAR_GROUPS = [
   {
     title: 'Library',
     items: [
+      { id: 'profile', label: 'Suburb Profile', icon: 'home' as IconName },
       { id: 'saved', label: 'Saved Suburbs', icon: 'heart' as IconName },
       { id: 'heatmap', label: 'Map Explorer', icon: 'map' as IconName },
     ]
@@ -43,6 +44,7 @@ const SIDEBAR_GROUPS = [
 
 const MOBILE_TABS: { id: string; label: string; icon: IconName; view?: ViewId }[] = [
   { id: 'ask', label: 'Chat', icon: 'message-circle', view: 'ask' },
+  { id: 'profile', label: 'Profile', icon: 'home', view: 'profile' },
   { id: 'heatmap', label: 'Map', icon: 'map', view: 'heatmap' },
   { id: 'saved', label: 'Saved', icon: 'heart', view: 'saved' },
   { id: 'more', label: 'More', icon: 'more' },
