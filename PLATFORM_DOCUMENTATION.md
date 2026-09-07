@@ -65,9 +65,33 @@ The application is fully containerized using `docker-compose.yml`.
 
 ### Deployment Flow
 To reflect changes to `realestate.akstest.win`:
-1. Ensure the frontend is built: `npm run build` (if the Nginx container serves a static build).
-2. Push backend changes via docker: `docker compose up -d --build backend`
-3. Nginx handles routing port 80/443 to `8082` (Frontend) and `/api` to `8100` (Backend).
+
+#### Frontend Changes
+1. Ensure the frontend is built and the Docker image is updated:
+   ```bash
+   # Stop the existing frontend container
+   docker stop realestate-engine
+   
+   # Remove the old container
+   docker rm realestate-engine
+   
+   # Rebuild the frontend image
+   docker build -t realestate-realestate .
+   
+   # Start a new frontend container
+   docker run -d --name realestate-engine --network realestate_default --ip 172.19.0.3 --tmpfs /var/cache/nginx --restart unless-stopped -p 8082:80 --env-file .env realestate-realestate
+   ```
+
+#### Backend Changes
+1. Push backend changes via Docker Compose:
+   ```bash
+   docker compose up -d --build backend
+   ```
+
+#### Verification
+- Check the frontend container logs: `docker logs realestate-engine`
+- Test the API: `curl -X POST "http://localhost:8100/api/login" -H "Content-Type: application/json" -d '{"email": "teraamit@gmail.com", "password": "password321"}' -c cookies.txt`
+- Test the suburbs API: `curl -s "http://localhost:8100/api/suburbs?state=NSW" -b cookies.txt`
 
 ### Delta Changes Log
 *(Future changes to be recorded here)*
@@ -83,3 +107,29 @@ To reflect changes to `realestate.akstest.win`:
   - ⚠️ Comparison query still has "AI synthesis unavailable" issue
   - ⚠️ Manual ranking endpoint requires valid session token for testing
 
+- **2026-09-07 (UI Overhaul Phase 1-3)**: 
+   - **Phase 1 (Shell, Navigation & Brand)**: Replaced basic navigation with a premium desktop sidebar and mobile bottom nav in `AppShell.tsx`. Overhauled `LandingPage.tsx` with a full-bleed animated hero, social proof strips, and persona cards. Introduced a new design system in `index.css` (PropertyIQ brand, deep navy background, teal accents, DM Sans & Inter typography). Renamed YieldSense/Suburbly references to **PropertyIQ**.
+   - **Phase 2 (Unified Search UX)**: Redesigned `UnifiedSearchView.tsx` to feature a conversational hero header, quick-start pill actions, and interactive slider UX for manual filters. Transformed raw NLP output into visually rich 'Story Cards' and rendered suburb discovery results in a clean, animated grid format (`us-suburb-card`).
+   - **Phase 3 (Suburb Profile Redesign)**: Created a new premium `SuburbHero.tsx` header for suburb profiles with dynamic SVG `SuburbScoreRing` components. Cleaned up the legacy complex profile header in `App.tsx` by integrating `SuburbHero` for a unified, modern data presentation format.
+- **2026-09-07 (World-Class UI Enhancements)**:
+   - **Dynamic Background Visuals**: Added animated Australian landscape backgrounds (Sydney Opera House, Melbourne CBD, Brisbane) with auto-rotating images and smooth transitions in `LandingPage.tsx` and `SuburbHero.tsx`.
+   - **Enhanced Search Experience**: Added quick start suggestion tags for popular search queries and trust badges showing "13,000+ Suburbs Analyzed" and "AI-Powered Insights" in `LandingPage.tsx`.
+   - **Immersive Suburb Profiles**: Enhanced `SuburbHero.tsx` with suburb-specific background imagery and added market sentiment indicator (Strong Buy/Neutral/Sell) with color coding.
+   - **Smooth Animations**: Added fadeInUp, fadeInLeft, fadeInRight, pulse, and slideIn animations for better user engagement. Enhanced hover states with transforms and shadows in `index.css`.
+   - **Premium Visual Design**: Added elevated shadows (`--shadow-elevated`, `--shadow-hover`), gradient overlays, and improved glass card styling with hover effects. Updated design system for more depth and premium feel.
+   - **Social Proof & Trust Indicators**: Enhanced trust badges and official data source displays. Added suburb-specific sentiment indicators to build credibility.
+- **2026-09-07 (SuburbHero Component Enhancement)**:
+  - **Component Robustness**: Enhanced `SuburbHero` to accept `suburb: SuburbData | null` and handle null case gracefully.
+  - **Bug Fixing**: Fixed unused imports in `ChatView.tsx`.
+  - **CSS Optimization**: Implemented multiple CSS inclusion strategies to ensure styles are bundled correctly.
+  - **Inline Styles**: Added inline styles to SuburbHero component as fallback.
+  - **Deployment**: Rebuilt and re-deployed frontend Docker container.
+  - **Status Documentation**: Created detailed `SUBURBHERO_STATUS.md` document to track pending issues.
+  - **Pending**: CSS styles not being included in compiled bundle due to React tree-shaking; dynamic background image not visible.
+
+- **2026-09-07 (Suburbs from All States & Image Display Fixes)**:
+  - **State-Specific Suburbs**: Fixed the issue where only Victorian suburbs were being displayed. Updated `App.tsx` to include `activeState` in the useEffect dependencies, ensuring that when the user changes the state, the app fetches the corresponding suburbs.
+  - **Image Display**: Enhanced `SuburbHero.tsx` to handle images from the backend. Now the component checks if the suburb has images (`suburb.images_json`) and displays the first one, or falls back to Unsplash with suburb-specific queries.
+  - **API Response**: Updated the backend to include property images in the `/api/suburbs/{suburb_id}` endpoint. Added code to fetch images from the `property_listings` table and include them in the API response as `images_json`.
+  - **Interface Update**: Added `images_json` field to the `SuburbData` interface in `src/data/suburbs.ts`.
+  - **Docker Deployment**: Rebuilt and re-deployed the frontend Docker container to reflect the changes.

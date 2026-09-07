@@ -1,0 +1,261 @@
+/* Premium Suburb Hero CSS */
+
+.suburb-hero {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-glass);
+  padding: 3rem 0;
+  margin: -2rem -2rem 2rem -2rem; /* Pull out of normal padding */
+  position: relative;
+  overflow: hidden;
+}
+
+.sh-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.05;
+}
+
+.sh-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1);
+  animation: backgroundZoom 20s ease-in-out infinite;
+}
+
+.sh-background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(248, 250, 252, 0.95) 50%, rgba(241, 245, 249, 0.9) 100%);
+}
+
+@keyframes backgroundZoom {
+  0%, 100% { transform: scale(1.1); }
+  50% { transform: scale(1.15); }
+}
+
+.sh-container {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .suburb-hero {
+    margin: -1rem -1rem 2rem -1rem;
+  }
+}
+
+.sh-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Header Row */
+.sh-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.sh-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--brand-navy);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.5px;
+}
+
+.sh-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sh-badge {
+  background: var(--brand-navy);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sh-postcode {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Actions */
+.sh-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.sh-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-glass);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  color: var(--brand-navy);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sh-action-btn:hover {
+  background: var(--border-glass);
+}
+
+.sh-action-btn.saved {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--danger);
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+.sh-action-btn.saved svg {
+  fill: currentColor;
+}
+
+/* KPIs */
+.sh-kpi-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.sh-kpi-card {
+  flex: 1;
+  min-width: 250px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-glass);
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.sh-kpi-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sh-kpi-value-group {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.sh-kpi-value {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--brand-navy);
+  letter-spacing: -1px;
+}
+
+.sh-kpi-trend {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sh-kpi-trend.up {
+  color: var(--success);
+}
+
+.sh-kpi-trend.down {
+  color: var(--danger);
+}
+
+/* Scores */
+.sh-scores-row {
+  display: flex;
+  gap: 3rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-glass);
+}
+
+/* Market Sentiment */
+.sh-market-sentiment {
+  margin-top: 2rem;
+}
+
+.sh-sentiment-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 118, 110, 0.05) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.sh-sentiment-icon {
+  color: var(--success);
+}
+
+.sh-sentiment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sh-sentiment-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sh-sentiment-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.sh-sentiment-value.positive {
+  color: var(--success);
+}
+
+.sh-sentiment-value.negative {
+  color: var(--danger);
+}
+
+.sh-sentiment-value.neutral {
+  color: var(--warning);
+}
+
+@media (max-width: 768px) {
+  .sh-scores-row {
+    gap: 1.5rem;
+    justify-content: space-between;
+  }
+}

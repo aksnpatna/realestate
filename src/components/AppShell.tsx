@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Tabs, BottomSheet, Icon, Button } from './ui';
+import React, { useState, useEffect } from 'react';
+import { BottomSheet, Icon } from './ui';
 import type { IconName } from './ui';
 import PersonaSwitcher from './PersonaSwitcher';
 import './AppShell.css';
 
-export type ViewId = 'ask' | 'buy-finder' | 'heatmap' | 'profile' | 'portfolio' | 'saved' | 'settings' | 'gearing' | 'purchase-plan' | 'calculators';
+export type ViewId = 'ask' | 'buy-finder' | 'heatmap' | 'profile' | 'portfolio' | 'saved' | 'settings' | 'gearing' | 'purchase-plan' | 'calculators' | 'recent' | 'subscription';
 
 interface AppShellProps {
   currentView: ViewId;
@@ -17,155 +17,147 @@ interface AppShellProps {
   children: React.ReactNode;
 }
 
-const DESKTOP_TABS: { id: ViewId; label: string; icon: IconName }[] = [
-  { id: 'ask', label: 'Search', icon: 'search' },
-  { id: 'heatmap', label: 'Heatmap', icon: 'map' },
-  { id: 'profile', label: 'Suburb Profile', icon: 'chart' },
-  { id: 'portfolio', label: 'Portfolio', icon: 'wallet' },
-  { id: 'saved', label: 'Saved', icon: 'heart' },
+const SIDEBAR_GROUPS = [
+  {
+    title: 'Chat',
+    items: [
+      { id: 'ask', label: 'New Chat', icon: 'message-circle' as IconName },
+      { id: 'recent', label: 'Recent Chats', icon: 'clock' as IconName },
+    ]
+  },
+  {
+    title: 'Library',
+    items: [
+      { id: 'saved', label: 'Saved Suburbs', icon: 'heart' as IconName },
+      { id: 'heatmap', label: 'Map Explorer', icon: 'map' as IconName },
+    ]
+  },
+  {
+    title: 'Account',
+    items: [
+      { id: 'settings', label: 'Settings', icon: 'settings' as IconName },
+      { id: 'subscription', label: 'Subscription', icon: 'zap' as IconName },
+    ]
+  }
 ];
 
 const MOBILE_TABS: { id: string; label: string; icon: IconName; view?: ViewId }[] = [
-  { id: 'ask', label: 'Search', icon: 'search', view: 'ask' },
+  { id: 'ask', label: 'Chat', icon: 'message-circle', view: 'ask' },
   { id: 'heatmap', label: 'Map', icon: 'map', view: 'heatmap' },
   { id: 'saved', label: 'Saved', icon: 'heart', view: 'saved' },
   { id: 'more', label: 'More', icon: 'more' },
 ];
 
-const MORE_ITEMS: { id: ViewId; label: string; icon: IconName }[] = [
-  { id: 'profile', label: 'Suburb Profile', icon: 'chart' },
-  { id: 'portfolio', label: 'Portfolio', icon: 'wallet' },
-  { id: 'gearing', label: 'Cashflow & Gearing', icon: 'brief' },
-  { id: 'purchase-plan', label: 'Purchase Plan', icon: 'wallet' },
-  { id: 'calculators', label: 'Calculators', icon: 'plus' },
-  { id: 'settings' as ViewId, label: 'Settings', icon: 'settings' as any },
-];
-
 export const AppShell: React.FC<AppShellProps> = ({
-  currentView, onViewChange, persona, onPersonaChange, onLogout, showProfile, usage, children,
+  currentView, onViewChange, persona, onPersonaChange, onLogout, children,
 }) => {
   const [moreOpen, setMoreOpen] = useState(false);
   const [viewAnnounce, setViewAnnounce] = useState('');
 
   useEffect(() => {
-    const label = DESKTOP_TABS.find(t => t.id === currentView)?.label || MOBILE_TABS.find(t => t.id === currentView)?.label || currentView;
-    setViewAnnounce(`Loaded ${label}`);
+    setViewAnnounce(`Loaded ${currentView}`);
   }, [currentView]);
-
-  const desktopTabItems = DESKTOP_TABS.map(t => ({ ...t }));
-  const activeTab = desktopTabItems.find(t => t.id === currentView);
-
-  const handleMoreSelect = useCallback((view: ViewId) => {
-    onViewChange(view);
-    setMoreOpen(false);
-  }, [onViewChange]);
 
   return (
     <div className="app-shell">
-      {/* Skip to content */}
-      <a href="#main-content" className="app-shell__skip">Skip to main content</a>
-
-      {/* View-change announcer */}
+      <a href="#main-content" className="sr-only">Skip to main content</a>
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">{viewAnnounce}</div>
 
-      {/* ── Header ── */}
-      <header className="app-shell__header">
+      {/* ── Desktop Sidebar ── */}
+      <aside className="app-shell__sidebar">
         <div className="app-shell__brand">
           <span className="app-shell__logo">IQ</span>
-          <h1 className="app-shell__title">YieldSense</h1>
+          <h1 className="app-shell__title">PropertyIQ</h1>
         </div>
-        <div className="app-shell__header-actions">
+        
+        <div className="app-shell__nav-groups">
+          {SIDEBAR_GROUPS.map(group => (
+            <div key={group.title} className="app-shell__nav-group">
+              <div className="app-shell__nav-group-title">{group.title}</div>
+              {group.items.map(item => (
+                <button
+                  key={item.id}
+                  className={`app-shell__nav-item ${currentView === item.id ? 'app-shell__nav-item--active' : ''}`}
+                  onClick={() => onViewChange(item.id as ViewId)}
+                >
+                  <Icon name={item.icon} size={20} />
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="app-shell__user-footer">
           <PersonaSwitcher activePersona={persona as any} onChange={onPersonaChange} />
-          {usage && (
-            <span className="app-shell__usage" title={`${usage.used} of ${usage.limit} briefs used this month`}>
-              {usage.used}/{usage.limit} briefs
-            </span>
-          )}
-          <Button variant="ghost" size="sm" onClick={onLogout}>Log out</Button>
+          <button onClick={onLogout} className="app-shell__nav-item" style={{ opacity: 0.7, padding: '0.5rem' }}>
+            <Icon name="log-out" size={18} /> Log out
+          </button>
         </div>
-      </header>
+      </aside>
 
-      {/* ── Desktop Tabs ── */}
-      <nav className="app-shell__nav-desktop" aria-label="Main navigation">
-        <Tabs
-          tabs={desktopTabItems}
-          active={currentView}
-          onChange={(id) => onViewChange(id as ViewId)}
-        />
-      </nav>
+      {/* ── Content Wrapper ── */}
+      <div className="app-shell__content-wrapper">
+        
+        {/* Mobile Header */}
+        <header className="app-shell__mobile-header">
+          <div className="app-shell__mobile-logo">
+            <span className="app-shell__logo">IQ</span>
+            <h1 className="app-shell__title">PropertyIQ</h1>
+          </div>
+          <PersonaSwitcher activePersona={persona as any} onChange={onPersonaChange} />
+        </header>
 
-      {/* ── Content ── */}
-      <main id="main-content" className="app-shell__main">
-        {showProfile && activeTab && <p className="app-shell__context">{activeTab.label}</p>}
-        {children}
-      </main>
+        {/* Main Content Area */}
+        <main id="main-content" className="app-shell__main">
+          {children}
+        </main>
 
-      {/* ── Mobile Bottom Nav ── */}
-      <nav className="app-shell__nav-mobile" aria-label="Mobile navigation">
-        {MOBILE_TABS.map(tab => (
-          tab.id === 'more' ? (
-            <button
-              key="more"
-              className={`app-shell__mob-tab ${moreOpen ? 'app-shell__mob-tab--active' : ''}`}
-              onClick={() => setMoreOpen(true)}
-              aria-label="More options"
-            >
-              <Icon name="more" size={22} />
-              <span className="app-shell__mob-label">More</span>
-            </button>
-          ) : (
-            <button
-              key={tab.id}
-              className={`app-shell__mob-tab ${currentView === tab.view ? 'app-shell__mob-tab--active' : ''}`}
-              onClick={() => tab.view && onViewChange(tab.view)}
-              aria-current={currentView === tab.view ? 'page' : undefined}
-              aria-label={tab.label}
-            >
-              <Icon name={tab.icon} size={22} />
-              <span className="app-shell__mob-label">{tab.label}</span>
-            </button>
-          )
-        ))}
-      </nav>
+        {/* Mobile Bottom Nav */}
+        <nav className="app-shell__nav-mobile">
+          {MOBILE_TABS.map(tab => (
+            tab.id === 'more' ? (
+              <button
+                key="more"
+                className={`app-shell__mob-tab ${moreOpen ? 'app-shell__mob-tab--active' : ''}`}
+                onClick={() => setMoreOpen(true)}
+              >
+                <Icon name="more" size={24} />
+                <span className="app-shell__mob-label">More</span>
+              </button>
+            ) : (
+              <button
+                key={tab.id}
+                className={`app-shell__mob-tab ${currentView === tab.view ? 'app-shell__mob-tab--active' : ''}`}
+                onClick={() => tab.view && onViewChange(tab.view)}
+              >
+                <Icon name={tab.icon} size={24} />
+                <span className="app-shell__mob-label">{tab.label}</span>
+              </button>
+            )
+          ))}
+        </nav>
+      </div>
 
-      {/* ── More Sheet (mobile) ── */}
+      {/* Mobile More Sheet */}
       <BottomSheet open={moreOpen} onClose={() => setMoreOpen(false)} title="More">
-        <MenuItems
-          items={MORE_ITEMS}
-          currentView={currentView}
-          onSelect={handleMoreSelect}
-        />
-        <hr className="app-shell__divider" />
-        <MenuItems
-          items={[
-            { id: 'settings' as ViewId, label: 'Settings', icon: 'settings' as IconName },
-            { id: 'logout' as ViewId, label: 'Log out', icon: 'log-out' as IconName },
-          ]}
-          currentView={currentView}
-          onSelect={(id) => { if (id === 'logout') onLogout(); else handleMoreSelect(id); }}
-        />
+        <div className="app-shell__menu">
+          {SIDEBAR_GROUPS.flatMap(g => g.items).map(item => (
+            <button
+              key={item.id}
+              className={`app-shell__menu-item ${currentView === item.id ? 'app-shell__menu-item--active' : ''}`}
+              onClick={() => { onViewChange(item.id as ViewId); setMoreOpen(false); }}
+            >
+              <Icon name={item.icon} size={20} />
+              {item.label}
+            </button>
+          ))}
+          <hr className="app-shell__divider" />
+          <button className="app-shell__menu-item" onClick={onLogout}>
+            <Icon name="log-out" size={20} /> Log out
+          </button>
+        </div>
       </BottomSheet>
     </div>
   );
 };
-
-function MenuItems({ items, currentView, onSelect }: {
-  items: { id: ViewId | string; label: string; icon: IconName }[];
-  currentView: string;
-  onSelect: (id: any) => void;
-}) {
-  return (
-    <div className="app-shell__menu">
-      {items.map(item => (
-        <button
-          key={item.id}
-          className={`app-shell__menu-item ${currentView === item.id ? 'app-shell__menu-item--active' : ''}`}
-          onClick={() => onSelect(item.id)}
-        >
-          <Icon name={item.icon} size={20} />
-          <span>{item.label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}

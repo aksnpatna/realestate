@@ -18,9 +18,15 @@ export default defineConfig({
           if (id.includes('node_modules/recharts')) return 'vendor-recharts';
         },
       },
+      external: [],
+      // Include all components in the bundle
+      treeshake: false,
     },
   },
   server: {
+    host: '0.0.0.0',
+    port: 5174,
+    strictPort: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8082',

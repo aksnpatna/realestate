@@ -1234,7 +1234,20 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
     formatted_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_price} for r in history_records if r.median_price]
     formatted_rent_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_rent} for r in history_records if r.median_rent]
 
+    # Get property images for this suburb
+    property_listings = db.query(PropertyListing).filter(PropertyListing.suburb_id == v3.id).limit(5).all()
+    images = []
+    for listing in property_listings:
+        if listing.images_json and isinstance(listing.images_json, list) and len(listing.images_json) > 0:
+            images.extend(listing.images_json)
+    # Remove duplicates
+    unique_images = []
+    for img in images:
+        if img not in unique_images:
+            unique_images.append(img)
+
     response = {
+        "images_json": unique_images,
         "id": v3.id.lower(),
         "name": v3.name, "state": v3.state, "postcode": v3.postcode,
         "isLive": bool(v3.is_live) if v3.is_live is not None else True,

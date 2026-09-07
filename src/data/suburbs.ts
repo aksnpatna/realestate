@@ -17,6 +17,7 @@ export interface SuburbData {
   name: string;
   postcode: string;
   state: string;
+  images_json?: string[];
   growthScore: number;
   coordinates?: [number, number];
   isMetro?: boolean;

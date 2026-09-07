@@ -23,7 +23,9 @@ import './index.css'
 import LandingPage from './components/LandingPage'
 import PromoBanner from './components/PromoBanner'
 import MacroBenchmarkPanel from './components/MacroBenchmarkPanel'
-import ShareReport from './components/ShareReport'
+import { SuburbHero } from './components/SuburbHero';
+import './styles/hero.css';
+
 import { getDisplayGroup, getStateName } from './utils/regionMapper'
 import { AppShell } from './components/AppShell'
 import type { ViewId } from './components/AppShell'
@@ -37,7 +39,7 @@ const viewToTab = (view: string | null): TabName => {
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
-const UnifiedSearchView = lazy(() => import('./components/UnifiedSearchView'))
+const ChatView = lazy(() => import('./components/ChatView'))
 const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
 const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
 
@@ -99,9 +101,9 @@ function App() {
   // 1. Dynamic Page Title
   useEffect(() => {
     if (activeSuburb) {
-      document.title = `${activeSuburb.name}, ${activeSuburb.state} ${activeSuburb.postcode} — YieldSense`
+      document.title = `${activeSuburb.name}, ${activeSuburb.state} ${activeSuburb.postcode} — PropertyIQ`
     } else {
-      document.title = 'YieldSense'
+      document.title = 'PropertyIQ'
     }
   }, [activeSuburb])
 
@@ -224,7 +226,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (isAuthenticated) {
+     if (isAuthenticated) {
       setLoadingData(true)
       fetch(`/api/suburbs?state=${activeState}`, { credentials: 'include' })
         .then(res => res.json())
@@ -242,7 +244,7 @@ function App() {
           setSuburbsData([])
           setLoadingData(false)
         })
-      
+    
       fetch('/api/benchmarks', { credentials: 'include' })
         .then(res => res.json())
         .then(data => setBenchmarks(data))
@@ -257,7 +259,7 @@ function App() {
         })
         .catch(err => console.error("Favorites fetch error:", err))
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, activeState])
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -497,7 +499,7 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search)
     
     try {
-      const res = await fetch('/api/register', {
+       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -539,7 +541,7 @@ function App() {
   if (isCheckingAuth) {
     return (
       <div className="app-container u-25c05ceb">
-        <div className="title-glow u-27972ce9">Loading YieldSense...</div>
+        <div className="title-glow u-27972ce9">Loading PropertyIQ...</div>
       </div>
     )
   }
@@ -561,7 +563,7 @@ function App() {
       <div className="app-container u-25c05ceb">
         <div className="glass-card u-7395aece">
           <div className="u-a1f2efe4">
-            <h1 className="title-glow u-1d992e33">YieldSense</h1>
+            <h1 className="title-glow u-1d992e33">PropertyIQ</h1>
             <button onClick={() => setAuthMode('landing')} className="u-ae9cf90d">Back</button>
           </div>
           <p className="subtitle u-70cb1db7">
@@ -667,7 +669,7 @@ function App() {
       <PromoBanner />
       <TermsOfUseModal />
 
-      {(activeTab === 'ask' || activeTab === 'buy-finder') && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Search...</div>}><UnifiedSearchView suburbsData={suburbsData} setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} onSelectResult={(result: any, meta: any) => { setSelectedBuyerFitResult(result); setSelectedRequestMeta(meta); try { sessionStorage.setItem('bf_result', JSON.stringify(result)); sessionStorage.setItem('bf_meta', JSON.stringify(meta)); } catch {} if (isAuthenticated) { fetch('/api/buy-finder/snapshots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ suburb_id: result.suburb_id, request_meta: meta, result }) }).catch(() => {}) } }} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
+      {(activeTab === 'ask' || activeTab === 'buy-finder') && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Chat...</div>}><ChatView setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
@@ -858,129 +860,11 @@ function App() {
             {activeSuburb ? (
               <div className="content-wrapper animate-fade-in key-wrap" key={activeSuburb.id}>
                 <div className="glass-card" {...{ [SECTION_ATTR]: 'overview' }}>
-                    <div className="detail-header u-a8ad98bf">
-                      <div className="u-50bac25d">
-                        {/* Left Column: Title & Subtitle */}
-                        <div className="u-88f597de">
-                          <h2 className="u-7e222d6e">
-                            {activeSuburb.name}, {activeSuburb.state}
-                          </h2>
-                          <div className="u-9d43798d">
-                            <span className="u-e0cfe6f3">{activeSuburb.postcode}</span>
-                            {(activeSuburb as any).cbdDistance && (
-                              <>
-                                <span className="u-98fed34e">•</span>
-                                <span>{`${(activeSuburb as any).cbdDistance} min to ${activeSuburb.metroCBD || 'CBD'}`}</span>
-                              </>
-                            )}
-                            {(activeSuburb as any).lastUpdated && (
-                              <>
-                                <span className="u-98fed34e">•</span>
-                                <span className="u-355bd10b">
-                                  Updated {new Date((activeSuburb as any).lastUpdated).toLocaleDateString()}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                          
-                          {/* 3. Suburb Elevator Pitch */}
-                          {(() => {
-                            const price = (activeSuburb as any).houseMedianPrice;
-                            const yield_ = (activeSuburb as any).houseGrossRentalYield || (activeSuburb as any).rentalYield;
-                            const priceStr = price ? ` With a median house price of $${price.toLocaleString()}` : '';
-                            const yieldStr = yield_ ? ` and a gross rental yield of ${yield_}%` : '';
-                            const narrative = (activeSuburb.metrics as any)?.growthNarrative ||
-                              `${activeSuburb.name} is a ${activeSuburb.growthScore > 70 ? 'high-momentum' : 'stable'} suburb ${(activeSuburb as any).cbdDistance ? `${(activeSuburb as any).cbdDistance} mins from the CBD` : 'in a well-connected region'}.${priceStr}${yieldStr ? yieldStr + ',' : ''} it presents a compelling profile for ${persona === 'first_home_buyer' ? 'home buyers' : 'investors'}.`;
-                            return (
-                              <div className="u-4e9e8cec">
-                                {narrative}
-                              </div>
-                            );
-                          })()}
-                        </div>
-
-                        {/* Right Column: Actions & Scorecard */}
-                        <div className="profile-action-btns u-ce81da38">
-                          <div className="u-d147c587" title="PropertyIQ Scorecard — composite of Momentum, Yield & Vacancy">
-                            <span className="u-4fa05460">Score</span>
-                            <span className="u-7bbecc0d">
-                              {(() => {
-                                const score = activeSuburb.growthScore ?? 50;
-                                const yield_ = (activeSuburb as any).houseGrossRentalYield ?? 0;
-                                const vacancy = Number(activeSuburb.vacancyRate ?? 2);
-                                if (score > 70 && yield_ > 4.5 && vacancy < 3) return 'A+';
-                                if (score > 60 && yield_ > 4.0) return 'A';
-                                if (score > 50 || yield_ > 3.5) return 'B+';
-                                if (score > 40) return 'B';
-                                return 'C+';
-                              })()}
-                            </span>
-                          </div>
-                          <button
-                            className="favorite-btn u-fd5181a8" style={{background: favorites.includes(activeSuburb.id) ? 'rgba(239,68,68,0.08)' : 'var(--bg-dark)', color: favorites.includes(activeSuburb.id) ? '#ef4444' : 'var(--text-primary)'}}
-                            onClick={() => toggleFavorite(activeSuburb.id)}
-                            title={favorites.includes(activeSuburb.id) ? "Remove from Favorites" : "Add to Favorites"}
-                          >
-                            <span className="u-ce0fd88b">{favorites.includes(activeSuburb.id) ? '♥' : '♡'}</span>
-                            <span className="profile-action-text">{favorites.includes(activeSuburb.id) ? 'Saved' : 'Save'}</span>
-                          </button>
-                          
-                          <div className="u-ca64bf6a">
-                            <ShareReport suburbName={`${activeSuburb.name}, ${activeSuburb.state}`} suburbId={activeSuburb.id} />
-                          </div>
-
-                          <button
-                            className="close-panel-btn u-3b2300ad"
-                            onClick={() => setActiveTab('buy-finder')}
-                            title="Find similar suburbs based on your criteria"
-                          >
-                            <span className="u-5ffc2c6d">🔍</span>
-                            <span className="profile-action-text">Compare</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Row 2: Data Provenance Ribbon (simplified) */}
-                      <div className="profile-badge-ribbon u-b6087144">
-                        <span className="u-fb1cea66">Data Sources</span>
-                        
-                        {/* Data Quality */}
-                        {(() => {
-                          const dq = (activeSuburb as any).dqScore;
-                          const dqColor = dq >= 80 ? 'var(--success)' : dq >= 60 ? 'var(--warning)' : 'var(--danger)';
-                          return (
-                            <span className="u-723496b9">
-                              <span className="u-c7477801">Data Quality</span>
-                              <span className="u-fdec1e77" style={{color: dqColor}}>{dq != null ? `${Math.round(dq)}/100` : 'Low'}</span>
-                            </span>
-                          );
-                        })()}
-
-                        {/* ABS Verified */}
-                        {(activeSuburb as any).absDemographicsSourced && (
-                          <span className="u-fc148b65">✓ ABS Census</span>
-                        )}
-
-                        {/* Last Updated */}
-                        {(activeSuburb as any).lastUpdated && (
-                          <span className="u-451867e1">
-                            Updated {new Date((activeSuburb as any).lastUpdated).toLocaleDateString('en-AU', { month: 'short', year: 'numeric' })}
-                          </span>
-                        )}
-
-                        {/* Cashflow CTA — compact */}
-                        {persona !== 'first_home_buyer' && (
-                          <div className="u-73ab3db5">
-                            <button
-                              onClick={() => setActiveTab('gearing')}
-                              className="badge-pill u-d3432ab0"
-                            >
-                              💰 Run Cashflow →
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                  <SuburbHero 
+                    suburb={activeSuburb}
+                    isSaved={activeSuburb && favorites.includes(activeSuburb.id)}
+                    onToggleSave={() => activeSuburb && toggleFavorite(activeSuburb.id)}
+                  />
 
 
                   {/* Evidence-backed highlights — split Strengths / Cautions */}
