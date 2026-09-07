@@ -10,6 +10,8 @@ export default defineConfig({
     globals: true,
   },
   build: {
+    sourcemap: true,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -19,7 +21,6 @@ export default defineConfig({
         },
       },
       external: [],
-      // Include all components in the bundle
       treeshake: false,
     },
   },
