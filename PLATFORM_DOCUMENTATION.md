@@ -132,4 +132,28 @@ To reflect changes to `realestate.akstest.win`:
   - **Image Display**: Enhanced `SuburbHero.tsx` to handle images from the backend. Now the component checks if the suburb has images (`suburb.images_json`) and displays the first one, or falls back to Unsplash with suburb-specific queries.
   - **API Response**: Updated the backend to include property images in the `/api/suburbs/{suburb_id}` endpoint. Added code to fetch images from the `property_listings` table and include them in the API response as `images_json`.
   - **Interface Update**: Added `images_json` field to the `SuburbData` interface in `src/data/suburbs.ts`.
-  - **Docker Deployment**: Rebuilt and re-deployed the frontend Docker container to reflect the changes.
+   - **Docker Deployment**: Rebuilt and re-deployed the frontend Docker container to reflect the changes.
+
+- **2026-09-07 (CSS Tree-Shaking Fix)**:
+   - **Build Error**: Fixed "Failed to load transformWithEsbuild" error by adding esbuild as a dev dependency.
+   - **CSS Inclusion**: Disabled tree-shaking in vite.config.ts to ensure all CSS styles are included in the bundle.
+   - **Sourcemaps**: Added sourcemap generation for debugging purposes.
+   - **Minification**: Configured esbuild as the minifier for better build performance.
+   - **SuburbHero Styles**: Verified that .sh- class styles are now correctly included in the compiled CSS.
+   - **Commit**: Pushed changes to repository with commit message "Add esbuild and fix CSS tree-shaking".
+
+- **2026-09-07 (Suburb Profile Tab)**:
+   - **Sidebar Navigation**: Added "Suburb Profile" tab to the "Library" group in the left sidebar.
+   - **Mobile Navigation**: Added "Profile" tab to the mobile bottom nav.
+   - **Commit**: Pushed changes to repository with commit message "Add Suburb Profile tab to sidebar and mobile nav".
+
+- **2026-09-07 (Persona Switcher Overflow Fix)**:
+   - **CSS Fix**: Added overflow control to the persona switcher to prevent it from spilling onto the main screen.
+   - **Styles**: Updated .u-72b4a711 class in src/styles/utils.css to include width: 100%, overflow-x: auto, and padding-bottom: 4px.
+   - **Commit**: Pushed changes to repository with commit message "Prevent persona switcher from overflowing sidebar".
+
+- **2026-09-07 (Realestate-News-Updater Optimization)**:
+   - **Performance Fix**: Optimized the news sentiment updater to reduce CPU and memory usage.
+   - **Changes**: Added MAX_UPDATES_PER_CYCLE (5 updates per cycle) and SLEEP_BETWEEN_CYCLES (1 hour) to limit the number of API calls per cycle.
+   - **Benefits**: Reduces the frequency of web searches and LLM calls, lowering overall CPU and memory consumption.
+   - **Deployment**: Rebuilt and restarted the realestate-news-updater container.
