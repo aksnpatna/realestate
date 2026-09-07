@@ -65,7 +65,12 @@ class SuburbUIV3(Base):
     id = Column(String, primary_key=True, index=True)
     state = Column(String(3), index=True)
     name = Column(String, index=True)
-    postcode = Column(String)
+    postcode = Column(String, index=True)
+    
+    __table_args__ = (
+        Index("idx_suburb_state_postcode", "state", "postcode"),
+        Index("idx_suburb_postcode_name", "postcode", "name"),
+    )
     is_enriched = Column(Boolean, default=False, index=True)  # True if raw data was available
 
     # ---- HOUSE METRICS ----

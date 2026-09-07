@@ -127,7 +127,8 @@ def run_abs_building_pipeline():
         estimates = estimate_approvals_from_surrounding(unmapped)
         updated = 0
         
-        # 3. Apply real ABS data to mapped suburbs
+        # 3. Apply real ABS data to mapped suburbs (bulk update)
+        abs_updates = []
         for lga_name, total_approvals in lga_approvals.items():
             suburb_ids = LGA_MAPPING.get(lga_name, [])
             if not suburb_ids:
@@ -135,33 +136,71 @@ def run_abs_building_pipeline():
             
             # Distribute LGA approvals evenly across mapped suburbs
             per_suburb = max(1, total_approvals // len(suburb_ids))
+            
+            # Determine infrastructure investment level
+            if per_suburb > 500:
+                infra_level = f"Very High (LGA: {lga_name} — {per_suburb} approvals 12m)"
+            elif per_suburb > 200:
+                infra_level = f"High ({lga_name} LGA — {per_suburb} approvals 12m)"
+            elif per_suburb > 50:
+                infra_level = f"Moderate ({lga_name} LGA — {per_suburb} approvals 12m)"
+            else:
+                infra_level = "Limited"
+                
             for sid in suburb_ids:
-                db.execute(text("""
-                    UPDATE suburbs_ui_v3 
-                    SET building_approvals_12m = :val,
-                        infrastructure_investment = CASE 
-                            WHEN :val > 500 THEN 'Very High (LGA: ' || :lga || ' — ' || :val || ' approvals 12m)'
-                            WHEN :val > 200 THEN 'High (' || :lga || ' LGA — ' || :val || ' approvals 12m)' 
-                            WHEN :val > 50 THEN 'Moderate (' || :lga || ' LGA — ' || :val || ' approvals 12m)'
-                            ELSE 'Limited'
-                        END
-                    WHERE id = :id
-                """), {
-                    'val': per_suburb,
-                    'lga': lga_name,
-                    'id': sid
+                abs_updates.append({
+                    'id': sid,
+                    'building_approvals_12m': per_suburb,
+                    'infrastructure_investment': infra_level
                 })
                 updated += 1
         
-        # 4. Apply fallback estimates for remaining suburbs
+        if abs_updates:
+            # Convert to list of tuples for bulk update
+            abs_update_tuples = [(u['building_approvals_12m'], u['infrastructure_investment'], u['id']) for u in abs_updates]
+            
+            # Build and execute update using psycopg2's execute_values
+            from psycopg2.extras import execute_values
+            
+            conn = db.connection().connection
+            cur = conn.cursor()
+            
+            execute_values(
+                cur,
+                """
+                UPDATE suburbs_ui_v3 
+                SET building_approvals_12m = data.building_approvals_12m,
+                    infrastructure_investment = data.infrastructure_investment
+                FROM (VALUES %s) AS data(building_approvals_12m, infrastructure_investment, id)
+                WHERE suburbs_ui_v3.id = data.id
+                """,
+                abs_update_tuples
+            )
+        
+        # 4. Apply fallback estimates for remaining suburbs (bulk update)
+        fallback_updates = []
+        mapped_suburb_ids = {s for ids in LGA_MAPPING.values() for s in ids}
         for suburb_id, estimate in estimates.items():
-            if suburb_id not in [s for ids in LGA_MAPPING.values() for s in ids]:
-                db.execute(text("""
-                    UPDATE suburbs_ui_v3 
-                    SET building_approvals_12m = :val
-                    WHERE id = :id
-                """), {'val': estimate, 'id': suburb_id})
+            if suburb_id not in mapped_suburb_ids:
+                fallback_updates.append((estimate, suburb_id))
                 updated += 1
+        
+        if fallback_updates:
+            from psycopg2.extras import execute_values
+            
+            conn = db.connection().connection
+            cur = conn.cursor()
+            
+            execute_values(
+                cur,
+                """
+                UPDATE suburbs_ui_v3 
+                SET building_approvals_12m = data.estimate
+                FROM (VALUES %s) AS data(estimate, id)
+                WHERE suburbs_ui_v3.id = data.id
+                """,
+                fallback_updates
+            )
         
         db.commit()
         print(f"  ✓ Updated building approvals for {updated} suburbs")

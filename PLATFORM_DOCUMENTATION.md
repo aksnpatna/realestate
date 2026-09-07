@@ -76,4 +76,10 @@ To reflect changes to `realestate.akstest.win`:
 - **2026-09-06 (Unified Search Fixes)**: 
   - **Clarification Questions Visible**: Fixed the issue where clarification questions were only logged to console.log instead of being displayed to the user. Added a visible clarification card with yellow border in `UnifiedSearchView.tsx:276-281`.
   - **Excluded DQ List Rendered**: Added support for displaying the number of excluded suburbs due to data quality issues. The UI now shows: "X suburbs excluded due to data quality issues (below DQ threshold: Y)" in `UnifiedSearchView.tsx:381-385`.
+- **2026-09-06 (Test Results)**: Retested the unified search functionality:
+  - ✅ NLP path returns discovery results for UI example query "Find investment areas in QLD under $900k"
+  - ✅ Clarification questions are properly displayed in the UI
+  - ✅ Excluded DQ list is rendered
+  - ⚠️ Comparison query still has "AI synthesis unavailable" issue
+  - ⚠️ Manual ranking endpoint requires valid session token for testing
 

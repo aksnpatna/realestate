@@ -48,31 +48,32 @@ INSUFFICIENT_EVIDENCE_FALLBACK = CommitteeVerdict(
 )
 
 def get_llm():
-    # 1st: NVIDIA (Llama 3.1 70B)
+    # 1st: NVIDIA (Nemotron 3 Nano) - most capable available model
     if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("NVIDIA_API_KEY"),
             openai_api_base="https://integrate.api.nvidia.com/v1",
-            model_name="meta/llama-3.1-70b-instruct"
+            model_name=os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning")
         )
-    # 2nd: Groq (fast inference)
-    elif os.getenv("GROQ_API_KEY") and os.getenv("GROQ_API_KEY") != "none":
-        return ChatGroq(
-            api_key=os.getenv("GROQ_API_KEY"),
-            model_name="llama-3.3-70b-versatile"
+    # 2nd: xAI (Grok 4.6) - fast fallback
+    elif os.getenv("XAI_API_KEY") and os.getenv("XAI_API_KEY") != "none":
+        return ChatOpenAI(
+            openai_api_key=os.getenv("XAI_API_KEY"),
+            openai_api_base="https://api.x.ai/v1",
+            model_name=os.getenv("XAI_MODEL", "grok-4.6")
         )
-    # 3rd: DeepSeek
+    # 3rd: OpenAI (GPT-4o) - reliable and widely available
+    elif os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API_KEY") != "none":
+        return ChatOpenAI(
+            openai_api_key=os.getenv("OPENAI_API_KEY"),
+            model_name=os.getenv("OPENAI_MODEL", "gpt-4o")
+        )
+    # 4th: DeepSeek - alternative fallback
     elif os.getenv("DEEPSEEK_API_KEY") and os.getenv("DEEPSEEK_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("DEEPSEEK_API_KEY"),
             openai_api_base="https://api.deepseek.com/v1",
             model_name="deepseek-chat"
-        )
-    # 3rd: OpenAI / ChatGPT
-    elif os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API_KEY") != "none":
-        return ChatOpenAI(
-            openai_api_key=os.getenv("OPENAI_API_KEY"),
-            model_name="gpt-4o-mini"
         )
     # 4th: Local Ollama (Mac Air)
     else:

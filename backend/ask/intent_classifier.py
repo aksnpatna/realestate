@@ -30,8 +30,8 @@ async def classify_intent_llm(query: str, user_id: str = "unknown") -> Dict[str,
     """
 
     providers = [
-        {"name": "Grok", "key": os.getenv("XAI_API_KEY"), "base_url": "https://api.x.ai/v1", "model": "grok-2-latest"},
-        {"name": "NVIDIA", "key": os.getenv("NVIDIA_API_KEY"), "base_url": "https://integrate.api.nvidia.com/v1", "model": "meta/llama-3.1-70b-instruct"},
+        {"name": "NVIDIA", "key": os.getenv("NVIDIA_API_KEY"), "base_url": "https://integrate.api.nvidia.com/v1", "model": os.getenv("NVIDIA_MODEL", "nvidia/nemotron-4-340b-instruct")},
+        {"name": "Groq", "key": os.getenv("GROQ_API_KEY"), "base_url": "https://api.groq.com/openai/v1", "model": os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")},
         {"name": "DeepSeek", "key": os.getenv("DEEPSEEK_API_KEY"), "base_url": "https://api.deepseek.com/v1", "model": "deepseek-chat"}
     ]
 

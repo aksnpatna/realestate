@@ -226,40 +226,92 @@ def run_abs_social_housing(state_filter=None, limit=None, batch_size=500):
         # 4. Parse only the SALs we need
         g37 = parse_g37(set(matched.values()))
 
-        # 5. Update DB in batches
+        # 5. Update DB in bulk (single query instead of per-row updates)
         now = datetime.datetime.utcnow()
-        items = list(matched.items())
         updated = 0
         skipped = 0
-        for i in range(0, len(items), batch_size):
-            batch = items[i:i + batch_size]
-            for sid, sal in batch:
-                d = g37.get(sal)
-                if not d:
-                    skipped += 1
-                    continue
-                total = d["total_dwellings"]
-                ll4 = d["public_housing_dwellings"]
-                ll5 = d["community_housing_dwellings"]
-                state_pct = min(round(ll4 / total * 100, 2), 100.0) if total else 0.0
-                community_pct = min(round(ll5 / total * 100, 2), 100.0) if total else 0.0
-                social_pct = min(round((ll4 + ll5) / total * 100, 2), 100.0) if total else 0.0
-                db.query(SuburbUIV3).filter(SuburbUIV3.id == sid).update(
-                    {
-                        "public_housing_dwellings": ll4,
-                        "community_housing_dwellings": ll5,
-                        "renter_state_housing_pct": state_pct,
-                        "renter_community_housing_pct": community_pct,
-                        "social_housing_pct": social_pct,
-                        "abs_g37_sourced": True,
-                        "abs_g37_run_date": now,
-                    },
-                    synchronize_session=False,
-                )
-                updated += 1
+        
+        # Prepare update data
+        update_data = []
+        for sid, sal in matched.items():
+            d = g37.get(sal)
+            if not d:
+                skipped += 1
+                continue
+            total = d["total_dwellings"]
+            ll4 = d["public_housing_dwellings"]
+            ll5 = d["community_housing_dwellings"]
+            state_pct = min(round(ll4 / total * 100, 2), 100.0) if total else 0.0
+            community_pct = min(round(ll5 / total * 100, 2), 100.0) if total else 0.0
+            social_pct = min(round((ll4 + ll5) / total * 100, 2), 100.0) if total else 0.0
+            
+            update_data.append({
+                'id': sid,
+                'public_housing_dwellings': ll4,
+                'community_housing_dwellings': ll5,
+                'renter_state_housing_pct': state_pct,
+                'renter_community_housing_pct': community_pct,
+                'social_housing_pct': social_pct,
+                'abs_g37_sourced': True,
+                'abs_g37_run_date': now,
+            })
+            updated += 1
+        
+        # Perform bulk update using SQLAlchemy's update with values
+        from sqlalchemy import case
+        
+        if update_data:
+            # Create case statements for each field
+            id_list = [d['id'] for d in update_data]
+            
+            public_housing_case = case(
+                {d['id']: d['public_housing_dwellings'] for d in update_data},
+                value=SuburbUIV3.id
+            )
+            
+            community_housing_case = case(
+                {d['id']: d['community_housing_dwellings'] for d in update_data},
+                value=SuburbUIV3.id
+            )
+            
+            state_pct_case = case(
+                {d['id']: d['renter_state_housing_pct'] for d in update_data},
+                value=SuburbUIV3.id
+            )
+            
+            community_pct_case = case(
+                {d['id']: d['renter_community_housing_pct'] for d in update_data},
+                value=SuburbUIV3.id
+            )
+            
+            social_pct_case = case(
+                {d['id']: d['social_housing_pct'] for d in update_data},
+                value=SuburbUIV3.id
+            )
+            
+            abs_g37_sourced_case = case(
+                {d['id']: d['abs_g37_sourced'] for d in update_data},
+                value=SuburbUIV3.id
+            )
+            
+            abs_g37_run_date_case = case(
+                {d['id']: d['abs_g37_run_date'] for d in update_data},
+                value=SuburbUIV3.id
+            )
+            
+            # Execute single bulk update
+            db.query(SuburbUIV3).filter(SuburbUIV3.id.in_(id_list)).update({
+                'public_housing_dwellings': public_housing_case,
+                'community_housing_dwellings': community_housing_case,
+                'renter_state_housing_pct': state_pct_case,
+                'renter_community_housing_pct': community_pct_case,
+                'social_housing_pct': social_pct_case,
+                'abs_g37_sourced': abs_g37_sourced_case,
+                'abs_g37_run_date': abs_g37_run_date_case,
+            }, synchronize_session=False)
+            
             db.commit()
-            log.info(f"  Batch {i // batch_size + 1}: committed "
-                     f"{min(i + batch_size, len(items))}/{len(items)}")
+            log.info(f"  Bulk update completed: {updated} records updated")
     finally:
         db.close()
 

@@ -63,36 +63,93 @@ def synthesize_research(
     """
 
     try:
+        nvidia_key = os.getenv("NVIDIA_API_KEY")
         groq_key = os.getenv("GROQ_API_KEY")
         openai_key = os.getenv("OPENAI_API_KEY")
+        deepseek_key = os.getenv("DEEPSEEK_API_KEY")
         llm_timeout = float(os.getenv("LLM_TIMEOUT_SEC", "15.0"))
+        
+        # Debug logging
+        print(f"[DEBUG] NVIDIA_KEY: {'Set' if nvidia_key and nvidia_key != 'none' else 'Not set'}")
+        print(f"[DEBUG] GROQ_KEY: {'Set' if groq_key else 'Not set'}")
+        print(f"[DEBUG] OPENAI_KEY: {'Set' if openai_key and openai_key != 'sk-mock' else 'Not set'}")
+        print(f"[DEBUG] DEEPSEEK_KEY: {'Set' if deepseek_key and deepseek_key != 'none' else 'Not set'}")
 
-        if groq_key:
-            client = openai.Client(api_key=groq_key, base_url="https://api.groq.com/openai/v1")
-            response = client.chat.completions.create(
-                model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt}
-                ],
-                response_format={"type": "json_object"},
-                timeout=llm_timeout
-            )
-            raw = response.choices[0].message.content
-            parsed = json.loads(raw)
-        elif openai_key and openai_key != "sk-mock":
-            client = openai.Client(api_key=openai_key)
-            response = client.chat.completions.create(
-                model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt}
-                ],
-                response_format={"type": "json_object"},
-                timeout=llm_timeout
-            )
-            raw = response.choices[0].message.content
-            parsed = json.loads(raw)
+        if nvidia_key and nvidia_key != "none":
+            print(f"[DEBUG] Trying NVIDIA API")
+            try:
+                client = openai.Client(api_key=nvidia_key, base_url="https://integrate.api.nvidia.com/v1")
+                response = client.chat.completions.create(
+                    model=os.getenv("NVIDIA_MODEL", "nvidia/nemotron-4-340b-instruct"),
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    timeout=llm_timeout
+                )
+                raw = response.choices[0].message.content
+                parsed = json.loads(raw)
+                print(f"[DEBUG] NVIDIA API successful")
+            except Exception as e:
+                print(f"[DEBUG] NVIDIA API failed: {str(e)}")
+        
+        if 'parsed' not in locals() and groq_key:
+            print(f"[DEBUG] Trying Groq API")
+            try:
+                client = openai.Client(api_key=groq_key, base_url="https://api.groq.com/openai/v1")
+                response = client.chat.completions.create(
+                    model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instruct"),
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    timeout=llm_timeout
+                )
+                raw = response.choices[0].message.content
+                parsed = json.loads(raw)
+                print(f"[DEBUG] Groq API successful")
+            except Exception as e:
+                print(f"[DEBUG] Groq API failed: {str(e)}")
+                
+        if 'parsed' not in locals() and openai_key and openai_key != "sk-mock":
+            print(f"[DEBUG] Trying OpenAI API")
+            try:
+                client = openai.Client(api_key=openai_key)
+                response = client.chat.completions.create(
+                    model=os.getenv("OPENAI_MODEL", "gpt-4o"),
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    timeout=llm_timeout
+                )
+                raw = response.choices[0].message.content
+                parsed = json.loads(raw)
+                print(f"[DEBUG] OpenAI API successful")
+            except Exception as e:
+                print(f"[DEBUG] OpenAI API failed: {str(e)}")
+                
+        if 'parsed' not in locals() and deepseek_key and deepseek_key != "none":
+            print(f"[DEBUG] Trying DeepSeek API")
+            try:
+                client = openai.Client(api_key=deepseek_key, base_url="https://api.deepseek.com/v1")
+                response = client.chat.completions.create(
+                    model="deepseek-chat",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    timeout=llm_timeout
+                )
+                raw = response.choices[0].message.content
+                parsed = json.loads(raw)
+                print(f"[DEBUG] DeepSeek API successful")
+            except Exception as e:
+                print(f"[DEBUG] DeepSeek API failed: {str(e)}")
         else:
             # ─── Deterministic evidence-only fallback using metric_explainers ──
             from ask.metric_explainers import get_explanation

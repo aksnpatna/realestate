@@ -287,7 +287,7 @@ Output: {"question":"…","goal":"…","suburbs":[{"name":"…","state":"…"}],
 "budget":null,"deposit":null,"annual_income":null,"priorities":[],"confidence":0.9}"""
 
     providers = [
-        ("Groq", os.getenv("GROQ_API_KEY")),
+        ("xAI", os.getenv("XAI_API_KEY")),
         ("NVIDIA", os.getenv("NVIDIA_API_KEY")),
         ("DeepSeek", os.getenv("DEEPSEEK_API_KEY")),
         ("OpenAI", os.getenv("OPENAI_API_KEY")),
@@ -300,12 +300,12 @@ Output: {"question":"…","goal":"…","suburbs":[{"name":"…","state":"…"}],
             continue
         try:
             base = None
-            model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-            if name == "Groq":
-                base = "https://api.groq.com/openai/v1"
+            model = os.getenv("XAI_MODEL", "grok-4.6")
+            if name == "xAI":
+                base = "https://api.x.ai/v1"
             elif name == "NVIDIA":
                 base = "https://integrate.api.nvidia.com/v1"
-                model = "meta/llama-3.1-70b-instruct"
+                model = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"
             elif name == "DeepSeek":
                 base = "https://api.deepseek.com/v1"
                 model = "deepseek-chat"
