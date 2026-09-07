@@ -154,34 +154,31 @@ def fetch_news_node(state: CommitteeState):
 
 def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
     """On-demand news sentiment for a single suburb.
-    Uses HuggingFace transformer for scoring, with keyword fallback.
+    Uses keyword sentiment analysis only for minimal resource consumption.
     Cached externally via cache_utils.cached_ai decorator.
     Returns: {score, label, summary, articles, fetched_at, provider_used}
     """
     try:
         query_suburb = f"{suburb_name} {state_code} Australia real estate market news prices outlook 2026"
-        query_macro = "Australia housing market RBA interest rates inflation macro outlook 2026"
         
-        articles = robust_search(query_suburb, max_results=5)
-        macro_articles = robust_search(query_macro, max_results=3)
-        
-        if not articles:
-            articles = []
-        if macro_articles:
-            articles.extend(macro_articles)
+        articles = robust_search(query_suburb, max_results=2)  # Reduce to 2 articles
 
-        # Build combined text for transformer analysis
+        # Build combined text for keyword analysis
         combined_text = " ".join(
             f"{(a.get('title') or '').lower()} {(a.get('content') or '').lower()}"
             for a in articles
         )
 
-        # Use transformer sentiment (with keyword fallback)
-        from ai_sentiment import analyze_sentiment
-        sentiment_result = analyze_sentiment(combined_text)
-        score = sentiment_result["score"]
-        label = sentiment_result["label"]
-        provider = sentiment_result["provider"]
+        # Use keyword sentiment analysis only (no remote LLM calls)
+        from ai_sentiment import _keyword_sentiment
+        score = _keyword_sentiment(combined_text)
+        
+        if score >= 7:
+            label = "Bullish"
+        elif score >= 4.5:
+            label = "Neutral"
+        else:
+            label = "Bearish"
 
         # Collect article summaries
         summaries = []
@@ -192,7 +189,7 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
 
         logger.info(
             f"[news-sentiment] {suburb_name}, {state_code}: "
-            f"score={score} label={label} provider={provider} articles={len(articles)}"
+            f"score={score} label={label} provider=keyword articles={len(articles)}"
         )
 
         return {
@@ -201,7 +198,7 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
             "summary": "; ".join(summaries[:3]) if summaries else "No relevant articles found.",
             "articles": len(articles),
             "fetched_at": __import__("datetime").datetime.utcnow().isoformat(),
-            "provider_used": provider,
+            "provider_used": "keyword",
         }
     except Exception as e:
         logger.error(f"[news-sentiment] Error: {e}")

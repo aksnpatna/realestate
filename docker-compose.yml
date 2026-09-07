@@ -50,27 +50,7 @@ services:
       redis:
         condition: service_healthy
 
-  news-updater:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: realestate-news-updater
-    command: python cron_news.py
-    restart: unless-stopped
-    env_file:
-      - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-    depends_on:
-      db:
-        condition: service_healthy
+
 
   osm-updater:
     build:

@@ -23,14 +23,23 @@ from ai_agent import get_news_sentiment
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("news-updater")
 
+# Check if news updater is enabled
+ENABLE_NEWS_UPDATER = os.getenv("ENABLE_NEWS_UPDATER", "false").lower() == "true"
+
 # Suburbs with CBD distance < 60 mins are considered metro
 METRO_CBD_MINS = 60
-STALE_DAYS = 7
-THROTTLE_SECONDS = 60  # Wait 60s between calls to preserve Mac Air resources
-MAX_UPDATES_PER_CYCLE = 5  # Limit to 5 updates per cycle to reduce load
-SLEEP_BETWEEN_CYCLES = 3600  # Sleep for 1 hour between full cycles
+STALE_DAYS = 14  # Increase to 14 days to reduce frequency of updates
+THROTTLE_SECONDS = 120  # Longer sleep between calls to reduce load
+MAX_UPDATES_PER_CYCLE = 1  # Only update 1 suburb per cycle
+SLEEP_BETWEEN_CYCLES = 21600  # Sleep for 6 hours between full cycles
 
 def update_metro_news():
+    if not ENABLE_NEWS_UPDATER:
+        logger.info("News sentiment updater is disabled (ENABLE_NEWS_UPDATER=false)")
+        logger.info("To enable, set ENABLE_NEWS_UPDATER=true in .env file")
+        while True:
+            time.sleep(3600)  # Sleep for 1 hour before checking again
+    
     logger.info("Starting background news sentiment updater loop...")
     while True:
         try:
@@ -87,9 +96,9 @@ def update_metro_news():
             
             remaining = len(suburbs_to_update) - updated_count
             if remaining > 0:
-                logger.info(f"Remaining {remaining} suburbs to update. Will continue in {SLEEP_BETWEEN_CYCLES/60} minutes...")
+                logger.info(f"Remaining {remaining} suburbs to update. Will continue in {SLEEP_BETWEEN_CYCLES/3600} hours...")
             else:
-                logger.info("All suburbs are up to date. Sleeping for 1 hour...")
+                logger.info("All suburbs are up to date. Sleeping for 6 hours...")
                 
             time.sleep(SLEEP_BETWEEN_CYCLES)
                 
