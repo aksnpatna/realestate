@@ -152,8 +152,11 @@ To reflect changes to `realestate.akstest.win`:
    - **Styles**: Updated .u-72b4a711 class in src/styles/utils.css to include width: 100%, overflow-x: auto, and padding-bottom: 4px.
    - **Commit**: Pushed changes to repository with commit message "Prevent persona switcher from overflowing sidebar".
 
-- **2026-09-07 (Realestate-News-Updater Optimization)**:
-   - **Performance Fix**: Optimized the news sentiment updater to reduce CPU and memory usage.
-   - **Changes**: Added MAX_UPDATES_PER_CYCLE (5 updates per cycle) and SLEEP_BETWEEN_CYCLES (1 hour) to limit the number of API calls per cycle.
-   - **Benefits**: Reduces the frequency of web searches and LLM calls, lowering overall CPU and memory consumption.
-   - **Deployment**: Rebuilt and restarted the realestate-news-updater container.
+- **2026-09-07 (Realestate-News-Updater Disabled)**:
+   - **Performance Fix**: Disabled the news sentiment updater completely to eliminate CPU and memory consumption.
+   - **Changes**:
+     - Added `ENABLE_NEWS_UPDATER=false` to .env file
+     - Modified `cron_news.py` to check the environment variable and sleep if disabled
+     - Removed the news-updater service from docker-compose.yml
+   - **Benefits**: Eliminates all CPU and memory usage associated with news sentiment analysis
+   - **Deployment**: Stopped and removed the realestate-news-updater container
