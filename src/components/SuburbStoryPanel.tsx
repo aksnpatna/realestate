@@ -12,124 +12,130 @@ export function SuburbStoryPanel({ suburb }: SuburbStoryPanelProps) {
     return null;
   }
 
-  // Generate story points based on data
-  const getStoryPoints = () => {
-    const points = [];
-
-    // Why Now? (Market timing)
+  // Generate narrative structures based on data
+  const getShortVersion = () => {
     const vacancyRate = suburb.vacancyRate || 3;
     const priceChange = suburb.houseMedianPrice12mChangePct || 0;
+    const supply = suburb.buildingApprovals12m || 0;
     
-    if (vacancyRate < 2) {
-      points.push({
-        icon: 'trending-up',
-        title: 'Why now?',
-        content: `The vacancy rate is ${vacancyRate.toFixed(1)}%, indicating a tight rental market that usually precedes price growth. Prices have ${priceChange > 0 ? `risen ${priceChange.toFixed(1)}%` : `stayed stable`} in the last 12 months.`,
-        color: 'var(--success)'
-      });
-    } else if (vacancyRate < 3) {
-      points.push({
-        icon: 'clock',
-        title: 'Why now?',
-        content: `The vacancy rate is ${vacancyRate.toFixed(1)}%, showing a balanced market. Now might be a good time to negotiate as prices have ${priceChange > 0 ? `grown ${priceChange.toFixed(1)}%` : `remained steady`} recently.`,
-        color: 'var(--warning)'
-      });
-    } else {
-      points.push({
-        icon: 'alert-circle',
-        title: 'Why now?',
-        content: `With a vacancy rate of ${vacancyRate.toFixed(1)}%, the market is more favorable for buyers. Prices have ${priceChange > 0 ? `increased ${priceChange.toFixed(1)}%` : `declined ${Math.abs(priceChange).toFixed(1)}%`} in the last year.`,
-        color: 'var(--danger)'
-      });
-    }
+    return {
+      opportunity: vacancyRate < 2 ? `The rental market is exceptionally tight (${vacancyRate.toFixed(1)}% vacancy), which historically precedes price growth and ensures immediate tenant demand.` : `A balanced market offering stable entry opportunities without excessive buyer competition.`,
+      tension: priceChange > 5 ? `Recent price growth of ${priceChange.toFixed(1)}% means the affordability gap compared to inner-ring suburbs is closing.` : supply > 50 ? `An elevated pipeline of new dwelling approvals could introduce short-term supply competition.` : `Yields may compress if price growth outpaces rental adjustments in the near term.`,
+      outlook: priceChange > 0 && vacancyRate < 2 ? `Strong momentum indicators suggest continued demand, provided borrowing capacities remain stable.` : `Market signals point towards a period of consolidation, favoring long-term holders over short-term flippers.`
+    };
+  };
 
-    // Who buys here? (Demographics)
+  const getLifeProfile = () => {
     const medianAge = suburb.medianAge || 35;
     const ownerOccupierRate = suburb.ownerOccupierRate || 65;
     
-    if (medianAge < 30) {
-      points.push({
-        icon: 'users',
-        title: 'Who buys here?',
-        content: `This is a young, vibrant suburb with a median age of ${medianAge} years. ${ownerOccupierRate > 60 ? 'Families make up the majority' : 'Renters and young professionals dominate'} the population.`,
-        color: 'var(--accent-cyan)'
-      });
-    } else if (medianAge < 40) {
-      points.push({
-        icon: 'home',
-        title: 'Who buys here?',
-        content: `With a median age of ${medianAge} years, this suburb attracts ${ownerOccupierRate > 60 ? 'young families' : 'professionals and couples'} looking for ${suburb.cbdDistanceMins && suburb.cbdDistanceMins < 20 ? 'CBD proximity' : 'affordable housing'}.`,
-        color: 'var(--accent-cyan)'
-      });
-    } else {
-      points.push({
-        icon: 'heart',
-        title: 'Who buys here?',
-        content: `This is an established suburb with a median age of ${medianAge} years. ${ownerOccupierRate > 60 ? 'Families and downsizers' : 'Retirees and long-term residents'} appreciate the ${suburb.schools?.length > 3 ? 'excellent schools' : 'quiet lifestyle'}.`,
-        color: 'var(--accent-cyan)'
-      });
-    }
-
-    // What's the risk? (One honest risk factor)
-    const supplyPipeline = suburb.buildingApprovals12m || 0;
-    const infrastructure = suburb.infrastructureInvestment ? 1 : 0;
+    let profile = `This is a ${ownerOccupierRate < 50 ? 'renter-heavy' : 'predominantly owner-occupier'} suburb with a `;
+    if (medianAge < 30) profile += `young adult population, making it vibrant but potentially transient. It may suit professionals and smaller households more than buyers seeking large detached family homes.`;
+    else if (medianAge < 40) profile += `relatively young population, attracting families and professionals looking for a balance of lifestyle and affordability.`;
+    else profile += `more established demographic profile, favored by long-term residents and downsizers who appreciate the quieter lifestyle.`;
     
-    if (supplyPipeline > 20) {
-      points.push({
-        icon: 'building',
-        title: 'What\'s the risk?',
-        content: `There are ${supplyPipeline} building approvals in the pipeline, which could increase supply and potentially put downward pressure on prices in the short term.`,
-        color: 'var(--danger)'
-      });
-    } else if (!suburb.infrastructureInvestment) {
-      points.push({
-        icon: 'road',
-        title: 'What\'s the risk?',
-        content: `Infrastructure development information is limited. This could affect future property values and livability.`,
-        color: 'var(--warning)'
-      });
-    } else if (suburb.cbdDistanceMins && suburb.cbdDistanceMins > 30) {
-      points.push({
-        icon: 'car',
-        title: 'What\'s the risk?',
-        content: `Located ${suburb.cbdDistanceMins} minutes from the CBD, commute times could be a concern for professionals working in the city.`,
-        color: 'var(--warning)'
-      });
-    } else {
-      points.push({
-        icon: 'shield',
-        title: 'What\'s the risk?',
-        content: `This suburb has a balanced risk profile. While prices have ${priceChange > 0 ? 'risen' : 'stayed stable'}, ${(suburb.houseMedianPrice || suburb.metrics.medianPrice) > 800000 ? 'affordability' : 'limited supply'} could be a consideration.`,
-        color: 'var(--neutral)'
-      });
-    }
-
-    return points;
+    return profile;
   };
 
-  const storyPoints = getStoryPoints();
+  const getSuitability = () => {
+    const isAffordable = (suburb.houseMedianPrice || suburb.metrics?.medianPrice || 1000000) < 700000;
+    const isClose = (suburb.cbdDistanceMins || 40) < 30;
+
+    return {
+      goodFit: [
+        isAffordable ? "Want a lower entry price than the surrounding market" : "Have a budget to support premium locations",
+        isClose ? "Need a reasonable commute to the CBD" : "Can accept a longer commute for better affordability",
+        "Are comfortable with the current demographic mix",
+        "Plan to hold for the medium-to-long term"
+      ],
+      lessSuitable: [
+        isAffordable ? "Need immediate prestige or blue-chip capital growth" : "Are constrained by strict serviceability limits",
+        isClose ? "Want a large block on a tight budget" : "Depend heavily on public transport for daily inner-city access",
+        "Need immediate high cashflow to service the debt",
+      ]
+    };
+  };
+
+  const shortVersion = getShortVersion();
+  const lifeProfile = getLifeProfile();
+  const suitability = getSuitability();
 
   return (
-    <div className="suburb-story-panel">
-      <div className="ss-panel-container">
-        <h2 className="ss-panel-title">
-          <Icon name="book-open" size={24} /> What you need to know about {suburb.name}
+    <div className="suburb-story-panel" style={{ padding: '2rem 0' }}>
+      
+      {/* SECTION 1: The Short Version */}
+      <div style={{ marginBottom: '4rem' }}>
+        <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1.5rem', fontWeight: 700 }}>
+          The Short Version
         </h2>
-        
-        <div className="ss-story-grid">
-          {storyPoints.map((point, index) => (
-            <div key={index} className="ss-story-card">
-              <div className="ss-story-icon" style={{ color: point.color }}>
-                <Icon name={point.icon as any} size={24} />
-              </div>
-              <div className="ss-story-content">
-                <h3 className="ss-story-title">{point.title}</h3>
-                <p className="ss-story-text">{point.content}</p>
-              </div>
-            </div>
-          ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+          
+          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #10b981', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>The Opportunity</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{shortVersion.opportunity}</p>
+          </div>
+
+          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #f59e0b', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>The Tension</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{shortVersion.tension}</p>
+          </div>
+
+          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #3b82f6', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>The Outlook</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{shortVersion.outlook}</p>
+          </div>
+
         </div>
       </div>
+
+      {/* SECTION 2: What Life Might Feel Like */}
+      <div style={{ marginBottom: '4rem' }}>
+        <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1rem', fontWeight: 700 }}>
+          What Life Might Feel Like
+        </h2>
+        <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(99, 102, 241, 0.1)' }}>
+          <p style={{ fontSize: '1.15rem', color: 'var(--text-primary)', lineHeight: 1.7 }}>
+            {lifeProfile}
+          </p>
+        </div>
+      </div>
+
+      {/* SECTION 3: Who Should Consider It */}
+      <div style={{ marginBottom: '2rem' }}>
+        <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1.5rem', fontWeight: 700 }}>
+          Who Should Consider It?
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+          
+          <div style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
+            <h3 style={{ fontSize: '1.1rem', color: '#10b981', marginBottom: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Icon name="check" size={18} /> Good fit if you:
+            </h3>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {suitability.goodFit.map((item, i) => (
+                <li key={i} style={{ color: 'var(--text-secondary)', lineHeight: 1.5, display: 'flex', gap: '0.5rem' }}>
+                  <span style={{ color: '#10b981' }}>•</span> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
+            <h3 style={{ fontSize: '1.1rem', color: '#f43f5e', marginBottom: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Icon name="alert-circle" size={18} /> Less suitable if you:
+            </h3>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {suitability.lessSuitable.map((item, i) => (
+                <li key={i} style={{ color: 'var(--text-secondary)', lineHeight: 1.5, display: 'flex', gap: '0.5rem' }}>
+                  <span style={{ color: '#f43f5e' }}>•</span> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   );
 }

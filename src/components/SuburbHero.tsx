@@ -48,110 +48,28 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
 
   const suburbImage = generateSuburbImage();
 
-  // Calculate investment stance
-  const getInvestmentStance = () => {
-    const score =
-      (growthScore || 0) * 0.35 +
-      (yieldScore || 0) * 0.25 +
-      ((suburb as any).demandScore || 60) * 0.20 +
-      ((suburb as any).affordabilityScore || 60) * 0.20;
-
-    if (score >= 80) return 'Strong';
-    if (score >= 70) return 'Positive';
-    if (score >= 60) return 'Neutral';
-    if (score >= 50) return 'Caution';
-
-    return 'Weak';
-  };
-
-  const investmentStance = getInvestmentStance();
-
-  // Generate investment thesis
-  const getInvestmentThesis = () => {
+  // Generate investment thesis headline
+  const getDecisionHeadline = () => {
     const isGrowth = growthScore && growthScore > 70;
     const isHighYield = yieldScore && yieldScore > 4.5;
     const isAffordable = (suburb as any).houseMedianPrice < 700000;
-    const hasLowVacancy = (suburb as any).vacancyRate && (suburb as any).vacancyRate < 2;
 
     if (isGrowth && isHighYield) {
-      return {
-        headline: "A balanced growth and income opportunity",
-        summary: `${suburb.name} combines strong price growth momentum with attractive rental yields, making it suitable for both capital growth and income-focused investors.`
-      };
+      return "A suburb for people who want strong growth potential without sacrificing rental income.";
     } else if (isGrowth) {
-      return {
-        headline: "Growth-oriented family market",
-        summary: `${suburb.name} offers strong price growth potential driven by ${(suburb as any).populationGrowth || 'population growth'} and ${(suburb as any).infrastructure || 'infrastructure development'}, making it ideal for long-term investors.`
-      };
+      return "A suburb for people who want long-term capital appreciation without paying inner-city premiums.";
     } else if (isHighYield) {
-      return {
-        headline: "Income-focused investment opportunity",
-        summary: `${suburb.name} provides attractive rental yields with ${hasLowVacancy ? 'tight rental conditions' : 'stable rental demand'}, making it suitable for cashflow-focused investors.`
-      };
+      return "A suburb for people who want strong cashflow without paying for prestige.";
     } else if (isAffordable) {
-      return {
-        headline: "Affordable entry point for first home buyers",
-        summary: `${suburb.name} offers accessible median prices with ${(priceChange > 0 ? 'rising prices' : 'stable market conditions')}, making it an attractive option for first home buyers.`
-      };
+      return "A suburb for people who want an accessible entry point without sacrificing essential amenities.";
     } else {
-      return {
-        headline: "Stable and established market",
-        summary: `${suburb.name} is an established market with ${(suburb as any).livability || 'good livability'} and ${(suburb as any).amenities || 'well-developed amenities'}, offering balanced investment potential.`
-      };
+      return "A suburb for people who want a stable, established lifestyle without exposing themselves to high volatility.";
     }
   };
 
-  const investmentThesis = getInvestmentThesis();
+  const decisionHeadline = getDecisionHeadline();
 
-  // Get strengths and risks
-  const getStrengthsAndRisks = () => {
-    const strengths = [];
-    const risks = [];
 
-    if (growthScore && growthScore > 70) {
-      strengths.push({ id: 'growth', text: "Above-average growth momentum" });
-    }
-    if (yieldScore && yieldScore > 4.5) {
-      strengths.push({ id: 'yield', text: "Attractive rental yield" });
-    }
-    if ((suburb as any).vacancyRate && (suburb as any).vacancyRate < 2) {
-      strengths.push({ id: 'vacancy', text: "Tight rental market" });
-    }
-    if ((suburb as any).houseMedianPrice < 700000) {
-      strengths.push({ id: 'affordable', text: "Accessible entry price" });
-    }
-    if ((suburb as any).cbdDistance && (suburb as any).cbdDistance < 20) {
-      strengths.push({ id: 'proximity', text: "Close to CBD" });
-    }
-
-    if ((suburb as any).supply && (suburb as any).supply > 500) {
-      risks.push({ id: 'supply', text: "High new dwelling supply" });
-    }
-    if (priceChange < 0) {
-      risks.push({ id: 'price', text: "Recent price decline" });
-    }
-    if ((suburb as any).vacancyRate && (suburb as any).vacancyRate > 3) {
-      risks.push({ id: 'vacancy-risk', text: "High vacancy rate" });
-    }
-    if ((suburb as any).affordabilityScore && (suburb as any).affordabilityScore < 50) {
-      risks.push({ id: 'affordability', text: "Low affordability" });
-    }
-
-    // Fallback strengths if none
-    if (strengths.length === 0) {
-      strengths.push({ id: 'livable', text: "Family-friendly environment" });
-      strengths.push({ id: 'amenities', text: "Well-developed amenities" });
-    }
-
-    // Fallback risks if none
-    if (risks.length === 0) {
-      risks.push({ id: 'market-risk', text: "Subject to market fluctuations" });
-    }
-
-    return { strengths, risks };
-  };
-
-  const { strengths, risks } = getStrengthsAndRisks();
 
   // Background styles
   const backgroundStyles = {
@@ -202,8 +120,20 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
           </div>
           
           <div className="sh-heading">
-            <h1>{suburb.name}</h1>
-            <p>{investmentThesis.headline}</p>
+            <h1 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "3.5rem", letterSpacing: "-1px", marginBottom: "0.5rem" }}>
+              {suburb.name}
+            </h1>
+            <p style={{ fontSize: "1.35rem", color: "#e2e8f0", maxWidth: "800px", lineHeight: "1.5" }}>
+              {decisionHeadline}
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+                <Icon name="clock" size={14} /> Updated recently
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+                <Icon name="check" size={14} /> Based on ABS & SQM Data
+              </span>
+            </div>
           </div>
 
           <div className="sh-actions">
@@ -241,51 +171,6 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
           <div className="sh-metric">
             <div className="sh-metric-label">5yr Growth</div>
             <div className="sh-metric-value">{growthScore ? `${growthScore}%` : 'N/A'}</div>
-          </div>
-
-          <div className="sh-metric">
-            <div className="sh-metric-label">Research Confidence</div>
-            <div className="sh-metric-value">High</div>
-          </div>
-        </div>
-
-        <div className="sh-thesis">
-          <div className="sh-thesis-header">
-            <span className="sh-thesis-eyebrow">INVESTMENT THESIS</span>
-            <h2>{investmentThesis.headline}</h2>
-          </div>
-          <p className="sh-thesis-summary">{investmentThesis.summary}</p>
-
-          <div className="sh-thesis-grid">
-            <div>
-              <h3>Why it works</h3>
-              {strengths.map(item => (
-                <div className="sh-thesis-point" key={item.id}>
-                  <span>+</span>
-                  {item.text}
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <h3>What could go wrong</h3>
-              {risks.map(item => (
-                <div className="sh-thesis-point sh-thesis-point--risk" key={item.id}>
-                  <span>!</span>
-                  {item.text}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="sh-investment-stance">
-          <div className="sh-stance-card">
-            <Icon name="chart" size={24} className="sh-stance-icon" />
-            <div className="sh-stance-content">
-              <span className="sh-stance-label">Investment Stance</span>
-              <span className={`sh-stance-value ${investmentStance.toLowerCase()}`}>{investmentStance}</span>
-            </div>
           </div>
         </div>
       </div>

@@ -323,47 +323,27 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
           </div>
 
           {hasVerdict ? (
-            <div className="u-95149f3d">
-              <div className="u-41a509d4">
-                <div className="u-7f2c974e">Consensus Verdict</div>
-                <div className="u-9beee884" style={{color: suburb.aiVerdict?.includes('BUY') ? '#10b981'
-                    : suburb.aiVerdict?.includes('SELL') ? '#ef4444'
-                    : 'var(--accent-cyan)'}}>
-                  {suburb.aiVerdict}
-                </div>
-                <div className="u-0532d2dc">
-                  Risk: <span className="u-6d7b5c0d">{suburb.aiRiskLevel || '—'}</span>
-                  {suburb._riskAssessment && (
-                    <>
-                      {' • '}
-                      <span title="Monte Carlo scenario simulation (5,000 iterations) — model scenario only, not calibrated against historical outcomes" className="u-fc3978f9">
-                        Scenario Risk: <span className="u-fdec1e77" style={{color: suburb._riskAssessment.risk_rating === 'Low' ? '#10b981'
-                            : suburb._riskAssessment.risk_rating === 'Medium' ? '#eab308' : '#ef4444'}}>{suburb._riskAssessment.risk_rating}</span>
-                      </span>
-                      {' '}(~{Math.round((suburb._riskAssessment.price_decline_scenario ?? suburb._riskAssessment.price_decline_probability ?? 0) * 100)}% price-decline scenario)
-                      <div className="u-76a5e5b1">
-                        Illustrative simulated range midpoint: ${((suburb._riskAssessment.projected_range?.[1]) / 1000).toFixed(0)}k ({suburb._riskAssessment.expected_return}% illustrative scenario change) — model scenario only
-                      </div>
-                    </>
-                  )}
-                </div>
+            <div className="u-95149f3d" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
+              
+              <div style={{ paddingLeft: '1rem', borderLeft: '3px solid #10b981' }}>
+                <h4 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.5rem', fontWeight: 700 }}>The Optimistic Case</h4>
+                <div style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{suburb.aiBullView || 'Awaiting analysis'}</div>
               </div>
-              <div className="u-5aa686c7">
-                <div className="u-012a45d4">🐂 Bull — Anna</div>
-                <div className="u-7eef0854">{suburb.aiBullView || 'Awaiting analysis'}</div>
+              
+              <div style={{ paddingLeft: '1rem', borderLeft: '3px solid #ef4444' }}>
+                <h4 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.5rem', fontWeight: 700 }}>The Cautious Case</h4>
+                <div style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{suburb.aiBearView || 'Awaiting analysis'}</div>
               </div>
-              <div className="u-fc07ed5a">
-                <div className="u-7b3ea3b3">🐻 Bear — Alex</div>
-                <div className="u-7eef0854">{suburb.aiBearView || 'Awaiting analysis'}</div>
+              
+              <div style={{ paddingLeft: '1rem', borderLeft: '3px solid #f59e0b' }}>
+                <h4 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.5rem', fontWeight: 700 }}>Neutral Synthesis</h4>
+                <div style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{suburb.aiUrbanView || 'Awaiting analysis'}</div>
               </div>
-              <div className="u-004af4b0">
-                <div className="u-78bec1c5">🏙️ Urban Planner</div>
-                <div className="u-7eef0854">{suburb.aiUrbanView || 'Awaiting analysis'}</div>
-              </div>
+
               {suburb.aiConsensus && (
-                <div className="u-c40cc6c3">
-                  <div className="u-3e341d2a">📋 Investor CEO Playbook</div>
-                  <div className="u-f89c33d9">{suburb.aiConsensus}</div>
+                <div style={{ marginTop: '1rem', padding: '1.5rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '8px' }}>
+                  <h4 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.5rem', fontWeight: 700 }}>Key Takeaway</h4>
+                  <div style={{ color: 'var(--text-primary)', lineHeight: 1.6 }}>{suburb.aiConsensus}</div>
                 </div>
               )}
               {suburb._policyWarnings?.length > 0 && (

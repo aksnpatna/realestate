@@ -900,74 +900,48 @@ function App() {
                   <SuburbStoryPanel suburb={activeSuburb} persona={persona} />
 
 
-                  {/* Evidence-backed highlights — split Strengths / Cautions */}
-                  {(activeSuburb.highlights || []).length > 0 ? (
-                    <div className="u-f78d8d69">
-                      <h4 className="u-e4df4f18">Why consider {activeSuburb.name}?</h4>
-                      <div className="u-6597c4ce">
-                        {(activeSuburb.highlights || []).slice(0, 2).map((h, i) => (
-                          <div key={i} className="u-e242cbbc">
-                            <span className="u-74e4f6bb">✓</span>
-                            <span>{h}</span>
-                          </div>
-                        ))}
-                        {(activeSuburb.highlights || []).slice(2, 3).map((h, i) => (
-                          <div key={i} className="u-11f4b57e">
-                            <span className="u-6b3ea7b2">⚠</span>
-                            <span>{h}</span>
+                  {/* How It Compares */}
+                  {benchmarks && benchmarks.length > 0 && (
+                    <div style={{ marginBottom: '4rem' }}>
+                      <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1.5rem', fontWeight: 700 }}>
+                        How It Compares
+                      </h2>
+                      <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
+                        Understanding this suburb's performance relative to broader market baselines.
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {benchmarks.map((bm, i) => (
+                          <div key={i} style={{ 
+                            padding: '1.5rem', 
+                            background: 'var(--bg-card)', 
+                            borderRadius: '12px',
+                            borderLeft: `4px solid ${
+                              (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct 
+                                ? '#10b981' 
+                                : '#f59e0b'
+                            }`,
+                            boxShadow: 'var(--shadow-sm)',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}>
+                            <div>
+                              <div style={{ fontWeight: 600, color: 'var(--brand-navy)', fontSize: '1.1rem' }}>{bm.name} <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 400 }}>{bm.symbol}</span></div>
+                              <div style={{ color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '#10b981' : '#f59e0b', fontSize: '0.9rem', marginTop: '0.25rem', fontWeight: 500 }}>
+                                {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '✓ Outperforming benchmark' : '↓ Trailing benchmark'}
+                              </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>1Y Growth</div>
+                              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: bm.growth_1y_pct >= 0 ? '#10b981' : '#f43f5e' }}>
+                                {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  ) : (
-                    <div className="u-f45b738e">
-                      AI key drivers will appear here once analysis is complete.
                     </div>
                   )}
-
-                  <div className="metrics-grid u-ff12444b">
-                    <div className="metric-box u-f5f90c74">
-                      <div className="metric-label u-112a0d0d">House Median Price</div>
-                      <div className="metric-value u-da5d5cd3">
-                        {(activeSuburb as any).houseMedianPrice ? `$${(activeSuburb as any).houseMedianPrice.toLocaleString()}` : <span className="u-28c62109">—</span>}
-                        {(() => {
-                          const change = Number((activeSuburb as any).houseMedianPrice12mChangePct) || 0;
-                          if (change) {
-                            return <span className="u-355bd10b" style={{color: change > 0 ? 'var(--success)' : 'var(--danger)'}}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
-                          }
-                          return null;
-                        })()}
-                      </div>
-                    </div>
-                    <div className="metric-box u-f5f90c74">
-                      <div className="metric-label u-112a0d0d">Unit Median Price</div>
-                      <div className="metric-value u-da5d5cd3">
-                        {(activeSuburb as any).unitMedianPrice ? `$${(activeSuburb as any).unitMedianPrice.toLocaleString()}` : <span className="u-28c62109">—</span>}
-                        {(() => {
-                          const change = Number((activeSuburb as any).unitMedianPrice12mChangePct) || 0;
-                          if (change) {
-                            return <span className="u-355bd10b" style={{color: change > 0 ? 'var(--success)' : 'var(--danger)'}}>{change > 0 ? '▲' : '▼'} {Math.abs(change)}%</span>
-                          }
-                          return null;
-                        })()}
-                      </div>
-                    </div>
-                    <div className="metric-box u-f5f90c74">
-                      <div className="metric-label u-112a0d0d">Avg Rental Yield</div>
-                      <div className="metric-value u-8103896e">
-                        {(activeSuburb as any).houseGrossRentalYield
-                          ? `${(activeSuburb as any).houseGrossRentalYield}%`
-                          : (activeSuburb as any).rentalYield
-                          ? `${(activeSuburb as any).rentalYield}%`
-                          : <span className="u-28c62109">—</span>}
-                      </div>
-                      {activeSuburb.vacancyRate != null && (
-                        <div className="u-1e74caee">
-                          Vacancy {Number(activeSuburb.vacancyRate).toFixed(1)}%
-                        </div>
-                      )}
-                    </div>
-                    </div>
 
 
 
@@ -1054,43 +1028,6 @@ function App() {
                   </div>
 
                     <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
-                      {/* Market Baselines — Moved to Market tab */}
-                      {benchmarks && benchmarks.length > 0 && (
-                        <div className="u-4b6cb09b">
-                          <h4 className="u-304ebc1b">
-                            📈 Market Baselines
-                          </h4>
-                          <p className="u-76c9b108">
-                            Compare suburb growth against market benchmarks to identify genuine alpha.
-                          </p>
-                          <div className="profile-grid-auto u-df4e9190">
-                            {benchmarks.map((bm, i) => (
-                              <div key={i} style={{ 
-                                padding: '12px', 
-                                background: 'var(--bg-dark)', 
-                                borderRadius: '8px',
-                                borderLeft: `3px solid ${
-                                  (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct 
-                                    ? 'var(--accent-cyan)' 
-                                    : 'var(--warning)'
-                                }`
-                              }}>
-                                <div className="u-6baf8a4c">{bm.symbol}</div>
-                                <div className="u-240770f2">{bm.name}</div>
-                                <div className="u-4b1cd156">
-                                  <span className="u-fc193050">1Y Return</span>
-                                  <span className="u-e506d4ee" style={{color: bm.growth_1y_pct >= 0 ? 'var(--success)' : 'var(--danger)'}}>
-                                    {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
-                                  </span>
-                                </div>
-                                <div className="u-6c2db771" style={{color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? 'var(--accent-cyan)' : 'var(--warning)'}}>
-                                  {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '✓ Outperforming' : '↓ Underperforming'}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                       
                       <PriceHistoryChart history10yr={(activeSuburb as any).history10yr} historyRent10yr={(activeSuburb as any).historyRent10yr} />
                       <SqmHistoricalChart sqmData={(activeSuburb as any).demographicsDetailV3?.sqm_data} />
