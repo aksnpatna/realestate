@@ -33,3 +33,14 @@ test-results/
 
 # Python virtual environment
 venv/
+
+# Sensitive data, caches, and test artifacts
+cookies.txt
+test_cookies.txt
+response*.json
+script_data.txt
+kie_*.html
+kie_*.png
+kie_*.txt
+test*.json
+test*.pbf

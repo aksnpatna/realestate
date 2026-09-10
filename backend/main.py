@@ -1773,8 +1773,11 @@ def reload_suburbs():
         db.close()
 
 @app.post("/api/internal/update-news-batch")
-def update_news_batch(limit: int = 2, db: Session = Depends(get_db)):
+def update_news_batch(limit: int = 2, db: Session = Depends(get_db), x_internal_token: str = Header(None)):
     """Background endpoint triggered by cron to update news sentiment in batches."""
+    if x_internal_token != os.getenv("INTERNAL_AUTH_TOKEN", "default-insecure-token-123"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
     if not ENABLE_AI_INSIGHTS:
         return {"status": "disabled", "message": "AI insights disabled"}
     

@@ -54,9 +54,11 @@ services:
     image: alpine/curl
     container_name: realestate-news-updater
     restart: unless-stopped
-    command: /bin/sh -c "while true; do curl -s -X POST 'http://backend:8000/api/internal/update-news-batch?limit=5' || true; sleep 7200; done"
+    command: >
+      /bin/sh -c "while true; do curl -s -X POST -H 'X-Internal-Token: $${INTERNAL_AUTH_TOKEN:-default-insecure-token-123}' 'http://backend:8000/api/internal/update-news-batch?limit=5' || true; sleep 7200; done"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     logging:
       driver: json-file
       options:
@@ -87,13 +89,13 @@ services:
         condition: service_healthy
 
   tileserv:
-    image: pramsey/pg_tileserv:latest
+    image: pramsey/pg_tileserv
     container_name: realestate-tileserv
     restart: unless-stopped
     ports:
-      - "7800:7800"
+      - "127.0.0.1:7800:7800"
     environment:
-      - DATABASE_URL=postgres://realestate_user:realestate_pass@db:5432/realestate
+      - DATABASE_URL=postgres://${POSTGRES_USER:-realestate_user}:${POSTGRES_PASSWORD:-realestate_pass}@db:5432/realestate
     depends_on:
       db:
         condition: service_healthy
@@ -117,7 +119,7 @@ services:
     image: postgis/postgis:15-3.4-alpine
     container_name: realestate-db
     ports:
-      - "15432:5432"
+      - "127.0.0.1:15432:5432"
     restart: unless-stopped
     # Tuned for mini PC: shared_buffers=512MB, effective_cache_size=2GB
     # This stops Postgres from hitting disk on every query for a 28GB dataset

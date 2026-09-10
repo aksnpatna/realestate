@@ -11,13 +11,13 @@ Australian real estate investment analytics platform. Multi-agent AI analysis, A
 | AI | LangGraph multi-agent committee + HuggingFace Transformers sentiment |
 | Data | PostgreSQL/PostGIS + OSM + ABS Census + ACARA schools |
 | Caching | Redis (primary) + DB fallback |
-| Infrastructure | Docker Compose (6 containers) |
+| Infrastructure | Docker Compose (7 containers) |
 
 ## Quick Start
 
 ```bash
 cp .env.example .env   # configure API keys
-docker compose up -d    # starts all 6 containers
+docker compose up -d    # starts all 7 containers
 ```
 
 ## AI Usage
@@ -31,11 +31,11 @@ The suburb profile has a unified "AI Insights" panel with two analysis modes:
    - Uses HuggingFace `distilbert-base-uncased-finetuned-sst-2-english` transformer with keyword fallback
    - Sources: DuckDuckGo (primary), Tavily (fallback)
 
-2. **Investment Committee** — Multi-agent LangGraph pipeline
-   - 🐂 Bull Agent (Anna): yield, growth, demand drivers
-   - 🐻 Bear Agent (Alex): risk, affordability, macro headwinds
-   - 🏙️ Urban Planner: demographics, schools, gentrification
-   - 📋 CIO Supervisor: final Buy/Hold/Pass verdict + playbook
+2. **Investment Committee** — Multi-agent LangGraph pipeline providing narrative synthesis:
+   - 📈 **The Optimistic Case** (Anna): yield, growth, demand drivers
+   - ⚖️ **The Cautious Case** (Alex): risk, affordability, macro headwinds
+   - 🏙️ **Neutral Synthesis** (Urban Planner): demographics, schools, gentrification
+   - 📋 **Investor CEO Playbook**: A synthesized summary of the key takeaways without offering personalized or guaranteed investment advice.
 
 ### Required Environment Variables
 
@@ -43,13 +43,12 @@ The suburb profile has a unified "AI Insights" panel with two analysis modes:
 |----------|---------|---------|
 | `ENABLE_AI_INSIGHTS` | Master kill switch for AI features | `true` |
 | `AI_CACHE_TTL` | Cache TTL in seconds (both Redis + DB) | `604800` (7 days) |
-| `NVIDIA_API_KEY` | LLM: Llama 3.1 70B via NVIDIA | — |
-| `GROQ_API_KEY` | LLM: Llama 3.3 70B via Groq | — |
-| `DEEPSEEK_API_KEY` | LLM: DeepSeek Chat | — |
-| `OPENAI_API_KEY` | LLM: GPT-4o Mini | — |
-| `TAVILY_API_KEY` | Web search (news sentiment + committee) | — |
+| `NVIDIA_API_KEY` | *(Optional)* LLM: Llama 3.1 70B via NVIDIA | — |
+| `GROQ_API_KEY` | *(Optional)* LLM: Llama 3.3 70B via Groq | — |
+| `DEEPSEEK_API_KEY` | *(Optional)* LLM: DeepSeek Chat | — |
+| `OPENAI_API_KEY` | *(Optional)* LLM: GPT-4o Mini | — |
+| `TAVILY_API_KEY` | *(Optional)* Web search (news sentiment + committee) | — |
 | `REDIS_HOST` | Redis hostname | `realestate-redis` |
-| `AI_CACHE_TTL` | Seconds before AI results expire | `604800` |
 
 LLM providers are tried in priority order: NVIDIA → Groq → DeepSeek → OpenAI → local Ollama.
 
@@ -86,4 +85,23 @@ docker compose build realestate backend
 docker compose up -d
 ```
 
-Services: `realestate-engine` (frontend, :8082), `realestate-backend` (API, :8000), `realestate-db` (PostGIS), `realestate-redis`, `realestate-tileserv` (pg_tileserv), `realestate-osm-updater`
+Services: 
+- `realestate-engine` (Frontend UI, Host port: 8082 -> Container port: 80)
+- `realestate-backend` (API, Host port: 8100 -> Container port: 8000)
+- `realestate-db` (PostGIS, bound to 127.0.0.1:15432)
+- `realestate-tileserv` (pg_tileserv, bound to 127.0.0.1:7800)
+- `realestate-redis` (Internal caching)
+- `realestate-osm-updater` (Background mapping job)
+- `realestate-news-updater` (Background sentiment job)
+
+## Validation & CI
+
+To validate the application locally before deployment, use the following commands:
+
+```bash
+npm ci               # Install dependencies cleanly
+npm run lint         # Run ESLint validation
+npm run build        # Verify the production Vite build
+npm test             # Run standard unit tests
+npm run test:e2e     # Run Playwright E2E tests
+```
