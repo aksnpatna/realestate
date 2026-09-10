@@ -69,6 +69,12 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
             date: date.getTime(),
             dateStr,
             displayDate,
+            vacancyRate: null,
+            stock: null,
+            houseRent: null,
+            unitRent: null,
+            housePrice: null,
+            unitPrice: null,
             ...processed
           });
         }
@@ -151,26 +157,26 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
   }
 
   return (
-    <div className="u-e995d5ba">
-      <h3 className="u-3cbf0169">
-        <span className="u-ce0fd88b">📈</span> 15-Year Market History
+    <div className="glass-panel" style={{ padding: '2.5rem', marginBottom: '2rem' }}>
+      <h3 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--brand-navy)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <span>📈</span> 15-Year Market History
       </h3>
-      <p className="u-9ce7e2f5">
+      <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '1.1rem' }}>
         Rental market supply and demand trends, plus price and rent movements
       </p>
 
       {aiInsights && (
-        <div className="u-6e82986b">
-          <strong className="u-de7d56da">🤖 Market Analysis</strong>
+        <div style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.2)', marginBottom: '2.5rem', color: 'var(--text-primary)', lineHeight: 1.6, boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)' }}>
+          <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent-purple)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>🤖 AI Market Analysis</strong>
           {aiInsights}
         </div>
       )}
 
       {/* Vacancy & Stock Chart */}
       {sqmData.vacancy || sqmData.stock ? (
-        <div style={{ marginBottom: '2rem' }}>
-          <h4 style={{ marginBottom: '1rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Vacancy & Stock Trends</h4>
-          <div className="u-df6b2905">
+        <div style={{ marginBottom: '3rem' }}>
+          <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 600, color: 'var(--brand-navy)' }}>Vacancy & Stock Trends</h4>
+          <div style={{ padding: '1.5rem 1rem', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-glass)', boxShadow: 'var(--shadow-sm)' }}>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
@@ -266,17 +272,17 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
           </div>
 
           {/* Vacancy interpretation guide */}
-          <div className="u-5ba97460">
-            <span className="u-b98e583d">
-              <span className="u-97b23a5f" />
+          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', marginTop: '1.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#059669' }} />
               &lt;2% Landlord market
             </span>
-            <span className="u-893a4e24">
-              <span className="u-c90dc131" />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#0284C7' }} />
               2-3% Balanced
             </span>
-            <span className="u-f853e331">
-              <span className="u-880f516d" />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#DC2626' }} />
               &gt;3% Tenant-favourable
             </span>
           </div>
@@ -285,9 +291,9 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
 
       {/* Rent Trends Chart */}
       {sqmData.rents ? (
-        <div style={{ marginBottom: '2rem' }}>
-          <h4 style={{ marginBottom: "1rem", fontSize: "0.95rem", color: "var(--text-secondary)" }}>Rent Trends {chartData.filter(d => d.houseRent != null || d.unitRent != null).length} items. First: {JSON.stringify(chartData.filter(d => d.houseRent != null || d.unitRent != null)[0])}</h4>
-          <div className="u-df6b2905">
+        <div style={{ marginBottom: '3rem' }}>
+          <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 600, color: 'var(--brand-navy)' }}>Rent Trends</h4>
+          <div style={{ padding: '1.5rem 1rem', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-glass)', boxShadow: 'var(--shadow-sm)' }}>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />
@@ -354,9 +360,9 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
 
       {/* Price Trends Chart */}
       {sqmData.prices ? (
-        <div style={{ marginBottom: '2rem' }}>
-          <h4 style={{ marginBottom: '1rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Price Trends</h4>
-          <div className="u-df6b2905">
+        <div style={{ marginBottom: '1rem' }}>
+          <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 600, color: 'var(--brand-navy)' }}>Price Trends</h4>
+          <div style={{ padding: '1.5rem 1rem', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-glass)', boxShadow: 'var(--shadow-sm)' }}>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" />

@@ -15,8 +15,8 @@ import PriceHistoryChart from './components/PriceHistoryChart'
 import SqmDashboard from './components/SqmDashboard'
 import PocketRiskMap from './components/PocketRiskMap'
 import YieldHeatmap from './components/YieldHeatmap'
-import type { PersonaId, ProfileSectionId } from './data/personas'
-import { loadStoredPersona, getPersona } from './data/personas'
+import type { PersonaId, ProfileSectionId, PricingTierId } from './data/personas'
+import { loadStoredPersona, getPersona, loadStoredTier } from './data/personas'
 import { fetchLivabilityData, type LivabilityData } from './services/osmApi'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts'
 import './index.css'
@@ -24,6 +24,10 @@ import LandingPage from './components/LandingPage'
 import PromoBanner from './components/PromoBanner'
 import MacroBenchmarkPanel from './components/MacroBenchmarkPanel'
 import { SuburbHero } from './components/SuburbHero';
+import { SuburbStoryPanel } from './components/SuburbStoryPanel';
+import { TierGateOverlay } from './components/TierGateOverlay';
+import { useTierGate } from './hooks/useTierGate';
+import { SuburbPropertyListings } from './components/SuburbPropertyListings';
 import './styles/hero.css';
 
 import { getDisplayGroup, getStateName } from './utils/regionMapper'
@@ -39,7 +43,7 @@ const viewToTab = (view: string | null): TabName => {
 
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
-const ChatView = lazy(() => import('./components/ChatView'))
+const UnifiedSearchView = lazy(() => import('./components/UnifiedSearchView'))
 const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
 const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
 
@@ -79,6 +83,7 @@ function App() {
   })
   const [activeState, setActiveState] = useState<string>('VIC')
   const [persona, setPersona] = useState<PersonaId>(loadStoredPersona)
+  const [activeTier, setActiveTier] = useState<PricingTierId>(loadStoredTier)
   const [activeProfileSection, setActiveProfileSection] = useState<ProfileSectionId>('overview')
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
 
@@ -113,6 +118,8 @@ function App() {
   const [selectedRequestMeta, setSelectedRequestMeta] = useState<{ request_id: string; model_version: string } | null>(() => {
     try { const s = sessionStorage.getItem('bf_meta'); return s ? JSON.parse(s) : null } catch { return null }
   })
+  const [nlpSummary, setNlpSummary] = useState<string | null>(null);
+  
   // Track if the user manually selected a suburb to prevent auto‑reset
   const manualSelectionRef = useRef(false)
 
@@ -662,6 +669,8 @@ function App() {
       onViewChange={handleViewChange}
       persona={persona}
       onPersonaChange={setPersona}
+      activeTier={activeTier}
+      onTierChange={setActiveTier}
       onLogout={() => { setIsAuthenticated(false); setAuthMode('landing'); }}
       showProfile={activeTab === 'profile'}
       usage={{ used: 3, limit: 5 }}
@@ -669,7 +678,15 @@ function App() {
       <PromoBanner />
       <TermsOfUseModal />
 
-      {(activeTab === 'ask' || activeTab === 'buy-finder') && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Chat...</div>}><ChatView setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} setActiveTab={(t: string) => setActiveTab(t as TabName)} /></Suspense>}
+      {(activeTab === 'ask' || activeTab === 'buy-finder') && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Search...</div>}><UnifiedSearchView 
+        setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} 
+        setActiveTab={(t: string) => setActiveTab(t as TabName)} 
+        financialProfile={financialProfile}
+        setFinancialProfile={setFinancialProfile}
+        suburbsData={suburbsData}
+        persona={persona}
+        setNlpSummary={setNlpSummary}
+      /></Suspense>}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 
@@ -790,6 +807,18 @@ function App() {
                     )}
                   </div>
 
+                  {nlpSummary && (
+                    <div className="us-story-card" style={{margin: '0 20px 20px 20px', padding: '16px 20px', borderRadius: '12px', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)'}}>
+                      <div className="us-story-header" style={{display: 'flex', alignItems: 'flex-start', gap: '12px'}}>
+                        <div className="us-story-icon" style={{color: 'var(--accent-cyan)'}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                        <div className="us-story-headline">
+                          <h3 style={{margin: '0 0 4px 0', fontSize: '1rem', color: '#f8fafc'}}>AI Profile Summary</h3>
+                          <p className="us-story-summary" style={{margin: 0, fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.5'}}>{nlpSummary}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Zone filter pills */}
                   {zonePills.length > 2 && (
                     <div className="zone-pills">
@@ -864,7 +893,11 @@ function App() {
                     suburb={activeSuburb}
                     isSaved={activeSuburb && favorites.includes(activeSuburb.id)}
                     onToggleSave={() => activeSuburb && toggleFavorite(activeSuburb.id)}
+                    persona={persona}
                   />
+
+                  {/* Suburb Story Panel */}
+                  <SuburbStoryPanel suburb={activeSuburb} persona={persona} />
 
 
                   {/* Evidence-backed highlights — split Strengths / Cautions */}
@@ -1006,10 +1039,9 @@ function App() {
                     })()}
                    </div>
 
-                  {/* Decision Brief — compact evidence-backed summary */}
+                    {/* Decision Brief — compact evidence-backed summary */}
                   <div style={{ display: activeProfileSection === 'overview' ? 'block' : 'none' }}>
                     <DecisionBrief activeSuburb={activeSuburb} setActiveTab={setActiveTab} selectedResult={selectedBuyerFitResult} requestMeta={selectedRequestMeta} />
-                    
                     {/* Score Legend — Moved to bottom of overview tab */}
                     <details className="u-8ff959d6">
                       <summary className="u-942b3663">
@@ -1688,7 +1720,7 @@ function App() {
                     </div>
                   </div>
 
-                  {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
+                   {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
                   <div className="u-e87e972e" style={{display: activeProfileSection === 'ai' ? 'block' : 'none'}}>
                     <h3 className="u-6f328805">🧠 AI Committee (Debate & Sentiment)</h3>
                     <div className="u-3e72e63f" id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>

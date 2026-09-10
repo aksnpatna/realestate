@@ -2,8 +2,9 @@ import { useState, memo } from 'react';
 
 import { calculateComprehensiveStampDuty } from '../data/suburbs';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { ROICalculator } from './ROICalculator';
 
-type CalcType = 'repayment' | 'borrowing' | 'stamp_duty';
+type CalcType = 'repayment' | 'borrowing' | 'stamp_duty' | 'roi';
 
 const STATE_OPTIONS = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 
@@ -70,6 +71,9 @@ export default memo(function Calculators() {
         <button
           onClick={() => setActiveCalc('stamp_duty')}
           className="u-5faddcca" style={{background: activeCalc === 'stamp_duty' ? 'var(--warning)' : 'var(--bg-card)', color: activeCalc === 'stamp_duty' ? '#000' : 'var(--text-primary)'}}>Stamp Duty & FHOG</button>
+        <button
+          onClick={() => setActiveCalc('roi')}
+          className="u-5faddcca" style={{background: activeCalc === 'roi' ? 'var(--accent-green)' : 'var(--bg-card)', color: activeCalc === 'roi' ? '#000' : 'var(--text-primary)'}}>Investment Calculator</button>
       </div>
 
       <div className="u-b0a96210">
@@ -211,6 +215,10 @@ export default memo(function Calculators() {
               Disclaimer: This is an approximation based on {state} state revenue office rates for 2026-2027. Actual fees may vary. Please consult a professional for accurate figures.
             </p>
           </div>
+        )}
+
+        {activeCalc === 'roi' && (
+          <ROICalculator />
         )}
 
       </div>

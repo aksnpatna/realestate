@@ -102,6 +102,13 @@ export function getPersona(id: PersonaId | string | null | undefined): Persona {
 
 export function loadStoredPersona(): PersonaId {
   try {
+    // Check sessionStorage first for initial persona from landing page
+    const sessionPersona = sessionStorage.getItem('initial_persona')
+    if (sessionPersona && (sessionPersona in PERSONAS)) {
+      return sessionPersona as PersonaId
+    }
+    
+    // Fallback to localStorage
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw && (raw in PERSONAS)) return raw as PersonaId
   } catch {}
@@ -129,4 +136,65 @@ export async function refreshPersonasFromBackend(): Promise<void> {
       // Hook kept for migrating presets server-side without a frontend redeploy.
     }
   } catch {}
+}
+
+
+// --- PRICING TIERS ---
+
+export type PricingTierId = 'free' | 'basic' | 'premium'
+
+export interface PricingTier {
+  id: PricingTierId
+  label: string
+  price: string
+  description: string
+  features: string[]
+}
+
+export const PRICING_TIERS: Record<PricingTierId, PricingTier> = {
+  free: {
+    id: 'free',
+    label: 'Snapshot',
+    price: 'Free',
+    description: 'Basic top-level metrics for casual browsing.',
+    features: ['Top-level Median Price & Rent', 'Vacancy Rate Overview']
+  },
+  basic: {
+    id: 'basic',
+    label: 'Basic Data',
+    price: '$4.99/mo',
+    description: 'Full data charts, history, and demographics.',
+    features: ['All historical charts', 'Demographics & Infrastructure', 'Yield & Growth Trends']
+  },
+  premium: {
+    id: 'premium',
+    label: 'Interactive AI',
+    price: '$14.99/mo',
+    description: 'Conversational NLP and automated AI analysis.',
+    features: ['AI Story Cards', 'Conversational Unified Search', 'AI Analyst Opinions']
+  }
+}
+
+const TIER_STORAGE_KEY = 'realestate_selected_tier'
+
+export function getPricingTier(): PricingTier {
+  try {
+    const stored = localStorage.getItem(TIER_STORAGE_KEY) as PricingTierId
+    if (stored && PRICING_TIERS[stored]) return PRICING_TIERS[stored]
+  } catch {}
+  return PRICING_TIERS.premium // Default to premium for preview/demo
+}
+
+export function loadStoredTier(): PricingTierId {
+  return getPricingTier().id
+}
+
+export function storeTier(id: PricingTierId): void {
+  try {
+    localStorage.setItem(TIER_STORAGE_KEY, id)
+  } catch {}
+}
+
+export function tierIds(): PricingTierId[] {
+  return Object.keys(PRICING_TIERS) as PricingTierId[]
 }

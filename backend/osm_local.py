@@ -37,81 +37,6 @@ TRANSIT_KEY_VAL = [
 ]
 
 
-def _build_category_query(category, lat, lng, radius_m=2500):
-    """Build a SQL SELECT for POIs using the native 3857 GiST index for speed.
-    Returns: name, distance_m, lat, lng"""
-    # Convert radius in meters to approximate 3857 units (cos(lat) correction)
-    import math
-    lat_rad = abs(math.radians(lat))
-    mercator_radius = radius_m / math.cos(lat_rad)
-
-    parts = []
-
-    if category == "transit":
-        for key, vals in TRANSIT_KEY_VAL:
-            vlist = ", ".join(f"'{v}'" for v in vals)
-            parts.append(f"""
-            SELECT name, way,
-                   ST_Y(ST_Transform(way, 4326)) AS plat,
-                   ST_X(ST_Transform(way, 4326)) AS plng,
-                   '{category}'::text AS category
-            FROM planet_osm_point
-            WHERE {key} IN ({vlist})
-              AND way && ST_Expand(ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857), {mercator_radius})
-            """)
-            parts.append(f"""
-            SELECT name, ST_Centroid(way) AS way,
-                   ST_Y(ST_Transform(ST_Centroid(way), 4326)) AS plat,
-                   ST_X(ST_Transform(ST_Centroid(way), 4326)) AS plng,
-                   '{category}'::text AS category
-            FROM planet_osm_polygon
-            WHERE {key} IN ({vlist})
-              AND way && ST_Expand(ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857), {mercator_radius})
-            """)
-    else:
-        key, vals = CATEGORIES[category]
-        vlist = ", ".join(f"'{v}'" for v in vals)
-        parts.append(f"""
-        SELECT name, way,
-               ST_Y(ST_Transform(way, 4326)) AS plat,
-               ST_X(ST_Transform(way, 4326)) AS plng,
-               '{category}'::text AS category
-        FROM planet_osm_point
-        WHERE {key} IN ({vlist})
-          AND way && ST_Expand(ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857), {mercator_radius})
-        """)
-        parts.append(f"""
-        SELECT name, ST_Centroid(way) AS way,
-               ST_Y(ST_Transform(ST_Centroid(way), 4326)) AS plat,
-               ST_X(ST_Transform(ST_Centroid(way), 4326)) AS plng,
-               '{category}'::text AS category
-        FROM planet_osm_polygon
-        WHERE {key} IN ({vlist})
-          AND way && ST_Expand(ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857), {mercator_radius})
-        """)
-
-    union = " UNION ALL ".join(parts)
-    return f"""
-    WITH center AS (
-        SELECT ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857) AS geom_3857,
-               ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326)::geography AS geog
-    )
-    SELECT name, category,
-           ROUND(ST_Distance(pois.geog_4326, center.geog)::numeric, 0)::int AS dist_m,
-           plat, plng
-    FROM (
-        SELECT name, category,
-               ST_Transform(way, 4326)::geography AS geog_4326,
-               plat, plng
-        FROM (
-            {union}
-        ) raw
-    ) pois, center
-    WHERE ST_DWithin(pois.geog_4326, center.geog, {radius_m})
-    ORDER BY dist_m
-    """
-
-
 def get_pois(lat, lng, radius_m=2500, categories=None):
     """Return POIs within radius_m of (lat, lng).
 
@@ -126,26 +51,81 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
     if categories is None:
         categories = list(CATEGORIES.keys()) + ["transit"]
 
-    result = {}
-    for cat in categories:
-        try:
-            sql = _build_category_query(cat, lat, lng, radius_m)
-            with engine.connect() as conn:
-                rows = conn.execute(text(sql)).fetchall()
-                conn.commit()
-            result[cat] = [{"name": r[0] or f"Unnamed {cat}",
-                           "distance": r[2] if len(r) > 2 else 0,
-                           "lat": float(r[3]) if len(r) > 3 and r[3] else None,
-                           "lng": float(r[4]) if len(r) > 4 and r[4] else None}
-                           for r in rows]
-        except Exception as e:
-            print(f"  OSM query error for {cat}: {e}")
-            result[cat] = []
+    result = {cat: [] for cat in categories}
+    
+    try:
+        lat_rad = abs(math.radians(lat))
+        mercator_radius = radius_m / math.cos(lat_rad)
+        
+        sql = f"""
+        WITH center AS (
+            SELECT ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 3857) AS geom_3857,
+                   ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326)::geography AS geog
+        ),
+        bbox_points AS (
+            SELECT name, way, amenity, leisure, shop, railway, public_transport, highway
+            FROM planet_osm_point, center
+            WHERE way && ST_Expand(center.geom_3857, {mercator_radius})
+        ),
+        bbox_polys AS (
+            SELECT name, ST_Centroid(way) AS way, amenity, leisure, shop, railway, public_transport, highway
+            FROM planet_osm_polygon, center
+            WHERE way && ST_Expand(center.geom_3857, {mercator_radius})
+        ),
+        all_pois AS (
+            SELECT name, way, amenity, leisure, shop, railway, public_transport, highway FROM bbox_points
+            UNION ALL
+            SELECT name, way, amenity, leisure, shop, railway, public_transport, highway FROM bbox_polys
+        ),
+        categorized AS (
+            SELECT name, way,
+                CASE
+                    WHEN amenity IN ('cafe', 'restaurant', 'fast_food', 'pub', 'bar', 'ice_cream', 'food_court') THEN 'cafe'
+                    WHEN leisure IN ('park', 'nature_reserve', 'recreation_ground', 'playground', 'garden') THEN 'park'
+                    WHEN railway IN ('station') THEN 'train_station'
+                    WHEN public_transport IN ('station', 'stop_position') OR railway IN ('tram_stop', 'halt') OR highway IN ('bus_stop') OR amenity IN ('bus_station', 'ferry_terminal') THEN 'transit'
+                    WHEN amenity IN ('school', 'college', 'university', 'kindergarten', 'childcare') THEN 'school'
+                    WHEN shop IN ('mall', 'supermarket', 'department_store', 'convenience', 'bakery', 'butcher') THEN 'shopping'
+                    WHEN amenity IN ('hospital', 'clinic', 'pharmacy', 'doctors', 'dentist') THEN 'hospital'
+                    WHEN leisure IN ('sports_centre', 'fitness_centre', 'stadium', 'pitch', 'golf_course', 'swimming_pool') THEN 'sports'
+                    WHEN amenity IN ('place_of_worship', 'church', 'mosque', 'temple', 'synagogue') THEN 'worship'
+                    WHEN amenity IN ('shelter') THEN 'shelter'
+                    WHEN amenity IN ('community_centre') THEN 'community_centre'
+                    WHEN amenity IN ('retirement_home') THEN 'retirement_home'
+                    ELSE NULL
+                END AS category
+            FROM all_pois
+        )
+        SELECT category, name,
+               ROUND(ST_Distance(ST_Transform(way, 4326)::geography, center.geog)::numeric, 0)::int AS dist_m,
+               ST_Y(ST_Transform(way, 4326)) AS plat,
+               ST_X(ST_Transform(way, 4326)) AS plng
+        FROM categorized, center
+        WHERE category IS NOT NULL
+          AND ST_DWithin(ST_Transform(way, 4326)::geography, center.geog, {radius_m})
+        ORDER BY dist_m
+        """
+        
+        with engine.connect() as conn:
+            rows = conn.execute(text(sql)).fetchall()
+            conn.commit()
+            
+        for r in rows:
+            cat = r[0]
+            if cat in categories:
+                result[cat].append({
+                    "name": r[1] or f"Unnamed {cat}",
+                    "distance": r[2] if len(r) > 2 else 0,
+                    "lat": float(r[3]) if len(r) > 3 and r[3] else None,
+                    "lng": float(r[4]) if len(r) > 4 and r[4] else None
+                })
+    except Exception as e:
+        print(f"  OSM query error: {e}")
 
     total_items = sum(len(v) for v in result.values())
     if total_items == 0:
         import requests
-        print("Local DB empty, falling back to Overpass API...")
+        print("Local DB empty or query failed, falling back to Overpass API...")
         overpass_url = "http://overpass-api.de/api/interpreter"
         overpass_query = f"""
         [out:json][timeout:10];

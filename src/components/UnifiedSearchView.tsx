@@ -36,7 +36,7 @@ interface AskResponseV2 {
 
 
 export default memo(function UnifiedSearchView({ 
-  setActiveSuburb, setActiveTab, financialProfile, setFinancialProfile
+  setActiveSuburb, setActiveTab, financialProfile, setFinancialProfile, persona = 'first_home_buyer'
 }: {
   setActiveSuburb?: (s: any) => void;
   setActiveTab?: (t: string) => void;
@@ -45,6 +45,7 @@ export default memo(function UnifiedSearchView({
   suburbsData?: any[];
   onSelectResult?: (result: any, meta: any) => void;
   persona?: any;
+  setNlpSummary?: (summary: string | null) => void;
 }) {
   
   const [question, setQuestion] = useState('');
@@ -61,6 +62,50 @@ export default memo(function UnifiedSearchView({
   const minimumYield = financialProfile?.minimumYield ?? null;
   
   const [showFilters, setShowFilters] = useState(false);
+
+  // Get persona-specific welcome message and quick start pills
+  const getPersonaWelcome = () => {
+    switch(persona) {
+      case 'first_home_buyer':
+        return {
+          welcome: "You're exploring as a First Home Buyer. Here's where to start your property journey.",
+          pills: [
+            "Find suburbs with grants eligible areas",
+            "Best affordable suburbs near train stations",
+            "First home buyer hotspots with good schools"
+          ]
+        };
+      case 'investor':
+        return {
+          welcome: "You're exploring as an Investor. Discover high-yield and high-growth opportunities.",
+          pills: [
+            "High yield + low vacancy rate suburbs",
+            "Cashflow positive investment properties",
+            "Suburbs with strong rental demand"
+          ]
+        };
+      case 'buyers_agent':
+        return {
+          welcome: "You're exploring as a Buyer's Agent. Access detailed market intelligence and property analysis.",
+          pills: [
+            "Suburbs with high buyer demand",
+            "Undervalued properties with growth potential",
+            "Premium suburbs with strong fundamentals"
+          ]
+        };
+      default:
+        return {
+          welcome: "Welcome to PropertyIQ. Start exploring properties that match your needs.",
+          pills: [
+            "Find properties in my budget",
+            "Explore top suburbs for families",
+            "Discover investment opportunities"
+          ]
+        };
+    }
+  };
+
+  const personaWelcome = getPersonaWelcome();
 
   const updateProfile = (key: string, value: any) => {
     if (setFinancialProfile) {
@@ -125,7 +170,7 @@ export default memo(function UnifiedSearchView({
       {/* ── Conversational Hero ── */}
       <section className="us-hero">
         <h1 className="us-hero-title">Where should I buy?</h1>
-        <p className="us-hero-subtitle">Ask PropertyIQ to find your perfect match, or explore our top recommendations based on your profile.</p>
+        <p className="us-hero-subtitle">{personaWelcome.welcome}</p>
         
         <form className="us-search-form" onSubmit={handleNlpSubmit}>
           <div className="us-search-input-wrapper">
@@ -143,15 +188,11 @@ export default memo(function UnifiedSearchView({
           </div>
           
           <div className="us-quick-starts">
-            <button type="button" className="us-pill" onClick={() => handlePillClick(`Best ${propertyType}s in ${state} under $${budget.toLocaleString()}`)}>
-              💰 Best areas under my budget
-            </button>
-            <button type="button" className="us-pill" onClick={() => handlePillClick('Compare Point Cook and Tarneit')}>
-              ⚖️ Compare two suburbs
-            </button>
-            <button type="button" className="us-pill" onClick={() => handlePillClick('Find high yield suburbs with good schools')}>
-              📈 High yield & lifestyle
-            </button>
+            {personaWelcome.pills.map((pill, index) => (
+              <button key={index} type="button" className="us-pill" onClick={() => handlePillClick(pill)}>
+                {index === 0 ? '💰' : index === 1 ? '⚖️' : '📈'} {pill}
+              </button>
+            ))}
           </div>
 
           <button type="button" className="us-filters-toggle" onClick={() => setShowFilters(!showFilters)}>

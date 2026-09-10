@@ -34,29 +34,33 @@ const PersonaSwitcher = memo(function PersonaSwitcher({ activePersona, onChange 
   )
 
   return (
-    <div
-      className="u-72b4a711"
-    >
-      <span
-        className="u-fb84eb0b"
-      >
+    <div className="u-72b4a711" style={{ padding: '4px 8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <span className="u-fb84eb0b" style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
         View as:
       </span>
-      {personaIds().map(id => {
-        const p = PERSONAS[id]
-        const active = id === activePersona
-        return (
-          <button
-            key={id}
-            type="button"
-            title={p.description}
-            onClick={() => handleChange(id)}
-            className="u-1e7c8323" style={{fontWeight: active ? 600 : 400, border: active ? '1px solid var(--accent-cyan)' : '1px solid var(--border-glass)', background: active ? 'rgba(59,130,246,0.12)' : 'var(--bg-card)', color: active ? 'var(--accent-cyan)' : 'var(--text-secondary)'}}
-          >
-            {icons[id]} {p.label}
-          </button>
-        )
-      })}
+      <select 
+        value={activePersona} 
+        onChange={(e) => handleChange(e.target.value as PersonaId)}
+        style={{
+          width: '100%',
+          padding: '8px',
+          borderRadius: '8px',
+          background: 'var(--bg-card)',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border-glass)',
+          outline: 'none',
+          cursor: 'pointer'
+        }}
+      >
+        {personaIds().map(id => {
+          const p = PERSONAS[id]
+          return (
+            <option key={id} value={id} title={p.description}>
+              {icons[id]} {p.label}
+            </option>
+          )
+        })}
+      </select>
     </div>
   )
 })

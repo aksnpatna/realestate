@@ -266,27 +266,29 @@
 
 
 :root {
-  /* Premium Light Mode with Dark Sidebar Theme */
-  --bg-dark: #F8FAFC; /* Slate 50 - slightly cooler background */
-  --bg-card: #FFFFFF; /* Pure white cards */
-  --border-glass: #E2E8F0; /* Slate 200 */
+  /* World-Class Premium Theme */
+  --bg-dark: #f8fafc; /* Slate 50 */
+  --bg-card: #ffffff;
+  --bg-card-glass: rgba(255, 255, 255, 0.7);
+  --border-glass: rgba(226, 232, 240, 0.8); /* Slate 200 with opacity */
+  --border-glass-strong: rgba(203, 213, 225, 0.6);
   
   /* Text */
-  --text-primary: #0F172A; /* Slate 900 */
+  --text-primary: #0f172a; /* Slate 900 */
   --text-secondary: #334155; /* Slate 700 */
-  --text-muted: #64748B; /* Slate 500 */
+  --text-muted: #64748b; /* Slate 500 */
   
-  /* Accents - PropertyIQ Brand */
-  --accent-cyan: #0F766E; /* Teal 700 - richer, more premium than bright cyan */
-  --accent-cyan-light: #CCFBF1; /* Teal 50 */
-  --accent-purple: #1E3A8A; /* Blue 900 - very deep navy for strong accents */
-  --brand-navy: #0F172A; /* Deep Slate 900 for sidebar/hero */
-  --brand-gold: #D97706; /* Warm Amber for highlights */
+  /* Accents - Storytelling driven */
+  --accent-cyan: #3b82f6; /* Blue 500 for trust and growth */
+  --accent-cyan-light: #eff6ff; /* Blue 50 */
+  --accent-purple: #6366f1; /* Indigo 500 for AI/Insights */
+  --brand-navy: #0f172a; /* Deep Slate 900 */
+  --brand-gold: #f59e0b; /* Amber 500 */
   
   /* Semantic */
-  --success: #059669; /* Emerald 600 */
-  --warning: #D97706; /* Amber 600 */
-  --danger: #DC2626; /* Red 600 */
+  --success: #10b981; /* Emerald 500 */
+  --warning: #f59e0b; /* Amber 500 */
+  --danger: #ef4444; /* Red 500 */
   --bg-glass: rgba(255, 255, 255, 0.8);
   
   /* Legacy aliases */
@@ -296,57 +298,26 @@
   --text: var(--text-primary);
   --border: var(--border-glass);
   --text-tertiary: var(--text-muted);
-  --radius-md: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   
-/* Premium Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.025);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.01);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-  --shadow-glow: 0 0 15px rgba(15, 118, 110, 0.3);
-  --shadow-elevated: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-  --shadow-hover: 0 30px 60px -15px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
-
-/* Suburb Hero Background Styles - Ensure they're always included */
-.suburb-hero {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border-glass);
-  padding: 3rem 0;
-  margin: -2rem -2rem 2rem -2rem; /* Pull out of normal padding */
-  position: relative;
-  overflow: hidden;
+  /* Premium Shadows & Depth */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.025);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.05), 0 4px 6px -4px rgba(15, 23, 42, 0.025);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.025);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+  --shadow-hover: 0 20px 40px -10px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.02);
 }
 
-.sh-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  opacity: 0.05;
-}
-
-.sh-background-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.1);
-}
-
-.sh-background-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(248, 250, 252, 0.95) 50%, rgba(241, 245, 249, 0.9) 100%);
-}
-
-.sh-container {
-  position: relative;
-  z-index: 1;
-}
+/* Glassmorphism utility classes */
+.glass-panel {
+  background: var(--bg-card-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
 }
 
 * {

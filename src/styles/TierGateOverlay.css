@@ -1,0 +1,90 @@
+/* Tier Gate Overlay CSS */
+
+.tier-gate-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.tier-gate-content {
+  opacity: 0.3;
+  filter: blur(3px);
+  pointer-events: none;
+  user-select: none;
+  transition: all 0.3s;
+}
+
+.tier-gate-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(1px);
+  z-index: 10;
+}
+
+.tier-gate-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 2.5rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+}
+
+.tier-gate-icon {
+  color: var(--accent-cyan);
+  margin-bottom: 1.5rem;
+}
+
+.tier-gate-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--brand-navy);
+  margin: 0 0 1rem 0;
+}
+
+.tier-gate-description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+}
+
+.tier-gate-price {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin: 0 0 2rem 0;
+}
+
+.tier-gate-button {
+  background: var(--accent-cyan);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.tier-gate-button:hover {
+  background: #0f766e;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.tier-gate-button:active {
+  transform: translateY(0);
+}

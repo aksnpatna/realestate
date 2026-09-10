@@ -50,7 +50,22 @@ services:
       redis:
         condition: service_healthy
 
-
+  news-updater:
+    image: alpine/curl
+    container_name: realestate-news-updater
+    restart: unless-stopped
+    command: /bin/sh -c "while true; do curl -s -X POST 'http://backend:8000/api/internal/update-news-batch?limit=5' || true; sleep 7200; done"
+    depends_on:
+      - backend
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+    deploy:
+      resources:
+        limits:
+          memory: 32M
 
   osm-updater:
     build:

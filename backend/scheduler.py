@@ -55,8 +55,8 @@ class UpdateScheduler:
 
         # Check if data was recently updated to avoid massive DB load on every container restart
         try:
-            from db.database import SessionLocal
-            from models.suburb_ui import SuburbUIV3
+            from models_v3 import SessionLocal
+            from models_v3 import SuburbUIV3
             with SessionLocal() as session:
                 latest = session.query(SuburbUIV3.last_updated).filter(SuburbUIV3.last_updated != None).order_by(SuburbUIV3.last_updated.desc()).first()
                 if latest and latest[0]:

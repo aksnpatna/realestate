@@ -1,144 +1,75 @@
-/* ── YieldSense Design Tokens v1 ────────────────────────────────────────────
- * Three tiers: Primitives → Semantics → Component (in base.css)
- * All color usage must reference semantic tokens; primitives are raw scales.
- * Never use a primitive color directly in a component; always go through semantic.
- * ───────────────────────────────────────────────────────────────────────── */
-
+/* Premium Australian investment-research aesthetic */
 :root {
-  /* ── Tier 1 — Primitives (raw scales) ───────────────────────────────── */
-  /* Slate */
-  --slate-50:  #F8FAFC; --slate-100: #F1F5F9; --slate-200: #E2E8F0;
-  --slate-300: #CBD5E1; --slate-400: #94A3B8; --slate-500: #64748B;
-  --slate-600: #475569; --slate-700: #334155; --slate-800: #1E293B;
-  --slate-900: #0F172A;
-  /* Brand blue */
-  --blue-50:  #F0F9FF; --blue-100: #E0F2FE; --blue-500: #0EA5E9;
-  --blue-600: #0284C7; --blue-700: #0369A1; --blue-800: #075985;
-  /* Indigo (secondary) */
-  --indigo-50:  #EEF2FF; --indigo-100: #E0E7FF;
-  --indigo-600: #4F46E5; --indigo-700: #4338CA; --indigo-800: #3730A3;
-  /* Semantic hues */
-  --emerald-50: #ECFDF5; --emerald-100: #D1FAE5; --emerald-600: #059669;
-  --emerald-700: #047857;
-  --amber-50:  #FFFBEB;  --amber-100:  #FEF3C7;  --amber-600: #D97706;
-  --amber-700: #B45309;
-  --red-50:    #FEF2F2;  --red-100:    #FEE2E2;   --red-600: #DC2626;
-  --red-700:   #B91C1C;
+  /* Primary colors */
+  --ink: #17201d;
+  --ink-soft: #43504b;
+  --paper: #f7f7f3;
+  --surface: #ffffff;
 
-  /* ── Tier 2 — Semantic (meaning-based) ──────────────────────────────── */
-  --bg-app:    var(--slate-100);
-  --bg-surface: #FFFFFF;
-  --bg-surface-raised: #FFFFFF;
-  --bg-surface-sunken: var(--slate-50);
-  --bg-brand-subtle: var(--blue-50);
-  --bg-brand: var(--blue-600);
-  --bg-brand-hover: var(--blue-700);
+  /* Forest palette - representing growth and stability */
+  --forest: #173c32;
+  --forest-soft: #e8efeb;
+  --forest-light: #f3f7f5;
 
-  --text-1: var(--slate-900);
-  --text-2: var(--slate-700);
-  --text-3: var(--slate-500);
-  --text-on-brand: #FFFFFF;
+  /* Earth tones - warm and approachable */
+  --sand: #e9e3d7;
+  --ochre: #b4863c;
+  --ochre-soft: #f5f0e6;
 
-  --border-1: var(--slate-200);
-  --border-2: var(--slate-300);
-  --border-focus: var(--blue-600);
+  /* Status colors */
+  --positive: #2d6a4f;
+  --positive-soft: #e8f5e9;
+  --negative: #a44738;
+  --negative-soft: #fce8e8;
 
-  /* ── Status (each has bg + text + border — never colour-alone) ─────── */
-  --status-success-bg: var(--emerald-50);
-  --status-success-text: var(--emerald-700);
-  --status-success-border: #A7F3D0;
-  --status-warning-bg: var(--amber-50);
-  --status-warning-text: var(--amber-700);
-  --status-warning-border: #FDE68A;
-  --status-danger-bg: var(--red-50);
-  --status-danger-text: var(--red-700);
-  --status-danger-border: #FECACA;
-  --status-info-bg: var(--blue-50);
-  --status-info-text: var(--blue-700);
-  --status-info-border: #BAE6FD;
+  /* Neutrals */
+  --line: #dfe3df;
+  --line-soft: #e9edea;
+  --shadow: rgba(23, 32, 29, 0.08);
+  --shadow-medium: rgba(23, 32, 29, 0.12);
 
-  /* ── Evidence / Data Quality bands ──────────────────────────────────── */
-  --dq-high-bg: var(--emerald-50);
-  --dq-high-text: var(--emerald-700);
-  --dq-medium-bg: var(--blue-50);
-  --dq-medium-text: var(--blue-700);
-  --dq-limited-bg: var(--amber-50);
-  --dq-limited-text: var(--amber-700);
-  --dq-unavailable-bg: var(--slate-100);
-  --dq-unavailable-text: var(--slate-500);
+  /* Typography */
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-editorial: 'Georgia', 'DM Serif Display', serif;
 
-  /* ── Tier 3 — Spacing / Radius / Type / Elevation / Motion / Z-index ── */
-  /* 4px base spacing scale */
-  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
-  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
-  --space-12: 48px; --space-16: 64px;
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --spacing-4xl: 96px;
 
-  /* Radius scale */
-  --radius-sm: 6px;  --radius-md: 10px; --radius-lg: 16px;
-  --radius-xl: 24px; --radius-full: 999px;
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 
-  /* Type scale (1.25 ratio, fluid headings) */
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --text-xs:  0.75rem;  --text-sm:  0.875rem; --text-base: 1rem;
-  --text-lg:  1.125rem; --text-xl: 1.25rem;   --text-2xl: 1.5rem;
-  --text-3xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
-  --text-4xl: clamp(2.1rem, 1.6rem + 2.5vw, 3rem);
-  --leading-tight: 1.25; --leading-normal: 1.5; --leading-relaxed: 1.65;
+  /* Shadows */
+  --shadow-sm: 0 2px 8px var(--shadow);
+  --shadow-md: 0 4px 16px var(--shadow);
+  --shadow-lg: 0 8px 24px var(--shadow);
 
-  /* Elevation / shadows */
-  --shadow-1: 0 1px 2px rgba(15, 23, 42, .05);
-  --shadow-2: 0 4px 6px -1px rgba(15, 23, 42, .08),
-              0 2px 4px -2px rgba(15, 23, 42, .06);
-  --shadow-3: 0 10px 15px -3px rgba(15, 23, 42, .10),
-              0 4px 6px -4px rgba(15, 23, 42, .06);
-  --shadow-4: 0 20px 25px -5px rgba(15, 23, 42, .10),
-              0 8px 10px -6px rgba(15, 23, 42, .05);
-
-  /* Motion */
-  --dur-fast: 120ms; --dur-med: 200ms; --dur-slow: 300ms;
-  --ease-standard: cubic-bezier(.2, 0, 0, 1);
-  --ease-emphasized: cubic-bezier(.3, 0, .2, 1);
-
-  /* Z-index scale (the ONLY allowed stacking values) */
-  --z-base: 0; --z-sticky: 10; --z-overlay: 100;
-  --z-sheet: 200; --z-modal: 300; --z-toast: 400; --z-tooltip: 500;
-
-  /* ── Legacy bridge (map old var names to new semantic tokens) ───────── */
-  --bg-dark:        var(--slate-100);
-  --bg-card:        var(--bg-surface);
-  --bg-glass:       var(--bg-surface);
-  --border-glass:   var(--border-1);
-  --text-primary:   var(--text-1);
-  --text-secondary: var(--text-2);
-  --text-muted:     var(--text-3);
-  --accent-cyan:    var(--blue-600);
-  --accent-purple:  var(--indigo-700);
-  --success:        var(--emerald-600);
-  --warning:        var(--amber-600);
-  --danger:         var(--red-600);
-  --shadow-sm:      var(--shadow-1);
-  --shadow-md:      var(--shadow-2);
-  --shadow-lg:      var(--shadow-3);
-  /* Missing vars that codebases references but were undefined */
-  --accent:         var(--blue-600);
-  --surface:        var(--bg-surface);
-  --bg:             var(--slate-100);
-  --text:           var(--text-1);
-  --border:         var(--border-1);
-  --text-tertiary:  var(--text-3);
-  --radius-md:      10px;
-  --radius-xs:       4px;
-
-  /* Missing vars referenced in components (added 2026-08-01 audit) */
-  --accent-green:    var(--emerald-600);
-  --accent-primary:  var(--blue-600);
-  --border-color:    var(--border-1);
+  /* Transitions */
+  --transition-fast: 120ms ease-out;
+  --transition-normal: 160ms ease-out;
+  --transition-slow: 240ms ease-out;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --dur-fast: 0ms;
-    --dur-med: 0ms;
-    --dur-slow: 0ms;
-  }
+/* Update existing token aliases for backward compatibility */
+:root {
+  /* Blue aliases for existing code */
+  --blue-600: var(--forest);
+  --blue-700: #0f2a24;
+  
+  /* Green aliases */
+  --emerald-600: var(--positive);
+  
+  /* Indigo aliases */
+  --indigo-600: var(--forest);
+  
+  /* Red aliases */
+  --red-600: var(--negative);
 }

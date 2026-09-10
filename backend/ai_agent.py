@@ -48,34 +48,74 @@ INSUFFICIENT_EVIDENCE_FALLBACK = CommitteeVerdict(
 )
 
 def get_llm():
-    # 1st: NVIDIA (Nemotron 3 Nano) - most capable available model
+    # 1st: KIE (Cost-effective, wide model selection) - check if available
+    if os.getenv("KIE_KEY") and os.getenv("KIE_KEY") != "none":
+        try:
+            from kie_api import is_kie_available, get_kie_client
+            if is_kie_available():
+                # KIE API integration - create a wrapper for LangChain
+                from langchain_core.language_models import BaseLanguageModel
+                from langchain_core.messages import BaseMessage
+                from typing import List, Any
+                
+                class KIELanguageModel(BaseLanguageModel):
+                    def __init__(self, model: str = "gpt-4o"):
+                        self.model = model
+                        self.client = get_kie_client()
+                    
+                    def invoke(self, messages: List[BaseMessage], **kwargs: Any) -> BaseMessage:
+                        from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+                        
+                        # Convert LangChain messages to KIE format
+                        kie_messages = []
+                        for msg in messages:
+                            if isinstance(msg, SystemMessage):
+                                kie_messages.append({"role": "system", "content": msg.content})
+                            elif isinstance(msg, HumanMessage):
+                                kie_messages.append({"role": "user", "content": msg.content})
+                            elif isinstance(msg, AIMessage):
+                                kie_messages.append({"role": "assistant", "content": msg.content})
+                        
+                        try:
+                            result = self.client.chat_completion(self.model, kie_messages, **kwargs)
+                            return AIMessage(content=result)
+                        except Exception as e:
+                            logger.error(f"KIE API invocation failed: {str(e)}")
+                            # Fallback to next provider
+                            raise e
+                
+                return KIELanguageModel(os.getenv("KIE_MODEL", "gpt-4o"))
+        except Exception as e:
+            logger.warning(f"KIE API initialization failed: {str(e)}")
+    
+    # 2nd: NVIDIA (Nemotron 3 Nano) - most capable available model
     if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("NVIDIA_API_KEY"),
             openai_api_base="https://integrate.api.nvidia.com/v1",
             model_name=os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning")
         )
-    # 2nd: xAI (Grok 4.6) - fast fallback
+    # 3rd: xAI (Grok 4.6) - fast fallback
     elif os.getenv("XAI_API_KEY") and os.getenv("XAI_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("XAI_API_KEY"),
             openai_api_base="https://api.x.ai/v1",
             model_name=os.getenv("XAI_MODEL", "grok-4.6")
         )
-    # 3rd: OpenAI (GPT-4o) - reliable and widely available
+    # 4th: OpenAI (GPT-4o) - reliable and widely available
     elif os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             model_name=os.getenv("OPENAI_MODEL", "gpt-4o")
         )
-    # 4th: DeepSeek - alternative fallback
+    # 5th: DeepSeek - alternative fallback
     elif os.getenv("DEEPSEEK_API_KEY") and os.getenv("DEEPSEEK_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("DEEPSEEK_API_KEY"),
             openai_api_base="https://api.deepseek.com/v1",
             model_name="deepseek-chat"
         )
-    # 4th: Local Ollama (Mac Air)
+    # 6th: Local Ollama (Mac Air)
     else:
         return ChatOpenAI(
             openai_api_key="none",
@@ -506,7 +546,9 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
         logger.warning(f"[memory] Failed to store: {e}")
 
     llm_provider = "unknown"
-    if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
+    if os.getenv("KIE_KEY") and os.getenv("KIE_KEY") != "none":
+        llm_provider = f"kie/{os.getenv('KIE_MODEL', 'gpt-4o')}"
+    elif os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
         llm_provider = "nvidia/llama-3.1-70b"
     elif os.getenv("GROQ_API_KEY") and os.getenv("GROQ_API_KEY") != "none":
         llm_provider = "groq/llama-3.3-70b"

@@ -6,7 +6,9 @@ export type IconName =
   | 'heart' | 'user' | 'menu' | 'close' | 'chevron-up' | 'chevron-down'
   | 'chevron-left' | 'chevron-right' | 'check' | 'warning' | 'info'
   | 'external' | 'share' | 'more' | 'settings' | 'log-out' | 'plus'
-  | 'arrow-right' | 'message-circle' | 'clock' | 'zap';
+  | 'arrow-right' | 'message-circle' | 'clock' | 'zap'
+  | 'trending-up' | 'alert-circle' | 'shield' | 'users' | 'building' | 'road' | 'car' | 'book-open' | 'lock'
+  | 'bed' | 'bath' | 'ruler';
 
 const paths: Record<IconName, string> = {
   search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM21 21l-4.35-4.35',
@@ -36,6 +38,18 @@ const paths: Record<IconName, string> = {
   'message-circle': 'M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z',
   'clock': 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 6v6l4 2',
   'zap': 'M13 2 3 14h9l-1 8 10-12h-9l1-8z',
+  'trending-up': 'M22 12h-4l-3 9L9 3l-3 9H2',
+  'alert-circle': 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 8v4M12 16h.01',
+  'shield': 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
+  'users': 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+  'building': 'M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16M9 21h6',
+  'road': 'M18 19l-6-6-6 6',
+  'car': 'M18 17h-6v-4H6V9a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4h-2v4zM4 19h16',
+  'book-open': 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',
+  'lock': 'M21 21H3V5h6V3a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2h6v16z',
+  'bed': 'M9 18V5l12-3v13M9 18c0 1.657-1.343 3-3 3H3v-4h3c1.657 0 3 1.343 3 3z',
+  'bath': 'M3 20a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1zM9 13h1v-3H9z',
+  'ruler': 'M21 21l-6-6m2-5v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z',
 };
 
 interface IconProps {

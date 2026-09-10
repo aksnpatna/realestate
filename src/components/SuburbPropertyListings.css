@@ -1,0 +1,122 @@
+/* Suburb Property Listings Styles */
+.suburb-property-listings {
+  background: var(--bg-card);
+  padding: 4rem 5%;
+  margin-top: 4rem;
+}
+
+.suburb-property-listings-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.suburb-property-listings-title {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: clamp(28px, 3.3vw, 46px);
+  line-height: 1.08;
+  margin: 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--brand-navy);
+}
+
+.suburb-property-listings-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 16px;
+}
+
+.suburb-property-listings-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+}
+
+.loading-spinner {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.suburb-property-listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.suburb-property-listings-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .suburb-property-listings {
+    padding: 3rem 5%;
+    margin-top: 3rem;
+  }
+  
+  .suburb-property-listings-header {
+    margin-bottom: 2rem;
+  }
+  
+  .suburb-property-listings-title {
+    font-size: clamp(26px, 7vw, 34px);
+  }
+  
+  .suburb-property-listings-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .suburb-property-listings {
+    padding: 2rem 5%;
+    margin-top: 2rem;
+  }
+  
+  .suburb-property-listings-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .suburb-property-listings-title {
+    font-size: 1.75rem;
+  }
+  
+  .suburb-property-listings-subtitle {
+    font-size: 1rem;
+  }
+}

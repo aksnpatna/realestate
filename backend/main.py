@@ -26,6 +26,7 @@ JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-default-key-for-dev-only
 JWT_ALGORITHM = "HS256"
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
 from routers import decision_brief, ask_property, suburbs_sqm
+from app.calculators import router as calculators_router
 from poc_config import poc_config
 from score_meta import enrich_growth_factors, all_score_meta
 
@@ -118,6 +119,7 @@ app = FastAPI()
 app.include_router(decision_brief.router)
 app.include_router(ask_property.router)
 app.include_router(suburbs_sqm.router, prefix="/api/suburbs", tags=["suburbs_sqm"])
+app.include_router(calculators_router)
 
 # CORS: In production, restrict to your actual frontend origin(s)
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",") if os.getenv("CORS_ORIGINS") else []
@@ -1336,6 +1338,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "crimeRate": v3.crime_rate or 5000.0,
         # Content
         "highlights": v3.highlights or [],
+        "history": formatted_history if formatted_history else (v3.history_10yr or []),
+        "historyRent": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
         "history10yr": formatted_history if formatted_history else (v3.history_10yr or []),
         "historyRent10yr": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
         "historyPocNote": "Historical charts use existing dataset. Source rights and observation accuracy not yet validated for POC. Future forecasts not yet enabled.",
@@ -1767,6 +1771,62 @@ def reload_suburbs():
         return {"status": "ok", "suburbs": total, "pipeline": "v3"}
     finally:
         db.close()
+
+@app.post("/api/internal/update-news-batch")
+def update_news_batch(limit: int = 2, db: Session = Depends(get_db)):
+    """Background endpoint triggered by cron to update news sentiment in batches."""
+    if not ENABLE_AI_INSIGHTS:
+        return {"status": "disabled", "message": "AI insights disabled"}
+    
+    METRO_CBD_MINS = 60
+    STALE_DAYS = 14
+    
+    metro_suburbs = db.query(SuburbUIV3).filter(
+        SuburbUIV3.cbd_distance_mins != None,
+        SuburbUIV3.cbd_distance_mins < METRO_CBD_MINS
+    ).all()
+    
+    suburbs_to_update = []
+    from datetime import datetime
+    for suburb in metro_suburbs:
+        needs_update = False
+        cached = suburb.news_sentiment
+        if not cached or not isinstance(cached, dict):
+            needs_update = True
+        else:
+            fetched = cached.get("fetched_at")
+            if not fetched:
+                needs_update = True
+            else:
+                try:
+                    fetched_dt = datetime.fromisoformat(fetched)
+                    if (datetime.utcnow() - fetched_dt).days >= STALE_DAYS:
+                        needs_update = True
+                except (ValueError, TypeError):
+                    needs_update = True
+        
+        if needs_update:
+            suburbs_to_update.append(suburb)
+            
+    updated = []
+    from ai_agent import get_news_sentiment as fetch_sentiment
+    for suburb in suburbs_to_update[:limit]:
+        try:
+            result = fetch_sentiment(suburb.name or "", suburb.state or "")
+            suburb.news_sentiment = result
+            db.commit()
+            updated.append(suburb.name)
+        except Exception as e:
+            db.rollback()
+            print(f"Failed to update sentiment for {suburb.name}: {e}")
+            
+    return {
+        "status": "ok",
+        "total_needing_update": len(suburbs_to_update),
+        "updated_this_batch": len(updated),
+        "updated_suburbs": updated
+    }
+
 
 
 from pydantic import BaseModel
@@ -2292,7 +2352,13 @@ def get_osm_livability(lat: float, lng: float, radius: int = 2500, suburb_id: st
     """
     from osm_local import get_livability, get_boundary
     from sqlalchemy import func, text as sqla_text
-    data = get_livability(lat, lng, radius)
+    
+    if suburb_id:
+        cache_key = f"osm:livability:{suburb_id}:{radius}"
+    else:
+        cache_key = f"osm:livability:{round(lat, 4)}:{round(lng, 4)}:{radius}"
+        
+    data = get_cached_or_query(cache_key, lambda: get_livability(lat, lng, radius), expire_secs=86400)
 
     def _format_pois(category):
         items = data["pois"].get(category, [])

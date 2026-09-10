@@ -1,0 +1,107 @@
+.investment-thesis {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  background: var(--surface);
+}
+
+.investment-thesis__header {
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+.investment-thesis__header .eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+
+.investment-thesis__header h2 {
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.investment-thesis__header p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.investment-thesis__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.investment-thesis__grid h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+
+.thesis-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.thesis-point span {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--forest-soft);
+  color: var(--forest);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.thesis-point--risk span {
+  background: var(--negative-soft);
+  color: var(--negative);
+}
+
+@media (max-width: 768px) {
+  .investment-thesis {
+    padding: 48px 20px;
+  }
+
+  .investment-thesis__header h2 {
+    font-size: 32px;
+  }
+
+  .investment-thesis__header p {
+    font-size: 16px;
+  }
+
+  .investment-thesis__grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .investment-thesis__grid h3 {
+    font-size: 16px;
+  }
+
+  .thesis-point {
+    font-size: 15px;
+  }
+}

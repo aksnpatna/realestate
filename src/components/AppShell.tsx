@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BottomSheet, Icon } from './ui';
 import type { IconName } from './ui';
 import PersonaSwitcher from './PersonaSwitcher';
+import PricingTierSwitcher from './PricingTierSwitcher';
 import './AppShell.css';
 
 export type ViewId = 'ask' | 'buy-finder' | 'heatmap' | 'profile' | 'portfolio' | 'saved' | 'settings' | 'gearing' | 'purchase-plan' | 'calculators' | 'recent' | 'subscription';
@@ -11,6 +12,8 @@ interface AppShellProps {
   onViewChange: (view: ViewId) => void;
   persona: string;
   onPersonaChange: (p: any) => void;
+  activeTier?: string;
+  onTierChange?: (t: any) => void;
   onLogout: () => void;
   showProfile: boolean;
   usage?: { used: number; limit: number };
@@ -19,10 +22,10 @@ interface AppShellProps {
 
 const SIDEBAR_GROUPS = [
   {
-    title: 'Chat',
+    title: 'Explore',
     items: [
-      { id: 'ask', label: 'New Chat', icon: 'message-circle' as IconName },
-      { id: 'recent', label: 'Recent Chats', icon: 'clock' as IconName },
+      { id: 'ask', label: 'Search & Ask', icon: 'message-circle' as IconName },
+      { id: 'recent', label: 'Search History', icon: 'clock' as IconName },
     ]
   },
   {
@@ -43,7 +46,7 @@ const SIDEBAR_GROUPS = [
 ];
 
 const MOBILE_TABS: { id: string; label: string; icon: IconName; view?: ViewId }[] = [
-  { id: 'ask', label: 'Chat', icon: 'message-circle', view: 'ask' },
+  { id: 'ask', label: 'Explore', icon: 'message-circle', view: 'ask' },
   { id: 'profile', label: 'Profile', icon: 'home', view: 'profile' },
   { id: 'heatmap', label: 'Map', icon: 'map', view: 'heatmap' },
   { id: 'saved', label: 'Saved', icon: 'heart', view: 'saved' },
@@ -51,7 +54,7 @@ const MOBILE_TABS: { id: string; label: string; icon: IconName; view?: ViewId }[
 ];
 
 export const AppShell: React.FC<AppShellProps> = ({
-  currentView, onViewChange, persona, onPersonaChange, onLogout, children,
+  currentView, onViewChange, persona, onPersonaChange, activeTier, onTierChange, onLogout, children,
 }) => {
   const [moreOpen, setMoreOpen] = useState(false);
   const [viewAnnounce, setViewAnnounce] = useState('');
@@ -92,6 +95,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
         <div className="app-shell__user-footer">
           <PersonaSwitcher activePersona={persona as any} onChange={onPersonaChange} />
+          {activeTier && onTierChange && <PricingTierSwitcher activeTier={activeTier as any} onChange={onTierChange} />}
           <button onClick={onLogout} className="app-shell__nav-item" style={{ opacity: 0.7, padding: '0.5rem' }}>
             <Icon name="log-out" size={18} /> Log out
           </button>
@@ -108,6 +112,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             <h1 className="app-shell__title">PropertyIQ</h1>
           </div>
           <PersonaSwitcher activePersona={persona as any} onChange={onPersonaChange} />
+          {activeTier && onTierChange && <PricingTierSwitcher activeTier={activeTier as any} onChange={onTierChange} />}
         </header>
 
         {/* Main Content Area */}

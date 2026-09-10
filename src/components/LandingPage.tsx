@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../styles/LandingPage.css';
 import { Icon } from './ui';
 
@@ -9,62 +9,44 @@ interface LandingPageProps {
 
 export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPageProps) {
   const [search, setSearch] = useState('');
+  const [selectedPersona, setSelectedPersona] = useState('first_home_buyer');
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (search.trim()) {
       // Just direct to login for now, but save their intent if we wanted to
       sessionStorage.setItem('initial_search', search);
+      sessionStorage.setItem('initial_persona', selectedPersona);
       onRegisterClick();
     }
   };
 
-  // Background media assets - Australian landmarks
-  const backgroundVideos = [
-    'https://assets.mixkit.co/videos/preview/mixkit-sydney-opera-house-and-harbour-bridge-4010-large.mp4',
-    'https://assets.mixkit.co/videos/preview/mixkit-melbourne-city-skyline-at-night-4009-large.mp4',
-    'https://assets.mixkit.co/videos/preview/mixkit-brisbane-river-and-story-bridge-4011-large.mp4'
-  ];
+  const handlePersonaChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const persona = e.currentTarget.dataset.persona;
+    if (persona) {
+      setSelectedPersona(persona);
+    }
+  };
 
-  const backgroundImages = [
-    'https://images.unsplash.com/photo-1549488344-1f9d96336337?q=80&w=2070&auto=format&fit=crop', // Sydney Opera House
-    'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop', // Melbourne CBD
-    'https://images.unsplash.com/photo-1545389336-cf090694435e?q=80&w=2070&auto=format&fit=crop'  // Brisbane
-  ];
-
-  const [mediaIndex, setMediaIndex] = useState(0);
-  
-  // Auto-rotate background media
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMediaIndex((prev) => (prev + 1) % backgroundImages.length);
-    }, 8000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  const backgroundVideo = 'https://alayaproperty.com/__l5e/assets-v1/3735881f-e073-485b-8db0-01142b50da58/hero.mp4';
+  const backgroundPoster = 'https://alayaproperty.com/__l5e/assets-v1/bef7de29-73f7-421b-9488-dcf977845678/hero-poster.jpg';
 
   return (
     <div className="landing-page-v2">
       {/* Dynamic Background */}
       <div className="lp-background">
         <div className="lp-background-overlay"></div>
-        <img 
-          src={backgroundImages[mediaIndex]} 
-          alt="Australian landscape"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-          }}
-        />
         <video 
           autoPlay 
           muted 
           loop 
           playsInline
+          poster={backgroundPoster}
           onError={(e) => {
             e.currentTarget.style.display = 'none';
           }}
         >
-          <source src={backgroundVideos[mediaIndex]} type="video/mp4" />
+          <source src={backgroundVideo} type="video/mp4" />
         </video>
       </div>
       {/* Premium Header */}
@@ -89,6 +71,34 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
           <p className="lp-hero-subtitle">
             Skip the spreadsheets. PropertyIQ analyzes 13,000+ suburbs instantly to match your borrowing capacity, investment strategy, or lifestyle needs.
           </p>
+
+          {/* Persona Selector */}
+          <div className="lp-persona-selector">
+            <span className="lp-persona-label">I'm a:</span>
+            <div className="lp-persona-buttons">
+              <button 
+                className={`lp-persona-btn ${selectedPersona === 'first_home_buyer' ? 'active' : ''}`} 
+                data-persona="first_home_buyer"
+                onClick={handlePersonaChange}
+              >
+                <Icon name="home" size={18} /> First Home Buyer
+              </button>
+              <button 
+                className={`lp-persona-btn ${selectedPersona === 'investor' ? 'active' : ''}`} 
+                data-persona="investor"
+                onClick={handlePersonaChange}
+              >
+                <Icon name="chart" size={18} /> Investor
+              </button>
+              <button 
+                className={`lp-persona-btn ${selectedPersona === 'buyers_agent' ? 'active' : ''}`} 
+                data-persona="buyers_agent"
+                onClick={handlePersonaChange}
+              >
+                <Icon name="brief" size={18} /> Buyer's Agent
+              </button>
+            </div>
+          </div>
 
           <form className="lp-search-box" onSubmit={handleSearchSubmit}>
             <Icon name="search" size={24} className="lp-search-icon" />
@@ -134,7 +144,11 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
             <div className="lp-trust-badges">
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
-                <span>13,000+ Suburbs Analyzed</span>
+                <span>13,284 Suburbs Analyzed</span>
+              </div>
+              <div className="lp-trust-badge">
+                <Icon name="check" size={16} />
+                <span>Updated Weekly</span>
               </div>
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
@@ -253,6 +267,174 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
                 </div>
                 <div className="lp-mock-chart"></div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Services Section */}
+      <section className="lp-services">
+        <div className="lp-container">
+          <div className="lp-section-header">
+            <div className="lp-eyebrow">What We Do</div>
+            <h2 className="lp-section-title">Don't buy the wrong property</h2>
+            <p className="lp-section-description">
+              The property you choose today could affect your wealth for the next <strong>decade</strong>. 
+              We make sure it's the right one — four ways to work with us.
+            </p>
+          </div>
+          <div className="lp-services-grid">
+            <div className="lp-service-card">
+              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop)' }}>
+                <span className="lp-service-tag">Most popular</span>
+              </div>
+              <div className="lp-service-content">
+                <h3>Full Buyer Advisory</h3>
+                <p>We run the whole purchase — search to keys.</p>
+                <ul className="lp-service-features">
+                  <li><Icon name="check" size={16} /> Search &amp; shortlist</li>
+                  <li><Icon name="check" size={16} /> Due diligence</li>
+                  <li><Icon name="check" size={16} /> Negotiate &amp; settle</li>
+                </ul>
+                <button onClick={onRegisterClick} className="lp-btn-primary">Book a Free Consult →</button>
+              </div>
+            </div>
+
+            <div className="lp-service-card">
+              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop)' }}>
+                <span className="lp-service-tag">Already found a property?</span>
+              </div>
+              <div className="lp-service-content">
+                <h3>Property Due Diligence</h3>
+                <p>An independent second opinion before you commit.</p>
+                <ul className="lp-service-features">
+                  <li><Icon name="check" size={16} /> Objective assessment</li>
+                  <li><Icon name="check" size={16} /> Comparable sales</li>
+                  <li><Icon name="check" size={16} /> Buy / Consider / Avoid</li>
+                </ul>
+                <button onClick={onRegisterClick} className="lp-btn-outline">Get It Assessed →</button>
+              </div>
+            </div>
+
+            <div className="lp-service-card">
+              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2070&auto=format&fit=crop)' }}>
+                <span className="lp-service-tag">Know where you want to buy?</span>
+              </div>
+              <div className="lp-service-content">
+                <h3>Property Sourcing</h3>
+                <p>You've picked the market. We find the property.</p>
+                <ul className="lp-service-features">
+                  <li><Icon name="check" size={16} /> On &amp; off-market search</li>
+                  <li><Icon name="check" size={16} /> Data-led shortlist</li>
+                  <li><Icon name="check" size={16} /> Value vs comparable sales</li>
+                </ul>
+                <button onClick={onRegisterClick} className="lp-btn-outline">Find Me a Property →</button>
+              </div>
+            </div>
+
+            <div className="lp-service-card">
+              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2070&auto=format&fit=crop)' }}>
+                <span className="lp-service-tag">Already own property?</span>
+              </div>
+              <div className="lp-service-content">
+                <h3>Portfolio Intelligence</h3>
+                <p>Buying is only the beginning — we keep watching.</p>
+                <ul className="lp-service-features">
+                  <li><Icon name="check" size={16} /> Value, equity and yield tracked</li>
+                  <li><Icon name="check" size={16} /> Quarterly performance report</li>
+                  <li><Icon name="check" size={16} /> Thesis Break Alerts</li>
+                </ul>
+                <button onClick={onRegisterClick} className="lp-btn-outline">Watch My Portfolio →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="lp-how-it-works">
+        <div className="lp-container">
+          <div className="lp-section-header">
+            <div className="lp-eyebrow">How It Works</div>
+            <h2 className="lp-section-title">Four steps. Four answers.</h2>
+            <p className="lp-section-description">
+              Every buyer faces the same four questions. We answer each one with evidence before you commit a cent.
+            </p>
+          </div>
+          <div className="lp-process-flow">
+            <div className="lp-process-step">
+              <div className="lp-process-icon">
+                <Icon name="search" size={24} />
+              </div>
+              <span className="lp-process-number">STEP 01</span>
+              <h3>Strategy</h3>
+              <p className="lp-process-question">“Where should I buy?”</p>
+              <p>Your goals, budget and risk appetite become a written brief.</p>
+            </div>
+
+            <div className="lp-process-step">
+              <div className="lp-process-icon">
+                <Icon name="chart" size={24} />
+              </div>
+              <span className="lp-process-number">STEP 02</span>
+              <h3>Research</h3>
+              <p className="lp-process-question">“Is this suburb going to grow?”</p>
+              <p>30+ factors across six dimensions, with hard risk gates.</p>
+            </div>
+
+            <div className="lp-process-step">
+              <div className="lp-process-icon">
+                <Icon name="check" size={24} />
+              </div>
+              <span className="lp-process-number">STEP 03</span>
+              <h3>Due Diligence</h3>
+              <p className="lp-process-question">“What risks am I missing?”</p>
+              <p>Comparable sales, condition, zoning and hazard checks.</p>
+            </div>
+
+            <div className="lp-process-step">
+              <div className="lp-process-icon">
+                <Icon name="brief" size={24} />
+              </div>
+              <span className="lp-process-number">STEP 04</span>
+              <h3>Negotiate &amp; Buy</h3>
+              <p className="lp-process-question">“Am I paying the right price?”</p>
+              <p>We negotiate or bid on your behalf and see it to settlement.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Section */}
+      <section className="lp-trust">
+        <div className="lp-container">
+          <div className="lp-section-header">
+            <h2 className="lp-section-title">Why buyers choose PropertyIQ</h2>
+          </div>
+          <div className="lp-trust-grid">
+            <div className="lp-trust-card">
+              <div className="lp-trust-icon">
+                <Icon name="check" size={24} />
+              </div>
+              <h3>Independent</h3>
+              <p>We represent you, not the seller. No commissions from vendors, ever.</p>
+            </div>
+
+            <div className="lp-trust-card">
+              <div className="lp-trust-icon">
+                <Icon name="chart" size={24} />
+              </div>
+              <h3>Evidence-Led</h3>
+              <p>Data, not opinion. See the why behind every recommendation.</p>
+            </div>
+
+            <div className="lp-trust-card">
+              <div className="lp-trust-icon">
+                <Icon name="search" size={24} />
+              </div>
+              <h3>Transparent</h3>
+              <p>Our methodology and assumptions are open and visible.</p>
             </div>
           </div>
         </div>
