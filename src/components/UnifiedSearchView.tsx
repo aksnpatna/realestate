@@ -60,6 +60,10 @@ export default memo(function UnifiedSearchView({
   const budget = financialProfile?.budget ?? 500000;
   const propertyType = financialProfile?.propertyType ?? 'house';
   const minimumYield = financialProfile?.minimumYield ?? null;
+
+  const [priorityAffordability, setPriorityAffordability] = useState(70);
+  const [priorityCommute, setPriorityCommute] = useState(50);
+  const [priorityGrowth, setPriorityGrowth] = useState(60);
   
   const [showFilters, setShowFilters] = useState(false);
 
@@ -154,10 +158,12 @@ export default memo(function UnifiedSearchView({
     } finally { setNlpLoading(false); }
   };
 
-  const handleNlpSubmit = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!question.trim()) return;
-    callQuery(question);
+  const handleSearchSubmit = () => {
+    let q = `Find ${propertyType}s in ${state} under $${budget.toLocaleString()}.`;
+    if (minimumYield) q += ` Minimum yield ${minimumYield}%.`;
+    q += ` Optimize for: Affordability (${priorityAffordability}/100), Commute (${priorityCommute}/100), Capital Growth (${priorityGrowth}/100).`;
+    setQuestion(q);
+    callQuery(q);
   };
 
   const handlePillClick = (q: string) => {
@@ -172,35 +178,49 @@ export default memo(function UnifiedSearchView({
         <h1 className="us-hero-title">Where should I buy?</h1>
         <p className="us-hero-subtitle">{personaWelcome.welcome}</p>
         
-        <form className="us-search-form" onSubmit={handleNlpSubmit}>
-          <div className="us-search-input-wrapper">
-            <Icon name="search" size={24} className="us-search-icon" />
-            <input 
-              type="text" 
-              value={question} 
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="e.g. Find me investment properties in NSW under 900k..."
-              className="us-search-input"
-            />
-            <button type="submit" disabled={nlpLoading || !question.trim()} className="us-search-btn">
-              {nlpLoading ? 'Searching...' : 'Search'}
-            </button>
-          </div>
+        <div className="us-priority-builder" style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border-glass)', marginBottom: '2rem' }}>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Set Your Priorities</h2>
           
-          <div className="us-quick-starts">
-            {personaWelcome.pills.map((pill, index) => (
-              <button key={index} type="button" className="us-pill" onClick={() => handlePillClick(pill)}>
-                {index === 0 ? '💰' : index === 1 ? '⚖️' : '📈'} {pill}
-              </button>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <label style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Affordability</label>
+                <span style={{ color: 'var(--brand-navy)', fontWeight: 600 }}>{priorityAffordability}%</span>
+              </div>
+              <input type="range" min="0" max="100" value={priorityAffordability} onChange={e => setPriorityAffordability(Number(e.target.value))} style={{ width: '100%', accentColor: '#10b981' }} />
+            </div>
+            
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <label style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Commute & Proximity</label>
+                <span style={{ color: 'var(--brand-navy)', fontWeight: 600 }}>{priorityCommute}%</span>
+              </div>
+              <input type="range" min="0" max="100" value={priorityCommute} onChange={e => setPriorityCommute(Number(e.target.value))} style={{ width: '100%', accentColor: '#3b82f6' }} />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <label style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Capital Growth</label>
+                <span style={{ color: 'var(--brand-navy)', fontWeight: 600 }}>{priorityGrowth}%</span>
+              </div>
+              <input type="range" min="0" max="100" value={priorityGrowth} onChange={e => setPriorityGrowth(Number(e.target.value))} style={{ width: '100%', accentColor: '#f59e0b' }} />
+            </div>
           </div>
 
-          <button type="button" className="us-filters-toggle" onClick={() => setShowFilters(!showFilters)}>
-            <Icon name="settings" size={16} /> 
-            {showFilters ? 'Hide manual filters' : 'Adjust manual constraints'}
-            <Icon name={showFilters ? 'chevron-up' : 'chevron-down'} size={16} />
-          </button>
-        </form>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <button 
+              type="button" 
+              onClick={handleSearchSubmit} 
+              disabled={nlpLoading} 
+              style={{ background: 'var(--brand-navy)', color: '#fff', padding: '1rem 2rem', borderRadius: '8px', fontWeight: 600, fontSize: '1.1rem', cursor: nlpLoading ? 'not-allowed' : 'pointer', border: 'none', flex: 1 }}
+            >
+              {nlpLoading ? 'Analyzing Suburbs...' : 'Find My Matches'}
+            </button>
+            <button type="button" onClick={() => setShowFilters(!showFilters)} style={{ padding: '1rem', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-primary)' }}>
+              <Icon name="settings" size={20} />
+            </button>
+          </div>
+        </div>
 
         {showFilters && (
           <div className="us-filters-drawer">

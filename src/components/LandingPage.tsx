@@ -100,42 +100,53 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
             </div>
           </div>
 
-          <form className="lp-search-box" onSubmit={handleSearchSubmit}>
-            <Icon name="search" size={24} className="lp-search-icon" />
-            <input 
-              type="text" 
-              placeholder="e.g. Best investment suburbs in QLD under $800k..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="lp-search-input"
-            />
-            <button type="submit" className="lp-search-btn">
-              <span>Analyze</span>
-              <Icon name="arrow-right" size={18} className="lp-search-arrow" />
-            </button>
-          </form>
+          {/* Intent Questionnaire */}
+          <div className="lp-intent-section" style={{ marginTop: '2rem', padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
+            <h3 style={{ fontSize: '1.2rem', color: '#fff', marginBottom: '1.5rem', fontWeight: 500 }}>What are you trying to achieve?</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <button 
+                className="lp-intent-btn"
+                onClick={() => {
+                  sessionStorage.setItem('initial_intent', 'first_home');
+                  onRegisterClick();
+                }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <Icon name="home" size={24} color="#10b981" />
+                  <span>I want to buy my first home</span>
+                </div>
+                <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
+              </button>
+              
+              <button 
+                className="lp-intent-btn"
+                onClick={() => {
+                  sessionStorage.setItem('initial_intent', 'investment');
+                  onRegisterClick();
+                }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <Icon name="chart" size={24} color="#f59e0b" />
+                  <span>I'm looking for an investment property</span>
+                </div>
+                <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
+              </button>
 
-          {/* Quick Start Suggestions */}
-          <div className="lp-quick-start">
-            <span className="lp-quick-label">Quick start:</span>
-            <div className="lp-quick-tags">
               <button 
-                className="lp-quick-tag" 
-                onClick={() => { setSearch('Best suburbs for first home buyers in Melbourne'); }}
+                className="lp-intent-btn"
+                onClick={() => {
+                  sessionStorage.setItem('initial_intent', 'upgrade');
+                  onRegisterClick();
+                }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
               >
-                First home buyers
-              </button>
-              <button 
-                className="lp-quick-tag" 
-                onClick={() => { setSearch('High rental yield suburbs in Brisbane'); }}
-              >
-                High rental yield
-              </button>
-              <button 
-                className="lp-quick-tag" 
-                onClick={() => { setSearch('Suburbs with 4+ bedroom houses near CBD'); }}
-              >
-                Family suburbs
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <Icon name="users" size={24} color="#3b82f6" />
+                  <span>I want to upgrade to a family home</span>
+                </div>
+                <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
               </button>
             </div>
           </div>
