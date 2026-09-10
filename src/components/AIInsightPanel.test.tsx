@@ -194,10 +194,11 @@ describe('AIInsightPanel', () => {
       }
       renderPanel(suburb)
       fireEvent.click(screen.getByText('🏛️ Committee'))
-      expect(screen.getByText('BUY — Strong Growth')).toBeInTheDocument()
-      expect(screen.getByText('🐂 Bull — Anna')).toBeInTheDocument()
-      expect(screen.getByText('🐻 Bear — Alex')).toBeInTheDocument()
-      expect(screen.getByText('🏙️ Urban Planner')).toBeInTheDocument()
+      expect(screen.getByText('The Optimistic Case')).toBeInTheDocument()
+      expect(screen.getByText('The Cautious Case')).toBeInTheDocument()
+      expect(screen.getByText('Neutral Synthesis')).toBeInTheDocument()
+      expect(screen.getByText('Key Takeaway')).toBeInTheDocument()
+      expect(screen.getByText('Invest for long-term growth')).toBeInTheDocument()
     })
 
     it('shows Refresh button when verdict exists', () => {

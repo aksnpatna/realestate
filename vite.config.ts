@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    exclude: ['tests/e2e/**', 'node_modules/**', '.kilo/**'],
   },
   build: {
     sourcemap: true,

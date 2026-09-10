@@ -54,19 +54,23 @@ const mockResult = {
 describe('DecisionBrief', () => {
   beforeEach(() => { mockFetch.mockReset() })
 
-  it('renders personalised decision when selectedResult is provided', () => {
+  it('renders personalised decision when selectedResult is provided', async () => {
     render(<DecisionBrief activeSuburb={mockSuburb} setActiveTab={vi.fn()} selectedResult={mockResult} requestMeta={{ request_id: 'abc123', model_version: 'buyer-fit-poc-1.0.0' }} />)
 
-    expect(screen.getByText('Based on your latest Buy Finder assumptions')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Fit Score · Your Inputs')).toBeInTheDocument()
+    })
     expect(screen.getByText('78')).toBeInTheDocument()
     expect(screen.getByText(/Available deposit supports purchase price/)).toBeInTheDocument()
     expect(screen.getByText(/Elevated vacancy/)).toBeInTheDocument()
-    expect(screen.getByText(/Serviceability passes/)).toBeInTheDocument()
+    expect(screen.getByText(/Serviceable/)).toBeInTheDocument()
   })
 
-  it('shows assumptions in expandable', () => {
+  it('shows assumptions in expandable', async () => {
     render(<DecisionBrief activeSuburb={mockSuburb} setActiveTab={vi.fn()} selectedResult={mockResult} requestMeta={{ request_id: 'abc123', model_version: 'x' }} />)
-    expect(screen.getByText(/Show assumptions/)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText(/Show loan assumptions/)).toBeInTheDocument()
+    })
   })
 
   it('shows generic market snapshot when no selectedResult', async () => {
