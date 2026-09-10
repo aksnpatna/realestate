@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--surface);
+  background: var(--bg-dark);
 }
 
 .suburb-hero::before {
@@ -16,7 +16,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(23, 32, 29, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
   z-index: 1;
   pointer-events: none;
 }
@@ -42,25 +42,29 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
-  color: var(--paper);
+  color: var(--text-secondary);
   margin-bottom: 16px;
   opacity: 0.9;
 }
 
 .sh-heading h1 {
-  font-family: var(--font-editorial);
+  font-family: 'DM Sans', sans-serif;
   font-size: 64px;
   line-height: 1.1;
-  font-weight: 400;
-  color: var(--paper);
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 12px;
   letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .sh-heading p {
   font-size: 24px;
   line-height: 1.4;
-  color: var(--paper);
+  color: var(--text-secondary);
   opacity: 0.95;
   font-weight: 300;
 }
@@ -77,27 +81,45 @@
   align-items: center;
   gap: 8px;
   padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: var(--radius-sm);
-  color: var(--paper);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid var(--accent-cyan);
+  border-radius: 12px;
+  color: var(--accent-cyan);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.sh-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.sh-action-btn:hover::before {
+  left: 100%;
 }
 
 .sh-action-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  background: rgba(6, 182, 212, 0.2);
+  border-color: var(--accent-cyan-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
 }
 
 .sh-action-btn.saved {
-  background: rgba(45, 106, 79, 0.8);
-  border-color: var(--positive);
+  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--success);
+  color: var(--success);
 }
 
 .sh-metrics {
@@ -109,28 +131,28 @@
 }
 
 .sh-metric {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-lg);
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
   padding: 32px 24px;
   text-align: center;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .sh-metric:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(30, 41, 59, 0.9);
+  border-color: var(--accent-cyan);
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .sh-metric-label {
   font-size: 13px;
   font-weight: 500;
-  color: var(--paper);
+  color: var(--text-secondary);
   opacity: 0.9;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -140,7 +162,7 @@
 .sh-metric-value {
   font-size: 36px;
   font-weight: 700;
-  color: var(--paper);
+  color: var(--text-primary);
   margin-bottom: 8px;
   line-height: 1;
 }
@@ -151,22 +173,22 @@
 }
 
 .sh-metric-change.positive {
-  color: var(--positive-soft);
+  color: var(--success);
 }
 
 .sh-metric-change.negative {
-  color: var(--negative-soft);
+  color: var(--danger);
 }
 
 .sh-thesis {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: var(--radius-lg);
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
   padding: 48px;
   margin-bottom: 48px;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   animation: fadeInUp 0.8s ease-out 0.4s both;
 }
 
@@ -181,23 +203,23 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
-  color: var(--ink-soft);
+  color: var(--accent-cyan);
   margin-bottom: 16px;
 }
 
 .sh-thesis-header h2 {
-  font-family: var(--font-editorial);
+  font-family: 'DM Sans', sans-serif;
   font-size: 36px;
   line-height: 1.15;
-  font-weight: 400;
-  color: var(--ink);
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 16px;
 }
 
 .sh-thesis-summary {
   font-size: 18px;
   line-height: 1.6;
-  color: var(--ink-soft);
+  color: var(--text-secondary);
   max-width: 720px;
   margin: 0 auto 32px;
   text-align: center;
@@ -212,7 +234,7 @@
 .sh-thesis-grid h3 {
   font-size: 18px;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--text-primary);
   margin-bottom: 20px;
   text-align: left;
 }
@@ -224,7 +246,7 @@
   margin-bottom: 16px;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--ink);
+  color: var(--text-secondary);
   text-align: left;
 }
 
@@ -236,15 +258,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--forest-soft);
-  color: var(--forest);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
   font-weight: 700;
   font-size: 14px;
 }
 
 .sh-thesis-point--risk span {
-  background: var(--negative-soft);
-  color: var(--negative);
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
 }
 
 .sh-investment-stance {
@@ -258,12 +280,18 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: linear-gradient(135deg, var(--forest) 0%, #0f2a24 100%);
-  color: var(--paper);
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, #0891b2 100%);
+  color: var(--text-primary);
   padding: 24px 48px;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 10px 30px rgba(23, 60, 50, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.sh-stance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(6, 182, 212, 0.4);
 }
 
 .sh-stance-icon {
@@ -291,23 +319,23 @@
 
 /* Investment stance colors */
 .sh-stance-value.strong {
-  color: var(--positive-soft);
+  color: var(--success);
 }
 
 .sh-stance-value.positive {
-  color: var(--forest-soft);
+  color: var(--accent-cyan);
 }
 
 .sh-stance-value.neutral {
-  color: var(--ochre-soft);
+  color: var(--warning);
 }
 
 .sh-stance-value.caution {
-  color: var(--ochre);
+  color: var(--warning);
 }
 
 .sh-stance-value.weak {
-  color: var(--negative-soft);
+  color: var(--danger);
 }
 
 /* Animations */

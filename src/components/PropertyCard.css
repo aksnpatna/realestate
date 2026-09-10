@@ -1,24 +1,43 @@
-/* Property Card Styles */
+/* Property Card Styles - Premium Interactive Design */
 .property-card {
   scroll-snap-align: start;
-  background: var(--bg-card-glass);
+  background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glass-strong);
+  border: 1px solid var(--border-glass);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow-md);
   text-align: left;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   max-width: 360px;
   width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.property-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.property-card:hover::before {
+  left: 100%;
 }
 
 .property-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent-cyan);
 }
 
 .property-image-container {
@@ -31,11 +50,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .property-card:hover .property-image {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .property-badge {
@@ -53,6 +72,12 @@
   z-index: 2;
   text-transform: uppercase;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.property-card:hover .property-badge {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.3);
 }
 
 .property-equity {
@@ -69,10 +94,16 @@
   font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   font-size: 28px;
-  color: var(--accent-cyan-light);
+  color: var(--accent-cyan);
   line-height: 1.1;
   letter-spacing: -0.5px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.property-card:hover .property-equity strong {
+  transform: translateY(-2px);
 }
 
 .property-equity strong i {
@@ -96,6 +127,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  position: relative;
+  z-index: 2;
 }
 
 .property-address {
@@ -104,7 +137,12 @@
   font-size: 1.2rem;
   letter-spacing: -0.3px;
   margin-bottom: 4px;
-  color: var(--brand-navy);
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.property-card:hover .property-address {
+  color: var(--accent-cyan);
 }
 
 .property-suburb {
@@ -127,11 +165,21 @@
   gap: 4px;
   color: var(--text-secondary);
   font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.property-card:hover .property-feature {
+  color: var(--text-primary);
 }
 
 .property-feature svg {
   color: var(--accent-cyan);
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.property-card:hover .property-feature svg {
+  transform: scale(1.1);
 }
 
 .property-pricing {
@@ -141,8 +189,13 @@
 .property-price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--brand-navy);
+  color: var(--text-primary);
   margin-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.property-card:hover .property-price {
+  color: var(--accent-cyan);
 }
 
 .property-rent {
@@ -170,12 +223,29 @@
   border: 0;
   padding: 0;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.property-action::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-cyan);
+  transition: width 0.3s ease;
+}
+
+.property-action:hover::after {
+  width: 100%;
 }
 
 .property-action:hover {
-  color: var(--accent-purple);
-  text-decoration: underline;
+  color: var(--accent-cyan-light);
+  transform: translateX(2px);
 }
 
 /* Responsive */
