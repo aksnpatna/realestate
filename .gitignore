@@ -44,3 +44,6 @@ kie_*.png
 kie_*.txt
 test*.json
 test*.pbf
+
+# Sandbox experiments
+tools/experiments/
