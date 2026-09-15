@@ -429,7 +429,7 @@ export default memo(function UnifiedSearchView({
                   </div>
 
                   <button className="us-suburb-cta" onClick={() => {
-                    const fallbackId = `${r.state}-${r.name.replace(/\s+/g, '-')}-${r.postcode}`.toLowerCase();
+                    const fallbackId = `${r.state}_${r.name.replace(/\s+/g, '_')}_${r.postcode}`.toLowerCase();
                     const safeId = r.suburb_id ? r.suburb_id.toLowerCase() : fallbackId;
                     if (setActiveSuburb) setActiveSuburb({id: safeId, name: r.name, state: r.state, postcode: r.postcode} as any);
                     if (setActiveTab) setActiveTab('dashboard');
