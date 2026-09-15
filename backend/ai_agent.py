@@ -54,19 +54,20 @@ def get_llm():
             from kie_api import is_kie_available, get_kie_client
             if is_kie_available():
                 # KIE API integration - create a wrapper for LangChain
-                from langchain_core.language_models import BaseLanguageModel
-                from langchain_core.messages import BaseMessage
-                from typing import List, Any
-                
-                class KIELanguageModel(BaseLanguageModel):
-                    def __init__(self, model: str = "gpt-4o"):
-                        self.model = model
-                        self.client = get_kie_client()
+                from langchain_core.language_models.chat_models import BaseChatModel
+                from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
+                from langchain_core.outputs import ChatResult, ChatGeneration
+                from typing import List, Any, Optional
+
+                class KIELanguageModel(BaseChatModel):
+                    model_name: str = "gpt-4o"
                     
-                    def invoke(self, messages: List[BaseMessage], **kwargs: Any) -> BaseMessage:
-                        from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+                    @property
+                    def _llm_type(self) -> str:
+                        return "kie-chat"
                         
-                        # Convert LangChain messages to KIE format
+                    def _generate(self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any) -> ChatResult:
+                        client = get_kie_client()
                         kie_messages = []
                         for msg in messages:
                             if isinstance(msg, SystemMessage):
@@ -77,11 +78,11 @@ def get_llm():
                                 kie_messages.append({"role": "assistant", "content": msg.content})
                         
                         try:
-                            result = self.client.chat_completion(self.model, kie_messages, **kwargs)
-                            return AIMessage(content=result)
+                            result = client.chat_completion(self.model_name, kie_messages, **kwargs)
+                            message = AIMessage(content=result)
+                            return ChatResult(generations=[ChatGeneration(message=message)])
                         except Exception as e:
                             logger.error(f"KIE API invocation failed: {str(e)}")
-                            # Fallback to next provider
                             raise e
                 
                 return KIELanguageModel(os.getenv("KIE_MODEL", "gpt-4o"))

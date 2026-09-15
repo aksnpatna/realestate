@@ -263,14 +263,15 @@ def parse_intent_deterministic(
         "tenure": tenure,
         "budget": budget,
         "priorities": priorities,
-        "confidence": 0.85 if resolved_suburbs else 0.60,
         "is_geo_discovery": is_geo,
         "state": state,
+        "negative_constraints": [],
+        "landmarks": [],
     }
     return result
 
 
-async def parse_intent_llm(query: str, deterministic_hints: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+async def parse_intent_llm(query: str, deterministic_hints: Dict[str, Any], recent_feedback: List[str] = None) -> Optional[Dict[str, Any]]:
     """LLM normaliser — small-model call, JSON-schema constrained, seeded with hints."""
     import openai
 
@@ -282,9 +283,12 @@ Valid goals: single_suburb_research, suburb_comparison, suburb_discovery,
   schools_analysis, growth_analysis, supply_analysis, affordability,
   interstate_discovery, general_advice.
 If the query is NOT real-estate-related, set goal=out_of_scope.
-Output: {"question":"…","goal":"…","suburbs":[{"name":"…","state":"…"}],
+Output: {"question":"…","goal":"…","suburbs":[{"name":"…","state":"…"}],"state":"NSW|VIC|...",
 "property_type":"house|unit|any","tenure":"owner_occupier|investor|developer|undecided",
-"budget":null,"deposit":null,"annual_income":null,"priorities":[],"confidence":0.9}"""
+"budget":null,"deposit":null,"annual_income":null,"priorities":[],"confidence":0.9,
+"negative_constraints":[],"landmarks":[]}
+Add any negative spatial exclusions to "negative_constraints" (e.g., ["airport", "beach"]).
+Add any specific named facilities to "landmarks" (e.g., [{"type": "hospital", "name": "Royal Brisbane Hospital"}])."""
 
     providers = [
         ("xAI", os.getenv("XAI_API_KEY")),
@@ -293,7 +297,10 @@ Output: {"question":"…","goal":"…","suburbs":[{"name":"…","state":"…"}],
         ("OpenAI", os.getenv("OPENAI_API_KEY")),
     ]
 
-    prompt = f"Hints from deterministic parser: {json.dumps(deterministic_hints)}\n\nUser query: {query}"
+    prompt = f"Hints from deterministic parser: {json.dumps(deterministic_hints)}\n"
+    if recent_feedback:
+        prompt += f"\n[LEARN FROM USER FEEDBACK]: Ensure you incorporate these past corrections:\n" + "\n".join([f"- {f}" for f in recent_feedback]) + "\n"
+    prompt += f"\nUser query: {query}"
 
     for name, key in providers:
         if not key or key == "sk-mock":
@@ -355,16 +362,24 @@ async def run_intent_pipeline(
     det["clarification"] = {"needed": False, "questions": [], "options": []}
 
     if not resolved and not det.get("is_geo_discovery") and det["goal"] not in ("general_advice",):
-        llm = await parse_intent_llm(question, det)
+        # Fetch dynamic few-shot feedback for RLHF
+        from sqlalchemy import text
+        feedback_rows = db.execute(text("SELECT query, expected_behavior FROM user_feedback WHERE feedback_type = 'downvote' AND expected_behavior IS NOT NULL ORDER BY created_at DESC LIMIT 5")).fetchall()
+        recent_feedback = [f"When user asked '{r[0]}', the user corrected to: '{r[1]}'" for r in feedback_rows]
+
+        llm = await parse_intent_llm(question, det, recent_feedback)
         if llm:
             llm["confidence"] = llm.get("confidence", 0.7)
             llm["needs_clarification"] = llm.get("needs_clarification", False)
             llm["clarification"] = llm.get("clarification", {"needed": False, "questions": [], "options": []})
             llm["geo"] = det.get("geo")
+            llm["state"] = llm.get("state") or det.get("state")
             llm["thresholds"] = det.get("thresholds", [])
             llm["property_type"] = llm.get("property_type") or det.get("property_type", "any")
             llm["tenure"] = llm.get("tenure") or det.get("tenure", "undecided")
             llm["priorities"] = llm.get("priorities") or det.get("priorities", [])
+            llm["negative_constraints"] = llm.get("negative_constraints", [])
+            llm["landmarks"] = llm.get("landmarks", [])
             # Keep original is_geo_discovery value for investment goals
             if det["goal"] == "investment_search":
                 llm["is_geo_discovery"] = True

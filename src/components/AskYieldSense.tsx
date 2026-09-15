@@ -64,6 +64,11 @@ interface DiscoveryResponse {
   query_understood: any;
   results: DiscoveryResult[];
   disclaimer: string;
+  trace_log?: {
+    engine: string;
+    query: string;
+    dataset_origin: string;
+  } | null;
 }
 
 // ─── V2 Types ────────────────────────────────────────────────────────────────
@@ -75,7 +80,7 @@ interface VerdictEntry {
 interface PersonaVerdict { persona: string; leader?: string | null; scores: Record<string, number>; weights_used: Record<string, number>; }
 interface VerdictBlock { framing: string; per_metric: VerdictEntry[]; by_persona: PersonaVerdict[]; tradeoffs: string[]; }
 interface AffordabilityBlock { serviceability_passed?: boolean | null; borrowing_capacity?: number | null; monthly_repayment?: number | null; stamp_duty?: number | null; }
-interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string;conversation_id?:string}[]; query_understood?: any; discovery?: DiscoveryResponse | null; }
+interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string;conversation_id?:string}[]; query_understood?: any; discovery?: DiscoveryResponse | null; trace_log?: any; }
 
 // ─── Helper functions and explainers moved to ComparisonDisplay ───
 
@@ -174,7 +179,83 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     callQuery(fullQ);
   };
 
+  const FeedbackWidget = ({ requestId, originalQuery }: { requestId: string, originalQuery: string }) => {
+    const [status, setStatus] = useState<'idle' | 'upvoted' | 'downvoted' | 'submitted'>('idle');
+    const [comment, setComment] = useState('');
+
+    const submitFeedback = async (type: 'upvote' | 'downvote', text?: string) => {
+      try {
+        await fetch('/api/v3/ask/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            request_id: requestId,
+            query: originalQuery,
+            feedback_type: type,
+            expected_behavior: text || ''
+          })
+        });
+        setStatus(type === 'upvote' ? 'submitted' : type);
+      } catch (err) {
+        console.error('Feedback failed', err);
+      }
+    };
+
+    if (status === 'submitted') return <div className="u-12d8a56f" style={{ marginTop: '16px', color: 'var(--bg-brand)', fontSize: '0.85rem' }}>✓ Feedback received. Thank you!</div>;
+
+    return (
+      <div className="u-12d8a56f" style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+          <span>Was this research helpful?</span>
+          <button onClick={() => submitFeedback('upvote')} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👍 Yes</button>
+          <button onClick={() => setStatus('downvoted')} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👎 No</button>
+        </div>
+        
+        {status === 'downvoted' && (
+          <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+            <input 
+              type="text" 
+              placeholder="What did you expect instead? (Optional Correction)" 
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px', borderRadius: '4px', color: '#fff', fontSize: '0.85rem' }}
+            />
+            <button onClick={() => { submitFeedback('downvote', comment); setStatus('submitted'); }} style={{ background: 'var(--bg-brand)', color: '#000', border: 'none', borderRadius: '4px', padding: '8px 16px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 'bold' }}>
+              Submit Correction
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // ── Sub-renders ────────────────────────────────────────────────────────
+  const TraceLogDisplay = ({ trace_log, maskedQuery }: { trace_log: any, maskedQuery?: string }) => {
+    const [open, setOpen] = useState(false);
+    if (!trace_log) return null;
+    return (
+      <div className="u-12d8a56f" style={{ marginTop: '16px', background: 'rgba(15,23,42,0.4)', borderRadius: '8px', padding: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          {open ? 'Hide Data Lineage Trace' : 'Show Data Lineage Trace (Data Audit)'}
+        </button>
+        {open && (
+          <div style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+            {maskedQuery && (
+              <div style={{ marginBottom: '8px' }}><strong>Scrubbed Input:</strong> <span style={{ color: '#a3e635', fontStyle: 'italic' }}>{maskedQuery}</span></div>
+            )}
+            <div style={{ marginBottom: '8px' }}><strong>Execution Engine:</strong> <span style={{ color: 'var(--bg-brand)', textTransform: 'uppercase', fontSize: '0.75rem', padding: '2px 6px', background: 'rgba(163,230,53,0.1)', borderRadius: '4px' }}>{trace_log.engine}</span></div>
+            <div style={{ marginBottom: '8px' }}><strong>Source Dataset:</strong> {trace_log.dataset_origin}</div>
+            <div style={{ marginBottom: '4px' }}><strong>Executed Query:</strong></div>
+            <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '4px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: '#a3e635' }}>
+              {trace_log.query}
+            </pre>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const DiscoveryCards = ({ disc }: { disc: DiscoveryResponse }) => {
     const fmt = (v?: number | null, decimals = 2, suffix = '') => v != null ? `${v.toFixed(decimals)}${suffix}` : '—';
     const fmtPrice = (v?: number | null) => v != null ? `$${(v / 1000).toFixed(0)}k` : '—';
@@ -276,6 +357,8 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
             </div>
           ))}
         </div>
+        {disc.trace_log && <TraceLogDisplay trace_log={disc.trace_log} maskedQuery={(result as AskResponseV2)?.query_understood?.masked_query} />}
+        {result?.request_id && <FeedbackWidget requestId={result.request_id} originalQuery={question} />}
         <p className="u-1b691f4f">
           General research only — not financial, legal, or valuation advice. Data sourced from verified CoreLogic/ABS datasets.
         </p>

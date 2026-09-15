@@ -10,15 +10,18 @@ from ask.schemas import (
     AskIntent, AskResponse, ScenarioAssumptions, SuburbComparison, SuburbComparisonMetric,
     DiscoveryRequest, DiscoveryResponse, DiscoveryResult, DiscoveryMetrics,
     AskQueryRequest, IntentRequest, IntentResponse, AskResponseV2, VerdictBlock,
-    AffordabilityBlock, SuburbReference,
+    SupportRiskClaim, AffordabilityBlock, SuburbReference, FeedbackRequest,
 )
 from ask.evidence import get_suburb_ui, extract_evidence, calculate_data_quality, check_pack_minimum
 from ask.scenarios import compute_affordability, compute_yield
+from ask.guardrails import mask_pii, check_off_topic
 from ask.synthesis import synthesize_research
 from ask.policy import validate_policy
 from ask.repository import create_conversation, save_ask_brief, _sanitize
 from ask.geo_discovery import discover_suburbs
 from ask.metric_explainers import get_explanation
+from graph.graph_router import should_route_to_graph
+from graph.graph_discovery import discover_suburbs_graph
 
 router = APIRouter(prefix="/api/v3/ask", tags=["ask"])
 
@@ -55,6 +58,26 @@ async def ask_query(
     enable_ask_v2 = os.getenv("ENABLE_ASK_V2", "true").lower() in ("true", "1", "yes")
     if not enable_ask_v2:
         raise HTTPException(status_code=503, detail="Ask YieldSense v2 is temporarily disabled (ENABLE_ASK_V2=false). Use /api/v3/ask instead.")
+        
+    # --- PHASE 3: ENTERPRISE GUARDRAILS ---
+    # 1. PII Scrubbing
+    original_query = req.question
+    req.question = mask_pii(req.question)
+    
+    # 2. Off-Topic & Prompt Injection Defense
+    if check_off_topic(req.question):
+        return AskResponseV2(
+            request_id="gr-" + hashlib.md5(req.question.encode()).hexdigest()[:8],
+            status="degraded",
+            intent={"goal": "out_of_scope"},
+            query_understood={"original_query": original_query, "masked_query": req.question},
+            headline="Query Blocked by Policy",
+            summary="This assistant is restricted to real estate, property investment, and financial queries. Please rephrase your question.",
+            research_priority="insufficient_evidence",
+            disclaimer="Enterprise Guardrail Enforced.",
+            versions={"pipeline": "ask-v2-guardrail"}
+        )
+    # --------------------------------------
 
     t0 = time.time()
     incr_ask_request()
@@ -107,6 +130,15 @@ async def ask_query(
         if prior_brief and prior_brief.intent:
             prior_intent = prior_brief.intent if isinstance(prior_brief.intent, dict) else {}
             parsed = merge_intent(prior_intent, parsed)
+            
+    # 1c. Merge manual UI scenario overrides
+    if req.scenario_overrides:
+        parsed.update({k: v for k, v in req.scenario_overrides.items() if v is not None})
+
+    # Clear clarification flag if UI provided necessary geographic context (state) for discovery
+    if parsed.get("needs_clarification") and parsed.get("goal") in ("suburb_discovery", "investment_search", "interstate_discovery"):
+        if parsed.get("state") or parsed.get("suburbs"):
+            parsed["needs_clarification"] = False
 
     if parsed.get("needs_clarification"):
         clarification = parsed.get("clarification", {})
@@ -114,11 +146,29 @@ async def ask_query(
             request_id=request_id,
             status="needs_clarification",
             intent=parsed,
-            query_understood=parsed,
+            query_understood={**parsed, "original_query": original_query, "masked_query": req.question},
             summary="",
             research_priority="insufficient_evidence",
             disclaimer="General research only; not financial, legal, tax, lending or valuation advice.",
             versions={"pipeline": "ask-v2", "evidence": "v2"},
+        )
+
+    # 3. Route to Graph Database or Standard Pipeline
+    if should_route_to_graph(req.question, parsed):
+        # Actually execute the Graph DB Query
+        graph_res = discover_suburbs_graph(req.question, parsed)
+        
+        return AskResponseV2(
+            request_id=request_id, status="complete",
+            intent=parsed, query_understood={"pipeline": "neo4j_graph", "original_query": original_query, "masked_query": req.question},
+            summary=graph_res.get("summary", "Query routed to Neo4j Graph Engine for spatial traversal."),
+            research_priority="medium",
+            evidence=[], 
+            discovery=graph_res,
+            data_quality={}, follow_ups=[],
+            verdict=VerdictBlock(conclusion="Graph traversal initiated.", confidence_score=100, reasoning=[]),
+            versions={"pipeline": "ask-v2-graph"},
+            trace_log=graph_res.get("trace_log")
         )
 
     goal = parsed.get("goal", "single_suburb_research")
@@ -141,7 +191,6 @@ async def ask_query(
     # 3. Route
     if goal in ("suburb_discovery", "interstate_discovery", "investment_search"):
         from ask.geo_discovery import discover_suburbs
-        from ask.geo_discovery import discover_suburbs
         disc = discover_suburbs(db, req.question, budget=budget)
         disc_results = []
         for r in disc.get("results", []):
@@ -158,26 +207,34 @@ async def ask_query(
                     top_school_name=m.get("top_school_name"), price_12m_change_pct=m.get("price_12m_change_pct"),
                 )
             ))
+        disc_qu = disc.get("query_understood", {})
+        if not isinstance(disc_qu, dict):
+            disc_qu = {}
+        disc_qu["original_query"] = original_query
+        disc_qu["masked_query"] = req.question
+
         discovery_out = DiscoveryResponse(
             guardrail=disc.get("guardrail", False), message=disc.get("message"),
-            summary=disc.get("summary"), query_understood=disc.get("query_understood", {}),
+            summary=disc.get("summary"), query_understood=disc_qu,
             results=disc_results,
+            trace_log=disc.get("trace_log"),
         )
         return AskResponseV2(
             request_id=request_id, status="complete",
-            intent=parsed, query_understood=disc.get("query_understood", {}),
+            intent=parsed, query_understood=disc_qu,
             headline=f"Discovery — {disc.get('summary', '')}",
             summary=disc.get("summary", ""),
             research_priority="medium" if disc_results else "low",
             discovery=discovery_out,
             disclaimer="General research only; not financial, legal, tax, lending or valuation advice.",
             versions={"pipeline": "ask-v2", "evidence": "v2"},
+            trace_log=disc.get("trace_log"),
         )
 
     if not intent_suburbs and goal not in ("interstate_discovery", "general_advice"):
         return AskResponseV2(
             request_id=request_id, status="needs_clarification",
-            intent=parsed, query_understood=parsed,
+            intent=parsed, query_understood={**parsed, "original_query": original_query, "masked_query": req.question},
             summary="",
             research_priority="insufficient_evidence",
             disclaimer="General research only; not financial, legal, tax, lending or valuation advice.",
@@ -335,6 +392,8 @@ async def ask_query(
         "budget": budget, "property_type": property_type,
         "data_as_of": min((e.as_of for e in all_evidence), default="N/A") if all_evidence else "N/A",
         "source": "NPG / CoreLogic / ABS / ACARA" if not dq_summary.get("vintage_estimated") else "Scraped (estimated vintage)",
+        "original_query": original_query,
+        "masked_query": req.question,
     }
 
     # 13. Persist
@@ -537,4 +596,23 @@ def discover_yieldsense(
     return DiscoveryResponse(
         guardrail=raw.get("guardrail", False), message=raw.get("message"),
         summary=raw.get("summary"), query_understood=raw.get("query_understood", {}), results=results,
+        trace_log=raw.get("trace_log")
     )
+
+@router.post("/feedback")
+def submit_feedback(
+    req: FeedbackRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user)
+):
+    from models_v3 import UserFeedback
+    fb = UserFeedback(
+        request_id=req.request_id,
+        user_id=current_user,
+        query=req.query,
+        feedback_type=req.feedback_type,
+        expected_behavior=req.expected_behavior
+    )
+    db.add(fb)
+    db.commit()
+    return {"status": "success", "message": "Feedback recorded for Enterprise RLHF"}

@@ -29,9 +29,9 @@
   width: 200%;
   height: 200%;
   background: 
-    radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
   animation: premiumMesh 30s ease-in-out infinite;
   z-index: 1;
 }
@@ -60,7 +60,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 23, 42, 0.9); /* Darker overlay for better contrast */
+  background: rgba(248, 250, 252, 0.85); /* Slate 50 with opacity */
   backdrop-filter: blur(24px);
   z-index: 2;
 }
@@ -71,13 +71,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 5%;
-  background: rgba(30, 41, 59, 0.95);
-  backdrop-filter: blur(10px);
+  background: var(--bg-card);
   border-bottom: 1px solid var(--border-glass);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
 .lp-brand {
@@ -98,13 +96,6 @@
   justify-content: center;
   border-radius: 8px;
   letter-spacing: -0.5px;
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-  transition: all 0.3s ease;
-}
-
-.lp-logo:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4);
 }
 
 .lp-logo.small {
@@ -116,12 +107,8 @@
 .lp-brand-name {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--brand-navy);
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .lp-nav-actions {
@@ -137,65 +124,43 @@
   font-weight: 500;
   cursor: pointer;
   padding: 0.5rem 1rem;
-  transition: all 0.3s ease;
-  border-radius: 8px;
+  transition: color 0.2s;
 }
 
 .lp-btn-ghost:hover {
-  color: var(--text-primary);
-  background: rgba(148, 163, 184, 0.1);
+  color: var(--brand-navy);
 }
 
 .lp-btn-primary {
-  background: var(--accent-cyan);
+  background: var(--brand-navy);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.lp-btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.lp-btn-primary:hover::before {
-  left: 100%;
+  transition: all 0.2s;
 }
 
 .lp-btn-primary:hover {
-  background: var(--accent-cyan-light);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+  background: var(--accent-cyan);
+  transform: translateY(-1px);
 }
 
 .lp-btn-outline {
   background: transparent;
-  color: var(--accent-cyan);
+  color: var(--brand-navy);
   border: 1px solid var(--border-glass);
   padding: 0.75rem 1.5rem;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
 
 .lp-btn-outline:hover {
-  border-color: var(--accent-cyan);
-  background: rgba(6, 182, 212, 0.1);
-  transform: translateY(-1px);
+  border-color: var(--brand-navy);
+  background: var(--bg-dark);
 }
 
 /* Hero */
@@ -222,8 +187,8 @@
 
 .lp-hero-badge {
   display: inline-block;
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.2);
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   padding: 0.5rem 1.25rem;
   border-radius: 999px;
   font-size: 0.875rem;
@@ -232,13 +197,6 @@
   color: var(--accent-cyan);
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
-}
-
-.lp-hero-badge:hover {
-  background: rgba(6, 182, 212, 0.2);
-  border-color: rgba(6, 182, 212, 0.3);
-  transform: translateY(-1px);
 }
 
 .lp-hero-title {
@@ -248,11 +206,7 @@
   line-height: 1.05;
   margin-bottom: 1.75rem;
   letter-spacing: -1.5px;
-  color: var(--text-primary);
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--brand-navy);
 }
 
 .lp-text-gradient {
@@ -275,24 +229,23 @@
 /* Search Box - Glassmorphic */
 .lp-search-box {
   display: flex;
-  background: rgba(30, 41, 59, 0.8);
+  background: var(--bg-card-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   padding: 0.75rem;
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--border-glass-strong);
   max-width: 650px;
   margin: 0 auto 3rem;
   align-items: center;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
 }
 
 .lp-search-box:hover, .lp-search-box:focus-within {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-  border-color: var(--accent-cyan);
-  background: rgba(30, 41, 59, 0.9);
+  box-shadow: var(--shadow-glow);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .lp-search-icon {
@@ -316,7 +269,7 @@
 }
 
 .lp-search-btn {
-  background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-cyan-light) 100%);
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
   color: white;
   border: none;
   padding: 1.25rem 2.5rem;
@@ -324,30 +277,13 @@
   font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
-  position: relative;
-  overflow: hidden;
-}
-
-.lp-search-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.lp-search-btn:hover::before {
-  left: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
 }
 
 .lp-search-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.6);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
 }
 
 /* Trust Badges */
@@ -383,7 +319,7 @@
 
 .lp-persona-label {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: #64748b;
   font-weight: 500;
 }
 
@@ -395,34 +331,31 @@
 }
 
 .lp-persona-btn {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid var(--border-glass);
-  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #94a3b8;
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  backdrop-filter: blur(10px);
 }
 
 .lp-persona-btn:hover {
-  background: rgba(30, 41, 59, 0.9);
-  border-color: rgba(6, 182, 212, 0.3);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #cbd5e1;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .lp-persona-btn.active {
-  background: rgba(6, 182, 212, 0.2);
-  border-color: var(--accent-cyan);
+  background: rgba(15, 118, 110, 0.2);
+  border-color: rgba(15, 118, 110, 0.4);
   color: var(--accent-cyan);
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
 }
 
 /* Quick Start */
@@ -436,7 +369,7 @@
 
 .lp-quick-label {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: #64748b;
   font-weight: 500;
 }
 
@@ -448,24 +381,22 @@
 }
 
 .lp-quick-tag {
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.2);
+  background: rgba(15, 118, 110, 0.08);
+  border: 1px solid rgba(15, 118, 110, 0.2);
   color: var(--accent-cyan);
   padding: 0.5rem 1rem;
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  backdrop-filter: blur(10px);
+  transition: all 0.2s;
 }
 
 .lp-quick-tag:hover {
-  background: rgba(6, 182, 212, 0.2);
-  border-color: rgba(6, 182, 212, 0.4);
-  color: var(--accent-cyan);
+  background: rgba(15, 118, 110, 0.15);
+  border-color: rgba(15, 118, 110, 0.4);
+  color: #0f766e;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
 }
 
 /* Social Proof */

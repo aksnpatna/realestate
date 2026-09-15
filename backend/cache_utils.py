@@ -6,6 +6,7 @@ Redis is tried first; on failure it falls back to the existing DB-level cache.
 import os
 import functools
 import logging
+import json
 
 logger = logging.getLogger("uvicorn")
 
@@ -49,7 +50,6 @@ def cached_ai(key_template: str, ttl: int = DEFAULT_TTL):
                 if redis_client is not None:
                     cached = redis_client.get(cache_key)
                     if cached:
-                        import json
                         logger.info(f"[cache] Redis HIT: {cache_key}")
                         return json.loads(cached)
 

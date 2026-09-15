@@ -44,6 +44,7 @@ const viewToTab = (view: string | null): TabName => {
 const Calculators = lazy(() => import('./components/Calculators'))
 const AffordabilityCalculator = lazy(() => import('./components/AffordabilityCalculator'))
 const UnifiedSearchView = lazy(() => import('./components/UnifiedSearchView'))
+import { AskYieldSense } from './components/AskYieldSense'
 const CashflowGearing = lazy(() => import('./components/CashflowGearing'))
 const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
 
@@ -678,15 +679,19 @@ function App() {
       <PromoBanner />
       <TermsOfUseModal />
 
-      {(activeTab === 'ask' || activeTab === 'buy-finder') && <Suspense fallback={<div className="glass-card u-207f86dd">Loading Search...</div>}><UnifiedSearchView 
-        setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} 
-        setActiveTab={(t: string) => setActiveTab(t as TabName)} 
-        financialProfile={financialProfile}
-        setFinancialProfile={setFinancialProfile}
-        suburbsData={suburbsData}
-        persona={persona}
-        setNlpSummary={setNlpSummary}
-      /></Suspense>}
+      {(activeTab === 'ask' || activeTab === 'buy-finder') && (
+        <Suspense fallback={<div className="glass-card u-207f86dd">Loading Search...</div>}>
+          <UnifiedSearchView 
+            setActiveSuburb={(s: any) => { if (s && s.id) loadColdSuburb(s.id); }} 
+            setActiveTab={(t: string) => setActiveTab(t as TabName)} 
+            financialProfile={financialProfile}
+            setFinancialProfile={setFinancialProfile}
+            suburbsData={suburbsData}
+            persona={persona}
+            setNlpSummary={setNlpSummary}
+          />
+        </Suspense>
+      )}
       {activeTab === 'affordability' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading calculator...</div>}><AffordabilityCalculator suburbsData={suburbsData} setActiveTab={(t: string) => setActiveTab(t as TabName)} financialProfile={financialProfile} setFinancialProfile={setFinancialProfile} persona={persona} /></Suspense>}
       {activeTab === 'gearing' && <Suspense fallback={<div className="glass-card u-207f86dd">Loading cashflow analysis...</div>}><CashflowGearing 
         suburbsData={suburbsData} 

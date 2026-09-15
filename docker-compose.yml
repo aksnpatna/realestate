@@ -27,6 +27,8 @@ services:
     ports:
       - "8100:8000"
     restart: unless-stopped
+    volumes:
+      - ./backend:/app
     env_file:
       - .env
     logging:
@@ -152,5 +154,25 @@ services:
       timeout: 5s
       retries: 5
 
+  neo4j:
+    image: neo4j:5.20-community
+    container_name: realestate-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    restart: unless-stopped
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-secretpassword}
+      - NEO4J_server_memory_heap_initial__size=1G
+      - NEO4J_server_memory_heap_max__size=4G
+      - NEO4J_server_memory_pagecache_size=2G
+    volumes:
+      - neo4j_data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+
 volumes:
   postgres_data:
+  neo4j_data:

@@ -415,5 +415,19 @@ class AskBrief(Base):
     
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class UserFeedback(Base):
+    """
+    Stores user feedback (Thumbs up/down and comments) for AI answers.
+    Used for Enterprise AI Evaluations and Dynamic Few-Shot Injection.
+    """
+    __tablename__ = "user_feedback"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    request_id = Column(String, index=True)
+    user_id = Column(String, index=True)
+    query = Column(Text)
+    feedback_type = Column(String)  # 'upvote' or 'downvote'
+    expected_behavior = Column(Text, nullable=True) # User's correction
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 Base.metadata.create_all(bind=engine)
 print("V3 tables created/verified.")

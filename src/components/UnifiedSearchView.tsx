@@ -11,6 +11,11 @@ interface DiscoveryResponse {
   query_understood: any;
   results: any[];
   disclaimer: string;
+  trace_log?: {
+    engine: string;
+    query: string;
+    dataset_origin: string;
+  } | null;
 }
 interface AskResponseV2 {
   request_id: string;
@@ -31,6 +36,7 @@ interface AskResponseV2 {
   discovery?: DiscoveryResponse | null;
   follow_ups?: {label:string;question:string;conversation_id?:string}[];
   query_understood?: any;
+  trace_log?: any;
 }
 
 
@@ -60,12 +66,9 @@ export default memo(function UnifiedSearchView({
   const budget = financialProfile?.budget ?? 500000;
   const propertyType = financialProfile?.propertyType ?? 'house';
   const minimumYield = financialProfile?.minimumYield ?? null;
-
-  const [priorityAffordability, setPriorityAffordability] = useState(70);
-  const [priorityCommute, setPriorityCommute] = useState(50);
-  const [priorityGrowth, setPriorityGrowth] = useState(60);
   
   const [showFilters, setShowFilters] = useState(false);
+  const [applyManualFilters, setApplyManualFilters] = useState(false);
 
   // Get persona-specific welcome message and quick start pills
   const getPersonaWelcome = () => {
@@ -124,7 +127,15 @@ export default memo(function UnifiedSearchView({
     try {
       const res = await fetch('/api/v3/ask/query', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q }), signal: abortRef.current.signal,
+        body: JSON.stringify({ 
+          question: q,
+          scenario_overrides: applyManualFilters ? {
+            state,
+            budget,
+            property_type: propertyType,
+            minimum_yield: minimumYield
+          } : undefined
+        }), signal: abortRef.current.signal,
       });
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
@@ -158,17 +169,91 @@ export default memo(function UnifiedSearchView({
     } finally { setNlpLoading(false); }
   };
 
-  const handleSearchSubmit = () => {
-    let q = `Find ${propertyType}s in ${state} under $${budget.toLocaleString()}.`;
-    if (minimumYield) q += ` Minimum yield ${minimumYield}%.`;
-    q += ` Optimize for: Affordability (${priorityAffordability}/100), Commute (${priorityCommute}/100), Capital Growth (${priorityGrowth}/100).`;
-    setQuestion(q);
-    callQuery(q);
+  const handleNlpSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!question.trim()) return;
+    callQuery(question);
   };
 
   const handlePillClick = (q: string) => {
     setQuestion(q);
     callQuery(q);
+  };
+
+  const TraceLogDisplay = ({ trace_log, maskedQuery }: { trace_log: any, maskedQuery?: string }) => {
+    const [open, setOpen] = useState(false);
+    if (!trace_log) return null;
+    return (
+      <div className="us-tracelog" style={{ marginTop: '16px', background: 'rgba(15,23,42,0.4)', borderRadius: '8px', padding: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          {open ? 'Hide Data Lineage Trace' : 'Show Data Lineage Trace (Data Audit)'}
+        </button>
+        {open && (
+          <div style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+            {maskedQuery && (
+              <div style={{ marginBottom: '8px' }}><strong>Scrubbed Input:</strong> <span style={{ color: '#a3e635', fontStyle: 'italic' }}>{maskedQuery}</span></div>
+            )}
+            <div style={{ marginBottom: '8px' }}><strong>Execution Engine:</strong> <span style={{ color: 'var(--bg-brand)', textTransform: 'uppercase', fontSize: '0.75rem', padding: '2px 6px', background: 'rgba(163,230,53,0.1)', borderRadius: '4px' }}>{trace_log.engine}</span></div>
+            <div style={{ marginBottom: '8px' }}><strong>Source Dataset:</strong> {trace_log.dataset_origin}</div>
+            <div style={{ marginBottom: '4px' }}><strong>Executed Query:</strong></div>
+            <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '4px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: '#a3e635' }}>
+              {trace_log.query}
+            </pre>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const FeedbackWidget = ({ requestId, originalQuery }: { requestId: string, originalQuery: string }) => {
+    const [status, setStatus] = useState<'idle' | 'upvoted' | 'downvoted' | 'submitted'>('idle');
+    const [comment, setComment] = useState('');
+
+    const submitFeedback = async (type: 'upvote' | 'downvote', text?: string) => {
+      try {
+        await fetch('/api/v3/ask/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            request_id: requestId,
+            query: originalQuery,
+            feedback_type: type,
+            expected_behavior: text || ''
+          })
+        });
+        setStatus(type === 'upvote' ? 'submitted' : type);
+      } catch (err) {
+        console.error('Feedback failed', err);
+      }
+    };
+
+    if (status === 'submitted') return <div className="us-tracelog" style={{ marginTop: '16px', color: 'var(--bg-brand)', fontSize: '0.85rem' }}>✓ Feedback received. Thank you!</div>;
+
+    return (
+      <div className="us-tracelog" style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+          <span>Was this research helpful?</span>
+          <button onClick={() => submitFeedback('upvote')} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👍 Yes</button>
+          <button onClick={() => setStatus('downvoted')} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👎 No</button>
+        </div>
+
+        {status === 'downvoted' && (
+          <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+            <input 
+              type="text" 
+              placeholder="What did you expect instead? (Optional Correction)" 
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px', borderRadius: '4px', color: '#fff', fontSize: '0.85rem' }}
+            />
+            <button onClick={() => { submitFeedback('downvote', comment); setStatus('submitted'); }} style={{ background: 'var(--bg-brand)', color: '#000', border: 'none', borderRadius: '4px', padding: '8px 16px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 'bold' }}>
+              Submit Correction
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -178,53 +263,54 @@ export default memo(function UnifiedSearchView({
         <h1 className="us-hero-title">Where should I buy?</h1>
         <p className="us-hero-subtitle">{personaWelcome.welcome}</p>
         
-        <div className="us-priority-builder" style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border-glass)', marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Set Your Priorities</h2>
+        <form className="us-search-form" onSubmit={handleNlpSubmit}>
+          <div className="us-search-input-wrapper">
+            <Icon name="search" size={24} className="us-search-icon" />
+            <input 
+              type="text" 
+              value={question} 
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="e.g. Find me investment properties in NSW under 900k..."
+              className="us-search-input"
+            />
+            <button type="submit" disabled={nlpLoading || !question.trim()} className="us-search-btn">
+              {nlpLoading ? 'Searching...' : 'Search'}
+            </button>
+          </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <label style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Affordability</label>
-                <span style={{ color: 'var(--brand-navy)', fontWeight: 600 }}>{priorityAffordability}%</span>
-              </div>
-              <input type="range" min="0" max="100" value={priorityAffordability} onChange={e => setPriorityAffordability(Number(e.target.value))} style={{ width: '100%', accentColor: '#10b981' }} />
-            </div>
-            
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <label style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Commute & Proximity</label>
-                <span style={{ color: 'var(--brand-navy)', fontWeight: 600 }}>{priorityCommute}%</span>
-              </div>
-              <input type="range" min="0" max="100" value={priorityCommute} onChange={e => setPriorityCommute(Number(e.target.value))} style={{ width: '100%', accentColor: '#3b82f6' }} />
-            </div>
-
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <label style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Capital Growth</label>
-                <span style={{ color: 'var(--brand-navy)', fontWeight: 600 }}>{priorityGrowth}%</span>
-              </div>
-              <input type="range" min="0" max="100" value={priorityGrowth} onChange={e => setPriorityGrowth(Number(e.target.value))} style={{ width: '100%', accentColor: '#f59e0b' }} />
-            </div>
+          <div className="us-quick-starts">
+            {personaWelcome.pills.map((pill, index) => (
+              <button key={index} type="button" className="us-pill" onClick={() => handlePillClick(pill)}>
+                {index === 0 ? '💰' : index === 1 ? '⚖️' : '📈'} {pill}
+              </button>
+            ))}
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <button 
-              type="button" 
-              onClick={handleSearchSubmit} 
-              disabled={nlpLoading} 
-              style={{ background: 'var(--brand-navy)', color: '#fff', padding: '1rem 2rem', borderRadius: '8px', fontWeight: 600, fontSize: '1.1rem', cursor: nlpLoading ? 'not-allowed' : 'pointer', border: 'none', flex: 1 }}
-            >
-              {nlpLoading ? 'Analyzing Suburbs...' : 'Find My Matches'}
-            </button>
-            <button type="button" onClick={() => setShowFilters(!showFilters)} style={{ padding: '1rem', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-primary)' }}>
-              <Icon name="settings" size={20} />
-            </button>
-          </div>
-        </div>
+          <button type="button" className="us-filters-toggle" onClick={() => setShowFilters(!showFilters)}>
+            <Icon name="settings" size={16} /> 
+            {showFilters ? 'Hide manual filters' : 'Adjust manual constraints'}
+            <Icon name={showFilters ? 'chevron-up' : 'chevron-down'} size={16} />
+          </button>
+        </form>
 
         {showFilters && (
           <div className="us-filters-drawer">
-            <div className="us-filters-grid">
+            <div style={{ marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-glass)' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: 600, color: 'var(--brand-navy)' }}>
+                <input 
+                  type="checkbox" 
+                  checked={applyManualFilters} 
+                  onChange={(e) => setApplyManualFilters(e.target.checked)} 
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--brand-navy)' }}
+                />
+                Apply manual overrides to AI search
+              </label>
+              <p style={{ margin: '0.5rem 0 0 2.25rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                When checked, these manual limits will force the AI to only look within these boundaries (e.g. forcing a max budget of $500k even if your question asks for luxury homes).
+              </p>
+            </div>
+            
+            <div className={`us-filters-grid ${!applyManualFilters ? 'opacity-50' : ''}`} style={{ transition: 'opacity 0.2s', pointerEvents: applyManualFilters ? 'auto' : 'none' }}>
               <div className="us-filter-group">
                 <div className="us-slider-header">
                   <label>Max Budget</label>
@@ -343,14 +429,21 @@ export default memo(function UnifiedSearchView({
                   </div>
 
                   <button className="us-suburb-cta" onClick={() => {
-                    if (setActiveSuburb) setActiveSuburb({id: r.suburb_id.toLowerCase(), name: r.name, state: r.state, postcode: r.postcode} as any);
-                    if (setActiveTab) setActiveTab('profile');
+                    const fallbackId = `${r.state}-${r.name.replace(/\s+/g, '-')}-${r.postcode}`.toLowerCase();
+                    const safeId = r.suburb_id ? r.suburb_id.toLowerCase() : fallbackId;
+                    if (setActiveSuburb) setActiveSuburb({id: safeId, name: r.name, state: r.state, postcode: r.postcode} as any);
+                    if (setActiveTab) setActiveTab('dashboard');
                   }}>
                     View Profile
                   </button>
+                  <ul style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', paddingLeft: '1rem', marginTop: '0.5rem' }}>
+                    {r.why_selected?.map((w: string, j: number) => <li key={j}>{w}</li>)}
+                  </ul>
                 </div>
               ))}
             </div>
+            {discoveryResult.trace_log && <TraceLogDisplay trace_log={discoveryResult.trace_log} maskedQuery={discoveryResult.query_understood?.masked_query || nlpResult?.query_understood?.masked_query} />}
+            {nlpResult?.request_id && <FeedbackWidget requestId={nlpResult.request_id} originalQuery={question} />}
           </div>
         )}
       </section>

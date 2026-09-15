@@ -352,6 +352,13 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
         LIMIT 300
     """)
 
+    trace_log = {
+        "engine": "postgres",
+        "query": str(sql),
+        "params": params,
+        "dataset_origin": "suburbs_ui_v3 (CoreLogic, ABS, ACARA merged table)"
+    }
+
     rows = db.execute(sql, params).fetchall()
     if not rows:
         return {
@@ -359,7 +366,8 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
             "message": "No suburbs found matching your criteria in our database. Try broadening your search.",
             "results": [],
             "summary": "No results found.",
-            "query_understood": {"city": city, "direction": direction, "km": km, "state": state, "priorities": priorities}
+            "query_understood": {"city": city, "direction": direction, "km": km, "state": state, "priorities": priorities},
+            "trace_log": trace_log
         }
 
     # 3. Haversine + direction filter
@@ -407,7 +415,8 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
             "message": f"No suburbs found in our database for {region_desc}. We may not have data coverage for that exact area yet. Try expanding your km radius or checking the Buy Finder tab for broader results.",
             "results": [],
             "summary": "No results found.",
-            "query_understood": {"city": city, "direction": direction, "km": km, "state": state, "priorities": priorities}
+            "query_understood": {"city": city, "direction": direction, "km": km, "state": state, "priorities": priorities},
+            "trace_log": trace_log
         }
 
     # 4. Score + rank
@@ -473,4 +482,5 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
         },
         "summary": f"Found {len(results)} suburb{'s' if len(results) != 1 else ''} {dir_str}{km_str} ranked by {priority_str}.{threshold_str}",
         "results": results,
+        "trace_log": trace_log
     }

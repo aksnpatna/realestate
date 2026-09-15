@@ -139,6 +139,12 @@ class IntentResponse(BaseModel):
     clarification: Clarification = Clarification()
     geo: Optional[Dict[str, Any]] = None
 
+class FeedbackRequest(BaseModel):
+    request_id: str
+    query: str
+    feedback_type: Literal["upvote", "downvote"]
+    expected_behavior: Optional[str] = None
+
 # ─── Verdict / Response v2 ───────────────────────────────────────────────────
 
 class VerdictEntry(BaseModel):
@@ -194,6 +200,7 @@ class AskResponseV2(BaseModel):
     follow_ups: List[Dict[str, str]] = []
     disclaimer: str = "General research only; not financial, legal, tax, lending or valuation advice."
     versions: dict = {}
+    trace_log: Optional[dict] = None
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DISCOVERY SCHEMAS (backward compatible, enhanced)
@@ -235,6 +242,7 @@ class DiscoveryResponse(BaseModel):
     query_understood: dict = {}
     results: List[DiscoveryResult] = []
     disclaimer: str = "General research only; not financial, legal, tax, lending or valuation advice."
+    trace_log: Optional[dict] = None
 
 # ─── Re-export V1 ask response for backward compat ─────────────────────────────
 
