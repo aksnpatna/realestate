@@ -10,6 +10,11 @@ SPATIAL_KEYWORDS = [
     "hospital", "medical", "health"
 ]
 
+# Priorities that the Neo4j graph pipeline CANNOT handle
+GRAPH_INCOMPATIBLE_PRIORITIES = [
+    "safety", "cafes", "shopping", "demographics", "family-friendly", "amenities"
+]
+
 def should_route_to_graph(query: str, intent: Dict[str, Any]) -> bool:
     """
     Decides whether an incoming query should be routed to Neo4j (True) 
@@ -17,24 +22,39 @@ def should_route_to_graph(query: str, intent: Dict[str, Any]) -> bool:
     """
     query_lower = query.lower()
     
-    # 1. Explicit spatial signals in the natural language
+    # 1. Check if query contains any incompatible priorities that graph can't handle
+    priorities = intent.get("priorities", [])
+    for p in GRAPH_INCOMPATIBLE_PRIORITIES:
+        if p in priorities:
+            return False
+            
+    # 2. Check if query explicitly mentions incompatible topics (even if not in priorities)
+    incompatible_topics = [
+        "safe", "safety", "crime", "security", "demographic", "demographics",
+        "family-friendly", "family friendly", "cafe", "café", "restaurant",
+        "shopping", "retail", "mall"
+    ]
+    for topic in incompatible_topics:
+        if topic in query_lower:
+            return False
+            
+    # 3. Explicit spatial signals in the natural language
     for kw in SPATIAL_KEYWORDS:
         if kw in query_lower:
             return True
             
-    # 2. Specific intent goals that are inherently discovery-focused
+    # 4. Specific intent goals that are inherently discovery-focused
     goal = intent.get("goal")
     
     # If they are searching for an investment but didn't specify a suburb,
     # and they care about transit/parks (which are spatial), use graph.
-    priorities = intent.get("priorities", [])
     suburbs = intent.get("suburbs", [])
     
     if goal in ("investment_search", "suburb_discovery") and not suburbs:
         if "transit" in priorities or "parks" in priorities:
             return True
             
-    # 3. Development potential queries
+    # 5. Development potential queries
     dev_types = ["duplex", "subdivision", "townhouse", "develop"]
     for dt in dev_types:
         if dt in query_lower:

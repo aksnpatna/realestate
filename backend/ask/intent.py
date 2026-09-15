@@ -194,7 +194,9 @@ def extract_priorities(text: str) -> List[str]:
         "safe": "safety", "crime": "safety",
         "commute": "commute", "transit": "commute",
         "risk": "risk", "downside": "risk",
-        "cafe": "amenities", "park": "amenities", "lifestyle": "amenities",
+        "cafe": "amenities", "restaurant": "amenities", "shopping": "amenities", "retail": "amenities", "mall": "amenities",
+        "park": "parks", "greenspace": "parks", "forest": "parks", "bush": "parks", "nature reserve": "parks", "national park": "parks",
+        "lifestyle": "lifestyle",
         "afford": "affordability", "cheap": "affordability",
     }
     t = text.lower()
