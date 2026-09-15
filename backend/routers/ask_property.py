@@ -231,7 +231,7 @@ async def ask_query(
             trace_log=disc.get("trace_log"),
         )
 
-    if not intent_suburbs and goal not in ("interstate_discovery", "general_advice"):
+    if not intent_suburbs and goal not in ("interstate_discovery", "general_advice", "affordability", "schools_analysis", "growth_analysis", "suburb_discovery", "investment_search", "supply_analysis"):
         return AskResponseV2(
             request_id=request_id, status="needs_clarification",
             intent=parsed, query_understood={**parsed, "original_query": original_query, "masked_query": req.question},

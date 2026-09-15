@@ -155,6 +155,12 @@ def resolve_suburbs(
             continue
         if len(token) < 3:
             continue
+        # Skip directional suburb names when used as spatial anchors
+        # e.g. "north of Melbourne" should not resolve "North Melbourne" as a suburb
+        if re.search(r'\b(north|south|east|west)\s+of\b', question.lower()):
+            dir_words = {"north", "south", "east", "west"}
+            if token_lower.split()[0] in dir_words:
+                continue
         results = resolve_with_db(db, token, state_hint)
         if not results:
             continue

@@ -46,7 +46,12 @@ REAL_ESTATE_KEYWORDS = [
     "suburb", "yield", "rent", "buy", "sell", "house", "unit", "property",
     "invest", "mortgage", "deposit", "stamp duty", "price", "growth",
     "school", "park", "risk", "safe", "capital gain", "capital growth", "roi", "cashflow", "market",
-    "building", "approval", "development", "zone", "zoning", "clearance"
+    "building", "approval", "development", "zone", "zoning", "clearance",
+    "family", "home", "compare", "versus", "vs ", "area", "apartment",
+    "townhouse", "land", "estate", "rental", "tenant", "lease",
+    "auction", "listing", "agent", "neighbourhood", "neighborhood",
+    "affordable", "affordability", "loan", "borrow", "lender", "interest rate",
+    "cbd", "metro", "regional", "rural", "coastal", "inner city",
 ]
 
 def check_off_topic(text: str) -> bool:

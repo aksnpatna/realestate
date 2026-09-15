@@ -61,6 +61,15 @@ STATE_MAP = {
     "northern territory": "NT", "australian capital territory": "ACT",
 }
 STATE_PATTERN = re.compile(r"\b(NSW|VIC|QLD|SA|WA|TAS|NT|ACT|New South Wales|Victoria|Queensland|South Australia|Western Australia|Tasmania|Northern Territory|Australian Capital Territory|nsw|vic|qld|sa|wa|tas|nt|act)\b")
+CITY_NAMES = {
+    "sydney", "melbourne", "brisbane", "adelaide", "perth",
+    "hobart", "darwin", "canberra", "newcastle", "wollongong",
+    "geelong", "gold coast", "sunshine coast", "townsville",
+}
+
+def is_city_anchor(name: str) -> bool:
+    return name.lower() in CITY_NAMES
+
 CITY_STATE = {
     "sydney": "NSW", "melbourne": "VIC", "brisbane": "QLD",
     "adelaide": "SA", "perth": "WA", "hobart": "TAS",
@@ -71,7 +80,7 @@ CITY_STATE = {
 }
 
 def extract_dollars(text: str) -> Optional[float]:
-    m = re.search(r'(?:budget|under|for|of)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?', text)
+    m = re.search(r'(?:budget|under|for|of|a |afford\s+a?\s*)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?', text.lower())
     if m:
         num = float(m.group(1))
         s = (m.group(2) or "").lower()
@@ -86,6 +95,33 @@ def extract_dollars(text: str) -> Optional[float]:
         parsed = int(m2.group(1))
         if 10_000 <= parsed:
             return float(parsed)
+    return None
+
+def extract_income(text: str) -> Optional[float]:
+    m = re.search(r'(?:income|salary|earning|earn)\s*(?:of\s*)?\$?\s*(\d+(?:\.\d+)?)\s*([kK])?', text.lower())
+    if m:
+        num = float(m.group(1))
+        s = (m.group(2) or "").lower()
+        if s == "k":
+            num *= 1000
+        if 10_000 <= num <= 5_000_000:
+            return num
+    m2 = re.search(r'\$?\s*(\d{2,3})\s*[kK]\s*(?:income|salary|earning|earn)', text.lower())
+    if m2:
+        num = float(m2.group(1)) * 1000
+        if 10_000 <= num <= 5_000_000:
+            return num
+    return None
+
+def extract_deposit(text: str) -> Optional[float]:
+    m = re.search(r'(?:deposit|down\s*payment|downpayment)\s*(?:of\s*)?\$?\s*(\d+(?:\.\d+)?)\s*([kK])?', text.lower())
+    if m:
+        num = float(m.group(1))
+        s = (m.group(2) or "").lower()
+        if s == "k":
+            num *= 1000
+        if 5_000 <= num <= 30_000_000:
+            return num
     return None
 
 def extract_state(text: str) -> Optional[str]:
@@ -172,17 +208,33 @@ def classify_goal_deterministic(text: str, suburbs: list, is_geo: bool) -> str:
     if re.search(r'\bhow much deposit|what is deposit|stamp duty|negative gearing\b', t):
         if not suburbs:
             return "general_advice"
-    if is_geo:
-        return "suburb_discovery"
-    if re.search(r'\bcompare|compar|vs\.?|versus|or\b.*\b(suburb|kenmore|indooroopilly|point cook|werribee)', t) and len(suburbs) >= 2:
-        return "suburb_comparison"
     if re.search(r'\binterstate|moving (from|to|interstate)|which state\b', t) and not suburbs:
         return "interstate_discovery"
+    # Investment search: yield/invest keywords + geo/discovery intent, no suburbs
     if re.search(r'\binvest|yield|cashflow|rental income\b', t):
         if re.search(r'\bcashflow|projection|return|sensitivity\b', t):
             return "cashflow_projection"
         if not suburbs:
             return "investment_search"
+    # Risk analysis takes priority when specific suburb is mentioned
+    if re.search(r'\brisk|downside|what could go wrong|bearish\b', t) and suburbs:
+        return "risks_analysis"
+    # "which suburb has the best schools" → schools_analysis
+    if re.search(r'\bwhich\s+suburb.*\b(best|top|highest)\s+(schools?|education)\b', t) and not suburbs:
+        return "schools_analysis"
+    # "I want to buy/looking for a house in [state] with [criteria]" → discovery
+    if re.search(r'\b(i\s+want\s+to|looking\s+to|looking\s+for)\s+(buy|purchase|find|get)\s+a?\s+(house|home|property|unit|apartment|place)\s+in\b', t) and not suburbs:
+        return "suburb_discovery"
+    # Specific goal checks before generic geo discovery
+    if re.search(r'\bgrowth|long.term|potential|prospect\b', t) and not suburbs and is_geo:
+        return "growth_analysis"
+    if re.search(r'\bdevelop|subdivision|build|construction|approval\b', t) and not suburbs and is_geo:
+        return "supply_analysis"
+    # Geo discovery: spatial queries without a specific suburb
+    if is_geo and not suburbs:
+        return "suburb_discovery"
+    if re.search(r'\bcompare|compar|vs\.?|versus|or\b.*\b(suburb|kenmore|indooroopilly|point cook|werribee)', t) and len(suburbs) >= 2:
+        return "suburb_comparison"
     if re.search(r'\brisk|downside|what could go wrong|bearish\b', t):
         return "risks_analysis"
     if re.search(r'\bschool|education|icsea|acara\b', t):
@@ -206,8 +258,14 @@ def detect_geo_intent(text: str) -> bool:
         r'\b(north|south|east|west|north-?east|north-?west|south-?east|south-?west)\s+of\b',
         r'within\s+\d+\s*km\b', r'\d+\s*km\s+(from|north|south|east|west)\b',
         r'\b(near|around|close to)\s+(sydney|melbourne|brisbane|adelaide|perth)',
-        r'\bregional\b.*(yield|school|growth|safe)', r'\b(best|highest|lowest|top)\s+(school|yield|return|transit)', r'suburb.*\b(with|having|that have)\s+(high|good|great)', r'\bwhich suburb|find (me )?(a )?suburb', r'\bfind (me )?(a |an )?(area|neighbourhood|neighborhood|location)',
+        r'\bregional\b.*(yield|school|growth|safe)', r'\b(best|highest|lowest|top)\s+(school|yield|return|transit)',
+        r'suburb.*\b(with|having|that have)\s+(high|good|great|fast|low|best|top)',
+        r'\bshow\s+me\s+suburbs?\b', r'\blist\s+suburbs?\b',
+        r'\bwhich suburb|find (me )?(a )?suburb',
+        r'\bfind (me )?(a |an )?(area|neighbourhood|neighborhood|location)',
         r'\brecommend (a |an |some |me )?(area|suburb)',
+        r'\bwhere\s+(is|are)\s+(a\s+)?(good|great|nice|best|safe|affordable)\s+(place|area|suburb|location)s?\s+to\s+(live|buy|invest|rent|move)',
+        r'\bwhere\s+(should|can|could)\s+(i|we)\s+(live|buy|invest|move)',
     ]
     return any(re.search(p, text.lower()) for p in patterns)
 
@@ -232,6 +290,8 @@ def parse_intent_deterministic(
     if not resolved_suburbs and re.search(r'\binvest|yield|cashflow|rental income\b', text.lower()):
         is_geo = True
     budget = extract_dollars(text)
+    income = extract_income(text)
+    deposit = extract_deposit(text)
     direction = extract_direction(text)
     km = extract_km(text)
     property_type = extract_property_type(text)
@@ -262,6 +322,8 @@ def parse_intent_deterministic(
         "property_type": property_type,
         "tenure": tenure,
         "budget": budget,
+        "annual_income": income,
+        "deposit": deposit,
         "priorities": priorities,
         "is_geo_discovery": is_geo,
         "state": state,
@@ -349,6 +411,13 @@ async def run_intent_pipeline(
     resolved, ambiguous, clarify_msg = resolve_suburbs(db, question, state_hint)
     state_from_entities = resolved[0]["state"] if resolved else state_hint
 
+    # Filter out city names resolved as suburbs in geo-discovery context
+    has_spatial = detect_geo_intent(question)
+    if has_spatial and resolved:
+        resolved = [r for r in resolved if not is_city_anchor(r.get("name", ""))]
+        if not resolved:
+            state_from_entities = state_hint
+
     det = parse_intent_deterministic(question, resolved, state_from_entities)
 
     if ambiguous and len(resolved) >= 2:
@@ -361,7 +430,7 @@ async def run_intent_pipeline(
     det["needs_clarification"] = False
     det["clarification"] = {"needed": False, "questions": [], "options": []}
 
-    if not resolved and not det.get("is_geo_discovery") and det["goal"] not in ("general_advice",):
+    if not resolved and not det.get("is_geo_discovery") and det["goal"] not in ("general_advice", "affordability"):
         # Fetch dynamic few-shot feedback for RLHF
         from sqlalchemy import text
         feedback_rows = db.execute(text("SELECT query, expected_behavior FROM user_feedback WHERE feedback_type = 'downvote' AND expected_behavior IS NOT NULL ORDER BY created_at DESC LIMIT 5")).fetchall()
