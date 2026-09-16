@@ -122,6 +122,8 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     'Compare Kenmore and Indooroopilly for a $2M family home',
     'Moving interstate: where do I start?',
     'Find investment areas under $900k with rental resilience',
+    'Find bullish suburbs in Brisbane with good schools',
+    'Show me areas with positive news sentiment under $1M',
   ];
 
   // ─── V2: Unified NL query (primary path) ─────────────────────────────

@@ -17,14 +17,14 @@ def sync_suburbs_to_graph(db_session):
                house_gross_rental_yield, vacancy_rate, population_cagr,
                school_quality, avg_icsea, top_school_name,
                transit_accessibility, parks_count, safety_score,
-               investor_rate, owner_occupier_rate
+               investor_rate, owner_occupier_rate, news_sentiment
         FROM suburbs_ui_v3
         WHERE coordinates IS NOT NULL AND is_live = true
     """)
     
     suburbs = db_session.execute(sql).fetchall()
     
-    # Base Cypher query to UPSERT suburb and market state
+     # Base Cypher query to UPSERT suburb and market state
     cypher = """
     UNWIND $batch AS row
     MERGE (s:Suburb {id: row.id})
@@ -49,9 +49,22 @@ def sync_suburbs_to_graph(db_session):
     WITH s, sch, row
     WHERE row.school_quality IS NOT NULL
     MERGE (s)-[:HAS_SCHOOL]->(sch)
+    
+    // Add news sentiment if available
+    WITH s, row
+    WHERE row.news_sentiment IS NOT NULL
+    MERGE (sent:NewsSentiment {suburb_id: row.id})
+    SET sent.score = row.news_sentiment_score,
+        sent.label = row.news_sentiment_label,
+        sent.summary = row.news_sentiment_summary,
+        sent.fetched_at = row.news_sentiment_fetched_at
+        
+    WITH s, sent, row
+    WHERE row.news_sentiment IS NOT NULL
+    MERGE (s)-[:HAS_SENTIMENT]->(sent)
     """
     
-    batch = []
+     batch = []
     for s in suburbs:
         row = dict(s._mapping)
         coords = row.get("coordinates")
@@ -64,6 +77,14 @@ def sync_suburbs_to_graph(db_session):
             
         if not row.get("top_school_name"):
             row["top_school_name"] = f"Unknown School {row.get('name', '')}"
+            
+        # Extract news sentiment fields if available
+        news_sentiment = row.get("news_sentiment")
+        if news_sentiment and isinstance(news_sentiment, dict):
+            row["news_sentiment_score"] = news_sentiment.get("score")
+            row["news_sentiment_label"] = news_sentiment.get("label")
+            row["news_sentiment_summary"] = news_sentiment.get("summary")
+            row["news_sentiment_fetched_at"] = news_sentiment.get("fetched_at")
             
         batch.append(row)
         

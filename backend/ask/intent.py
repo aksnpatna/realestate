@@ -43,6 +43,13 @@ QUALITATIVE_MAP: Dict[str, Dict[str, Any]] = {
     "selling fast":        {"metric": "days_on_market", "op": "<", "value": 30},
     "undersupplied":       {"metric": "vacancy_rate", "op": "<", "value": 1.5},
     "developed":           {"metric": "building_approvals_12m", "op": ">=", "value": 100},
+    "bullish":             {"metric": "news_sentiment", "op": ">=", "value": 7},
+    "positive sentiment":  {"metric": "news_sentiment", "op": ">=", "value": 7},
+    "good news":           {"metric": "news_sentiment", "op": ">=", "value": 7},
+    "bearish":             {"metric": "news_sentiment", "op": "<=", "value": 4},
+    "negative sentiment":  {"metric": "news_sentiment", "op": "<=", "value": 4},
+    "bad news":            {"metric": "news_sentiment", "op": "<=", "value": 4},
+    "neutral sentiment":   {"metric": "news_sentiment", "op": ">", "value": 4},
 }
 
 # ─── Deterministic extractors ─────────────────────────────────────────────────
