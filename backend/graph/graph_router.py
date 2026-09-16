@@ -7,7 +7,12 @@ SPATIAL_KEYWORDS = [
     "ocean", "beach", "beachside", "coastal", "seaside", "surf",
     "station", "train", "transit", "rail", "metro",
     "park", "national park", "nature reserve", "greenspace", "forest", "bush", "bushland",
-    "hospital", "medical", "health"
+    "hospital", "medical", "health",
+    "cafe", "café", "restaurant", "dining", "food", "pub", "bar",
+    "shopping", "retail", "mall", "supermarket", "grocery", "shop",
+    "university", "college", "uni", "campus",
+    "bus stop", "tram stop", "bus", "tram",
+    "police", "fire station"
 ]
 
 # Priorities that the Neo4j graph pipeline CANNOT handle
