@@ -37,6 +37,13 @@ const SIDEBAR_GROUPS = [
     ]
   },
   {
+    title: 'Tools',
+    items: [
+      { id: 'calculators', label: 'Calculators', icon: 'wallet' as IconName },
+      { id: 'buy-finder', label: 'Buy Finder', icon: 'search' as IconName },
+    ]
+  },
+  {
     title: 'Account',
     items: [
       { id: 'settings', label: 'Settings', icon: 'settings' as IconName },
