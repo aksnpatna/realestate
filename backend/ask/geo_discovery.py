@@ -137,7 +137,7 @@ def normalise_direction(text: str) -> Optional[str]:
     return None
 
 def extract_km(text: str) -> Optional[float]:
-    for pat in [r"(\d+(?:\.\d+)?)\s*km", r"within\s+(\d+)\s*k"]:
+    for pat in [r"(\d+(?:\.\d+)?)\s*km\b", r"within\s+(\d+)\s*k(?:m|ilomet)"]:
         m = re.search(pat, text.lower())
         if m:
             return float(m.group(1))

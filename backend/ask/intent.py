@@ -80,7 +80,7 @@ CITY_STATE = {
 }
 
 def extract_dollars(text: str) -> Optional[float]:
-    m = re.search(r'(?:budget|under|for|of|a |afford\s+a?\s*)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?', text.lower())
+    m = re.search(r'(?:budget|under|for|of|a |afford\s+a?\s*|within\s+)\s*\$?\s*(\d+(?:\.\d+)?)\s*([kKmM])?(?:\s*illion)?', text.lower())
     if m:
         num = float(m.group(1))
         s = (m.group(2) or "").lower()
@@ -142,10 +142,10 @@ def extract_state(text: str) -> Optional[str]:
     return None
 
 def extract_km(text: str) -> Optional[float]:
-    m = re.search(r'(\d+(?:\.\d+)?)\s*km', text.lower())
+    m = re.search(r'(\d+(?:\.\d+)?)\s*km\b', text.lower())
     if m:
         return float(m.group(1))
-    m = re.search(r'within\s+(\d+)\s*k', text.lower())
+    m = re.search(r'within\s+(\d+)\s*k(?:m|ilomet)', text.lower())
     if m:
         return float(m.group(1))
     return None
