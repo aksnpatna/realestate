@@ -195,25 +195,25 @@ def discover_suburbs_graph(query: str, intent: Dict[str, Any]) -> Dict[str, Any]
 
     if "schools" in joined:
         return_items.extend([
-            "collect(sch.name)[0] AS top_school_name",
-            "collect(sch.icsea)[0] AS school_quality"
+            "sch[0].name AS top_school_name",
+            "sch[0].icsea AS school_quality"
         ])
 
-    # Explicit return mappings per joined node type
+    # Explicit return mappings per joined node type (use [0] since collected)
     RETURN_MAP = {
-        "water":      ("w.name AS nearest_water", "rw.distance_m AS dist_water"),
-        "beach":      ("b.name AS nearest_beach", "rb.distance_m AS dist_beach"),
-        "greenspace": ("g.name AS nearest_greenspace", "rg.distance_m AS dist_greenspace"),
-        "transit":    ("st.name AS nearest_station", "rt.distance_m AS dist_station"),
-        "hospital":   ("h.name AS nearest_hospital", "rh.distance_m AS dist_hospital"),
-        "cafe":       ("c.name AS nearest_cafe", "rc.distance_m AS dist_cafe"),
-        "restaurant": ("r.name AS nearest_restaurant", "rr.distance_m AS dist_restaurant"),
-        "shop":       ("sh.name AS nearest_shop", "rs.distance_m AS dist_shop"),
-        "university": ("u.name AS nearest_university", "ru.distance_m AS dist_university"),
-        "police":     ("p.name AS nearest_police", "rp.distance_m AS dist_police"),
-        "fire":       ("f.name AS nearest_fire", "rf.distance_m AS dist_fire"),
-        "bus":        ("bu.name AS nearest_bus", "rbu.distance_m AS dist_bus"),
-        "tram":       ("tr.name AS nearest_tram", "rtr.distance_m AS dist_tram"),
+        "water":      ("w[0].name AS nearest_water", "rw[0].distance_m AS dist_water"),
+        "beach":      ("b[0].name AS nearest_beach", "rb[0].distance_m AS dist_beach"),
+        "greenspace": ("g[0].name AS nearest_greenspace", "rg[0].distance_m AS dist_greenspace"),
+        "transit":    ("st[0].name AS nearest_station", "rt[0].distance_m AS dist_station"),
+        "hospital":   ("h[0].name AS nearest_hospital", "rh[0].distance_m AS dist_hospital"),
+        "cafe":       ("c[0].name AS nearest_cafe", "rc[0].distance_m AS dist_cafe"),
+        "restaurant": ("r[0].name AS nearest_restaurant", "rr[0].distance_m AS dist_restaurant"),
+        "shop":       ("sh[0].name AS nearest_shop", "rs[0].distance_m AS dist_shop"),
+        "university": ("u[0].name AS nearest_university", "ru[0].distance_m AS dist_university"),
+        "police":     ("p[0].name AS nearest_police", "rp[0].distance_m AS dist_police"),
+        "fire":       ("f[0].name AS nearest_fire", "rf[0].distance_m AS dist_fire"),
+        "bus":        ("bu[0].name AS nearest_bus", "rbu[0].distance_m AS dist_bus"),
+        "tram":       ("tr[0].name AS nearest_tram", "rtr[0].distance_m AS dist_tram"),
     }
 
     for jk in joined:

@@ -11,10 +11,11 @@ SPATIAL_KEYWORDS = [
 ]
 
 # Priorities that the Neo4j graph pipeline CANNOT handle
-# (cafes, shopping, restaurants now supported via osm_sync_enhanced.py)
+# (cafes, restaurants, shopping now supported via osm_sync_enhanced.py)
 # (schools now have full ACARA data via school_sync.py)
+# (safety still unsupported - no crime statistics in graph, only police stations)
 GRAPH_INCOMPATIBLE_PRIORITIES = [
-    "demographics", "family-friendly"
+    "demographics", "family-friendly", "safety"
 ]
 
 def should_route_to_graph(query: str, intent: Dict[str, Any]) -> bool:
@@ -33,7 +34,8 @@ def should_route_to_graph(query: str, intent: Dict[str, Any]) -> bool:
     # 2. Check if query explicitly mentions incompatible topics (even if not in priorities)
     incompatible_topics = [
         "demographic", "demographics",
-        "family-friendly", "family friendly"
+        "family-friendly", "family friendly",
+        "safe", "safety", "crime", "security"
     ]
     for topic in incompatible_topics:
         if topic in query_lower:
