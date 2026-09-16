@@ -420,11 +420,11 @@ export default memo(function UnifiedSearchView({
                   <div className="us-suburb-metrics">
                     <div className="us-metric-badge">
                       <span className="us-metric-label">Est. Price</span>
-                      <span className="us-metric-value">${r.median_price ? (r.median_price / 1000).toFixed(0) + 'k' : 'N/A'}</span>
+                      <span className="us-metric-value">${r.metrics?.median_price ? (r.metrics.median_price / 1000).toFixed(0) + 'k' : 'N/A'}</span>
                     </div>
                     <div className="us-metric-badge">
                       <span className="us-metric-label">Yield</span>
-                      <span className="us-metric-value">{r.rental_yield ? r.rental_yield.toFixed(1) + '%' : 'N/A'}</span>
+                      <span className="us-metric-value">{r.metrics?.yield_pct ? r.metrics.yield_pct.toFixed(1) + '%' : 'N/A'}</span>
                     </div>
                   </div>
 
@@ -432,7 +432,7 @@ export default memo(function UnifiedSearchView({
                     const fallbackId = `${r.state}_${r.name.replace(/\s+/g, '_')}_${r.postcode}`.toLowerCase();
                     const safeId = r.suburb_id ? r.suburb_id.toLowerCase() : fallbackId;
                     if (setActiveSuburb) setActiveSuburb({id: safeId, name: r.name, state: r.state, postcode: r.postcode} as any);
-                    if (setActiveTab) setActiveTab('dashboard');
+                    if (setActiveTab) setActiveTab('profile');
                   }}>
                     View Profile
                   </button>

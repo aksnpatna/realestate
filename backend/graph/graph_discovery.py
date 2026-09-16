@@ -249,8 +249,24 @@ def discover_suburbs_graph(query: str, intent: Dict[str, Any]) -> Dict[str, Any]
         cypher += "\nWITH " + ", ".join(with_items)
 
     cypher += "\nRETURN " + ", ".join(return_items)
+
+    # Smart ordering based on intent
+    order_clauses = []
+    budget = intent.get("budget")
+    if budget:
+        order_clauses.append(f"CASE WHEN m.median_price <= {budget} THEN 0 ELSE 1 END")
+        order_clauses.append("m.median_price ASC")
+    if "schools" in joined:
+        order_clauses.append("sch[0].icsea DESC")
+    if "greenspace" in joined:
+        order_clauses.append("rg[0].distance_m ASC")
+    if "transit" in joined:
+        order_clauses.append("rt[0].distance_m ASC")
+    if not order_clauses:
+        order_clauses.append("m.yield DESC")
+
+    cypher += "\nORDER BY " + ", ".join(order_clauses)
     cypher += """
-    ORDER BY m.yield DESC
     LIMIT 5
     """
 
