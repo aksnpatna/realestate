@@ -18,17 +18,28 @@ from ask.evidence_packs import get_evidence_pack, check_minimum_evidence
 def _compute_volatility_and_sharpe(history_data: Any) -> tuple:
     """Derive price_volatility_10yr and price_sharpe_ratio from 10yr price history.
     Returns (volatility_pct, sharpe_ratio) or (None, None) if insufficient data.
+    Handles history_data as list, dict, or invalid type.
     """
     if not history_data or not isinstance(history_data, (list, dict)):
         return None, None
 
     prices = None
-    if isinstance(history_data, list):
-        prices = [float(p) for p in history_data if p is not None]
-    elif isinstance(history_data, dict):
-        sorted_keys = sorted(k for k in history_data.keys() if str(k).isdigit())
-        if len(sorted_keys) >= 4:
-            prices = [float(history_data[k]) for k in sorted_keys if history_data[k] is not None]
+    try:
+        if isinstance(history_data, list):
+            prices = [float(p) for p in history_data if p is not None and isinstance(p, (int, float, str)) and str(p).strip()]
+        elif isinstance(history_data, dict):
+            sorted_keys = sorted(k for k in history_data.keys() if str(k).isdigit())
+            if len(sorted_keys) >= 4:
+                prices = []
+                for k in sorted_keys:
+                    v = history_data[k]
+                    if v is not None and isinstance(v, (int, float, str)) and str(v).strip():
+                        try:
+                            prices.append(float(v))
+                        except (TypeError, ValueError):
+                            continue
+    except Exception:
+        return None, None
 
     if not prices or len(prices) < 4:
         return None, None
