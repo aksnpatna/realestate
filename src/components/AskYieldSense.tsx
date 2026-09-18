@@ -599,6 +599,13 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
             </button>
           </div>
           <DiscoveryCards disc={discoveryResult} />
+          {(result as AskResponseV2)?.reasoning_chain && (
+            <ReasoningMap
+              chain={(result as AskResponseV2).reasoning_chain!}
+              onAdjust={handleAdjust}
+              adjusting={adjusting}
+            />
+          )}
         </div>
       )}
 
