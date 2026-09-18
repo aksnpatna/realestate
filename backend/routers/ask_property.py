@@ -11,6 +11,7 @@ from ask.schemas import (
     DiscoveryRequest, DiscoveryResponse, DiscoveryResult, DiscoveryMetrics,
     AskQueryRequest, IntentRequest, IntentResponse, AskResponseV2, VerdictBlock,
     SupportRiskClaim, AffordabilityBlock, SuburbReference, FeedbackRequest,
+    ReasoningHop, MultiHopTrace,
 )
 from ask.evidence import get_suburb_ui, extract_evidence, calculate_data_quality, check_pack_minimum
 from ask.scenarios import compute_affordability, compute_yield
@@ -31,6 +32,46 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def _build_reasoning_chain(hops: list) -> MultiHopTrace:
+    total_ms = sum(h.latency_ms for h in hops)
+    confidences = [h.confidence for h in hops if h.confidence > 0]
+    aggregate = round(sum(confidences) / len(confidences), 3) if confidences else 0.0
+    return MultiHopTrace(
+        hops=hops,
+        aggregate_confidence=aggregate,
+        total_latency_ms=round(total_ms, 1),
+    )
+
+
+def _route_reason(query: str, intent: dict, use_graph: bool) -> str:
+    if use_graph:
+        signals = _detected_spatial_keywords(query)
+        return f"Spatial signals detected: {signals} — routing to Neo4j graph traversal"
+    goal = intent.get("goal", "")
+    suburbs = intent.get("suburbs", [])
+    if goal in ("suburb_comparison", "single_suburb_research") and suburbs:
+        return f"Named suburbs present ({[s.get('name','') for s in suburbs][:2]}) — routing to Postgres evidence pipeline"
+    if goal in ("risks_analysis", "schools_analysis"):
+        return f"Goal '{goal}' uses structured evidence packs — routing to Postgres"
+    return "No spatial signals detected — defaulting to Postgres evidence pipeline"
+
+
+def _detected_spatial_keywords(query: str) -> list:
+    from graph.graph_router import SPATIAL_KEYWORDS
+    ql = query.lower()
+    return [kw for kw in SPATIAL_KEYWORDS if kw in ql]
+
+
+def _detected_poi_types(query: str) -> list:
+    from graph.graph_discovery import KEYWORD_TRIGGERS
+    ql = query.lower()
+    types = []
+    for poi_type, triggers in KEYWORD_TRIGGERS.items():
+        if any(t in ql for t in triggers):
+            types.append(poi_type)
+    return types
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -54,6 +95,9 @@ async def ask_query(
     import os
     from ask.observability import incr_ask_request, incr_ask_cache, record_intent_confidence, record_latency, record_evidence_coverage
 
+    t0 = time.time()
+    hops: list = []
+
     # Feature flag gate
     enable_ask_v2 = os.getenv("ENABLE_ASK_V2", "true").lower() in ("true", "1", "yes")
     if not enable_ask_v2:
@@ -65,7 +109,20 @@ async def ask_query(
     req.question = mask_pii(req.question)
     
     # 2. Off-Topic & Prompt Injection Defense
-    if check_off_topic(req.question):
+    t_g = time.time()
+    is_off_topic = check_off_topic(req.question)
+    pii_scrubbed = (original_query != req.question)
+    hops.append(ReasoningHop(
+        step="guardrails",
+        input_summary=f"Raw query: \"{original_query[:80]}{'...' if len(original_query) > 80 else ''}\"",
+        output_summary="Passed — on-topic" if not is_off_topic else "BLOCKED — off-topic or prompt injection",
+        confidence=0.98 if not is_off_topic else 1.0,
+        data_sources=["policy_guardrails_v3"],
+        decision_rationale="PII scrubbed" if pii_scrubbed else "No PII detected",
+        artifacts={"pii_scrubbed": pii_scrubbed, "off_topic": is_off_topic},
+        latency_ms=round((time.time() - t_g) * 1000, 1),
+    ))
+    if is_off_topic:
         return AskResponseV2(
             request_id="gr-" + hashlib.md5(req.question.encode()).hexdigest()[:8],
             status="degraded",
@@ -75,7 +132,8 @@ async def ask_query(
             summary="This assistant is restricted to real estate, property investment, and financial queries. Please rephrase your question.",
             research_priority="insufficient_evidence",
             disclaimer="Enterprise Guardrail Enforced.",
-            versions={"pipeline": "ask-v2-guardrail"}
+            versions={"pipeline": "ask-v2-guardrail"},
+            reasoning_chain=_build_reasoning_chain(hops),
         )
     # --------------------------------------
 
@@ -122,14 +180,37 @@ async def ask_query(
     from ask.conversation import get_latest_brief, merge_intent
 
     # 1. Parse intent (deterministic + LLM normalisation)
+    t_i = time.time()
     parsed = await run_intent_pipeline(db, req.question)
+    intent_confidence = parsed.get("confidence", 0.8)
+    hops.append(ReasoningHop(
+        step="intent_parsing",
+        input_summary=f"Masked query: \"{req.question[:80]}{'...' if len(req.question) > 80 else ''}\"",
+        output_summary=f"Goal={parsed.get('goal')}, suburbs={[s.get('name','') for s in parsed.get('suburbs',[])][:3]}, budget={parsed.get('budget')}, priorities={parsed.get('priorities',[])}",
+        confidence=intent_confidence,
+        data_sources=["intent_pipeline_v2", "gazetteer"],
+        decision_rationale=f"Deterministic extractors + {'LLM fallback' if parsed.get('llm_used') else 'rule-based'} classification",
+        artifacts={"goal": parsed.get("goal"), "suburbs_count": len(parsed.get("suburbs", [])), "priorities": parsed.get("priorities", [])},
+        latency_ms=round((time.time() - t_i) * 1000, 1),
+    ))
 
     # 1b. Multi-turn: merge prior intent if conversation_id present
     if req.conversation_id:
+        t_m = time.time()
         prior_brief = get_latest_brief(db, req.conversation_id, current_user)
         if prior_brief and prior_brief.intent:
             prior_intent = prior_brief.intent if isinstance(prior_brief.intent, dict) else {}
             parsed = merge_intent(prior_intent, parsed)
+            hops.append(ReasoningHop(
+                step="multi_turn_merge",
+                input_summary=f"Conversation {req.conversation_id[:8]}... — prior suburbs: {[s.get('name','') for s in prior_intent.get('suburbs',[])][:3]}",
+                output_summary=f"Merged — suburbs: {[s.get('name','') for s in parsed.get('suburbs',[])][:3]}, budget={parsed.get('budget')}",
+                confidence=0.95,
+                data_sources=["ask_briefs"],
+                decision_rationale="Inherited budget/tenure from prior turn; merged suburb lists",
+                artifacts={"conversation_id": req.conversation_id, "prior_goal": prior_intent.get("goal")},
+                latency_ms=round((time.time() - t_m) * 1000, 1),
+            ))
             
     # 1c. Merge manual UI scenario overrides
     if req.scenario_overrides:
@@ -142,6 +223,15 @@ async def ask_query(
 
     if parsed.get("needs_clarification"):
         clarification = parsed.get("clarification", {})
+        hops.append(ReasoningHop(
+            step="clarification",
+            input_summary=f"Intent parsed but incomplete — goal={parsed.get('goal')}",
+            output_summary=f"Clarification needed: {clarification.get('questions', ['missing context'])[0]}",
+            confidence=0.3,
+            data_sources=["intent_pipeline_v2"],
+            decision_rationale="Missing geographic context — cannot proceed without state/city/suburb",
+            artifacts={"questions": clarification.get("questions", []), "options": clarification.get("options", [])},
+        ))
         return AskResponseV2(
             request_id=request_id,
             status="needs_clarification",
@@ -151,12 +241,38 @@ async def ask_query(
             research_priority="insufficient_evidence",
             disclaimer="General research only; not financial, legal, tax, lending or valuation advice.",
             versions={"pipeline": "ask-v2", "evidence": "v2"},
+            reasoning_chain=_build_reasoning_chain(hops),
         )
 
     # 3. Route to Graph Database or Standard Pipeline
-    if should_route_to_graph(req.question, parsed):
+    t_r = time.time()
+    use_graph = should_route_to_graph(req.question, parsed)
+    route_reason = _route_reason(req.question, parsed, use_graph)
+    hops.append(ReasoningHop(
+        step="routing",
+        input_summary=f"Goal={parsed.get('goal')}, priorities={parsed.get('priorities',[])}, query=\"{req.question[:60]}\"",
+        output_summary=f"Routed to {'Neo4j Graph Engine' if use_graph else 'Standard Postgres Pipeline'}",
+        confidence=0.90 if use_graph else 0.85,
+        data_sources=["graph_router_v2", "spatial_keyword_map"],
+        decision_rationale=route_reason,
+        artifacts={"engine": "neo4j" if use_graph else "postgres", "spatial_signals": _detected_spatial_keywords(req.question)},
+        latency_ms=round((time.time() - t_r) * 1000, 1),
+    ))
+    if use_graph:
         # Actually execute the Graph DB Query
+        t_gd = time.time()
         graph_res = discover_suburbs_graph(req.question, parsed)
+        result_count = len(graph_res.get("results", []))
+        hops.append(ReasoningHop(
+            step="discovery",
+            input_summary=f"Neo4j graph query with priorities={parsed.get('priorities',[])}",
+            output_summary=f"Found {result_count} suburbs matching spatial + metric constraints",
+            confidence=round(min(0.95, 0.5 + result_count * 0.1), 2),
+            data_sources=["neo4j_5.20", "osm_nodes", "acara_schools"],
+            decision_rationale=f"Cypher traversal across {_detected_poi_types(req.question)} POI types",
+            artifacts={"result_count": result_count, "engine": "neo4j", "poi_types": _detected_poi_types(req.question)},
+            latency_ms=round((time.time() - t_gd) * 1000, 1),
+        ))
         
         return AskResponseV2(
             request_id=request_id, status="complete",
@@ -168,7 +284,8 @@ async def ask_query(
             data_quality={}, follow_ups=[],
             verdict=VerdictBlock(conclusion="Graph traversal initiated.", confidence_score=100, reasoning=[]),
             versions={"pipeline": "ask-v2-graph"},
-            trace_log=graph_res.get("trace_log")
+            trace_log=graph_res.get("trace_log"),
+            reasoning_chain=_build_reasoning_chain(hops),
         )
 
     goal = parsed.get("goal", "single_suburb_research")
@@ -190,8 +307,20 @@ async def ask_query(
 
     # 3. Route
     if goal in ("suburb_discovery", "interstate_discovery", "investment_search"):
+        t_d = time.time()
         from ask.geo_discovery import discover_suburbs
         disc = discover_suburbs(db, req.question, budget=budget)
+        result_count = len(disc.get("results", []))
+        hops.append(ReasoningHop(
+            step="discovery",
+            input_summary=f"PostGIS geo-search: goal={goal}, budget={budget}",
+            output_summary=f"Found {result_count} suburbs via composite scoring",
+            confidence=round(min(0.92, 0.4 + result_count * 0.12), 2),
+            data_sources=["postgis", "suburbs_ui_v3", "cbd_anchors"],
+            decision_rationale=f"Haversine distance + direction bearing + {'budget filter' if budget else 'no budget filter'}",
+            artifacts={"result_count": result_count, "engine": "postgis"},
+            latency_ms=round((time.time() - t_d) * 1000, 1),
+        ))
         disc_results = []
         for r in disc.get("results", []):
             m = r.get("metrics", {})
@@ -229,6 +358,7 @@ async def ask_query(
             disclaimer="General research only; not financial, legal, tax, lending or valuation advice.",
             versions={"pipeline": "ask-v2", "evidence": "v2"},
             trace_log=disc.get("trace_log"),
+            reasoning_chain=_build_reasoning_chain(hops),
         )
 
     if not intent_suburbs and goal not in ("interstate_discovery", "general_advice", "affordability", "schools_analysis", "growth_analysis", "suburb_discovery", "investment_search", "supply_analysis"):
@@ -239,6 +369,7 @@ async def ask_query(
             research_priority="insufficient_evidence",
             disclaimer="General research only; not financial, legal, tax, lending or valuation advice.",
             versions={"pipeline": "ask-v2", "evidence": "v2"},
+            reasoning_chain=_build_reasoning_chain(hops),
         )
 
     # 4. Evidence extraction per suburb
@@ -282,6 +413,19 @@ async def ask_query(
             dq_summary["stale_metric_count"] = sum(s.get("stale_metric_count", 0) for s in dq_summary["suburbs"].values())
             dq_summary["dq_score"] = round(sum(scores) / len(scores), 1)
             dq_summary["band"] = "High" if dq_summary["dq_score"] >= 85 else ("Medium" if dq_summary["dq_score"] >= 70 else ("Limited" if dq_summary["dq_score"] >= 50 else "Unavailable"))
+
+    t_ev = time.time()
+    stale_count = dq_summary.get("stale_metric_count", 0)
+    hops.append(ReasoningHop(
+        step="evidence",
+        input_summary=f"Extracting evidence for {len(valid_suburbs)} suburbs, goal={goal}",
+        output_summary=f"{len(all_evidence)} metrics extracted — DQ band: {dq_summary.get('band','N/A')} ({dq_summary.get('dq_score',0):.0f}/100)",
+        confidence=round(dq_summary.get("dq_score", 50) / 100, 3) if dq_summary.get("dq_score") else 0.5,
+        data_sources=["suburbs_ui_v3", "corelogic", "abs", "acara", "sqm"],
+        decision_rationale=f"Evidence pack: {goal} — {len(all_evidence)} metrics, {stale_count} stale" if stale_count else f"Evidence pack: {goal} — all {len(all_evidence)} metrics fresh",
+        artifacts={"metric_count": len(all_evidence), "stale_count": stale_count, "dq_band": dq_summary.get("band"), "evidence_pack": goal},
+        latency_ms=round((time.time() - t_ev) * 1000, 1),
+    ))
 
     # 5. Verdict engine (for comparisons)
     verdict = None
@@ -328,6 +472,21 @@ async def ask_query(
             non_comparable_metrics=non_comparable,
         )
 
+        t_v = time.time()
+        clear_leaders = [pm["metric"] for pm in per_metric if pm.get("framing") == "clear_leader"]
+        persona_leaders = [p.get("leader") for p in by_persona if p.get("leader")]
+        verdict_confidence = 0.9 if len(clear_leaders) >= 2 else (0.7 if clear_leaders else 0.5)
+        hops.append(ReasoningHop(
+            step="verdict",
+            input_summary=f"Comparing {len(comparisons)} suburbs across {len(per_metric)} metrics",
+            output_summary=f"Framing={framing}, {len(clear_leaders)} clear leaders, {len(persona_leaders)} persona winners",
+            confidence=verdict_confidence,
+            data_sources=["verdict_engine_v2", "persona_weights", "metric_registry"],
+            decision_rationale=f"{len(clear_leaders)} metrics show clear leaders; {len(tradeoffs)} trade-offs identified",
+            artifacts={"clear_leaders": clear_leaders, "persona_leaders": persona_leaders, "tradeoff_count": len(tradeoffs)},
+            latency_ms=round((time.time() - t_v) * 1000, 1),
+        ))
+
     # 6. Assumptions
     assumptions = []
     if budget:
@@ -352,15 +511,37 @@ async def ask_query(
             )
 
     # 8. Synthesis
+    t_s = time.time()
     syn = synthesize_research(parsed, all_evidence, assumptions, affordability_res if affordability else {})
+    hops.append(ReasoningHop(
+        step="synthesis",
+        input_summary=f"Evidence bundle: {len(all_evidence)} metrics across {len(valid_suburbs)} suburbs",
+        output_summary=f"Synthesized — priority={syn.get('research_priority','low')}, {len(syn.get('supports',[]))} supports, {len(syn.get('risks',[]))} risks",
+        confidence=0.82,
+        data_sources=["llm_synthesis_v2", "evidence_bundle"],
+        decision_rationale=f"LLM synthesis with {len(syn.get('supports',[]))} support claims and {len(syn.get('risks',[]))} risk factors",
+        artifacts={"supports_count": len(syn.get("supports", [])), "risks_count": len(syn.get("risks", [])), "provider": syn.get("provider", "unknown")},
+        latency_ms=round((time.time() - t_s) * 1000, 1),
+    ))
 
     # 9. Policy check
+    t_p = time.time()
     policy_check = validate_policy(syn, all_evidence)
     status = "complete"
     if policy_check["status"] != "valid":
         status = "degraded"
         syn["summary"] = "[Degraded] Evidence-only summary: " + policy_check.get("reason", ""
                          ) + "\n\n" + syn.get("summary", "")
+    hops.append(ReasoningHop(
+        step="policy",
+        input_summary=f"Synthesis status check",
+        output_summary=f"Policy: {'PASSED' if policy_check.get('status') == 'valid' else 'BLOCKED — ' + policy_check.get('reason', 'unknown')}",
+        confidence=1.0 if policy_check.get("status") == "valid" else 0.3,
+        data_sources=["policy_validator_v2"],
+        decision_rationale=policy_check.get("reason", "All claims within policy bounds"),
+        artifacts={"violations": policy_check.get("violations", []), "status": policy_check.get("status")},
+        latency_ms=round((time.time() - t_p) * 1000, 1),
+    ))
 
     # 10. Headline
     suburb_names = [c.name for c in comparisons] if comparisons else ["your area"]
@@ -425,6 +606,7 @@ async def ask_query(
         evidence=all_evidence, data_quality=_sanitize(dq_summary),
         follow_ups=follow_ups,
         versions={"evidence": "v2", "scorer": "v2", "prompt": "ask-v2", "model": "deepseek-v3", "pipeline": "ask-v2", "qualitative_map": "v1", "policy": "v2"},
+        reasoning_chain=_build_reasoning_chain(hops),
     )
 
     # Cache write

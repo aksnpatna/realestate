@@ -178,6 +178,21 @@ class AffordabilityBlock(BaseModel):
     term: str = "30yr P&I"
     disclaimer: str = "Not lender approval."
 
+class ReasoningHop(BaseModel):
+    step: str
+    input_summary: str
+    output_summary: str
+    confidence: float = Field(ge=0, le=1, default=1.0)
+    data_sources: List[str] = []
+    decision_rationale: str = ""
+    artifacts: Optional[dict] = None
+    latency_ms: float = 0.0
+
+class MultiHopTrace(BaseModel):
+    hops: List[ReasoningHop] = []
+    aggregate_confidence: float = Field(ge=0, le=1, default=0.0)
+    total_latency_ms: float = 0.0
+
 class AskResponseV2(BaseModel):
     request_id: str
     status: Literal["complete", "needs_clarification", "insufficient_evidence", "degraded", "degraded_intent"]
@@ -201,6 +216,7 @@ class AskResponseV2(BaseModel):
     disclaimer: str = "General research only; not financial, legal, tax, lending or valuation advice."
     versions: dict = {}
     trace_log: Optional[dict] = None
+    reasoning_chain: Optional[MultiHopTrace] = None
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DISCOVERY SCHEMAS (backward compatible, enhanced)

@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ComparisonDisplay } from './ask/ComparisonDisplay';
 import { BriefSkeleton } from './ui/Skeleton';
+import { ReasoningMap } from './ask/ReasoningMap';
+import { ConfidenceGauge } from './ask/ConfidenceGauge';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 interface SuburbMetric {
@@ -78,9 +80,9 @@ interface VerdictEntry {
   context_note?: string | null;
 }
 interface PersonaVerdict { persona: string; leader?: string | null; scores: Record<string, number>; weights_used: Record<string, number>; }
-interface VerdictBlock { framing: string; per_metric: VerdictEntry[]; by_persona: PersonaVerdict[]; tradeoffs: string[]; }
+interface VerdictBlock { framing: string; per_metric: VerdictEntry[]; by_persona: PersonaVerdict[]; tradeoffs: string[]; non_comparable_metrics?: string[]; }
 interface AffordabilityBlock { serviceability_passed?: boolean | null; borrowing_capacity?: number | null; monthly_repayment?: number | null; stamp_duty?: number | null; }
-interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string;conversation_id?:string}[]; query_understood?: any; discovery?: DiscoveryResponse | null; trace_log?: any; }
+interface AskResponseV2 extends AskResponse { headline?: string; verdict?: VerdictBlock | null; affordability?: AffordabilityBlock | null; follow_ups?: {label:string;question:string;conversation_id?:string}[]; query_understood?: any; discovery?: DiscoveryResponse | null; trace_log?: any; reasoning_chain?: { hops: { step: string; input_summary: string; output_summary: string; confidence: number; data_sources: string[]; decision_rationale: string; artifacts?: Record<string,any>|null; latency_ms: number; }[]; aggregate_confidence: number; total_latency_ms: number; } | null; }
 
 // ─── Helper functions and explainers moved to ComparisonDisplay ───
 
@@ -117,6 +119,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   const [showScenarios, setShowScenarios] = useState(false);
   const [discoveryResult, setDiscoveryResult] = useState<DiscoveryResponse | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const [adjusting, setAdjusting] = useState(false);
 
   const EXAMPLES = [
     'Compare Kenmore and Indooroopilly for a $2M family home',
@@ -179,6 +182,27 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     setClarifyAnswer('');
     setQuestion(fullQ);
     callQuery(fullQ);
+  };
+
+  const handleAdjust = async (adjustments: Record<string, any>) => {
+    setAdjusting(true);
+    let q = question;
+    if (adjustments.budget) {
+      q = q.replace(/\$[\d,]+/g, `$${adjustments.budget.toLocaleString()}`);
+    }
+    if (adjustments.suburbs?.length) {
+      const subStr = adjustments.suburbs.join(', ');
+      q = q + ` — focus on ${subStr}`;
+    }
+    if (adjustments.priorities?.length) {
+      q = q + ` — prioritize ${adjustments.priorities.join(', ')}`;
+    }
+    const body: any = { question: q };
+    if (adjustments.persona_weights) {
+      body.scenario_overrides = { persona_weights: adjustments.persona_weights };
+    }
+    await callQuery(q);
+    setAdjusting(false);
   };
 
   const FeedbackWidget = ({ requestId, originalQuery }: { requestId: string, originalQuery: string }) => {
@@ -606,6 +630,15 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
           </div>
 
           <DQWarning dq={result.data_quality} />
+
+          {/* Reasoning chain + confidence gauge */}
+          {(result as AskResponseV2).reasoning_chain && (
+            <ReasoningMap
+              chain={(result as AskResponseV2).reasoning_chain!}
+              onAdjust={handleAdjust}
+              adjusting={adjusting}
+            />
+          )}
 
           {/* AI Summary */}
           <div className="u-715fbe67">
