@@ -36,7 +36,7 @@ import type { ViewId } from './components/AppShell'
 import { ChartToggle } from './components/ui/ChartToggle'
 
 const viewToTab = (view: string | null): TabName => {
-  const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites', 'settings', 'privacy', 'terms'];
+  const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites', 'settings', 'privacy', 'terms', 'samples'];
   if (view && validViews.includes(view as TabName)) return view as TabName;
   return 'ask';
 };
@@ -53,8 +53,9 @@ const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 const SettingsPage = lazy(() => import('./components/SettingsPage').then(m => ({ default: m.SettingsPage })))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })))
 const TermsOfUse = lazy(() => import('./pages/TermsOfUse').then(m => ({ default: m.TermsOfUse })))
+const SampleReportsLanding = lazy(() => import('./pages/SampleReportsLanding').then(m => ({ default: m.SampleReportsLanding })))
 
-type TabName = 'ask' | 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap' | 'settings' | 'privacy' | 'terms';
+type TabName = 'ask' | 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap' | 'settings' | 'privacy' | 'terms' | 'samples';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('is_auth') === 'true')
@@ -557,11 +558,19 @@ function App() {
   }
 
   if (!isAuthenticated && !isCheckingAuth) {
+    if (activeTab === 'samples') {
+      return (
+        <Suspense fallback={<div className="glass-card u-207f86dd">Loading...</div>}>
+          <SampleReportsLanding onBack={() => { setActiveTab('ask'); setAuthMode('landing'); }} />
+        </Suspense>
+      )
+    }
     if (authMode === 'landing') {
       return (
         <LandingPage 
           onLoginClick={() => { setAuthMode('login'); setIsRegistering(false); }} 
           onRegisterClick={() => { setAuthMode('register'); setIsRegistering(true); }} 
+          onViewSamples={() => setActiveTab('samples')}
         />
       )
     }
@@ -730,6 +739,11 @@ function App() {
       {activeTab === 'terms' && (
         <Suspense fallback={<div className="glass-card u-207f86dd">Loading...</div>}>
           <TermsOfUse onBack={() => setActiveTab('ask')} />
+        </Suspense>
+      )}
+      {activeTab === 'samples' && (
+        <Suspense fallback={<div className="glass-card u-207f86dd">Loading...</div>}>
+          <SampleReportsLanding onBack={() => setActiveTab('ask')} />
         </Suspense>
       )}
 

@@ -5,9 +5,10 @@ import { Icon } from './ui';
 interface LandingPageProps {
   onLoginClick: () => void;
   onRegisterClick: () => void;
+  onViewSamples?: () => void;
 }
 
-export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPageProps) {
+export default function LandingPage({ onLoginClick, onRegisterClick, onViewSamples }: LandingPageProps) {
   const [search, setSearch] = useState('');
   const [selectedPersona, setSelectedPersona] = useState('first_home_buyer');
 
@@ -56,6 +57,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
           <span className="lp-brand-name">PropertyIQ</span>
         </div>
         <div className="lp-nav-actions">
+          {onViewSamples && <button onClick={onViewSamples} className="lp-btn-ghost">Sample Reports</button>}
           <button onClick={onLoginClick} className="lp-btn-ghost">Log in</button>
           <button onClick={onRegisterClick} className="lp-btn-primary">Start Free Trial</button>
         </div>
@@ -459,6 +461,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick }: LandingPa
             <span>PropertyIQ</span>
           </div>
           <div className="lp-footer-links">
+            <button onClick={() => onViewSamples?.()} style={{background:'none',border:'none',color:'inherit',cursor:'pointer',fontSize:'inherit',padding:0}}>Sample Reports</button>
             <a href="#">Privacy Policy</a>
             <a href="#">Terms of Use</a>
             <a href="#">Contact</a>

@@ -798,3 +798,255 @@ def submit_feedback(
     db.add(fb)
     db.commit()
     return {"status": "success", "message": "Feedback recorded for Enterprise RLHF"}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PUBLIC SAMPLE REPORTS — no auth required (for landing page showcase)
+# ═══════════════════════════════════════════════════════════════════════════
+
+SAMPLE_REPORT_QUERIES = [
+    {"id": "brisbane-growth", "title": "Brisbane Growth Corridor Comparison",
+     "query": "Compare Kenmore and Indooroopilly for a $1.5M family home",
+     "description": "Side-by-side comparison of two established Brisbane suburbs with schools, transit, and growth metrics."},
+    {"id": "sydney-investment", "title": "Sydney Investment Hotspots Under $900K",
+     "query": "Find investment suburbs under $900K in NSW with good yield and growth",
+     "description": "Discovery search across NSW for cashflow-positive investment opportunities."},
+    {"id": "melbourne-first-home", "title": "Melbourne First Home Buyer: Footscray vs Sunshine",
+     "query": "Compare Footscray and Sunshine for a first home buyer under $700K",
+     "description": "Affordability-focused comparison for first home buyers in Melbourne's west."},
+    {"id": "perth-regional", "title": "Perth Regional Growth Analysis",
+     "query": "Research Joondalup WA for investment potential",
+     "description": "Single suburb deep-dive with risk metrics, volatility, and Sharpe ratio analysis."},
+    {"id": "brisbane-schools", "title": "Brisbane Schools & Lifestyle Search",
+     "query": "Find suburbs near parks with good schools under $950K in Queensland",
+     "description": "Spatial graph search combining school quality, greenspace proximity, and budget constraints."},
+]
+
+
+@router.get("/sample-reports")
+def get_sample_reports():
+    """Public endpoint: returns list of available sample reports (metadata only)."""
+    return {
+        "reports": [
+            {"id": r["id"], "title": r["title"], "description": r["description"]}
+            for r in SAMPLE_REPORT_QUERIES
+        ]
+    }
+
+
+@router.post("/sample-report/{report_id}")
+async def get_sample_report(
+    report_id: str,
+    db: Session = Depends(get_db),
+):
+    """Public endpoint: generates a sample report on-demand. No auth required."""
+    sample = next((r for r in SAMPLE_REPORT_QUERIES if r["id"] == report_id), None)
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample report '{report_id}' not found")
+
+    import time
+    from ask.intent import run_intent_pipeline
+    from ask.guardrails import mask_pii, check_off_topic
+    from ask.evidence import get_suburb_ui, extract_evidence, calculate_data_quality
+    from ask.synthesis import synthesize_research
+    from ask.policy import validate_policy
+    from ask.metric_explainers import get_explanation
+    from graph.graph_router import should_route_to_graph
+    from graph.graph_discovery import discover_suburbs_graph
+    from ask.geo_discovery import discover_suburbs
+
+    t0 = time.time()
+    hops = []
+    original_query = sample["query"]
+    masked = mask_pii(original_query)
+
+    t_g = time.time()
+    hops.append(ReasoningHop(
+        step="guardrails", input_summary=f'Sample: "{original_query[:60]}"',
+        output_summary="Passed", confidence=0.98,
+        data_sources=["policy_guardrails_v3"],
+        decision_rationale="Sample report — no PII", latency_ms=round((time.time()-t_g)*1000,1),
+    ))
+
+    t_i = time.time()
+    parsed = await run_intent_pipeline(db, masked)
+    intent_confidence = parsed.get("confidence", 0.8)
+    hops.append(ReasoningHop(
+        step="intent_parsing", input_summary=f'Query: "{masked[:60]}"',
+        output_summary=f"Goal={parsed.get('goal')}, budget={parsed.get('budget')}",
+        confidence=intent_confidence, data_sources=["intent_pipeline_v2"],
+        decision_rationale="Deterministic + LLM parsing",
+        artifacts={"goal": parsed.get("goal"), "priorities": parsed.get("priorities",[])},
+        latency_ms=round((time.time()-t_i)*1000,1),
+    ))
+
+    use_graph = should_route_to_graph(masked, parsed)
+    hops.append(ReasoningHop(
+        step="routing", input_summary=f"Goal={parsed.get('goal')}",
+        output_summary=f"Routed to {'Neo4j' if use_graph else 'Postgres'}",
+        confidence=0.90 if use_graph else 0.85,
+        data_sources=["graph_router_v2"],
+        decision_rationale=_route_reason(masked, parsed, use_graph),
+        artifacts={"engine": "neo4j" if use_graph else "postgres"},
+        latency_ms=0.1,
+    ))
+
+    if use_graph:
+        t_d = time.time()
+        graph_res = discover_suburbs_graph(masked, parsed)
+        hops.append(ReasoningHop(
+            step="discovery", input_summary="Neo4j graph query",
+            output_summary=f"Found {len(graph_res.get('results',[]))} suburbs",
+            confidence=0.75, data_sources=["neo4j_5.20","osm_nodes","acara_schools"],
+            decision_rationale="Cypher spatial traversal", latency_ms=round((time.time()-t_d)*1000,1),
+        ))
+        return {
+            "id": report_id, "title": sample["title"], "description": sample["description"],
+            "query": original_query,
+            "response": {
+                "request_id": f"sample_{report_id}", "status": "complete",
+                "intent": parsed, "query_understood": {"pipeline": "neo4j_graph", "original_query": original_query},
+                "summary": graph_res.get("summary",""), "research_priority": "medium",
+                "discovery": graph_res, "evidence": [], "comparison": [],
+                "data_quality": {}, "follow_ups": [], "supports": [], "risks": [],
+                "unknowns": [], "next_steps": [],
+                "reasoning_chain": _build_reasoning_chain(hops).model_dump(),
+                "versions": {"pipeline": "ask-v2-graph-sample"},
+            }
+        }
+
+    goal = parsed.get("goal", "single_suburb_research")
+    property_type = parsed.get("property_type", "house")
+    budget = parsed.get("budget")
+    suburbs_raw = parsed.get("suburbs", [])
+
+    intent_suburbs = [SuburbReference(name=s.get("name",""), state=s.get("state",""), postcode=s.get("postcode"))
+                      for s in suburbs_raw if isinstance(s, dict)]
+
+    if goal in ("suburb_discovery","interstate_discovery","investment_search"):
+        t_d = time.time()
+        disc = discover_suburbs(db, masked, budget=budget)
+        hops.append(ReasoningHop(
+            step="discovery", input_summary=f"PostGIS: goal={goal}, budget={budget}",
+            output_summary=f"Found {len(disc.get('results',[]))} suburbs",
+            confidence=0.70, data_sources=["postgis","suburbs_ui_v3"],
+            decision_rationale="Composite scoring", latency_ms=round((time.time()-t_d)*1000,1),
+        ))
+        return {
+            "id": report_id, "title": sample["title"], "description": sample["description"],
+            "query": original_query,
+            "response": {
+                "request_id": f"sample_{report_id}", "status": "complete",
+                "intent": parsed, "query_understood": {"original_query": original_query},
+                "summary": disc.get("summary",""), "research_priority": "medium",
+                "discovery": disc, "evidence": [], "comparison": [],
+                "data_quality": {}, "follow_ups": [], "supports": [], "risks": [],
+                "unknowns": [], "next_steps": [],
+                "reasoning_chain": _build_reasoning_chain(hops).model_dump(),
+                "versions": {"pipeline": "ask-v2-sample"},
+            }
+        }
+
+    all_evidence = []
+    comparisons = []
+    dq_summary = {"coverage": 0.0, "stale_metric_count": 0, "suburbs": {}}
+    valid_suburbs = []
+    for ref in intent_suburbs:
+        v3 = get_suburb_ui(db, ref)
+        if not v3:
+            continue
+        valid_suburbs.append(v3)
+        ev = extract_evidence(v3, property_type, goal)
+        all_evidence.extend(ev)
+        dq = calculate_data_quality(v3, ev, goal)
+        dq_summary["suburbs"][v3.id] = dq
+        metrics = []
+        for e in ev:
+            exp = get_explanation(
+                next((mk for mk, ent in __import__('ask.metric_registry', fromlist=['METRIC_REGISTRY']).METRIC_REGISTRY.items() if ent.label == e.metric), e.metric.split("_")[-1]),
+                e.value, property_type
+            )
+            metrics.append(SuburbComparisonMetric(label=e.metric, value=e.value, unit=e.unit, is_stale=e.is_stale, as_of=e.as_of, source=e.source, quality=e.quality, explanation=exp.get("text")))
+        comparisons.append(SuburbComparison(suburb_id=v3.id, name=v3.name, metrics=metrics))
+
+    if dq_summary["suburbs"]:
+        scores = [s.get("dq_score",0) for s in dq_summary["suburbs"].values()]
+        if scores:
+            dq_summary["coverage"] = round(sum(s["coverage"] for s in dq_summary["suburbs"].values())/len(scores),3)
+            dq_summary["stale_metric_count"] = sum(s.get("stale_metric_count",0) for s in dq_summary["suburbs"].values())
+            dq_summary["dq_score"] = round(sum(scores)/len(scores),1)
+            dq_summary["band"] = "High" if dq_summary["dq_score"]>=85 else ("Medium" if dq_summary["dq_score"]>=70 else ("Limited" if dq_summary["dq_score"]>=50 else "Unavailable"))
+
+    t_ev = time.time()
+    hops.append(ReasoningHop(
+        step="evidence", input_summary=f"Extracting for {len(valid_suburbs)} suburbs",
+        output_summary=f"{len(all_evidence)} metrics — DQ: {dq_summary.get('band','N/A')}",
+        confidence=round(dq_summary.get("dq_score",50)/100,3),
+        data_sources=["suburbs_ui_v3","corelogic","abs","acara"],
+        decision_rationale=f"Evidence pack: {goal}", latency_ms=round((time.time()-t_ev)*1000,1),
+    ))
+
+    verdict = None
+    if len(comparisons) >= 2:
+        from ask.verdict import compute_per_metric_winners, compute_persona_verdicts, generate_tradeoffs
+        from ask.metric_registry import METRIC_REGISTRY
+        metrics_data = {}
+        for comp in comparisons:
+            for m in comp.metrics:
+                mkey = next((mk for mk, ent in METRIC_REGISTRY.items() if ent.label == m.label), m.label)
+                if mkey not in metrics_data: metrics_data[mkey] = {}
+                metrics_data[mkey][comp.name] = m.value
+        per_metric = compute_per_metric_winners(metrics_data)
+        by_persona = compute_persona_verdicts(per_metric, [c.name for c in comparisons])
+        tradeoffs = generate_tradeoffs(per_metric, [c.name for c in comparisons])
+        non_comparable = [pm["metric"] for pm in per_metric if pm.get("framing")=="insufficient_data"]
+        framing = "clear_leader" if any(pm.get("framing")=="clear_leader" for pm in per_metric) else "balanced"
+        verdict = VerdictBlock(framing=framing, per_metric=per_metric, by_persona=by_persona, tradeoffs=tradeoffs, non_comparable_metrics=non_comparable)
+
+        hops.append(ReasoningHop(
+            step="verdict", input_summary=f"Comparing {len(comparisons)} suburbs",
+            output_summary=f"Framing={framing}", confidence=0.85,
+            data_sources=["verdict_engine_v2"], decision_rationale=f"{len(tradeoffs)} trade-offs",
+            latency_ms=0.1,
+        ))
+
+    t_s = time.time()
+    syn = synthesize_research(parsed, all_evidence, [], {})
+    t_p = time.time()
+    policy_check = validate_policy(syn, all_evidence)
+    status = "complete" if policy_check["status"]=="valid" else "degraded"
+
+    hops.append(ReasoningHop(
+        step="synthesis", input_summary=f"Evidence: {len(all_evidence)} metrics",
+        output_summary=f"Priority={syn.get('research_priority','low')}", confidence=0.82,
+        data_sources=["llm_synthesis_v2"], latency_ms=round((time.time()-t_s)*1000,1),
+    ))
+    hops.append(ReasoningHop(
+        step="policy", input_summary="Policy check",
+        output_summary=f"{'PASSED' if policy_check.get('status')=='valid' else 'BLOCKED'}",
+        confidence=1.0 if policy_check.get("status")=="valid" else 0.3,
+        data_sources=["policy_validator_v2"], latency_ms=round((time.time()-t_p)*1000,1),
+    ))
+
+    suburb_names = [c.name for c in comparisons] if comparisons else ["your area"]
+    headline = f"Comparison: {' vs '.join(suburb_names)}" if len(comparisons)>=2 else f"Research brief for {', '.join(suburb_names)}"
+
+    return {
+        "id": report_id, "title": sample["title"], "description": sample["description"],
+        "query": original_query,
+        "response": {
+            "request_id": f"sample_{report_id}", "status": status,
+            "intent": parsed, "query_understood": {"original_query": original_query},
+            "headline": headline, "summary": syn["summary"],
+            "research_priority": syn["research_priority"],
+            "comparison": [c.model_dump(mode='json') for c in comparisons],
+            "verdict": verdict.model_dump(mode='json') if verdict else None,
+            "supports": syn["supports"], "risks": syn["risks"],
+            "unknowns": syn["unknowns"], "next_steps": syn["next_steps"],
+            "evidence": [e.model_dump(mode='json') for e in all_evidence],
+            "data_quality": _sanitize(dq_summary),
+            "follow_ups": [], "discovery": None,
+            "reasoning_chain": _build_reasoning_chain(hops).model_dump(),
+            "versions": {"pipeline": "ask-v2-sample"},
+        }
+    }

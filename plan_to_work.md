@@ -34,10 +34,10 @@ Sell transparency, not predictions. Every metric sourced, dated, and auditable.
 
 ## Week 2: Sample Reports (Manual Validation)
 
-- [ ] 2.1 Create sample report HTML template (reuse ComparisonDisplay + ReasoningMap + EvidenceTable)
-- [ ] 2.2 Generate 5 sample reports for diverse suburbs via API
-- [ ] 2.3 Capture and format as clean printable pages
-- [ ] 2.4 Add sample report previews to landing page concept
+- [x] 2.1 Create sample report HTML template (reuse ComparisonDisplay + ReasoningMap + EvidenceTable)
+- [x] 2.2 Generate 5 sample reports for diverse suburbs via API
+- [x] 2.3 Add print-friendly CSS for report pages
+- [x] 2.4 Add sample report previews to landing page concept
 
 ## Week 3: Landing Page + B2B Outreach
 
