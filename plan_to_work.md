@@ -32,12 +32,12 @@ Sell transparency, not predictions. Every metric sourced, dated, and auditable.
 - [x] 1.6 Wire Privacy/Terms links into footer or navigation
 - [x] 1.7 Verify no regressions, commit, push, rebuild Docker
 
-## Week 2: Sample Reports (Manual Validation)
+## Week 3: Landing Page + B2B Outreach
 
-- [x] 2.1 Create sample report HTML template (reuse ComparisonDisplay + ReasoningMap + EvidenceTable)
-- [x] 2.2 Generate 5 sample reports for diverse suburbs via API
-- [x] 2.3 Add print-friendly CSS for report pages
-- [x] 2.4 Add sample report previews to landing page concept
+- [x] 3.1 Build landing page with positioning + sample previews + pricing + email capture (already built as `SampleReportsLanding.tsx` in Week 2)
+- [x] 3.2 Create cold email template (added to `outreach/cold-email-template.md`)
+- [ ] 3.3 Outreach to 30 buyer's agents + 10 mortgage brokers
+- [x] 3.4 Track which reports/fields get clicked most (built as `SampleReport` with `data-sr-field` tracking attributes)
 
 ## Week 3: Landing Page + B2B Outreach
 

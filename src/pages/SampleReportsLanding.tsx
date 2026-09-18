@@ -53,7 +53,7 @@ export const SampleReportsLanding: React.FC<{ onBack?: () => void }> = ({ onBack
 
         {/* Pricing */}
         <div className="srl__pricing">
-          <div className="srl__pricing-card srl__pricing-card--free">
+          <div className="srl__pricing-card srl__pricing-card--free" onClick={() => console.log('Analytics: pricing_clicked', { tier: 'free' })}>
             <h3>Free Scorecard</h3>
             <div className="srl__price">$0</div>
             <ul>
@@ -62,7 +62,7 @@ export const SampleReportsLanding: React.FC<{ onBack?: () => void }> = ({ onBack
               <li>Watermarked</li>
             </ul>
           </div>
-          <div className="srl__pricing-card srl__pricing-card--featured">
+          <div className="srl__pricing-card srl__pricing-card--featured" onClick={() => console.log('Analytics: pricing_clicked', { tier: '29' })}>
             <div className="srl__pricing-badge">Most Popular</div>
             <h3>Full Report</h3>
             <div className="srl__price">$29</div>
@@ -75,7 +75,7 @@ export const SampleReportsLanding: React.FC<{ onBack?: () => void }> = ({ onBack
               <li>Printable PDF</li>
             </ul>
           </div>
-          <div className="srl__pricing-card">
+          <div className="srl__pricing-card" onClick={() => console.log('Analytics: pricing_clicked', { tier: '99' })}>
             <h3>Professional</h3>
             <div className="srl__price">$99<span className="srl__price-period">/mo</span></div>
             <ul>
@@ -96,7 +96,14 @@ export const SampleReportsLanding: React.FC<{ onBack?: () => void }> = ({ onBack
 
         <div className="srl__grid">
           {SAMPLES.map((s, i) => (
-            <div key={s.id} className="srl__card" onClick={() => setSelectedId(s.id)}>
+            <div key={s.id} className="srl__card" onClick={() => {
+              // Track which report gets clicked
+              if (typeof window !== 'undefined') {
+                console.log('Analytics: sample_report_clicked', { reportId: s.id, reportIndex: i + 1 });
+                // In production: send to analytics endpoint
+              }
+              setSelectedId(s.id);
+            }}>
               <div className="srl__card-number">Report {String(i + 1).padStart(2, '0')}</div>
               <h3 className="srl__card-title">{s.title}</h3>
               <p className="srl__card-desc">{s.description}</p>
@@ -113,7 +120,17 @@ export const SampleReportsLanding: React.FC<{ onBack?: () => void }> = ({ onBack
             <>
               <h3>Want a custom report for your suburb?</h3>
               <p>Drop your email and we'll send you a free custom report.</p>
-              <form onSubmit={handleEmailSubmit} className="srl__email-form">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                if (email.trim()) {
+                  // Track email capture
+                  if (typeof window !== 'undefined') {
+                    console.log('Analytics: email_captured', { email });
+                    // In production: send to analytics endpoint
+                  }
+                  setEmailSubmitted(true);
+                }
+              }} className="srl__email-form">
                 <input
                   type="email"
                   value={email}

@@ -17,6 +17,23 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const track = (event: string, props: any = {}) => {
+    // Simple analytics for tracking sample report interactions
+    if (typeof window !== 'undefined') {
+      console.log(`Analytics: ${event}`, { ...props, reportId });
+      // In production, send to your analytics endpoint
+      // fetch('/api/analytics/track', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ event, properties: { ...props, reportId } })
+      // });
+    }
+  };
+
+  const handleSectionClick = (section: string) => {
+    track('sample_report_section_click', { section });
+  };
+
   useEffect(() => {
     setLoading(true);
     fetch(`/api/v3/ask/sample-report/${reportId}`, { method: 'POST' })
@@ -76,7 +93,7 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
 
       {/* Confidence + summary */}
       {chain && (
-        <div className="sr__confidence-row">
+        <div className="sr__confidence-row" onClick={() => handleSectionClick('confidence')}>
           <ConfidenceGauge score={chain.aggregate_confidence} size="lg" label="Aggregate Confidence" />
           <div className="sr__summary-block">
             <h3>Executive Summary</h3>
@@ -93,12 +110,12 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
 
       {/* Discovery results (graph/PostGIS) */}
       {discovery && discovery.results && discovery.results.length > 0 && (
-        <div className="sr__section">
+        <div className="sr__section" onClick={() => handleSectionClick('discovery')}>
           <h2 className="sr__section-title">🗺️ Discovery Results</h2>
           <p className="sr__section-desc">{discovery.summary}</p>
           <div className="sr__discovery-grid">
             {discovery.results.map((res: any, i: number) => (
-              <div key={i} className="sr__discovery-card">
+              <div key={i} className="sr__discovery-card" onClick={() => handleSectionClick(`discovery_suburb_${i}`)}>
                 <div className="sr__discovery-rank">#{i + 1}</div>
                 <h3 className="sr__discovery-name">{res.name}</h3>
                 <span className="sr__discovery-state">{res.state}{res.postcode ? ` • ${res.postcode}` : ''}</span>
@@ -117,7 +134,7 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
             ))}
           </div>
           {discovery.trace_log && (
-            <details className="sr__trace">
+            <details className="sr__trace" onClick={(e) => { e.stopPropagation(); handleSectionClick('trace_log'); }}>
               <summary>Data Lineage Trace</summary>
               <pre>{discovery.trace_log.query}</pre>
             </details>
@@ -127,7 +144,7 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
 
       {/* Comparison table */}
       {comparisons.length > 0 && (
-        <div className="sr__section">
+        <div className="sr__section" onClick={() => handleSectionClick('comparison')}>
           <h2 className="sr__section-title">📊 Side-by-Side Comparison</h2>
           <ComparisonDisplay comparisons={comparisons} evidence={evidence} />
         </div>
@@ -135,7 +152,7 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
 
       {/* Verdict */}
       {verdict && (
-        <div className="sr__section">
+        <div className="sr__section" onClick={() => handleSectionClick('verdict')}>
           <h2 className="sr__section-title">⚖️ Verdict & Trade-offs</h2>
           <div className="sr__verdict">
             <div className="sr__verdict-framing">
@@ -164,13 +181,13 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
 
       {/* Risk metrics highlight */}
       {evidence.length > 0 && (
-        <div className="sr__section">
+        <div className="sr__section" onClick={() => handleSectionClick('risk')}>
           <h2 className="sr__section-title">⚠️ Risk Analysis</h2>
           <div className="sr__risk-grid">
             {evidence.filter((e:any) =>
               ['Price Volatility (10yr)','Risk-Adj. Return (Sharpe)','Vacancy Rate','Investor Concentration','Days on Market'].includes(e.metric)
             ).map((e:any, i:number) => (
-              <div key={i} className="sr__risk-item">
+              <div key={i} className="sr__risk-item" onClick={() => handleSectionClick(`risk_${e.metric.toLowerCase().replace(/\s+/g,'_')}`)}>
                 <span className="sr__risk-label">{e.metric}</span>
                 <span className="sr__risk-value">
                   {typeof e.value === 'number'
@@ -187,13 +204,13 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
       {/* Supports & Risks */}
       {(r.supports?.length > 0 || r.risks?.length > 0) && (
         <div className="sr__section sr__supports-risks">
-          <div className="sr__supports">
+          <div className="sr__supports" onClick={() => handleSectionClick('supports')}>
             <h3>✅ Supporting Factors</h3>
             <ul>
               {(r.supports || []).map((s:any, i:number) => <li key={i}>{s.claim || s.description || s}</li>)}
             </ul>
           </div>
-          <div className="sr__risks-col">
+          <div className="sr__risks-col" onClick={() => handleSectionClick('risks')}>
             <h3>⚠️ Risk Factors</h3>
             <ul>
               {(r.risks || []).map((s:any, i:number) => <li key={i}>{s.claim || s.description || s}</li>)}
@@ -204,7 +221,7 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
 
       {/* Reasoning chain */}
       {chain && (
-        <div className="sr__section">
+        <div className="sr__section" onClick={() => handleSectionClick('reasoning')}>
           <h2 className="sr__section-title">🔍 Reasoning Trace</h2>
           <ReasoningMap chain={chain} />
         </div>
@@ -212,8 +229,8 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
 
       {/* Evidence table */}
       {evidence.length > 0 && (
-        <div className="sr__section">
-          <details className="sr__evidence-details">
+        <div className="sr__section" onClick={() => handleSectionClick('evidence')}>
+          <details className="sr__evidence-details" onClick={(e) => { e.stopPropagation(); handleSectionClick('evidence_table'); }}>
             <summary>Evidence Sources ({evidence.length} metrics)</summary>
             <table className="sr__evidence-table">
               <thead>
