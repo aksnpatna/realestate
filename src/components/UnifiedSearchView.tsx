@@ -1,6 +1,7 @@
 import React, { useState, memo, useRef } from 'react';
 
 import { Icon } from './ui';
+import { ReasoningMap } from './ask/ReasoningMap';
 import '../styles/UnifiedSearchView.css';
 
 // ─── Reused Ask Types ────────────────────────────────────────────────────────
@@ -37,6 +38,11 @@ interface AskResponseV2 {
   follow_ups?: {label:string;question:string;conversation_id?:string}[];
   query_understood?: any;
   trace_log?: any;
+  reasoning_chain?: {
+    hops: { step: string; input_summary: string; output_summary: string; confidence: number; data_sources: string[]; decision_rationale: string; artifacts?: Record<string,any>|null; latency_ms: number; }[];
+    aggregate_confidence: number;
+    total_latency_ms: number;
+  } | null;
 }
 
 
@@ -69,6 +75,7 @@ export default memo(function UnifiedSearchView({
   
   const [showFilters, setShowFilters] = useState(false);
   const [applyManualFilters, setApplyManualFilters] = useState(false);
+  const [adjusting, setAdjusting] = useState(false);
 
   // Get persona-specific welcome message and quick start pills
   const getPersonaWelcome = () => {
@@ -178,6 +185,26 @@ export default memo(function UnifiedSearchView({
   const handlePillClick = (q: string) => {
     setQuestion(q);
     callQuery(q);
+  };
+
+  const handleAdjust = async (adjustments: Record<string, any>) => {
+    setAdjusting(true);
+    let q = question;
+    if (adjustments.budget) {
+      q = q.replace(/\$[\d,]+/g, `$${adjustments.budget.toLocaleString()}`);
+    }
+    if (adjustments.suburbs?.length) {
+      q = q + ` — focus on ${adjustments.suburbs.join(', ')}`;
+    }
+    if (adjustments.priorities?.length) {
+      q = q + ` — prioritize ${adjustments.priorities.join(', ')}`;
+    }
+    const body: any = { question: q };
+    if (adjustments.persona_weights) {
+      body.scenario_overrides = { persona_weights: adjustments.persona_weights };
+    }
+    await callQuery(q);
+    setAdjusting(false);
   };
 
   const TraceLogDisplay = ({ trace_log, maskedQuery }: { trace_log: any, maskedQuery?: string }) => {
@@ -387,6 +414,14 @@ export default memo(function UnifiedSearchView({
                 <p className="us-story-summary">{nlpResult.summary}</p>
               </div>
             </div>
+
+            {nlpResult.reasoning_chain && (
+              <ReasoningMap
+                chain={nlpResult.reasoning_chain}
+                onAdjust={handleAdjust}
+                adjusting={adjusting}
+              />
+            )}
             
             {nlpResult.supports && nlpResult.supports.length > 0 && (
               <div className="us-story-insights">
@@ -442,6 +477,13 @@ export default memo(function UnifiedSearchView({
                 </div>
               ))}
             </div>
+            {nlpResult?.reasoning_chain && (
+              <ReasoningMap
+                chain={nlpResult.reasoning_chain}
+                onAdjust={handleAdjust}
+                adjusting={adjusting}
+              />
+            )}
             {discoveryResult.trace_log && <TraceLogDisplay trace_log={discoveryResult.trace_log} maskedQuery={discoveryResult.query_understood?.masked_query || nlpResult?.query_understood?.masked_query} />}
             {nlpResult?.request_id && <FeedbackWidget requestId={nlpResult.request_id} originalQuery={question} />}
           </div>
