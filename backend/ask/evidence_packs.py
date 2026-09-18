@@ -26,6 +26,7 @@ EVIDENCE_PACKS: Dict[str, EvidencePack] = {
         "transit_accessibility", "safety_score", "parks_count",
         "cbd_distance_mins", "news_sentiment",
         "history_10yr", "history_rent_10yr",
+        "price_volatility_10yr", "price_sharpe_ratio",
     ], ["median_price"]),
 
     "suburb_comparison": _pack("suburb_comparison", [
@@ -37,6 +38,7 @@ EVIDENCE_PACKS: Dict[str, EvidencePack] = {
         "school_quality", "avg_icsea", "top_school_name",
         "transit_accessibility", "safety_score", "parks_count",
         "cbd_distance_mins", "news_sentiment",
+        "price_volatility_10yr", "price_sharpe_ratio",
     ], ["median_price"]),
 
     "investment_search": _pack("investment_search", [
@@ -45,6 +47,7 @@ EVIDENCE_PACKS: Dict[str, EvidencePack] = {
         "estimated_mortgage_repayment", "price_to_rent_ratio",
         "median_price_12m_change_pct", "days_on_market",
         "rental_stock", "news_sentiment",
+        "price_volatility_10yr", "price_sharpe_ratio",
     ], ["median_price", "median_rent"]),
 
     "investment_cashflow": _pack("investment_cashflow", [
@@ -62,7 +65,8 @@ EVIDENCE_PACKS: Dict[str, EvidencePack] = {
 
     "growth_analysis": _pack("growth_analysis", [
         "median_price_12m_change_pct", "population_cagr",
-        "history_10yr", "building_approvals_12m",
+        "history_10yr", "price_volatility_10yr", "price_sharpe_ratio",
+        "building_approvals_12m",
         "infrastructure_investment", "supply_demand_ratio",
         "news_sentiment", "nearby_suburbs",
         "median_price", "days_on_market",

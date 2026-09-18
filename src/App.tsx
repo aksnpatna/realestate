@@ -36,7 +36,7 @@ import type { ViewId } from './components/AppShell'
 import { ChartToggle } from './components/ui/ChartToggle'
 
 const viewToTab = (view: string | null): TabName => {
-  const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites', 'settings'];
+  const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites', 'settings', 'privacy', 'terms'];
   if (view && validViews.includes(view as TabName)) return view as TabName;
   return 'ask';
 };
@@ -51,8 +51,10 @@ const PortfolioTab = lazy(() => import('./components/PortfolioTab'));
 const MyPurchasePlan = lazy(() => import('./components/MyPurchasePlan'))
 const QuickRoiCalculator = lazy(() => import('./components/QuickRoiCalculator'))
 const SettingsPage = lazy(() => import('./components/SettingsPage').then(m => ({ default: m.SettingsPage })))
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })))
+const TermsOfUse = lazy(() => import('./pages/TermsOfUse').then(m => ({ default: m.TermsOfUse })))
 
-type TabName = 'ask' | 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap' | 'settings';
+type TabName = 'ask' | 'buy-finder' | 'profile' | 'affordability' | 'gearing' | 'purchase-plan' | 'calculators' | 'favorites' | 'portfolio' | 'heatmap' | 'settings' | 'privacy' | 'terms';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('is_auth') === 'true')
@@ -717,6 +719,17 @@ function App() {
       {activeTab === 'portfolio' && (
         <Suspense fallback={<div className="glass-card u-207f86dd">Loading portfolio...</div>}>
           <PortfolioTab suburbsData={suburbsData} />
+        </Suspense>
+      )}
+
+      {activeTab === 'privacy' && (
+        <Suspense fallback={<div className="glass-card u-207f86dd">Loading...</div>}>
+          <PrivacyPolicy onBack={() => setActiveTab('ask')} />
+        </Suspense>
+      )}
+      {activeTab === 'terms' && (
+        <Suspense fallback={<div className="glass-card u-207f86dd">Loading...</div>}>
+          <TermsOfUse onBack={() => setActiveTab('ask')} />
         </Suspense>
       )}
 
@@ -1907,6 +1920,13 @@ function App() {
           (NSW) Contains property sales information provided under licence from the Valuer General NSW. 
           (VIC) The State of Victoria owns the copyright in the Property Sales Data and reproduction without consent will constitute a breach of the Copyright Act 1968 (Cth). 
           (QLD) Based on or contains data provided by the State of Queensland (Department of Resources).
+        </p>
+        <p className="u-66b0f03a">
+          <button onClick={() => setActiveTab('privacy')} style={{background:'none',border:'none',color:'var(--bg-brand)',cursor:'pointer',fontSize:'inherit',padding:0,textDecoration:'underline'}}>Privacy Policy</button>
+          &nbsp;·&nbsp;
+          <button onClick={() => setActiveTab('terms')} style={{background:'none',border:'none',color:'var(--bg-brand)',cursor:'pointer',fontSize:'inherit',padding:0,textDecoration:'underline'}}>Terms of Use</button>
+          &nbsp;·&nbsp;
+          <span>PropertyIQ — Transparent Australian suburb research.</span>
         </p>
       </footer>
     </AppShell>

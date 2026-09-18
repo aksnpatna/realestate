@@ -26,6 +26,7 @@ JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-default-key-for-dev-only
 JWT_ALGORITHM = "HS256"
 from models_v3 import SuburbUIV3, PropertyListing, SuburbPriceHistory
 from routers import decision_brief, ask_property, suburbs_sqm
+from routers.user_data import router as user_data_router
 from app.calculators import router as calculators_router
 from poc_config import poc_config
 from score_meta import enrich_growth_factors, all_score_meta
@@ -120,6 +121,7 @@ app.include_router(decision_brief.router)
 app.include_router(ask_property.router)
 app.include_router(suburbs_sqm.router, prefix="/api/suburbs", tags=["suburbs_sqm"])
 app.include_router(calculators_router)
+app.include_router(user_data_router)
 
 # CORS: In production, restrict to your actual frontend origin(s)
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",") if os.getenv("CORS_ORIGINS") else []

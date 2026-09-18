@@ -6,12 +6,49 @@ Phase 2: goal-driven evidence pack selection.
 from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone, timedelta
+import math
 
 from models_v3 import SuburbUIV3
 from ask.schemas import SuburbReference, EvidenceMetric
 from ask.metric_registry import METRIC_REGISTRY, resolve_metric_value, get_column_name
 from ask.metric_explainers import get_explanation
 from ask.evidence_packs import get_evidence_pack, check_minimum_evidence
+
+
+def _compute_volatility_and_sharpe(history_data: Any) -> tuple:
+    """Derive price_volatility_10yr and price_sharpe_ratio from 10yr price history.
+    Returns (volatility_pct, sharpe_ratio) or (None, None) if insufficient data.
+    """
+    if not history_data or not isinstance(history_data, (list, dict)):
+        return None, None
+
+    prices = None
+    if isinstance(history_data, list):
+        prices = [float(p) for p in history_data if p is not None]
+    elif isinstance(history_data, dict):
+        sorted_keys = sorted(k for k in history_data.keys() if str(k).isdigit())
+        if len(sorted_keys) >= 4:
+            prices = [float(history_data[k]) for k in sorted_keys if history_data[k] is not None]
+
+    if not prices or len(prices) < 4:
+        return None, None
+
+    annual_returns = []
+    for i in range(1, len(prices)):
+        if prices[i - 1] > 0:
+            annual_returns.append((prices[i] - prices[i - 1]) / prices[i - 1] * 100.0)
+
+    if len(annual_returns) < 3:
+        return None, None
+
+    mean_return = sum(annual_returns) / len(annual_returns)
+    variance = sum((r - mean_return) ** 2 for r in annual_returns) / len(annual_returns)
+    stdev = math.sqrt(variance)
+
+    volatility = round(stdev, 2) if stdev > 0 else None
+    sharpe = round(mean_return / stdev, 2) if stdev > 0 else None
+
+    return volatility, sharpe
 
 def get_suburb_ui(db: Session, ref: SuburbReference) -> Optional[SuburbUIV3]:
     query = db.query(SuburbUIV3).filter(
@@ -106,6 +143,48 @@ def extract_evidence(v3: SuburbUIV3, property_type: str = "house",
             calculation=entry.calculation,
             is_stale=is_stale,
         ))
+
+    # ── Derived: price volatility + Sharpe ratio from history_10yr ──
+    if "history_10yr" in pack.metrics or "price_volatility_10yr" in pack.metrics or "price_sharpe_ratio" in pack.metrics:
+        history_entry = METRIC_REGISTRY.get("history_10yr")
+        if history_entry:
+            hist_col = get_column_name(history_entry, property_type)
+            if hist_col:
+                history_data = getattr(v3, hist_col, None)
+                vol, sharpe = _compute_volatility_and_sharpe(history_data)
+                fallback_date_str = fallback_date
+
+                if vol is not None:
+                    vol_entry = METRIC_REGISTRY.get("price_volatility_10yr")
+                    if vol_entry:
+                        evidence.append(EvidenceMetric(
+                            id=f"{v3.id}_price_volatility_10yr",
+                            metric=vol_entry.label,
+                            value=vol,
+                            unit=vol_entry.unit,
+                            as_of=fallback_date_str,
+                            source=vol_entry.source,
+                            quality="verified" if not vintage_estimated else "estimated",
+                            suburb_id=v3.id,
+                            calculation=vol_entry.calculation,
+                            is_stale=False,
+                        ))
+
+                if sharpe is not None:
+                    sharpe_entry = METRIC_REGISTRY.get("price_sharpe_ratio")
+                    if sharpe_entry:
+                        evidence.append(EvidenceMetric(
+                            id=f"{v3.id}_price_sharpe_ratio",
+                            metric=sharpe_entry.label,
+                            value=sharpe,
+                            unit=sharpe_entry.unit,
+                            as_of=fallback_date_str,
+                            source=sharpe_entry.source,
+                            quality="verified" if not vintage_estimated else "estimated",
+                            suburb_id=v3.id,
+                            calculation=sharpe_entry.calculation,
+                            is_stale=False,
+                        ))
 
     return evidence
 

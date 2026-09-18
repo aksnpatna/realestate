@@ -221,6 +221,33 @@ def explain_generic(value: MetricValue, unit: str, _property_type: str = "house"
     return {"good": None, "text": f"{_f(value)} {unit}".strip()}
 
 
+def explain_price_volatility_10yr(value: MetricValue, unit: str, _property_type: str = "house") -> dict:
+    if value is None:
+        return {"good": None, "text": "Price volatility data is not available (insufficient historical data)."}
+    v = float(value)
+    if v < 5:
+        return {"good": True, "text": f"{v:.1f}% volatility — very stable; prices have moved consistently with minimal swings. Lower risk for risk-averse investors."}
+    if v < 10:
+        return {"good": True, "text": f"{v:.1f}% volatility — moderate; typical of established suburbs with steady demand cycles."}
+    if v < 15:
+        return {"good": None, "text": f"{v:.1f}% volatility — above average; prices swing meaningfully year-to-year. Consider your risk tolerance."}
+    return {"good": False, "text": f"{v:.1f}% volatility — high; significant price swings. Potential for outsized gains but also sharp corrections."}
+
+def explain_price_sharpe_ratio(value: MetricValue, unit: str, _property_type: str = "house") -> dict:
+    if value is None:
+        return {"good": None, "text": "Risk-adjusted return data is not available (insufficient historical data)."}
+    v = float(value)
+    if v >= 1.5:
+        return {"good": True, "text": f"{v:.2f} Sharpe ratio — excellent risk-adjusted returns; growth has been strong relative to volatility."}
+    if v >= 1.0:
+        return {"good": True, "text": f"{v:.2f} Sharpe ratio — strong; returns comfortably exceed the risk taken."}
+    if v >= 0.5:
+        return {"good": None, "text": f"{v:.2f} Sharpe ratio — moderate; returns are adequate for the volatility experienced."}
+    if v >= 0:
+        return {"good": False, "text": f"{v:.2f} Sharpe ratio — low; volatility has been high relative to actual returns. Risk may not be justified."}
+    return {"good": False, "text": f"{v:.2f} Sharpe ratio — negative; prices have declined on average. Capital preservation concern."}
+
+
 EXPLAINER_MAP = {
     "median_price": explain_median_price,
     "median_rent": explain_median_rent,
@@ -239,6 +266,8 @@ EXPLAINER_MAP = {
     "owner_occupier_rate": explain_owner_occupier_rate,
     "cbd_distance_mins": explain_cbd_distance_mins,
     "price_to_income_ratio": explain_price_to_income_ratio,
+    "price_volatility_10yr": explain_price_volatility_10yr,
+    "price_sharpe_ratio": explain_price_sharpe_ratio,
 }
 
 

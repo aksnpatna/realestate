@@ -24,13 +24,13 @@ Sell transparency, not predictions. Every metric sourced, dated, and auditable.
 ## Week 1: Foundation (Compliance + Differentiation)
 
 - [x] 1.0 Create `plan_to_work.md` and commit
-- [ ] 1.1 Add `price_volatility_10yr` + `price_sharpe_ratio` derived metrics to `metric_registry.py` and `evidence.py`
-- [ ] 1.2 Add Privacy Policy page (`src/pages/PrivacyPolicy.tsx`)
-- [ ] 1.3 Add Terms of Use page (`src/pages/TermsOfUse.tsx`)
-- [ ] 1.4 Add data deletion endpoint (`backend/routers/user_data.py`)
-- [ ] 1.5 Reduce Neo4j heap from 4GB to 2GB in `docker-compose.yml`
-- [ ] 1.6 Wire Privacy/Terms links into footer or navigation
-- [ ] 1.7 Verify no regressions, commit, push, rebuild Docker
+- [x] 1.1 Add `price_volatility_10yr` + `price_sharpe_ratio` derived metrics to `metric_registry.py` and `evidence.py`
+- [x] 1.2 Add Privacy Policy page (`src/pages/PrivacyPolicy.tsx`)
+- [x] 1.3 Add Terms of Use page (`src/pages/TermsOfUse.tsx`)
+- [x] 1.4 Add data deletion endpoint (`backend/routers/user_data.py`)
+- [x] 1.5 Reduce Neo4j heap from 4GB to 2GB in `docker-compose.yml` — already at 768M, no change needed
+- [x] 1.6 Wire Privacy/Terms links into footer or navigation
+- [x] 1.7 Verify no regressions, commit, push, rebuild Docker
 
 ## Week 2: Sample Reports (Manual Validation)
 
