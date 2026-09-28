@@ -3,7 +3,11 @@ import time
 import requests
 from sqlalchemy import create_engine, text
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://realestate_user:r3alestat3_dev_pass@realestate-db:5432/realestate")
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql+psycopg2://realestate_user:r3alestat3_dev_pass@realestate-db:5432/realestate")
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
 API_URL = "http://localhost:8000/api/analyze-suburb"
 
 def prewarm():

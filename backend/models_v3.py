@@ -29,6 +29,10 @@ if "DATABASE_URL" not in os.environ:
     os.environ["DATABASE_URL"] = "postgresql://realestate_user:realestate_pass@localhost:15432/realestate"
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
 
 DEFAULT_CASH_RATE = float(os.getenv("DEFAULT_CASH_RATE", "3.60"))
 RETAIL_MARGIN = float(os.getenv("RETAIL_MARGIN", "2.30"))
