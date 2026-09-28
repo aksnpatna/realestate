@@ -138,8 +138,10 @@ export interface SuburbData {
   schoolCount?: number;
   historyRent?: { date: string; value: number }[];
   unemploymentRate?: number;
-  buildingApprovals12m?: number;
+   buildingApprovals12m?: number;
   infrastructureInvestment?: string;
+  priceVolatility10yr?: number;
+  priceSharpeRatio?: number;
   // --- ABS Census sourced fields ---
   absDemographicsSourced?: boolean;
   absSourcedFields?: string[];

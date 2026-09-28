@@ -1,7 +1,7 @@
 /* Premium editorial SuburbHero design */
 .suburb-hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 45vh;
   display: flex;
   align-items: center;
   justify-content: center;

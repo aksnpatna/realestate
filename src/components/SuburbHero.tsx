@@ -26,27 +26,7 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
   const yieldScore = (suburb as any).yieldScore || null;
   const dqScore = (suburb as any).dqScore || null;
 
-  // Generate suburb-specific media URL
-  const generateSuburbImage = () => {
-    if (suburb.images_json && Array.isArray(suburb.images_json) && suburb.images_json.length > 0) {
-      return suburb.images_json[0];
-    }
-    
-    const stateImages = {
-      'NSW': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2070&auto=format&fit=crop',
-      'VIC': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2070&auto=format&fit=crop',
-      'QLD': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop',
-      'SA': 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=2070&auto=format&fit=crop',
-      'WA': 'https://images.unsplash.com/photo-1560185007-6e8f2e7476b0?q=80&w=2070&auto=format&fit=crop',
-      'TAS': 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop',
-      'ACT': 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2070&auto=format&fit=crop',
-      'NT': 'https://images.unsplash.com/photo-1582268611958-ebfd161ef934?q=80&w=2070&auto=format&fit=crop'
-    };
-    
-    return stateImages[suburb.state] || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop';
-  };
-
-  const suburbImage = generateSuburbImage();
+  // Use state-specific gradient — no property photos (suburb-level platform)
 
   // Generate investment thesis headline
   const getDecisionHeadline = () => {
@@ -71,7 +51,7 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
 
 
 
-  // Background styles
+  // Background: state-specific gradient with a dark overlay for legibility
   const backgroundStyles = {
     position: 'absolute' as const,
     top: 0,
@@ -79,15 +59,8 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
     width: '100%',
     height: '100%',
     zIndex: 0,
+    background: getStateGradient(suburb.state),
     opacity: 0.9,
-    background: suburbImage ? 'transparent' : getStateGradient(suburb.state),
-  };
-
-  const backgroundImageStyles = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover' as const,
-    transform: 'scale(1.05)',
   };
 
   const backgroundOverlayStyles = {
@@ -96,20 +69,12 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
     left: 0,
     width: '100%',
     height: '100%',
-    background: 'linear-gradient(to bottom, rgba(23, 32, 29, 0.85) 0%, rgba(23, 32, 29, 0.95) 100%)',
-    backdropFilter: 'blur(1px)',
+    background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.70) 0%, rgba(15, 23, 42, 0.92) 100%)',
   };
 
   return (
     <section className="suburb-hero">
       <div style={backgroundStyles}>
-        {suburbImage && (
-          <img 
-            src={suburbImage} 
-            alt={`${suburb.name} skyline`}
-            style={backgroundImageStyles}
-          />
-        )}
         <div style={backgroundOverlayStyles}></div>
       </div>
       
@@ -131,7 +96,7 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
                 <Icon name="clock" size={14} /> Updated recently
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                <Icon name="check" size={14} /> Based on ABS & SQM Data
+                <Icon name="check" size={14} /> Based on ABS Census & Government Data
               </span>
             </div>
           </div>

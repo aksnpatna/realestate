@@ -22,7 +22,7 @@ export const TermsOfUse: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         comparisons using publicly available and licensed datasets. The Service:
       </p>
       <ul>
-        <li>Presents metrics sourced from ABS, ACARA, OSM, SQM Research, and CoreLogic/NPG</li>
+        <li>Presents metrics sourced from ABS Census, ACARA, OpenStreetMap, and Government Open Data</li>
         <li>Computes deterministic comparisons using transparent, auditable methodology</li>
         <li>Discloses data dates, sources, and quality scores for every metric</li>
         <li>Shows its reasoning pipeline (reasoning chain) for every result</li>

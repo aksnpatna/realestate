@@ -207,12 +207,7 @@ export default memo(function BuyFinder({ setActiveSuburb, setActiveTab, onSelect
       <div className="glass-card search-card">
         <h2 className="detail-title">Buy Finder</h2>
         <p className="subtitle">
-          Backend-ranked buyer-fit tool. Results are deterministically scored from the server.
-          {backendResults && (
-            <span className="u-c190f962">
-              (Model: {backendResults.model_version})
-            </span>
-          )}
+          Find your ideal property market based on your budget, goals, and risk profile.
         </p>
 
         <div className="u-67f9100b">

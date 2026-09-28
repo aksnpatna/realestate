@@ -27,7 +27,7 @@ import { SuburbHero } from './components/SuburbHero';
 import { SuburbStoryPanel } from './components/SuburbStoryPanel';
 import { TierGateOverlay } from './components/TierGateOverlay';
 import { useTierGate } from './hooks/useTierGate';
-import { SuburbPropertyListings } from './components/SuburbPropertyListings';
+import OnboardingTour from './components/OnboardingTour';
 import './styles/hero.css';
 
 import { getDisplayGroup, getStateName } from './utils/regionMapper'
@@ -73,6 +73,7 @@ function App() {
   const [privacyConsent, setPrivacyConsent] = useState(false)
   const [verificationMessage, setVerificationMessage] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
   
   const [suburbsData, setSuburbsData] = useState<SuburbData[]>([])
   const [loadingData, setLoadingData] = useState(true)
@@ -307,9 +308,18 @@ function App() {
 
   const toggleFavorite = useCallback(async (suburbId: string) => {
     // Optimistic update
-    setFavorites(prev => 
-      prev.includes(suburbId) ? prev.filter(id => id !== suburbId) : [...prev, suburbId]
-    );
+    setFavorites(prev => {
+      const isAdding = !prev.includes(suburbId);
+      if (isAdding) {
+        setToastMessage("Suburb saved! We'll track it for you.");
+        setTimeout(() => setToastMessage(null), 4000);
+        return [...prev, suburbId];
+      } else {
+        setToastMessage("Suburb removed from favorites.");
+        setTimeout(() => setToastMessage(null), 4000);
+        return prev.filter(id => id !== suburbId);
+      }
+    });
     try {
       const res = await fetch('/api/favorites', {
         method: 'POST',
@@ -639,7 +649,7 @@ function App() {
                 <div className="u-db674293">
                   <label className="u-f3a0ea00">
                     <input type="checkbox" checked={privacyConsent} onChange={e => setPrivacyConsent(e.target.checked)} className="u-b45e067a" />
-                    <span>I agree to the <a href="#" className="u-d03afae3">Privacy Policy</a> and <a href="#" className="u-d03afae3">Terms of Use</a>. *</span>
+                    <span>I agree to the <a href="?view=privacy" className="u-d03afae3">Privacy Policy</a> and <a href="?view=terms" className="u-d03afae3">Terms of Use</a>. *</span>
                   </label>
                   <label className="u-f3a0ea00">
                     <input type="checkbox" checked={marketingConsent} onChange={e => setMarketingConsent(e.target.checked)} className="u-b45e067a" />
@@ -941,7 +951,7 @@ function App() {
                       <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
                         Understanding this suburb's performance relative to broader market baselines.
                       </p>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
                         {benchmarks.map((bm, i) => (
                           <div key={i} style={{ 
                             padding: '1.5rem', 
@@ -1943,6 +1953,26 @@ function App() {
           <span>PropertyIQ — Transparent Australian suburb research.</span>
         </p>
       </footer>
+
+      {isAuthenticated && <OnboardingTour />}
+      
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+          background: 'var(--brand-navy)',
+          color: 'white',
+          padding: '1rem 1.5rem',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 9999,
+          fontWeight: 500,
+          animation: 'fadeIn 0.3s ease-in-out'
+        }}>
+          {toastMessage}
+        </div>
+      )}
     </AppShell>
   )
 }

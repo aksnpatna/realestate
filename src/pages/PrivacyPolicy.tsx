@@ -108,8 +108,7 @@ export const PrivacyPolicy: React.FC<{ onBack?: () => void }> = ({ onBack }) => 
         <li>Australian Bureau of Statistics (ABS) — Census and demographic data</li>
         <li>ACARA — School ICSEA scores and school zone data</li>
         <li>OpenStreetMap (OSM) — Transit, parks, amenity, and POI data</li>
-        <li>SQM Research — Vacancy rates and rental market data</li>
-        <li>CoreLogic/NPG — Median prices, rental data, market metrics</li>
+        <li>State and Territory Government — Open property and planning data</li>
       </ul>
 
       <h2>9. No Selling of Data</h2>

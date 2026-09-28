@@ -267,8 +267,8 @@
 
 :root {
   /* World-Class Premium Theme */
-  --bg-dark: #f8fafc; /* Slate 50 */
-  --bg-card: #ffffff;
+  --bg-dark: #e2e8f0; /* Slate 200 */
+  --bg-card: #f8fafc; /* Slate 50 */
   --bg-card-glass: rgba(255, 255, 255, 0.7);
   --border-glass: rgba(226, 232, 240, 0.8); /* Slate 200 with opacity */
   --border-glass-strong: rgba(203, 213, 225, 0.6);

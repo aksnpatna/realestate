@@ -101,11 +101,23 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
       trend: null,
       impact: 'High investor-rate suburbs face concentration risk when market turns.',
     },
-    {
+     {
       label: 'Yield Trend (House)',
       value: s.houseGrossRentalYieldTrend != null ? `${Number(s.houseGrossRentalYieldTrend) >= 0 ? '+' : ''}${Number(s.houseGrossRentalYieldTrend).toFixed(2)}%` : '—',
       trend: s.houseGrossRentalYieldTrend != null ? (s.houseGrossRentalYieldTrend > 0 ? 'up' : 'down') : null,
       impact: 'Rising yield = rent growing faster than price. Good for cashflow investors.',
+    },
+    {
+      label: 'Price Volatility (10yr)',
+      value: s.priceVolatility10yr != null ? `${Number(s.priceVolatility10yr).toFixed(1)}%` : '—',
+      trend: s.priceVolatility10yr != null ? (s.priceVolatility10yr > 15 ? 'down' : 'up') : null,
+      impact: '10-year price volatility. Lower volatility = more stable investment.',
+    },
+    {
+      label: 'Price Sharpe Ratio',
+      value: s.priceSharpeRatio != null ? Number(s.priceSharpeRatio).toFixed(2) : '—',
+      trend: s.priceSharpeRatio != null ? (s.priceSharpeRatio > 0.5 ? 'up' : 'down') : null,
+      impact: 'Risk-adjusted return metric. Higher = better return per unit of risk.',
     },
   ]
 

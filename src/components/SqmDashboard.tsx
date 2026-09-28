@@ -28,15 +28,15 @@ export default function SqmDashboard({ suburbId }: SqmDashboardProps) {
   }, [suburbId]);
 
   if (loading) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading SQM Market Data...</div>;
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading Market Data...</div>;
   }
 
   if (error) {
-    return <div style={{ padding: '2rem', color: 'red' }}>Error loading SQM data: {error}</div>;
+    return <div style={{ padding: '2rem', color: 'red' }}>Error loading market data: {error}</div>;
   }
 
   if (!data) {
-    return <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No historical SQM market data available for this suburb yet.</div>;
+    return <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No historical market data available for this suburb yet.</div>;
   }
 
   return (

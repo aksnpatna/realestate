@@ -8,7 +8,7 @@ import concurrent.futures
 import logging
 from collections import OrderedDict
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Any
 from fastapi import FastAPI, HTTPException, Depends, Header, BackgroundTasks, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -285,8 +285,9 @@ class UserModel(Base):
     utm_medium = Column(String, nullable=True)
     utm_campaign = Column(String, nullable=True)
     referrer_url = Column(String, nullable=True)
+    subscription_tier = Column(String, default='free')
+    subscription_expires_at = Column(String, nullable=True)
     created_at = Column(String)
-
 class UserFavorite(Base):
     __tablename__ = "user_favorites"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -936,6 +937,69 @@ def _annualize_cagr(val) -> float:
     except (ValueError, TypeError):
         return 0
 
+def _compute_volatility_and_sharpe(history_data) -> tuple:
+    """Derive price_volatility_10yr and price_sharpe_ratio from 10yr price history.
+    Returns (volatility_pct, sharpe_ratio) or (None, None) if insufficient data.
+    Handles history_data as list, dict, or invalid type.
+    """
+    import json
+    import math
+    print(f"[DEBUG] history_data type: {type(history_data)}")
+    print(f"[DEBUG] history_data sample: {json.dumps(history_data[:5])}")
+    
+    if not history_data or not isinstance(history_data, (list, dict)):
+        print("[DEBUG] Invalid history_data type")
+        return None, None
+
+    prices = None
+    try:
+        if isinstance(history_data, list):
+            # Handle case where history_data is a list of dicts with "value" field
+            if len(history_data) > 0 and isinstance(history_data[0], dict) and "value" in history_data[0]:
+                prices = [float(p["value"]) for p in history_data if "value" in p and p["value"] is not None]
+                print(f"[DEBUG] Extracted {len(prices)} prices from dict list")
+            else:
+                prices = [float(p) for p in history_data if p is not None and isinstance(p, (int, float, str)) and str(p).strip()]
+                print(f"[DEBUG] Extracted {len(prices)} prices from list")
+        elif isinstance(history_data, dict):
+            sorted_keys = sorted(k for k in history_data.keys() if str(k).isdigit())
+            if len(sorted_keys) >= 4:
+                prices = []
+                for k in sorted_keys:
+                    v = history_data[k]
+                    if v is not None and isinstance(v, (int, float, str)) and str(v).strip():
+                        try:
+                            prices.append(float(v))
+                        except (TypeError, ValueError):
+                            continue
+                print(f"[DEBUG] Extracted {len(prices)} prices from dict")
+    except Exception as e:
+        print(f"[DEBUG] Error extracting prices: {e}")
+        return None, None
+
+    if not prices or len(prices) < 4:
+        print(f"[DEBUG] Insufficient prices: {len(prices) if prices else 0}")
+        return None, None
+
+    annual_returns = []
+    for i in range(1, len(prices)):
+        if prices[i - 1] > 0:
+            annual_returns.append((prices[i] - prices[i - 1]) / prices[i - 1] * 100.0)
+
+    if len(annual_returns) < 3:
+        print(f"[DEBUG] Insufficient returns: {len(annual_returns)}")
+        return None, None
+
+    mean_return = sum(annual_returns) / len(annual_returns)
+    variance = sum((r - mean_return) ** 2 for r in annual_returns) / len(annual_returns)
+    stdev = math.sqrt(variance)
+
+    volatility = round(stdev, 2) if stdev > 0 else None
+    sharpe = round(mean_return / stdev, 2) if stdev > 0 else None
+
+    print(f"[DEBUG] Calculated volatility: {volatility}, Sharpe ratio: {sharpe}")
+    return volatility, sharpe
+
 def _cap_yield(val, max_yield=25.0) -> float | None:
     """Clamp rental yields to prevent absurd outliers from low-price suburbs."""
     if val is None: return None
@@ -1250,6 +1314,11 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         if img not in unique_images:
             unique_images.append(img)
 
+    # Calculate volatility and Sharpe ratio from 10-year price history
+    print(f"[DEBUG] Calling _compute_volatility_and_sharpe with formatted_history: {len(formatted_history) if isinstance(formatted_history, list) else type(formatted_history)}")
+    volatility, sharpe_ratio = _compute_volatility_and_sharpe(formatted_history)
+    print(f"[DEBUG] Volatility: {volatility}, Sharpe ratio: {sharpe_ratio}")
+    
     response = {
         "images_json": unique_images,
         "id": v3.id.lower(),
@@ -1358,6 +1427,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "unemploymentRate": v3.unemployment_rate,
         "buildingApprovals12m": v3.building_approvals_12m,
         "infrastructureInvestment": v3.infrastructure_investment,
+        "priceVolatility10yr": volatility,
+        "priceSharpeRatio": sharpe_ratio,
         # Social housing (ABS Census G37)
         "publicHousingDwellings": v3.public_housing_dwellings,
         "communityHousingDwellings": v3.community_housing_dwellings,

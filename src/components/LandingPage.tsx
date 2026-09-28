@@ -29,26 +29,13 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
     }
   };
 
-  const backgroundVideo = 'https://alayaproperty.com/__l5e/assets-v1/3735881f-e073-485b-8db0-01142b50da58/hero.mp4';
-  const backgroundPoster = 'https://alayaproperty.com/__l5e/assets-v1/bef7de29-73f7-421b-9488-dcf977845678/hero-poster.jpg';
+
 
   return (
     <div className="landing-page-v2">
-      {/* Dynamic Background */}
+      {/* Animated Gradient Background */}
       <div className="lp-background">
         <div className="lp-background-overlay"></div>
-        <video 
-          autoPlay 
-          muted 
-          loop 
-          playsInline
-          poster={backgroundPoster}
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-          }}
-        >
-          <source src={backgroundVideo} type="video/mp4" />
-        </video>
       </div>
       {/* Premium Header */}
       <nav className="lp-header">
@@ -165,7 +152,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
               </div>
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
-                <span>Official ABS & SQM Data</span>
+                <span>Official ABS & Government Data</span>
               </div>
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
@@ -175,9 +162,9 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             <div className="lp-sp-logos">
               <span>ABS Census</span>
               <span className="lp-dot">•</span>
-              <span>SQM Research</span>
-              <span className="lp-dot">•</span>
               <span>Valuer General</span>
+              <span className="lp-dot">•</span>
+              <span>OpenStreetMap</span>
             </div>
           </div>
         </div>
@@ -299,7 +286,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
           </div>
           <div className="lp-services-grid">
             <div className="lp-service-card">
-              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop)' }}>
+              <div className="lp-service-image lp-service-image--advisory">
                 <span className="lp-service-tag">Most popular</span>
               </div>
               <div className="lp-service-content">
@@ -315,7 +302,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             </div>
 
             <div className="lp-service-card">
-              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop)' }}>
+              <div className="lp-service-image lp-service-image--diligence">
                 <span className="lp-service-tag">Already found a property?</span>
               </div>
               <div className="lp-service-content">
@@ -331,7 +318,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             </div>
 
             <div className="lp-service-card">
-              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2070&auto=format&fit=crop)' }}>
+              <div className="lp-service-image lp-service-image--sourcing">
                 <span className="lp-service-tag">Know where you want to buy?</span>
               </div>
               <div className="lp-service-content">
@@ -347,7 +334,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             </div>
 
             <div className="lp-service-card">
-              <div className="lp-service-image" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2070&auto=format&fit=crop)' }}>
+              <div className="lp-service-image lp-service-image--portfolio">
                 <span className="lp-service-tag">Already own property?</span>
               </div>
               <div className="lp-service-content">
@@ -460,10 +447,10 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             <div className="lp-logo small">IQ</div>
             <span>PropertyIQ</span>
           </div>
-          <div className="lp-footer-links">
+           <div className="lp-footer-links">
             <button onClick={() => onViewSamples?.()} style={{background:'none',border:'none',color:'inherit',cursor:'pointer',fontSize:'inherit',padding:0}}>Sample Reports</button>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Use</a>
+            <button onClick={() => window.location.href = '?view=privacy'} style={{background:'none',border:'none',color:'inherit',cursor:'pointer',fontSize:'inherit',padding:0}}>Privacy Policy</button>
+            <button onClick={() => window.location.href = '?view=terms'} style={{background:'none',border:'none',color:'inherit',cursor:'pointer',fontSize:'inherit',padding:0}}>Terms of Use</button>
             <a href="#">Contact</a>
           </div>
           <p className="lp-footer-copy">© 2026 PropertyIQ. All rights reserved. ABN: 12 345 678 901</p>
