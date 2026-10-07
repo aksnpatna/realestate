@@ -204,13 +204,7 @@ function App() {
             .catch(() => {})
             .finally(() => setLoadingLivability(false))
         }
-        try {
-          const cached = localStorage.getItem('ai_' + id)
-          if (cached) {
-            const aiResult = JSON.parse(cached)
-            setActiveSuburb((prev: any) => ({ ...prev, ...aiResult }))
-          }
-        } catch {}
+        // Removed localStorage AI override to rely on the backend API
         // If no session result exists for this suburb, try loading a saved snapshot
         try {
           const sessResult = sessionStorage.getItem('bf_result')

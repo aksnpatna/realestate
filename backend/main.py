@@ -1293,9 +1293,7 @@ def _compute_growth_score(v3: SuburbUIV3, use_lightweight: bool = True) -> dict:
 @app.get("/api/suburbs/{suburb_id}")
 def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     """V3-only endpoint — all data from suburbs_ui_v3 (self-sufficient)."""
-    v3 = db.query(SuburbUIV3).filter(SuburbUIV3.id == suburb_id.upper()).first()
-    if not v3:
-        raise HTTPException(status_code=404, detail="Suburb not found")
+    v3 = _get_suburb_or_404(suburb_id, db)
     
     current_median = v3.current_median_price or v3.house_median_price
     
