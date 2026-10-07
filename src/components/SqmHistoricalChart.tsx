@@ -22,12 +22,12 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
         return { stock: total > 0 ? total : null };
       } },
       { key: 'rents', dateFields: ['date'], process: (d: any) => ({
-        houseRent: parseFloat(d.houses_all) || null,
-        unitRent: parseFloat(d.units_all) || null
+        houseRent: d.houses_all != null && d.houses_all !== "" ? parseFloat(d.houses_all) : null,
+        unitRent: d.units_all != null && d.units_all !== "" ? parseFloat(d.units_all) : null
       }) },
       { key: 'prices', dateFields: ['date'], process: (d: any) => ({
-        housePrice: parseFloat(d.houses_all) ? (parseFloat(d.houses_all) < 10000 ? parseFloat(d.houses_all) * 1000 : parseFloat(d.houses_all)) : null,
-        unitPrice: parseFloat(d.units_all) ? (parseFloat(d.units_all) < 10000 ? parseFloat(d.units_all) * 1000 : parseFloat(d.units_all)) : null
+        housePrice: d.houses_all != null && d.houses_all !== "" ? (parseFloat(d.houses_all) < 10000 && parseFloat(d.houses_all) > 0 ? parseFloat(d.houses_all) * 1000 : parseFloat(d.houses_all)) : null,
+        unitPrice: d.units_all != null && d.units_all !== "" ? (parseFloat(d.units_all) < 10000 && parseFloat(d.units_all) > 0 ? parseFloat(d.units_all) * 1000 : parseFloat(d.units_all)) : null
       }) }
     ];
 

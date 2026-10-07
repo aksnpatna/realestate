@@ -225,7 +225,7 @@ async def request_log_middleware(request: Request, call_next):
 
 # Rate limiting — Redis-backed with in-memory fallback
 MAX_AUTH_REQUESTS = 5
-MAX_API_REQUESTS_PER_IP = 100
+MAX_API_REQUESTS_PER_IP = 10000
 RL_WINDOW_SECONDS = 60
 
 def _rl_check(scope: str, identifier: str, max_requests: int, window_seconds: int = RL_WINDOW_SECONDS) -> bool:
@@ -1784,6 +1784,40 @@ def _get_suburb_or_404(suburb_id: str, db: Session):
 
 # Cache TTL for AI features (default 7 days)
 AI_CACHE_TTL_SECONDS = int(os.getenv("AI_CACHE_TTL", "604800"))
+
+@app.get("/api/market-news")
+def get_market_news(db: Session = Depends(get_db)):
+    """Return top macro market news. Mocked for now to support UI."""
+    from datetime import datetime
+    return [
+        {
+            "id": 1,
+            "topic": "Interest Rates Update",
+            "sentiment_label": "Neutral",
+            "sentiment_score": 5.0,
+            "summary": "RBA holds cash rate steady at 4.35%, citing persistent services inflation.",
+            "articles_analyzed": 12,
+            "last_updated": datetime.utcnow().isoformat()
+        },
+        {
+            "id": 2,
+            "topic": "Housing Supply Shortage",
+            "sentiment_label": "Bullish",
+            "sentiment_score": 7.5,
+            "summary": "Building approvals hit 12-year low, exacerbating national dwelling shortage and pressuring prices upwards.",
+            "articles_analyzed": 8,
+            "last_updated": datetime.utcnow().isoformat()
+        },
+        {
+            "id": 3,
+            "topic": "Rental Affordability",
+            "sentiment_label": "Bearish",
+            "sentiment_score": 2.5,
+            "summary": "Record high rents push affordability to lowest level since 2014, increasing risk of regulatory intervention.",
+            "articles_analyzed": 15,
+            "last_updated": datetime.utcnow().isoformat()
+        }
+    ]
 
 @app.post("/api/suburbs/{suburb_id}/news-sentiment")
 def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session = Depends(get_db)):

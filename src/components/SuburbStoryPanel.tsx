@@ -26,6 +26,10 @@ export function SuburbStoryPanel({ suburb }: SuburbStoryPanelProps) {
   };
 
   const getLifeProfile = () => {
+    if (suburb.metrics?.aiCommitteeDebate?.urban && suburb.metrics.aiCommitteeDebate.urban !== "INSUFFICIENT_EVIDENCE") {
+      return suburb.metrics.aiCommitteeDebate.urban;
+    }
+
     const medianAge = suburb.medianAge || 35;
     const ownerOccupierRate = suburb.ownerOccupierRate || 65;
     
