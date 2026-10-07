@@ -306,8 +306,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                   label={{ value: 'Year', position: 'insideBottom', offset: -10, fill: 'var(--text-muted)', fontSize: 11 }}
                 />
                 <YAxis 
-                  stroke="var(--text-muted)" 
-                  domain={['auto', 'auto']}
+                  stroke="var(--text-muted)"
                   tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   tickFormatter={(val) => `$${Number(val).toLocaleString()}`}
                   label={{ value: 'Weekly Rent ($)', angle: -90, position: 'insideLeft', offset: 5, fill: 'var(--text-muted)', fontSize: 11, style: { textAnchor: 'middle' } }}
@@ -375,8 +374,7 @@ export default function SqmHistoricalChart({ sqmData }: SqmHistoricalChartProps)
                   label={{ value: 'Year', position: 'insideBottom', offset: -10, fill: 'var(--text-muted)', fontSize: 11 }}
                 />
                 <YAxis 
-                  stroke="var(--text-muted)" 
-                  domain={['auto', 'auto']}
+                  stroke="var(--text-muted)"
                   tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   tickFormatter={(val) => `$${(Number(val)/1000).toFixed(0)}k`}
                   label={{ value: 'Median Price ($)', angle: -90, position: 'insideLeft', offset: 5, fill: 'var(--text-muted)', fontSize: 11, style: { textAnchor: 'middle' } }}
