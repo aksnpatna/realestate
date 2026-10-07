@@ -47,13 +47,43 @@ INSUFFICIENT_EVIDENCE_FALLBACK = CommitteeVerdict(
     insufficient_evidence=True,
 )
 
-def get_llm():
-    # 1st: KIE (Cost-effective, wide model selection) - check if available
+def get_llm(task: str = "general"):
+    """
+    Model selector routing to the local vLLM infrastructure first, falling back to cloud APIs.
+    DeepSeek R1 14B AWQ is currently the unified model for all tasks on the 3060 12GB.
+    """
+    # If the user has started the local vLLM server on port 8000, we use it.
+    # Currently pointing to the single R1 14B model for all tasks.
+    local_api_base = os.getenv("LOCAL_LLM_URL", "http://localhost:8002/v1")
+    
+    # 1st Priority: The Local vLLM Server (DeepSeek R1 14B)
+    # We use this as our unified model for realestate and asx-prediction.
+    # We pass a dummy key since vLLM OpenAI API doesn't strictly need one by default.
+    try:
+        import requests
+        # Quick check if local server is alive (optional but safe)
+        requests.get(f"{local_api_base}/models", timeout=1)
+        # Hybrid llama-swap aliases: "reasoner" = DeepSeek R1 14B (GGUF),
+        # "fast" = Qwen2.5 7B Instruct. Only one is in VRAM at a time.
+        alias = "reasoner" if task in ("asx-prediction", "reasoning") else "fast"
+        alias = os.getenv("LOCAL_LLM_MODEL", alias)
+        return ChatOpenAI(
+            openai_api_key="sk-local",
+            openai_api_base=local_api_base,
+            model_name=alias,
+            temperature=0.3 if task != "general" else 0.7,
+            timeout=300,  # allows for model swap/load time
+            max_retries=4  # gateway returns 503 + Retry-After when queue is full
+        )
+    except Exception:
+        # Fallbacks if local vLLM is down
+        pass
+        
+    # 2nd: KIE (Cost-effective, wide model selection)
     if os.getenv("KIE_KEY") and os.getenv("KIE_KEY") != "none":
         try:
             from kie_api import is_kie_available, get_kie_client
             if is_kie_available():
-                # KIE API integration - create a wrapper for LangChain
                 from langchain_core.language_models.chat_models import BaseChatModel
                 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
                 from langchain_core.outputs import ChatResult, ChatGeneration
@@ -89,34 +119,20 @@ def get_llm():
         except Exception as e:
             logger.warning(f"KIE API initialization failed: {str(e)}")
     
-    # 2nd: NVIDIA (Nemotron 3 Nano) - most capable available model
-    if os.getenv("NVIDIA_API_KEY") and os.getenv("NVIDIA_API_KEY") != "none":
-        return ChatOpenAI(
-            openai_api_key=os.getenv("NVIDIA_API_KEY"),
-            openai_api_base="https://integrate.api.nvidia.com/v1",
-            model_name=os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning")
-        )
-    # 3rd: xAI (Grok 4.6) - fast fallback
-    elif os.getenv("XAI_API_KEY") and os.getenv("XAI_API_KEY") != "none":
-        return ChatOpenAI(
-            openai_api_key=os.getenv("XAI_API_KEY"),
-            openai_api_base="https://api.x.ai/v1",
-            model_name=os.getenv("XAI_MODEL", "grok-4.6")
-        )
-    # 4th: OpenAI (GPT-4o) - reliable and widely available
+    # 3rd: OpenAI (GPT-4o) - reliable and widely available
     elif os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             model_name=os.getenv("OPENAI_MODEL", "gpt-4o")
         )
-    # 5th: DeepSeek - alternative fallback
+    # 4th: DeepSeek Cloud API - alternative fallback
     elif os.getenv("DEEPSEEK_API_KEY") and os.getenv("DEEPSEEK_API_KEY") != "none":
         return ChatOpenAI(
             openai_api_key=os.getenv("DEEPSEEK_API_KEY"),
             openai_api_base="https://api.deepseek.com/v1",
             model_name="deepseek-chat"
         )
-    # 6th: Local Ollama (Mac Air)
+    # 5th: Old Local Ollama Fallback (Mac Air)
     else:
         return ChatOpenAI(
             openai_api_key="none",
@@ -253,7 +269,7 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
         }
 
 def bull_agent_node(state: CommitteeState):
-    llm = get_llm()
+    llm = get_llm(task="realestate")
     metrics = state['metrics']
     prompt = f"""
     You are 'The Bull'. Your job is to find the most compelling reasons to BUY this property market.
@@ -267,7 +283,7 @@ def bull_agent_node(state: CommitteeState):
     return {"bull_argument": msg.content}
 
 def bear_agent_node(state: CommitteeState):
-    llm = get_llm()
+    llm = get_llm(task="realestate")
     metrics = state['metrics']
     prompt = f"""
     You are 'The Bear'. Your job is to find the most compelling reasons to AVOID this property market.
@@ -281,7 +297,7 @@ def bear_agent_node(state: CommitteeState):
     return {"bear_argument": msg.content}
 
 def urban_planner_node(state: CommitteeState):
-    llm = get_llm()
+    llm = get_llm(task="realestate")
     metrics = state['metrics']
     prompt = f"""
     You are 'The Urban Planner'. You care about gentrification, lifestyle, and demographics.
@@ -289,14 +305,14 @@ def urban_planner_node(state: CommitteeState):
     Metrics: {metrics}
     
     Focus on: ACARA ICSEA School Quality, True Population CAGR, Walk/Liveability score proxies, and Density.
-    If there is insufficient evidence to form an opinion, state exactly "INSUFFICIENT_EVIDENCE". Do not hallucinate amenities.
-    Otherwise, provide a 2-sentence argument regarding the long-term desirability and gentrification potential.
+    Even if some of these specific data points are missing, synthesize the available metrics (like median age, owner occupier rate, and population growth) to provide a 2-sentence argument regarding the long-term desirability and gentrification potential.
+    Do not hallucinate amenities, but do infer demographic trends.
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     return {"urban_argument": msg.content}
 
 def supervisor_and_playbook_node(state: CommitteeState):
-    llm = get_llm()
+    llm = get_llm(task="realestate")
     
     past_context = ""
     try:
@@ -343,6 +359,9 @@ def supervisor_and_playbook_node(state: CommitteeState):
     content = msg.content.strip()
     
     try:
+        # Handle DeepSeek R1 reasoning tags
+        content = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL).strip()
+
         if content.startswith("```json"):
             content = content.split("```json")[1].split("```")[0].strip()
         elif content.startswith("```"):

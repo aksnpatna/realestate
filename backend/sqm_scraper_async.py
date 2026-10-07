@@ -4,9 +4,15 @@ import json
 import time
 import argparse
 import requests
+from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from sqlalchemy import text
 from models_v3 import SessionLocal
+
+# Load .env from the parent directory
+env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+load_dotenv(env_path)
+PROXY_URL = os.environ.get("PROXY_URL")
 
 # -----------------------------------------------------------------------------
 # SQM Research Extractor - 3 Worker Thread Pool 
@@ -46,11 +52,18 @@ def fetch_sqm_postcode(postcode):
         "prices": {"url": f"https://sqmresearch.com.au/weekly-asking-prices.php?postcode={postcode}&t=1", "pattern": "json_array", "data": None}
     }
     
+    proxies = None
+    if PROXY_URL:
+        proxies = {
+            "http": PROXY_URL,
+            "https": PROXY_URL
+        }
+    
     extracted = {}
     
     for metric, info in metrics.items():
         try:
-            res = requests.get(info["url"], headers=headers, timeout=15)
+            res = requests.get(info["url"], headers=headers, proxies=proxies, timeout=15)
             if res.status_code == 200:
                 data = extract_json_data(res.text, info["pattern"])
                 # Fallback pattern if primary fails
@@ -183,6 +196,11 @@ def main():
         db.close()
 
     print(f"\nStarting SQM scraper with 3 workers. Processing {len(postcodes)} postcodes...")
+    if PROXY_URL:
+        print(f"✅ Using SmartProxy: {PROXY_URL.split('@')[-1] if '@' in PROXY_URL else PROXY_URL}")
+    else:
+        print("⚠ WARNING: No proxy configured!")
+        
     success_count = 0
     fail_count = 0
     

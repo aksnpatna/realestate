@@ -16,11 +16,21 @@ def get_suburb_sqm(suburb_id: str):
         conn = psycopg2.connect(DB_DSN)
         cur = conn.cursor(cursor_factory=RealDictCursor)
 
+        actual_id = suburb_id
+        if "-" in suburb_id:
+            # point-cook-vic-3030 -> VIC_POINT_COOK_3030
+            parts = suburb_id.upper().split("-")
+            if len(parts) >= 3:
+                state = parts[-2]
+                postcode = parts[-1]
+                name = "_".join(parts[:-2])
+                actual_id = f"{state}_{name}_{postcode}"
+
         cur.execute("""
             SELECT demographics_detail->'sqm_data' as sqm_data
             FROM suburbs_ui_v3
             WHERE id = %s
-        """, (suburb_id,))
+        """, (actual_id,))
 
         row = cur.fetchone()
         cur.close()

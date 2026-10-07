@@ -1426,7 +1426,10 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "nearby_pois": v3.nearby_pois or {},
         "pois": v3.pois or [],
         "coordinates": v3.coordinates,
-        "metrics": {"rentalStock": v3.rental_stock},
+        "metrics": {
+            "rentalStock": v3.rental_stock,
+            "aiCommitteeDebate": (v3.ai_insights or {}).get("aiCommitteeDebate", (v3.ai_insights or {}).get("aiCommitteeDebate_general", {}))
+        },
         # Derived indicators
         "unemploymentRate": v3.unemployment_rate,
         "buildingApprovals12m": v3.building_approvals_12m,
