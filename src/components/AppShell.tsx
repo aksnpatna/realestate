@@ -70,6 +70,14 @@ export const AppShell: React.FC<AppShellProps> = ({
     setViewAnnounce(`Loaded ${currentView}`);
   }, [currentView]);
 
+  const isItemActive = (itemId: string) => {
+    if (currentView === itemId) return true;
+    if (itemId === 'saved' && (currentView === 'favorites' || currentView === 'saved')) return true;
+    if (itemId === 'subscription' && (currentView === 'samples' || currentView === 'subscription')) return true;
+    if (itemId === 'ask' && (currentView === 'recent' || currentView === 'ask')) return true;
+    return false;
+  };
+
   return (
     <div className="app-shell">
       <a href="#main-content" className="sr-only">Skip to main content</a>
@@ -89,7 +97,7 @@ export const AppShell: React.FC<AppShellProps> = ({
               {group.items.map(item => (
                 <button
                   key={item.id}
-                  className={`app-shell__nav-item ${currentView === item.id ? 'app-shell__nav-item--active' : ''}`}
+                  className={`app-shell__nav-item ${isItemActive(item.id) ? 'app-shell__nav-item--active' : ''}`}
                   onClick={() => onViewChange(item.id as ViewId)}
                 >
                   <Icon name={item.icon} size={20} />
@@ -102,7 +110,13 @@ export const AppShell: React.FC<AppShellProps> = ({
 
         <div className="app-shell__user-footer">
           <PersonaSwitcher activePersona={persona as any} onChange={onPersonaChange} />
-          {activeTier && onTierChange && <PricingTierSwitcher activeTier={activeTier as any} onChange={onTierChange} />}
+          {activeTier && onTierChange && (
+            <PricingTierSwitcher 
+              activeTier={activeTier as any} 
+              onChange={onTierChange} 
+              onViewPlans={() => onViewChange('subscription')} 
+            />
+          )}
           <button onClick={onLogout} className="app-shell__nav-item" style={{ opacity: 0.7, padding: '0.5rem' }}>
             <Icon name="log-out" size={18} /> Log out
           </button>
@@ -119,7 +133,13 @@ export const AppShell: React.FC<AppShellProps> = ({
             <h1 className="app-shell__title">PropertyIQ</h1>
           </div>
           <PersonaSwitcher activePersona={persona as any} onChange={onPersonaChange} />
-          {activeTier && onTierChange && <PricingTierSwitcher activeTier={activeTier as any} onChange={onTierChange} />}
+          {activeTier && onTierChange && (
+            <PricingTierSwitcher 
+              activeTier={activeTier as any} 
+              onChange={onTierChange} 
+              onViewPlans={() => onViewChange('subscription')} 
+            />
+          )}
         </header>
 
         {/* Main Content Area */}

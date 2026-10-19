@@ -154,24 +154,24 @@ export interface PricingTier {
 export const PRICING_TIERS: Record<PricingTierId, PricingTier> = {
   free: {
     id: 'free',
-    label: 'Snapshot',
+    label: 'Free Explorer',
     price: 'Free',
-    description: 'Basic top-level metrics for casual browsing.',
-    features: ['Top-level Median Price & Rent', 'Vacancy Rate Overview']
+    description: 'Core suburb metrics, ABS demographics, and 5 AI research briefs/month.',
+    features: ['Top-level Median Price & Rent', 'ABS Census Demographics', '5 AI Research Briefs / mo', 'School Zone Mapping']
   },
   basic: {
     id: 'basic',
-    label: 'Basic Data',
-    price: '$4.99/mo',
-    description: 'Full data charts, history, and demographics.',
-    features: ['All historical charts', 'Demographics & Infrastructure', 'Yield & Growth Trends']
+    label: 'Buyer Pass',
+    price: '$29/mo',
+    description: 'Comprehensive research for active homebuyers & DIY investors.',
+    features: ['Unlimited AI Suburb Queries', '15-Year Market Trends & Charts', 'Cashflow & Gearing Simulator', 'Exportable Decision Briefs']
   },
   premium: {
     id: 'premium',
-    label: 'Interactive AI',
-    price: '$14.99/mo',
-    description: 'Conversational NLP and automated AI analysis.',
-    features: ['AI Story Cards', 'Conversational Unified Search', 'AI Analyst Opinions']
+    label: 'Professional',
+    price: '$99/mo',
+    description: 'Built for Buyer’s Agents, Brokers, and property professionals.',
+    features: ['White-Labeled Client Reports', 'Technical Provenance & Lot Size Data', 'Subdivision & Planning Feasibility', 'Multi-Client Portfolio Tracking']
   }
 }
 

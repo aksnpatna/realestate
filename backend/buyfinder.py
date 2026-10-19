@@ -189,9 +189,10 @@ def compute_buyer_fit(v3, req: BuyFinderRequest) -> dict:
         # Property Type Noise Filtering
         if req.property_type == "house":
             # Exclude unit-dominated suburbs like Southbank or CBDs if looking for houses
-            if v3.house_sold_12m is None or v3.house_sold_12m < 25:
+            sold_12m = getattr(v3, "house_sold_12m", None)
+            if isinstance(sold_12m, (int, float)) and sold_12m < 25:
                 return _excluded_result(v3, "low_house_stock",
-                                        {"house_sold_12m": v3.house_sold_12m})
+                                        {"house_sold_12m": sold_12m})
 
         if req.minimum_yield is not None:
             if yld is None or yld <= 0:

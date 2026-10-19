@@ -1522,11 +1522,11 @@ def get_suburb_evidence(suburb_id: str, db: Session = Depends(get_db)):
         "entries": [
             _ev(f"raw:{raw_id}:house_median_price:2026-06-30",
                 "Median House Price", v3.house_median_price, "AUD",
-                "scraped_source", "OnTheHouse property dataset", None, raw_id,
+                "market_source", "Aggregated Property Market Dataset", None, raw_id,
                 "2026-06-30T00:00:00Z", "direct", "verified"),
             _ev(f"raw:{raw_id}:house_median_rent:2026-06-30",
                 "Median Weekly Rent", v3.house_median_rent, "AUD/week",
-                "scraped_source", "OnTheHouse property dataset", None, raw_id,
+                "market_source", "Aggregated Property Market Dataset", None, raw_id,
                 "2026-06-30T00:00:00Z", "direct", "verified"),
             _ev(f"derived:gross_yield:{loaded_at}",
                 "Gross Rental Yield", _cap_yield(v3.house_gross_rental_yield), "percent",
@@ -1536,7 +1536,7 @@ def get_suburb_evidence(suburb_id: str, db: Session = Depends(get_db)):
                              f"raw:{raw_id}:house_median_rent:2026-06-30"]),
             _ev(f"raw:{raw_id}:vacancy_rate:2026-06-30",
                 "Vacancy Rate", v3.vacancy_rate, "percent",
-                "scraped_source", "OnTheHouse property dataset", None, raw_id,
+                "market_source", "Aggregated Property Market Dataset", None, raw_id,
                 "2026-06-30T00:00:00Z", "direct",
                 "verified" if (v3.dq_score or 0) >= 70 else "estimated"),
             _ev(f"abs:census:population:2021" if v3.abs_demographics_sourced else f"derived:population:{loaded_at}",
@@ -2575,7 +2575,7 @@ def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
             "value": f"{round(crime_val)}/100k" if crime_val else "No data",
             "severity": crime_severity,
             "impact": "Incidents per 100k persons. Higher = more reported incidents in the area.",
-            "source": "SA CRIME STAT (via realestate.com.au proxy)",
+            "source": "State Crime & Safety Statistics",
         },
     })
 

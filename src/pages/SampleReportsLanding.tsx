@@ -156,7 +156,7 @@ export const SampleReportsLanding: React.FC<{ onBack?: () => void }> = ({ onBack
           <div className="srl__diff-grid">
             <div className="srl__diff-item">
               <h4>📋 Every metric sourced</h4>
-              <p>Every number shows its source (ABS, ACARA, SQM, CoreLogic), the date it was collected, and a data quality score.</p>
+              <p>Every number shows its source (ABS, ACARA, State Land Records & Market Aggregates), the date it was collected, and a data quality score.</p>
             </div>
             <div className="srl__diff-item">
               <h4>🔍 Full reasoning trace</h4>

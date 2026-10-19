@@ -55,6 +55,7 @@ def _mock_v3(**override):
     m.last_updated = None
     m.parks_coverage_pct = 5.0
     m.coordinates = [-37.81, 144.96]
+    m.house_sold_12m = 50
     for k, v in override.items():
         setattr(m, k, v)
     return m

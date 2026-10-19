@@ -36,6 +36,9 @@ import type { ViewId } from './components/AppShell'
 import { ChartToggle } from './components/ui/ChartToggle'
 
 const viewToTab = (view: string | null): TabName => {
+  if (view === 'saved') return 'favorites';
+  if (view === 'subscription') return 'samples';
+  if (view === 'recent') return 'ask';
   const validViews: TabName[] = ['ask', 'buy-finder', 'profile', 'affordability', 'gearing', 'purchase-plan', 'calculators', 'portfolio', 'heatmap', 'favorites', 'settings', 'privacy', 'terms', 'samples'];
   if (view && validViews.includes(view as TabName)) return view as TabName;
   return 'ask';
@@ -93,7 +96,10 @@ function App() {
   const [activeSuburb, setActiveSuburb] = useState<SuburbData | null>(null)
 
   const handleViewChange = useCallback((view: ViewId) => {
-    const tab = view as TabName;
+    let tab = view as TabName;
+    if (view === 'saved') tab = 'favorites';
+    else if (view === 'subscription') tab = 'samples';
+    else if (view === 'recent') tab = 'ask';
     setActiveTab(tab);
     const params = new URLSearchParams(window.location.search);
     params.set('view', tab);
@@ -871,19 +877,6 @@ function App() {
                   )}
                 </div>
 
-
-            <div className="control-group u-e87e972e">
-              <button 
-                onClick={() => window.open(`/api/v3/export?state=${activeState}`, '_blank')}
-                className="u-8de5ace3"
-                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(15,23,42,0.06)'}
-                onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
-              >
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                Export {activeState} Data (CSV)
-              </button>
-            </div>
-
             {activeSuburb && (
               <div className="sidebar-preview">
                 <div className="preview-score">
@@ -1238,24 +1231,47 @@ function App() {
                    {/* NEW LIVABILITY SECTION */}
                    <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'infrastructure' ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'infrastructure' }}>
                     
-                    {/* NEW METRICS: Transit, NBN, Safety */}
+                    {/* REAL METRICS: Transit Accessibility, Safety Index, Walkability */}
                     <div className="metrics-grid u-19fd7aee">
-                      <div className="metric-box" style={{ borderColor: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)' }}>
-                        <div className="metric-label">Transit Score</div>
-                        <div className="metric-value u-6e6177ef">
-                          <span className="u-567aafdf">{((activeSuburb as any).areaSqkm ?? 20) < 10 ? "76/100" : "51/100"}</span>
-                          <span className="u-4717078b" style={{color: ((activeSuburb as any).areaSqkm ?? 20) < 10 ? 'var(--success)' : 'var(--warning)'}}>
-                            {((activeSuburb as any).areaSqkm ?? 20) < 10 ? "🟢 Good" : "🟡 Moderate"}
-                          </span>
+                      {(() => {
+                        const tScore = (activeSuburb as any).transitAccessibility;
+                        const val = tScore != null ? Math.round(tScore <= 10 ? tScore * 10 : tScore) : (livabilityData?.transit?.length ? Math.min(95, 45 + livabilityData.transit.length * 5) : null);
+                        return (
+                          <div className="metric-box">
+                            <div className="metric-label">Transit Accessibility</div>
+                            <div className="metric-value u-6e6177ef">
+                              <span className="u-567aafdf">{val != null ? `${val}/100` : "—"}</span>
+                              {val != null && (
+                                <span className="u-4717078b" style={{color: val >= 70 ? 'var(--success)' : val >= 50 ? 'var(--warning)' : 'var(--danger)'}}>
+                                  {val >= 70 ? "🟢 High" : val >= 50 ? "🟡 Moderate" : "🔴 Low"}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      {(() => {
+                        const sScore = (activeSuburb as any).safetyScore;
+                        const crimeRate = (activeSuburb as any).crimeRate;
+                        return (
+                          <div className="metric-box">
+                            <div className="metric-label">Safety Index</div>
+                            <div className="metric-value u-6e6177ef">
+                              <span className="u-567aafdf">{sScore != null ? `${Math.round(sScore)}/100` : crimeRate != null ? (crimeRate < 4000 ? "High" : crimeRate < 7000 ? "Moderate" : "Low") : "—"}</span>
+                              {sScore != null && (
+                                <span className="u-4717078b" style={{color: sScore >= 70 ? 'var(--success)' : sScore >= 50 ? 'var(--warning)' : 'var(--danger)'}}>
+                                  {sScore >= 70 ? "🟢 High" : sScore >= 50 ? "🟡 Moderate" : "🔴 Low"}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      <div className="metric-box">
+                        <div className="metric-label">Walkability (OSM)</div>
+                        <div className="metric-value">
+                          {livabilityData?.walkabilityScore != null ? `${livabilityData.walkabilityScore}/100` : (loadingLivability ? "Scanning..." : "—")}
                         </div>
-                      </div>
-                      <div className="metric-box">
-                        <div className="metric-label">Safety Rating</div>
-                        <div className="metric-value">{((activeSuburb as any).houseMedianPrice ?? 0) > 800000 ? "🟢 High" : "🟡 Moderate"}</div>
-                      </div>
-                      <div className="metric-box">
-                        <div className="metric-label">NBN Access</div>
-                        <div className="metric-value">Fibre to Premises</div>
                       </div>
                     </div>
 

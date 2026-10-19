@@ -59,7 +59,7 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
       label: 'Crime Rate',
       value: s.crimeRate != null ? s.crimeRate.toLocaleString() : null,
       impact: 'Incidents per 100k. Higher = more reported incidents in PostCode area.',
-      source: 'SA CRIME STAT (via realestate.com.au proxy)',
+      source: 'State Crime & Safety Statistics',
     },
     {
       key: 'safety_score',

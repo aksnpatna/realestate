@@ -27,67 +27,19 @@ interface SuburbPropertyListingsProps {
 }
 
 export function SuburbPropertyListings({ 
-  suburbName = 'Quakers Hill',
-  state = 'NSW',
-  postcode = '2763',
-  properties = [
-    {
-      id: 1,
-      address: '11 Peppertree Grove',
-      price: '$850,000',
-      rent: '$550 pw',
-      beds: 4,
-      baths: 2,
-      cars: 2,
-      area: 650,
-      image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop',
-      equity: '+$600k',
-      timeframe: 'in 48 months',
-      badge: 'SECURED FOR CLIENT'
-    },
-    {
-      id: 2,
-      address: '14 Barley Court',
-      price: '$680,000',
-      rent: '$420 pw',
-      beds: 3,
-      baths: 2,
-      cars: 1,
-      area: 500,
-      image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop',
-      equity: '+$100k',
-      timeframe: 'before settlement',
-      badge: 'SECURED FOR CLIENT'
-    },
-    {
-      id: 3,
-      address: '1 Burleigh Drive',
-      price: '$720,000',
-      rent: '$440 pw',
-      beds: 3,
-      baths: 2,
-      cars: 2,
-      area: 550,
-      image: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2070&auto=format&fit=crop',
-      equity: '+$60k',
-      timeframe: 'in 3 months',
-      badge: 'FOR SALE'
-    }
-  ],
+  suburbName = '',
+  state = '',
+  postcode = '',
+  properties = [],
   onViewProperty,
   onAskAbout
 }: SuburbPropertyListingsProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [localProperties, setLocalProperties] = useState<SuburbProperty[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [localProperties, setLocalProperties] = useState<SuburbProperty[]>(properties);
 
   useEffect(() => {
-    // Simulate API call to fetch properties for this suburb
-    const timer = setTimeout(() => {
-      setLocalProperties(properties);
-      setIsLoading(false);
-    }, 800);
-
-    return () => clearTimeout(timer);
+    setLocalProperties(properties);
+    setIsLoading(false);
   }, [properties]);
 
   const handleViewProperty = (propertyId: number) => {

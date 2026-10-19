@@ -453,7 +453,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             <button onClick={() => window.location.href = '?view=terms'} style={{background:'none',border:'none',color:'inherit',cursor:'pointer',fontSize:'inherit',padding:0}}>Terms of Use</button>
             <a href="#">Contact</a>
           </div>
-          <p className="lp-footer-copy">© 2026 PropertyIQ. All rights reserved. ABN: 12 345 678 901</p>
+          <p className="lp-footer-copy">© 2026 PropertyIQ. All rights reserved.</p>
         </div>
       </footer>
     </div>

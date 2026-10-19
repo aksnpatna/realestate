@@ -8,10 +8,11 @@ interface SettingsPageProps {
   onPersonaChange: (p: string) => void;
   financialProfile: any;
   onLogout: () => void;
+  onUpgrade?: () => void;
 }
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({
-  persona, onPersonaChange, financialProfile, onLogout,
+  persona, onPersonaChange, financialProfile, onLogout, onUpgrade,
 }) => (
   <div className="sp">
     <h2 className="sp__title">Settings</h2>
@@ -48,8 +49,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
     <Card className="sp__section">
       <h3 className="sp__heading">Plan & Usage</h3>
-      <p className="sp__desc">Free tier — 5 research briefs per month. Past briefs remain readable forever.</p>
-      <Button variant="primary" size="sm" className="u-4c670167">Upgrade</Button>
+      <p className="sp__desc">Free Explorer — 5 research briefs per month. Past briefs remain readable forever.</p>
+      <Button variant="primary" size="sm" className="u-4c670167" onClick={onUpgrade || (() => { window.location.search = '?view=samples'; })}>Upgrade Plan</Button>
     </Card>
 
     <Card className="sp__section">

@@ -15,6 +15,7 @@ import { PRICING_TIERS, tierIds, storeTier } from '../data/personas'
 interface Props {
   activeTier: PricingTierId
   onChange: (id: PricingTierId) => void
+  onViewPlans?: () => void
 }
 
 const icons: Record<PricingTierId, string> = {
@@ -29,7 +30,7 @@ const tierColors: Record<PricingTierId, string> = {
   premium: '#10b981',
 }
 
-const PricingTierSwitcher = memo(function PricingTierSwitcher({ activeTier, onChange }: Props) {
+const PricingTierSwitcher = memo(function PricingTierSwitcher({ activeTier, onChange, onViewPlans }: Props) {
   const handleChange = useCallback(
     (id: PricingTierId) => {
       storeTier(id)
@@ -40,22 +41,37 @@ const PricingTierSwitcher = memo(function PricingTierSwitcher({ activeTier, onCh
 
   const activeTierInfo = PRICING_TIERS[activeTier]
 
+  const handleClick = () => {
+    if (onViewPlans) {
+      onViewPlans();
+    } else {
+      const tiers = tierIds();
+      const nextIdx = (tiers.indexOf(activeTier) + 1) % tiers.length;
+      handleChange(tiers[nextIdx]);
+    }
+  };
+
   return (
     <div className="u-72b4a711" style={{ padding: '4px 8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
       <span className="u-fb84eb0b" style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
-        Current Tier:
+        Current Plan:
       </span>
-      <div className="tier-badge" style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '8px 12px',
-        borderRadius: '8px',
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-glass)',
-        cursor: 'pointer',
-        position: 'relative'
-      }}>
+      <div 
+        className="tier-badge" 
+        onClick={handleClick}
+        title="Click to view subscription plans"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-glass)',
+          cursor: 'pointer',
+          position: 'relative'
+        }}
+      >
         <span style={{ fontSize: '1.25rem' }}>{icons[activeTier]}</span>
         <div>
           <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>

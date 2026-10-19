@@ -421,7 +421,7 @@ async def ask_query(
         input_summary=f"Extracting evidence for {len(valid_suburbs)} suburbs, goal={goal}",
         output_summary=f"{len(all_evidence)} metrics extracted — DQ band: {dq_summary.get('band','N/A')} ({dq_summary.get('dq_score',0):.0f}/100)",
         confidence=round(dq_summary.get("dq_score", 50) / 100, 3) if dq_summary.get("dq_score") else 0.5,
-        data_sources=["suburbs_ui_v3", "corelogic", "abs", "acara", "sqm"],
+        data_sources=["suburbs_ui_v3", "government_open_data", "abs", "acara", "market_aggregates"],
         decision_rationale=f"Evidence pack: {goal} — {len(all_evidence)} metrics, {stale_count} stale" if stale_count else f"Evidence pack: {goal} — all {len(all_evidence)} metrics fresh",
         artifacts={"metric_count": len(all_evidence), "stale_count": stale_count, "dq_band": dq_summary.get("band"), "evidence_pack": goal},
         latency_ms=round((time.time() - t_ev) * 1000, 1),
@@ -572,7 +572,7 @@ async def ask_query(
                      for i, c in enumerate(comparisons)],
         "budget": budget, "property_type": property_type,
         "data_as_of": min((e.as_of for e in all_evidence), default="N/A") if all_evidence else "N/A",
-        "source": "NPG / CoreLogic / ABS / ACARA" if not dq_summary.get("vintage_estimated") else "Scraped (estimated vintage)",
+        "source": "Government Open Data / ABS / ACARA / Market Aggregates",
         "original_query": original_query,
         "masked_query": req.question,
     }

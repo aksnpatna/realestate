@@ -44,6 +44,7 @@ EXCLUDED_COLUMNS = {
     "population_2016", "population_2021",
     # Single-property-type fallthrough (we use house/unit variants)
     "house_median_price_12m_change",  # dollar change, not pct
+    "house_median_price_1m_change_pct", "house_median_price_3m_change_pct",
     "public_housing_dwellings", "community_housing_dwellings",
     "renter_state_housing_pct", "renter_community_housing_pct",
     "worship_total", "worship_christian", "worship_muslim",

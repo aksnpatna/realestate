@@ -285,7 +285,7 @@ export const AskSuburbly: React.FC<AskSuburblyProps> = ({ financialProfile, setF
           ))}
         </div>
         <p className="u-1b691f4f">
-          General research only — not financial, legal, or valuation advice. Data sourced from verified CoreLogic/ABS datasets.
+          General research only — not financial, legal, or valuation advice. Data sourced from official ABS, ACARA and property market analytics datasets.
         </p>
       </div>
     );

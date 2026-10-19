@@ -106,10 +106,10 @@ export const TermsOfUse: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         <li>Any indirect, consequential, or punitive damages</li>
       </ul>
 
-      <h2>11. Rate Limits</h2>
+      <h2>11. Plan Usage & Rate Limits</h2>
       <p>
-        The Service enforces rate limits to ensure fair usage. Free tier users are limited to 200
-        research briefs per day. Exceeding limits may result in temporary throttling.
+        The Service enforces plan limits and fair usage. Free Explorer tier users receive 5 AI research briefs per month.
+        Upgrading to a Buyer Pass or Professional plan unlocks expanded usage. Exceeding fair use limits may result in temporary throttling.
       </p>
 
       <h2>12. Changes to Terms</h2>

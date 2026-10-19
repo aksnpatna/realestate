@@ -7,10 +7,11 @@ router = APIRouter()
 
 DB_DSN = os.getenv("DATABASE_URL", "postgresql://realestate_user:realestate_pass@db:5432/realestate")
 
+@router.get("/{suburb_id}/market-history")
 @router.get("/{suburb_id}/sqm")
 def get_suburb_sqm(suburb_id: str):
     """
-    Fetch the raw SQM data payload (sold scatterplot, auctions, yields) for a given suburb.
+    Fetch the market data payload (sold scatterplot, auctions, yields, history) for a given suburb.
     """
     try:
         conn = psycopg2.connect(DB_DSN)

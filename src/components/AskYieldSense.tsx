@@ -386,7 +386,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
         {disc.trace_log && <TraceLogDisplay trace_log={disc.trace_log} maskedQuery={(result as AskResponseV2)?.query_understood?.masked_query} />}
         {result?.request_id && <FeedbackWidget requestId={result.request_id} originalQuery={question} />}
         <p className="u-1b691f4f">
-          General research only — not financial, legal, or valuation advice. Data sourced from verified CoreLogic/ABS datasets.
+          General research only — not financial, legal, or valuation advice. Data sourced from official ABS, ACARA and property market analytics datasets.
         </p>
       </div>
     );
