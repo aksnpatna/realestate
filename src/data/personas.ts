@@ -62,7 +62,7 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     id: 'buyers_agent',
     label: "Buyer's Agent",
     description:
-      'Full technical depth: social housing, subdivision, cadastre, crime, provenance and DQ issues. No data hidden.',
+      'Full technical depth: social housing, density, cadastre, crime, provenance and DQ issues. No data hidden.',
     weights: { affordability: 25, income: 20, livability: 20, access: 15, evidence: 20 },
     visible_profile_sections: [
       'overview',

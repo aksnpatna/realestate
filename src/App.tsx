@@ -993,50 +993,24 @@ function App() {
 
 
 
-                    {/* Development Signal — surfaced for Overview visibility */}
+                    {/* Residential Block Context — surfaced for Overview visibility */}
                     {(() => {
                       const s = activeSuburb as any;
-                      const subdiv = s.subdivisionPotential;
-                      const approvedCount = s.approvedSubdivisions12m;
-                      const minLot = s.minApprovedSubdivisionSqm;
                       const avgBlock = s.avgBlockSqm;
-                      const hasDevData = subdiv || approvedCount > 0 || minLot || avgBlock;
-                      if (!hasDevData) return null;
-                      const potentialColor = subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : 'var(--text-secondary)';
-                      const potentialBg = subdiv === 'High' ? 'rgba(16,185,129,0.08)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.08)' : 'rgba(15,23,42,0.015)';
+                      if (!avgBlock) return null;
                       return (
                         <div style={{
-                          background: potentialBg, border: `1px solid ${subdiv === 'High' ? 'rgba(16,185,129,0.2)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.2)' : 'var(--border-glass)'}`,
-                          padding: '16px 20px', borderRadius: '12px',
-                          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '15px', alignItems: 'center'
+                          background: 'rgba(15,23,42,0.02)', border: '1px solid var(--border-glass)',
+                          padding: '14px 18px', borderRadius: '12px',
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px'
                         }}>
                           <div>
-                            <div className="u-bc4ee6cd">✂️ Subdivision Potential</div>
-                            <div className="u-85958e43" style={{color: potentialColor}}>{subdiv || 'Unknown'}</div>
+                            <div className="u-bc4ee6cd">Avg Residential Block Size</div>
+                            <div className="u-9a063d22">{avgBlock} <span className="u-192d3ffc">sqm</span></div>
                           </div>
-                          {approvedCount > 0 && (
-                            <div>
-                              <div className="u-bc4ee6cd">Approved (12mo)</div>
-                              <div className="u-71368d1f">{approvedCount} <span className="u-192d3ffc">DAs</span></div>
-                            </div>
-                          )}
-                          {minLot && (
-                            <div>
-                              <div className="u-bc4ee6cd">Min Lot Size</div>
-                              <div className="u-9a063d22">{minLot} <span className="u-192d3ffc">sqm</span></div>
-                            </div>
-                          )}
-                          {avgBlock && (
-                            <div>
-                              <div className="u-bc4ee6cd">Avg Block</div>
-                              <div className="u-9a063d22">{avgBlock} <span className="u-192d3ffc">sqm</span></div>
-                            </div>
-                          )}
-                          {minLot && avgBlock && avgBlock >= minLot * 2 && (
-                            <div className="u-21575ba7">
-                              💡 Avg block ({avgBlock} sqm) is ≥ 2× minimum lot ({minLot} sqm) — properties in this suburb may have subdivision potential
-                            </div>
-                          )}
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                            Cadastral footprint estimate (OpenStreetMap)
+                          </div>
                         </div>
                       );
                     })()}
@@ -1517,9 +1491,9 @@ function App() {
                           })()}
                         </div>
                       </div>
-                      {/* 🏗️ Development & Subdivision Dashboard — Enhanced */}
+                      {/* 🏗️ Building Activity & Density Context */}
                       <div className="u-dda6ee83" style={{display: activeProfileSection === 'infrastructure' ? 'block' : 'none'}}>
-                        <h4 className="u-434f4d7d">🏗️ Development & Subdivision Dashboard</h4>
+                        <h4 className="u-434f4d7d">🏗️ Building Activity & Density Context</h4>
                         <div className="u-46eb6c82">
                           {(() => {
                             const s = activeSuburb as any
@@ -1529,99 +1503,62 @@ function App() {
                             const total = constr + green + brown
                             const bldCount = s.buildingConstructionCount
                             const bldApprovals = s.buildingApprovals12m
-                            const subdiv = s.subdivisionPotential || 'Low'
-                            const minLot = s.minApprovedSubdivisionSqm
                             const avgBlock = s.avgBlockSqm
-                            const approvedCount = s.approvedSubdivisions12m || 0
-
-                            // Subdivision potential gauge
-                            const potentialPct = subdiv === 'High' ? 90 : subdiv === 'Medium' ? 55 : 20
-                            const potentialColor = subdiv === 'High' ? '#10b981' : subdiv === 'Medium' ? '#f59e0b' : '#64748b'
-                            const potentialBg = subdiv === 'High' ? 'rgba(16,185,129,0.1)' : subdiv === 'Medium' ? 'rgba(245,158,11,0.1)' : 'rgba(100,116,139,0.1)'
                             
                             return (
                               <>
-                                {/* Subdivision Potential Gauge */}
-                                <div style={{ background: potentialBg, border: `1px solid ${potentialColor}33`, padding: '14px', borderRadius: '10px' }}>
-                                  <div className="u-85844839">
-                                    <span className="u-11056260">✂️ Subdivision Potential</span>
-                                    <span className="u-0c4c20bd" style={{color: potentialColor}}>{subdiv}</span>
-                                  </div>
-                                  <div className="u-4de68730">
-                                    <div style={{ width: `${potentialPct}%`, height: '100%', borderRadius: '4px', background: `linear-gradient(90deg, ${potentialColor}88, ${potentialColor})`, transition: 'width 0.5s ease' }} />
-                                  </div>
-                                </div>
-
-                                {/* DA Precedent & Approvals */}
-                                <div className="u-ae7865f2" style={{gridTemplateColumns: minLot ? '1fr 1fr' : '1fr'}}>
-                                  <div className="u-c64713d4">
-                                    <div className="u-4101d4bb">Approved DAs (12mo)</div>
-                                    <div className="u-febb6665" style={{color: approvedCount > 0 ? '#10b981' : 'var(--text-secondary)'}}>
-                                      {approvedCount > 0 ? approvedCount : '—'}
-                                    </div>
-                                    <div className="u-0f5cef51">
-                                      {approvedCount > 0 ? 'subdivisions' : 'no data'}
-                                    </div>
-                                  </div>
-                                  {minLot && (
+                                {/* Macro Density & Approvals Grid */}
+                                <div className="u-ae7865f2" style={{gridTemplateColumns: avgBlock && bldApprovals != null ? '1fr 1fr' : '1fr'}}>
+                                  {avgBlock && (
                                     <div className="u-c64713d4">
-                                      <div className="u-4101d4bb">Min Lot Size</div>
+                                      <div className="u-4101d4bb">Avg Residential Block</div>
                                       <div className="u-08e5312b">
-                                        {minLot}<span className="u-18bf9285"> sqm</span>
+                                        {avgBlock}<span className="u-18bf9285"> sqm</span>
                                       </div>
-                                      <div className="u-4d170586" style={{color: approvedCount > 0 ? '#10b981' : '#f59e0b'}}>
-                                        {approvedCount > 0 ? '✓ real precedent' : 'proxy estimate'}
+                                      <div className="u-0f5cef51">
+                                        Cadastral footprint estimate
+                                      </div>
+                                    </div>
+                                  )}
+                                  {bldApprovals != null && (
+                                    <div className="u-c64713d4">
+                                      <div className="u-4101d4bb">Building Approvals (12mo)</div>
+                                      <div className="u-febb6665" style={{color: bldApprovals > 0 ? '#10b981' : 'var(--text-secondary)'}}>
+                                        {bldApprovals > 0 ? bldApprovals.toLocaleString() : '—'}
+                                      </div>
+                                      <div className="u-0f5cef51">
+                                        ABS Building Approvals
                                       </div>
                                     </div>
                                   )}
                                 </div>
 
-                                {/* Lot Size Comparison Bar */}
-                                {minLot && avgBlock && (
-                                  <div className="u-55f14def">
-                                    <div className="u-45fc650f">
-                                      📐 Lot Size Comparison
-                                    </div>
-                                    <div className="u-6597c4ce">
-                                      {/* Min lot bar */}
-                                      <div>
-                                        <div className="u-a59fdd48">
-                                          <span className="u-c7477801">Min Approved Lot</span>
-                                          <span className="u-e0cfe6f3">{minLot} sqm</span>
-                                        </div>
-                                        <div className="u-1f2d01a9">
-                                          <div style={{ width: `${Math.min((minLot / Math.max(avgBlock, minLot)) * 100, 100)}%`, height: '100%', borderRadius: '5px', background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }} />
-                                        </div>
-                                      </div>
-                                      {/* Avg block bar */}
-                                      <div>
-                                        <div className="u-a59fdd48">
-                                          <span className="u-c7477801">Avg Block Size</span>
-                                          <span className="u-e0cfe6f3">{avgBlock} sqm</span>
-                                        </div>
-                                        <div className="u-1f2d01a9">
-                                          <div className="u-c3407319" />
-                                        </div>
-                                      </div>
-                                    </div>
-                                    {avgBlock >= minLot * 2 && (
-                                      <div className="u-857f2895">
-                                        💡 Avg block is {(avgBlock / minLot).toFixed(1)}× the minimum lot — high subdivision feasibility
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-
-                                {/* Building Approvals */}
-                                {bldApprovals != null && (
-                                  <div className="u-cc72d3ab">
-                                    <span className="u-f3d28ad1">🏗️ Building Approvals (12mo)</span>
-                                    <span className="u-b6872c2a" style={{color: bldApprovals > 0 ? 'var(--accent-cyan)' : 'var(--text-secondary)'}}>{bldApprovals}</span>
-                                  </div>
+                                {total === 0 && bldCount == null && bldApprovals == null && !avgBlock && (
+                                  <span className="u-c4f34b4b">No building activity data available for this suburb</span>
                                 )}
                                   
-                                {total === 0 && bldCount == null && !minLot && !avgBlock && (
-                                  <span className="u-c4f34b4b">No development data available for this suburb</span>
+                                {total > 0 && (
+                                  <div className="u-55f14def">
+                                    <div className="u-a3f91f62">
+                                      🗺️ Land Use Within 2.5km ({total.toFixed(3)} km²)
+                                    </div>
+                                    <div className="u-b7a1de0b">
+                                      {constr > 0 && <div title={`Construction: ${constr.toFixed(3)} km²`} className="u-908acfd2" style={{flex: constr}} />}
+                                      {brown > 0 && <div title={`Brownfield: ${brown.toFixed(3)} km²`} className="u-7e922fad" style={{flex: brown}} />}
+                                      {green > 0 && <div title={`Greenfield: ${green.toFixed(3)} km²`} className="u-f45953b3" style={{flex: green}} />}
+                                    </div>
+                                    <div className="u-dcda70d0">
+                                      {constr > 0 && <span className="u-bfead528">🔴 Construction {constr.toFixed(3)} km²</span>}
+                                      {brown > 0 && <span className="u-0ce679a0">🟡 Brownfield {brown.toFixed(3)} km²</span>}
+                                      {green > 0 && <span className="u-b5e3c3ba">🟢 Greenfield {green.toFixed(3)} km²</span>}
+                                    </div>
+                                  </div>
+                                )}
+                                {bldCount != null && bldCount > 0 && (
+                                  <div className="u-cc72d3ab">
+                                    <span className="u-f3d28ad1">🔨 Buildings Under Construction</span>
+                                    <span className="u-b6872c2a" style={{color: 'var(--accent-cyan)'}}>{bldCount}</span>
+                                  </div>
                                 )}
                                   
                                 {total > 0 && (
@@ -1678,9 +1615,9 @@ function App() {
                           <div className="u-f3b30b0d">
                             <div>Social Housing Density: <strong className="u-c154f6c6">{((activeSuburb as any).demographics?.socialHousingPct) !== undefined ? `${((activeSuburb as any).demographics?.socialHousingPct)}%` : '—'}</strong></div>
                             <div>Public Housing Dwellings: <strong className="u-c154f6c6">{((activeSuburb as any).demographics?.publicHousingDwellings) !== undefined ? ((activeSuburb as any).demographics?.publicHousingDwellings)?.toLocaleString() : '—'}</strong></div>
-                            <hr className="u-903c557c" />
-                            <div>Approved Subdivisions (12m): <strong className="u-c154f6c6">{((activeSuburb as any).market?.approvedSubdivisions12m) !== undefined ? ((activeSuburb as any).market?.approvedSubdivisions12m) : '—'}</strong></div>
-                            <div>Min Lot Size for Subdivision: <strong className="u-c154f6c6">{((activeSuburb as any).market?.minApprovedSubdivisionSqm) ? `${((activeSuburb as any).market?.minApprovedSubdivisionSqm)} sqm` : '—'}</strong></div>
+                            {(((activeSuburb as any).avgBlockSqm) || ((activeSuburb as any).market?.avgBlockSqm)) && (
+                              <div>Avg Residential Block: <strong className="u-c154f6c6">{((activeSuburb as any).avgBlockSqm || (activeSuburb as any).market?.avgBlockSqm)} sqm</strong></div>
+                            )}
                           </div>
                         </div>
                       </div>

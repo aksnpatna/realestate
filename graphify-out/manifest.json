@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1792380400.712725,
-    "ast_hash": "073b06abd19b6ae1fd8d99a974434840",
+    "mtime": 1792467100.3635786,
+    "ast_hash": "dd280c9472f2a852b071f8f385a2a1db",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1792465865.8205028,
-    "ast_hash": "bdbbf3ad959e4b0d96ee4321b19427ff",
+    "mtime": 1792467003.252613,
+    "ast_hash": "af7d98135886781070851569e34b235e",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -755,13 +755,13 @@
     "semantic_hash": ""
   },
   "src/components/TechnicalProvenanceSection.tsx": {
-    "mtime": 1792380460.474385,
-    "ast_hash": "6af13aa6cc1ef720e7ffac12127814c4",
+    "mtime": 1792467039.286858,
+    "ast_hash": "9edb1e6419f7fc0320613595172c3403",
     "semantic_hash": ""
   },
   "src/data/personas.ts": {
-    "mtime": 1792465865.833392,
-    "ast_hash": "c282170a342910ce5c261d445b207711",
+    "mtime": 1792467052.6245787,
+    "ast_hash": "b827f324b38cfc17b7bc42666d377efa",
     "semantic_hash": ""
   },
   "src/services/analytics.ts": {

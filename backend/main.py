@@ -1446,7 +1446,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "subdivisionPotential": (
             "High" if v3.min_approved_subdivision_sqm is not None and v3.min_approved_subdivision_sqm < 300
             else "Medium" if v3.min_approved_subdivision_sqm is not None and v3.min_approved_subdivision_sqm < 600
-            else "Low"
+            else "Low" if v3.min_approved_subdivision_sqm is not None
+            else None
         ),
         "approvedSubdivisions12m": v3.approved_subdivisions_12m,
         "minApprovedSubdivisionSqm": v3.min_approved_subdivision_sqm,
@@ -2644,7 +2645,7 @@ def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
             "impact": (
                 f"Avg block size: {avg_lot} sqm (OSM). "
                 f"Min observed lot: {min_lot} sqm. "
-                f"{'Small lots indicate active subdivision precedent.' if min_lot and min_lot < 300 else 'Moderate density.' if min_lot else ''}"
+                f"{'Small lots indicate higher-density residential character.' if min_lot and min_lot < 300 else 'Moderate density.' if min_lot else ''}"
             ) if avg_lot or min_lot
             else "No lot-size data available.",
             "source": "OSM building footprints (real) / NSW Planning (real)" if min_lot else "OSM building footprints",
@@ -2655,7 +2656,8 @@ def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
                 "subdivision_potential": (
                     "High" if min_lot is not None and min_lot < 300
                     else "Medium" if min_lot is not None and min_lot < 600
-                    else "Low"
+                    else "Low" if min_lot is not None
+                    else None
                 ),
             },
         },

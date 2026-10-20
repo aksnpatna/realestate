@@ -93,27 +93,20 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
     },
   ]
 
-  const subdivIndicators: Indicator[] = [
+  const lotSizeIndicators: Indicator[] = [
     {
-      key: 'approved_subdivisions_12m',
-      label: 'Approved Subdivisions (12m)',
-      value: s.approvedSubdivisions12m != null && s.approvedSubdivisions12m > 0 ? s.approvedSubdivisions12m : null,
-      impact: 'Real council DAs approved in this suburb — zero means no real feed integrated for this state.',
-      source: 'State planning APIs (NSW only) / no feed for other states',
+      key: 'avg_block_sqm',
+      label: 'Avg Residential Block Size',
+      value: s.avgBlockSqm != null ? `${s.avgBlockSqm} sqm` : null,
+      impact: 'Estimated average residential parcel footprint in the suburb.',
+      source: 'OpenStreetMap building footprints',
     },
     {
       key: 'min_approved_subdivision_sqm',
-      label: 'Min Observed Lot (sqm)',
+      label: 'Planning Scheme Min Lot (NSW)',
       value: s.minApprovedSubdivisionSqm != null ? `${s.minApprovedSubdivisionSqm} sqm` : null,
-      impact: 'Smallest lot observed — from NSW planning rules or OSM building-footprint proxy for other states.',
-      source: 'NSW ePlanning (real) / OSM P10 footprint proxy (non-NSW)',
-    },
-    {
-      key: 'subdivision_potential',
-      label: 'Subdivision Potential',
-      value: s.subdivisionPotential ?? null,
-      impact: 'Derived from min observed lot size. <300 sqm = High, <600 = Medium, else Low.',
-      source: 'Derived: min_approved_subdivision_sqm thresholds',
+      impact: 'Baseline minimum lot size specified in council planning scheme layers where available.',
+      source: 'NSW ePlanning Spatial Layers',
     },
   ]
 
@@ -129,7 +122,7 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
       key: 'greenfield_sqkm',
       label: 'Greenfield SqKm',
       value: s.greenfieldSqkm != null ? `${Number(s.greenfieldSqkm).toFixed(2)} km²` : null,
-      impact: 'Undeveloped land potentially available for future subdivision.',
+      impact: 'Undeveloped or rural-urban fringe land area.',
       source: 'OpenStreetMap',
     },
     {
@@ -201,9 +194,9 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
         </div>
         <div>
           <h4 className="u-4cdf1ffb">
-            📐 Subdivision Precedent
+            📐 Residential Lot Size Context
           </h4>
-          {indicatorGrid(subdivIndicators)}
+          {indicatorGrid(lotSizeIndicators)}
         </div>
         <div>
           <h4 className="u-4cdf1ffb">
