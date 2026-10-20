@@ -1664,28 +1664,6 @@ function App() {
                   <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'listings' ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'listings' }}>
                     <h3 className="u-d5c2d613">Evidence Feed & Development Potential</h3>
                     <div className="u-8f5d5c7e">
-                      <div className="u-c34a8700">
-                        <h4 className="u-2a460efc">💰 Recent Comparable Sales</h4>
-                        {activeSuburb && (activeSuburb as any).salesSummary && ((activeSuburb as any).salesSummary as any[]).length > 0 ? (
-                          ((activeSuburb as any).salesSummary as any[]).map((s: any, i: number) => (
-                            <div key={i} className="u-7e3191b4">
-                              <div>
-                                <div className="u-2bdaffa6">{s.address || `Comparable Sale ${i+1}`}</div>
-                                <div className="u-fa681d48">
-                                  {s.beds ? `${s.beds} Bed` : ''}{s.baths ? ` / ${s.baths} Bath` : ''}{s.type ? ` • ${s.type}` : ''} 
-                                  <span className="u-daf545a8">|</span> 
-                                  Sold {s.saleDate || 'Recently'}
-                                </div>
-                              </div>
-                              <div className="u-d7c4af4d">
-                                {s.salePrice ? `$${s.salePrice.toLocaleString()}` : 'Price N/A'}
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="u-8d12c3c6">No recent sales evidence available in database</div>
-                        )}
-                      </div>
                       <div className="u-0f1ccee2">
                         <div className="u-cb89a99b">
                           <h4 className="u-5086da32">🏷️ Market Inventory</h4>

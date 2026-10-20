@@ -279,7 +279,7 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
 
           {step === 5 && (
             <div className="animate-fade-in">
-              <h3 className="u-f4f4fabb">Step 5: Due Diligence Checklist</h3>
+              <h3 className="u-f4f4fabb">Step 5: Suburb Shortlist Comparison</h3>
               {shortlist.length === 0 ? (
                 <div className="u-319fa64e">Please go back and select at least one suburb.</div>
               ) : (

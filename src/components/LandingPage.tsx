@@ -46,19 +46,19 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
         <div className="lp-nav-actions">
           {onViewSamples && <button onClick={onViewSamples} className="lp-btn-ghost">Sample Reports</button>}
           <button onClick={onLoginClick} className="lp-btn-ghost">Log in</button>
-          <button onClick={onRegisterClick} className="lp-btn-primary">Start Free Trial</button>
+          <button onClick={onRegisterClick} className="lp-btn-primary">Get Started Free</button>
         </div>
       </nav>
 
       {/* Hero Section */}
       <section className="lp-hero">
         <div className="lp-hero-content">
-          <div className="lp-hero-badge">✨ The new standard in property research</div>
+          <div className="lp-hero-badge">Suburb research made simple</div>
           <h1 className="lp-hero-title">
             Find the right suburb for your <span className="lp-text-gradient">life and budget</span>
           </h1>
           <p className="lp-hero-subtitle">
-            Skip the spreadsheets. PropertyIQ analyzes 13,000+ suburbs instantly to match your borrowing capacity, investment strategy, or lifestyle needs.
+            Skip the spreadsheets. PropertyIQ brings together public suburb data for 13,000+ suburbs to help you compare where to buy, based on your budget, goals and lifestyle.
           </p>
 
           {/* Persona Selector */}
@@ -103,7 +103,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <Icon name="home" size={24} color="#10b981" />
-                  <span>I want to buy my first home</span>
+                  <span>I'm researching suburbs for my first home</span>
                 </div>
                 <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
               </button>
@@ -118,7 +118,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <Icon name="chart" size={24} color="#f59e0b" />
-                  <span>I'm looking for an investment property</span>
+                  <span>I'm comparing suburbs for investment</span>
                 </div>
                 <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
               </button>
@@ -133,7 +133,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <Icon name="users" size={24} color="#3b82f6" />
-                  <span>I want to upgrade to a family home</span>
+                  <span>I'm looking for a family-friendly suburb</span>
                 </div>
                 <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
               </button>
@@ -144,11 +144,11 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             <div className="lp-trust-badges">
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
-                <span>13,284 Suburbs Analyzed</span>
+                <span>13,000+ Suburbs Covered</span>
               </div>
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
-                <span>Updated Weekly</span>
+                <span>Regularly Updated</span>
               </div>
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
@@ -156,13 +156,13 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
               </div>
               <div className="lp-trust-badge">
                 <Icon name="check" size={16} />
-                <span>AI-Powered Insights</span>
+                <span>AI-Assisted Suburb Summaries</span>
               </div>
             </div>
             <div className="lp-sp-logos">
               <span>ABS Census</span>
               <span className="lp-dot">•</span>
-              <span>Valuer General</span>
+              <span>ACARA</span>
               <span className="lp-dot">•</span>
               <span>OpenStreetMap</span>
             </div>
@@ -173,16 +173,16 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
       {/* Persona Section */}
       <section className="lp-personas">
         <div className="lp-container">
-          <h2 className="lp-section-title">Built for every property strategy</h2>
+          <h2 className="lp-section-title">Suburb research for every buyer</h2>
           <div className="lp-grid-3">
             
             <div className="lp-persona-card">
               <div className="lp-persona-icon"><Icon name="home" size={32} /></div>
               <h3>First Home Buyers</h3>
-              <p>Find suburbs where you can actually afford to buy, factoring in stamp duty, LMI, and true borrowing capacity.</p>
+              <p>Shortlist suburbs that fit your budget and lifestyle, with school catchments and livability information.</p>
               <ul className="lp-feature-list">
-                <li><Icon name="check" size={16} /> True Affordability Calculator</li>
-                <li><Icon name="check" size={16} /> Official School Zones</li>
+                <li><Icon name="check" size={16} /> Affordability Calculator</li>
+                <li><Icon name="check" size={16} /> School Zone Mapping</li>
                 <li><Icon name="check" size={16} /> Livability Scores</li>
               </ul>
               <button onClick={onRegisterClick} className="lp-btn-outline">I'm a Buyer</button>
@@ -191,11 +191,11 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             <div className="lp-persona-card lp-persona-featured">
               <div className="lp-persona-icon"><Icon name="chart" size={32} /></div>
               <h3>Property Investors</h3>
-              <p>Discover high-yield, high-growth pockets before the market catches on. Full cashflow and depreciation modelling.</p>
+              <p>Compare suburb-level rental yields, market trends and demographics to decide where to focus your search.</p>
               <ul className="lp-feature-list">
-                <li><Icon name="check" size={16} /> Pre-tax & Post-tax Cashflow</li>
-                <li><Icon name="check" size={16} /> 10-Year Growth Forecasts</li>
-                <li><Icon name="check" size={16} /> AI Bull/Bear Committee</li>
+                <li><Icon name="check" size={16} /> Suburb Yield &amp; Rent Trends</li>
+                <li><Icon name="check" size={16} /> Historical Market Charts</li>
+                <li><Icon name="check" size={16} /> Demographic Insights</li>
               </ul>
               <button onClick={onRegisterClick} className="lp-btn-primary">I'm an Investor</button>
             </div>
@@ -203,11 +203,11 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
             <div className="lp-persona-card">
               <div className="lp-persona-icon"><Icon name="brief" size={32} /></div>
               <h3>Buyer's Agents</h3>
-              <p>Generate world-class, white-labeled decision briefs for your clients backed by deterministic, explainable data.</p>
+              <p>Produce suburb briefs for your clients with every metric traced back to its source.</p>
               <ul className="lp-feature-list">
-                <li><Icon name="check" size={16} /> Client Audit Trails (PDF)</li>
-                <li><Icon name="check" size={16} /> Full Data Provenance</li>
-                <li><Icon name="check" size={16} /> Confidence Bands</li>
+                <li><Icon name="check" size={16} /> Exportable Suburb Briefs</li>
+                <li><Icon name="check" size={16} /> Data Source Transparency</li>
+                <li><Icon name="check" size={16} /> Data Quality Indicators</li>
               </ul>
               <button onClick={onRegisterClick} className="lp-btn-outline">I'm an Agent</button>
             </div>
@@ -221,28 +221,28 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
         <div className="lp-container">
           <div className="lp-split">
             <div className="lp-split-text">
-              <h2 className="lp-section-title text-left">Stop guessing. Start knowing.</h2>
-              <p className="lp-lead">We process millions of data points across the country every week so you don't have to.</p>
+              <h2 className="lp-section-title text-left">Stop guessing. Start comparing.</h2>
+              <p className="lp-lead">We bring public and open suburb data together in one place so you don't have to.</p>
               
               <div className="lp-step">
                 <div className="lp-step-number">1</div>
                 <div>
-                  <h4>Tell us your strategy</h4>
-                  <p>Set your budget, deposit, and goals (yield vs growth).</p>
+                  <h4>Tell us what matters</h4>
+                  <p>Set your budget and priorities such as yield, growth, schools or lifestyle.</p>
                 </div>
               </div>
               <div className="lp-step">
                 <div className="lp-step-number">2</div>
                 <div>
                   <h4>Ask anything</h4>
-                  <p>Use our AI search to find "suburbs with 3+ bed houses near train stations under $900k".</p>
+                  <p>Use our AI search to ask things like "suburbs near train stations with good schools".</p>
                 </div>
               </div>
               <div className="lp-step">
                 <div className="lp-step-number">3</div>
                 <div>
-                  <h4>Get the full picture</h4>
-                  <p>View rich suburb profiles with market pulses, demographic shifts, and exact cashflow projections.</p>
+                  <h4>Explore the suburb</h4>
+                  <p>View suburb profiles with market trends, demographics and amenities.</p>
                 </div>
               </div>
             </div>
@@ -250,19 +250,18 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
               <div className="lp-mock-card">
                 <div className="lp-mock-header">
                   <div>
-                    <h5>Point Cook, VIC 3030</h5>
-                    <span className="lp-mock-badge">High Growth</span>
+                    <h5>Sample suburb profile</h5>
+                    <span className="lp-mock-badge">Illustrative example</span>
                   </div>
-                  <div className="lp-mock-score">84</div>
                 </div>
                 <div className="lp-mock-metrics">
                   <div>
                     <span>Median House</span>
-                    <strong>$780,000</strong>
+                    <strong>$—</strong>
                   </div>
                   <div>
                     <span>Rental Yield</span>
-                    <strong>4.2%</strong>
+                    <strong>—%</strong>
                   </div>
                 </div>
                 <div className="lp-mock-chart"></div>
@@ -273,93 +272,14 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
       </section>
 
 
-      {/* Services Section */}
-      <section className="lp-services">
-        <div className="lp-container">
-          <div className="lp-section-header">
-            <div className="lp-eyebrow">What We Do</div>
-            <h2 className="lp-section-title">Don't buy the wrong property</h2>
-            <p className="lp-section-description">
-              The property you choose today could affect your wealth for the next <strong>decade</strong>. 
-              We make sure it's the right one — four ways to work with us.
-            </p>
-          </div>
-          <div className="lp-services-grid">
-            <div className="lp-service-card">
-              <div className="lp-service-image lp-service-image--advisory">
-                <span className="lp-service-tag">Most popular</span>
-              </div>
-              <div className="lp-service-content">
-                <h3>Full Buyer Advisory</h3>
-                <p>We run the whole purchase — search to keys.</p>
-                <ul className="lp-service-features">
-                  <li><Icon name="check" size={16} /> Search &amp; shortlist</li>
-                  <li><Icon name="check" size={16} /> Due diligence</li>
-                  <li><Icon name="check" size={16} /> Negotiate &amp; settle</li>
-                </ul>
-                <button onClick={onRegisterClick} className="lp-btn-primary">Book a Free Consult →</button>
-              </div>
-            </div>
-
-            <div className="lp-service-card">
-              <div className="lp-service-image lp-service-image--diligence">
-                <span className="lp-service-tag">Already found a property?</span>
-              </div>
-              <div className="lp-service-content">
-                <h3>Property Due Diligence</h3>
-                <p>An independent second opinion before you commit.</p>
-                <ul className="lp-service-features">
-                  <li><Icon name="check" size={16} /> Objective assessment</li>
-                  <li><Icon name="check" size={16} /> Comparable sales</li>
-                  <li><Icon name="check" size={16} /> Buy / Consider / Avoid</li>
-                </ul>
-                <button onClick={onRegisterClick} className="lp-btn-outline">Get It Assessed →</button>
-              </div>
-            </div>
-
-            <div className="lp-service-card">
-              <div className="lp-service-image lp-service-image--sourcing">
-                <span className="lp-service-tag">Know where you want to buy?</span>
-              </div>
-              <div className="lp-service-content">
-                <h3>Property Sourcing</h3>
-                <p>You've picked the market. We find the property.</p>
-                <ul className="lp-service-features">
-                  <li><Icon name="check" size={16} /> On &amp; off-market search</li>
-                  <li><Icon name="check" size={16} /> Data-led shortlist</li>
-                  <li><Icon name="check" size={16} /> Value vs comparable sales</li>
-                </ul>
-                <button onClick={onRegisterClick} className="lp-btn-outline">Find Me a Property →</button>
-              </div>
-            </div>
-
-            <div className="lp-service-card">
-              <div className="lp-service-image lp-service-image--portfolio">
-                <span className="lp-service-tag">Already own property?</span>
-              </div>
-              <div className="lp-service-content">
-                <h3>Portfolio Intelligence</h3>
-                <p>Buying is only the beginning — we keep watching.</p>
-                <ul className="lp-service-features">
-                  <li><Icon name="check" size={16} /> Value, equity and yield tracked</li>
-                  <li><Icon name="check" size={16} /> Quarterly performance report</li>
-                  <li><Icon name="check" size={16} /> Thesis Break Alerts</li>
-                </ul>
-                <button onClick={onRegisterClick} className="lp-btn-outline">Watch My Portfolio →</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* How It Works */}
       <section className="lp-how-it-works">
         <div className="lp-container">
           <div className="lp-section-header">
             <div className="lp-eyebrow">How It Works</div>
-            <h2 className="lp-section-title">Four steps. Four answers.</h2>
+            <h2 className="lp-section-title">Four steps to a shortlist of suburbs</h2>
             <p className="lp-section-description">
-              Every buyer faces the same four questions. We answer each one with evidence before you commit a cent.
+              Suburb research only: we help you decide where to look. We do not value, assess or recommend individual properties.
             </p>
           </div>
           <div className="lp-process-flow">
@@ -368,9 +288,9 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
                 <Icon name="search" size={24} />
               </div>
               <span className="lp-process-number">STEP 01</span>
-              <h3>Strategy</h3>
-              <p className="lp-process-question">“Where should I buy?”</p>
-              <p>Your goals, budget and risk appetite become a written brief.</p>
+              <h3>Set your criteria</h3>
+              <p className="lp-process-question">“Where should I look?”</p>
+              <p>Enter your budget, goals and priorities such as schools, transport and lifestyle.</p>
             </div>
 
             <div className="lp-process-step">
@@ -378,9 +298,9 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
                 <Icon name="chart" size={24} />
               </div>
               <span className="lp-process-number">STEP 02</span>
-              <h3>Research</h3>
-              <p className="lp-process-question">“Is this suburb going to grow?”</p>
-              <p>30+ factors across six dimensions, with hard risk gates.</p>
+              <h3>Compare suburbs</h3>
+              <p className="lp-process-question">“How do these suburbs stack up?”</p>
+              <p>Side-by-side suburb metrics for market trends, demographics and amenities.</p>
             </div>
 
             <div className="lp-process-step">
@@ -388,9 +308,9 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
                 <Icon name="check" size={24} />
               </div>
               <span className="lp-process-number">STEP 03</span>
-              <h3>Due Diligence</h3>
-              <p className="lp-process-question">“What risks am I missing?”</p>
-              <p>Comparable sales, condition, zoning and hazard checks.</p>
+              <h3>Check the risks</h3>
+              <p className="lp-process-question">“What should I watch for?”</p>
+              <p>Suburb-level data-quality flags and the known gaps behind each metric.</p>
             </div>
 
             <div className="lp-process-step">
@@ -398,9 +318,9 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
                 <Icon name="brief" size={24} />
               </div>
               <span className="lp-process-number">STEP 04</span>
-              <h3>Negotiate &amp; Buy</h3>
-              <p className="lp-process-question">“Am I paying the right price?”</p>
-              <p>We negotiate or bid on your behalf and see it to settlement.</p>
+              <h3>Save your research</h3>
+              <p className="lp-process-question">“What did I find?”</p>
+              <p>Keep a suburb brief to revisit, or share with your broker or buyer's agent.</p>
             </div>
           </div>
         </div>
@@ -410,23 +330,23 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
       <section className="lp-trust">
         <div className="lp-container">
           <div className="lp-section-header">
-            <h2 className="lp-section-title">Why buyers choose PropertyIQ</h2>
+            <h2 className="lp-section-title">Why people use PropertyIQ</h2>
           </div>
           <div className="lp-trust-grid">
             <div className="lp-trust-card">
               <div className="lp-trust-icon">
                 <Icon name="check" size={24} />
               </div>
-              <h3>Independent</h3>
-              <p>We represent you, not the seller. No commissions from vendors, ever.</p>
+              <h3>Suburb-focused</h3>
+              <p>Built for choosing where to buy, not for pricing a specific property.</p>
             </div>
 
             <div className="lp-trust-card">
               <div className="lp-trust-icon">
                 <Icon name="chart" size={24} />
               </div>
-              <h3>Evidence-Led</h3>
-              <p>Data, not opinion. See the why behind every recommendation.</p>
+              <h3>Evidence-led</h3>
+              <p>Each metric shows its source and a data-quality indicator.</p>
             </div>
 
             <div className="lp-trust-card">
@@ -434,7 +354,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
                 <Icon name="search" size={24} />
               </div>
               <h3>Transparent</h3>
-              <p>Our methodology and assumptions are open and visible.</p>
+              <p>General information only, not financial or valuation advice.</p>
             </div>
           </div>
         </div>

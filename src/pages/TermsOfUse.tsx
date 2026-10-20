@@ -30,7 +30,7 @@ export const TermsOfUse: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
 
       <h2>3. NOT Financial Advice</h2>
       <p>
-        <strong>The Service does not provide financial, legal, tax, lending, or valuation advice.</strong>
+        <strong>The Service does not provide financial, legal, tax, lending, or valuation advice.</strong> PropertyIQ is a suburb-level research tool. It does not value, appraise, assess or recommend any individual property.
         All content is general research only. It does not take into account your personal objectives,
         financial situation, or needs. You should:
       </p>

@@ -170,8 +170,8 @@ export const PRICING_TIERS: Record<PricingTierId, PricingTier> = {
     id: 'premium',
     label: 'Professional',
     price: '$99/mo',
-    description: 'Built for Buyer’s Agents, Brokers, and property professionals.',
-    features: ['White-Labeled Client Reports', 'Technical Provenance & Lot Size Data', 'Subdivision & Planning Feasibility', 'Multi-Client Portfolio Tracking']
+    description: 'Built for Buyer’s Agents, Brokers, and property professionals researching suburbs.',
+    features: ['Exportable Suburb Briefs for Clients', 'Technical Data Provenance', 'Suburb Shortlist Comparison', 'Multi-Client Suburb Tracking']
   }
 }
 
