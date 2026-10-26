@@ -5,6 +5,7 @@ interface Props {
 }
 
 export default memo(function MarketCycleClock({ suburb }: Props) {
+  const priceChange = Number(suburb.houseMedianPrice12mChangePct) || 0;
   const hasVacancy = suburb.vacancyRate != null;
   const vacancyRate = hasVacancy ? Number(suburb.vacancyRate) : null;
   const dom = Number(suburb.houseDaysOnMarket) || 0;
