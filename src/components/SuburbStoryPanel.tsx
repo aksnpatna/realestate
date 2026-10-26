@@ -43,7 +43,8 @@ export function SuburbStoryPanel({ suburb }: SuburbStoryPanelProps) {
 
   const getSuitability = () => {
     const isAffordable = (suburb.houseMedianPrice || suburb.metrics?.medianPrice || 1000000) < 700000;
-    const isClose = (suburb.cbdDistanceMins || 40) < 30;
+    const cbdMins = suburb.cbdDistanceMins ?? (suburb as any).cbdDistance ?? 40;
+    const isClose = cbdMins < 30;
 
     return {
       goodFit: [
@@ -65,80 +66,74 @@ export function SuburbStoryPanel({ suburb }: SuburbStoryPanelProps) {
   const suitability = getSuitability();
 
   return (
-    <div className="suburb-story-panel" style={{ padding: '2rem 0' }}>
+    <div className="suburb-story-panel" style={{ padding: '0.75rem 0 1.25rem 0' }}>
       
       {/* SECTION 1: The Short Version */}
-      <div style={{ marginBottom: '4rem' }}>
-        <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1.5rem', fontWeight: 700 }}>
+      <div style={{ marginBottom: '1.25rem' }}>
+        <h2 style={{ fontSize: '1.3rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>
           The Short Version
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
           
-          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #10b981', boxShadow: 'var(--shadow-sm)' }}>
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>The Opportunity</h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{shortVersion.opportunity}</p>
+          <div style={{ background: 'var(--bg-card)', padding: '1rem 1.25rem', borderRadius: '10px', borderTop: '3px solid #10b981', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '0.95rem', color: 'var(--brand-navy)', marginBottom: '0.4rem', fontWeight: 700 }}>The Opportunity</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.5, fontSize: '0.88rem', margin: 0 }}>{shortVersion.opportunity}</p>
           </div>
 
-          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #f59e0b', boxShadow: 'var(--shadow-sm)' }}>
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>The Tension</h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{shortVersion.tension}</p>
+          <div style={{ background: 'var(--bg-card)', padding: '1rem 1.25rem', borderRadius: '10px', borderTop: '3px solid #f59e0b', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '0.95rem', color: 'var(--brand-navy)', marginBottom: '0.4rem', fontWeight: 700 }}>The Tension</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.5, fontSize: '0.88rem', margin: 0 }}>{shortVersion.tension}</p>
           </div>
 
-          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', borderTop: '4px solid #3b82f6', boxShadow: 'var(--shadow-sm)' }}>
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>The Outlook</h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{shortVersion.outlook}</p>
-          </div>
-
-        </div>
-      </div>
-
-      {/* SECTION 2: What Life Might Feel Like */}
-      <div style={{ marginBottom: '4rem' }}>
-        <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1rem', fontWeight: 700 }}>
-          What Life Might Feel Like
-        </h2>
-        <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(99, 102, 241, 0.1)' }}>
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-primary)', lineHeight: 1.7 }}>
-            {lifeProfile}
-          </p>
-        </div>
-      </div>
-
-      {/* SECTION 3: Who Should Consider It */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1.5rem', fontWeight: 700 }}>
-          Who Should Consider It?
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-          
-          <div style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
-            <h3 style={{ fontSize: '1.1rem', color: '#10b981', marginBottom: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Icon name="check" size={18} /> Good fit if you:
-            </h3>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {suitability.goodFit.map((item, i) => (
-                <li key={i} style={{ color: 'var(--text-secondary)', lineHeight: 1.5, display: 'flex', gap: '0.5rem' }}>
-                  <span style={{ color: '#10b981' }}>•</span> {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
-            <h3 style={{ fontSize: '1.1rem', color: '#f43f5e', marginBottom: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Icon name="alert-circle" size={18} /> Less suitable if you:
-            </h3>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {suitability.lessSuitable.map((item, i) => (
-                <li key={i} style={{ color: 'var(--text-secondary)', lineHeight: 1.5, display: 'flex', gap: '0.5rem' }}>
-                  <span style={{ color: '#f43f5e' }}>•</span> {item}
-                </li>
-              ))}
-            </ul>
+          <div style={{ background: 'var(--bg-card)', padding: '1rem 1.25rem', borderRadius: '10px', borderTop: '3px solid #3b82f6', boxShadow: 'var(--shadow-sm)' }}>
+            <h3 style={{ fontSize: '0.95rem', color: 'var(--brand-navy)', marginBottom: '0.4rem', fontWeight: 700 }}>The Outlook</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.5, fontSize: '0.88rem', margin: 0 }}>{shortVersion.outlook}</p>
           </div>
 
         </div>
       </div>
+
+      {/* SECTION 2 & 3: Compact Demographic Profile & Suitability Disclosure */}
+      <details style={{ background: 'var(--bg-card)', padding: '0.85rem 1.25rem', borderRadius: '10px', border: '1px solid var(--border-glass)', marginBottom: '1rem' }}>
+        <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', color: 'var(--brand-navy)' }}>
+          Demographic Fit & Lifestyle Context (ABS Profile)
+        </summary>
+        <div style={{ marginTop: '0.85rem' }}>
+          <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid rgba(99, 102, 241, 0.1)', marginBottom: '0.85rem' }}>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-primary)', lineHeight: 1.5, margin: 0 }}>
+              {lifeProfile}
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.85rem' }}>
+            <div style={{ background: 'rgba(16, 185, 129, 0.04)', padding: '0.85rem', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
+              <h4 style={{ fontSize: '0.85rem', color: '#10b981', marginBottom: '0.4rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Icon name="check" size={15} /> Good fit if you:
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.82rem' }}>
+                {suitability.goodFit.map((item, i) => (
+                  <li key={i} style={{ color: 'var(--text-secondary)', lineHeight: 1.4, display: 'flex', gap: '0.4rem' }}>
+                    <span style={{ color: '#10b981' }}>•</span> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div style={{ background: 'rgba(244, 63, 94, 0.04)', padding: '0.85rem', borderRadius: '8px', border: '1px solid rgba(244, 63, 94, 0.15)' }}>
+              <h4 style={{ fontSize: '0.85rem', color: '#f43f5e', marginBottom: '0.4rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Icon name="alert-circle" size={15} /> Less suitable if you:
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.82rem' }}>
+                {suitability.lessSuitable.map((item, i) => (
+                  <li key={i} style={{ color: 'var(--text-secondary)', lineHeight: 1.4, display: 'flex', gap: '0.4rem' }}>
+                    <span style={{ color: '#f43f5e' }}>•</span> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
 
     </div>
   );

@@ -135,8 +135,11 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
           </div>
           {discovery.trace_log && (
             <details className="sr__trace" onClick={(e) => { e.stopPropagation(); handleSectionClick('trace_log'); }}>
-              <summary>Data Lineage Trace</summary>
-              <pre>{discovery.trace_log.query}</pre>
+              <summary>Data Lineage & Methodology</summary>
+              <div style={{ padding: '8px 12px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                <div><strong>Dataset Origin:</strong> {discovery.trace_log.dataset_origin || 'National Property & Demographic Index'}</div>
+                <div><strong>Engine:</strong> {discovery.trace_log.engine || 'Spatial Index'}</div>
+              </div>
             </details>
           )}
         </div>

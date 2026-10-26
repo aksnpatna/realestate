@@ -128,7 +128,13 @@ export default memo(function QuickRoiCalculator({ medianPrice, medianRent, state
             </div>
             <div style={{ flex: '1 1 100px', background: results.gearing_status === 'positive' ? 'rgba(5,150,105,0.06)' : 'rgba(220,38,38,0.06)', border: `1px solid ${results.gearing_status === 'positive' ? 'rgba(5,150,105,0.15)' : 'rgba(220,38,38,0.15)'}`, padding: '10px 12px', borderRadius: '8px' }}>
               <div className="u-5da6e769" style={{color: results.gearing_status === 'positive' ? '#059669' : '#DC2626'}}>Weekly Cashflow</div>
-              <div className="u-9b2b0612">${results.net_weekly_cashflow}</div>
+              <div className="u-9b2b0612">
+                {(() => {
+                  const wf = results.net_weekly_cashflow ?? results.net_weekly_cashflow_post_tax ?? results.net_weekly_cashflow_pre_tax;
+                  if (wf == null) return '—';
+                  return `${wf >= 0 ? '+' : ''}$${Math.round(wf)}`;
+                })()}
+              </div>
             </div>
             <div className="u-8a3d380f">
               <div className="u-e25657dc">Upfront Required</div>

@@ -265,12 +265,12 @@ async def ask_query(
         result_count = len(graph_res.get("results", []))
         hops.append(ReasoningHop(
             step="discovery",
-            input_summary=f"Neo4j graph query with priorities={parsed.get('priorities',[])}",
+            input_summary=f"Spatial graph query with priorities={parsed.get('priorities',[])}",
             output_summary=f"Found {result_count} suburbs matching spatial + metric constraints",
             confidence=round(min(0.95, 0.5 + result_count * 0.1), 2),
-            data_sources=["neo4j_5.20", "osm_nodes", "acara_schools"],
-            decision_rationale=f"Cypher traversal across {_detected_poi_types(req.question)} POI types",
-            artifacts={"result_count": result_count, "engine": "neo4j", "poi_types": _detected_poi_types(req.question)},
+            data_sources=["Spatial Graph Index", "OpenStreetMap", "ACARA School Profiles"],
+            decision_rationale=f"Spatial graph traversal across {_detected_poi_types(req.question)} POI types",
+            artifacts={"result_count": result_count, "engine": "spatial_graph", "poi_types": _detected_poi_types(req.question)},
             latency_ms=round((time.time() - t_gd) * 1000, 1),
         ))
         
@@ -313,10 +313,10 @@ async def ask_query(
         result_count = len(disc.get("results", []))
         hops.append(ReasoningHop(
             step="discovery",
-            input_summary=f"PostGIS geo-search: goal={goal}, budget={budget}",
+            input_summary=f"Spatial geo-search: goal={goal}, budget={budget}",
             output_summary=f"Found {result_count} suburbs via composite scoring",
             confidence=round(min(0.92, 0.4 + result_count * 0.12), 2),
-            data_sources=["postgis", "suburbs_ui_v3", "cbd_anchors"],
+            data_sources=["Spatial Engine", "National Property Index", "Metro Anchors"],
             decision_rationale=f"Haversine distance + direction bearing + {'budget filter' if budget else 'no budget filter'}",
             artifacts={"result_count": result_count, "engine": "postgis"},
             latency_ms=round((time.time() - t_d) * 1000, 1),
@@ -421,7 +421,7 @@ async def ask_query(
         input_summary=f"Extracting evidence for {len(valid_suburbs)} suburbs, goal={goal}",
         output_summary=f"{len(all_evidence)} metrics extracted — DQ band: {dq_summary.get('band','N/A')} ({dq_summary.get('dq_score',0):.0f}/100)",
         confidence=round(dq_summary.get("dq_score", 50) / 100, 3) if dq_summary.get("dq_score") else 0.5,
-        data_sources=["suburbs_ui_v3", "government_open_data", "abs", "acara", "market_aggregates"],
+        data_sources=["National Property Index", "ABS Open Data", "ACARA School Profiles", "Market Records"],
         decision_rationale=f"Evidence pack: {goal} — {len(all_evidence)} metrics, {stale_count} stale" if stale_count else f"Evidence pack: {goal} — all {len(all_evidence)} metrics fresh",
         artifacts={"metric_count": len(all_evidence), "stale_count": stale_count, "dq_band": dq_summary.get("band"), "evidence_pack": goal},
         latency_ms=round((time.time() - t_ev) * 1000, 1),
@@ -982,7 +982,7 @@ async def get_sample_report(
         step="evidence", input_summary=f"Extracting for {len(valid_suburbs)} suburbs",
         output_summary=f"{len(all_evidence)} metrics — DQ: {dq_summary.get('band','N/A')}",
         confidence=round(dq_summary.get("dq_score",50)/100,3),
-        data_sources=["suburbs_ui_v3","corelogic","abs","acara"],
+        data_sources=["National Property Index", "ABS Census 2021", "ACARA School Profiles", "Market Records"],
         decision_rationale=f"Evidence pack: {goal}", latency_ms=round((time.time()-t_ev)*1000,1),
     ))
 

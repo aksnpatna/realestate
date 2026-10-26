@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1792467100.3635786,
-    "ast_hash": "dd280c9472f2a852b071f8f385a2a1db",
+    "mtime": 1793012558.6901376,
+    "ast_hash": "429edd050f5e8e0f1996d1b81c257fe5",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1792467003.252613,
-    "ast_hash": "af7d98135886781070851569e34b235e",
+    "mtime": 1793012975.1820953,
+    "ast_hash": "b768b2731027f7a14913b713757b74b0",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -400,8 +400,8 @@
     "semantic_hash": "b8aff440bce3b824e046304be7958dcd"
   },
   "src/components/QuickRoiCalculator.tsx": {
-    "mtime": 1785646737.1583757,
-    "ast_hash": "373b7976e43227fada9ab6c57cd49cf9",
+    "mtime": 1793012897.2980216,
+    "ast_hash": "c8348bd665d2c8dc82c982fec2241c9b",
     "semantic_hash": ""
   },
   "backend/migrate_history_to_timeseries.py": {
@@ -445,8 +445,8 @@
     "semantic_hash": ""
   },
   "src/components/TermsOfUseModal.tsx": {
-    "mtime": 1785646737.1544156,
-    "ast_hash": "634334d8dc04146c0cfba75ae1759323",
+    "mtime": 1793012677.3982024,
+    "ast_hash": "659dc344ab37886051e0943a103c9e5f",
     "semantic_hash": ""
   },
   "src/components/UserFavoritesTab.tsx": {
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "src/components/DecisionBrief.tsx": {
-    "mtime": 1788647686.5992978,
-    "ast_hash": "ffd5a42b27f98fb4a659154c9de85959",
+    "mtime": 1793013003.0594325,
+    "ast_hash": "92089d5c1afbc5ca457106710eb79fc0",
     "semantic_hash": ""
   },
   "backend/conftest.py": {
@@ -720,8 +720,8 @@
     "semantic_hash": ""
   },
   "src/components/MarketIndicatorsSection.tsx": {
-    "mtime": 1789778522.6368265,
-    "ast_hash": "e9f314a7732ec39f154470a49e301a39",
+    "mtime": 1793012627.8627841,
+    "ast_hash": "06c40e994380b4d60823bcaa33d59c1c",
     "semantic_hash": ""
   },
   "src/components/PersonaSwitcher.tsx": {
@@ -845,8 +845,8 @@
     "semantic_hash": ""
   },
   "src/components/MarketCycleClock.tsx": {
-    "mtime": 1785646737.1532435,
-    "ast_hash": "3c4ae4060c33cef236f6a775f5655067",
+    "mtime": 1793012914.899576,
+    "ast_hash": "afd2aa6ff1cc3ae5fb36a466b034b403",
     "semantic_hash": ""
   },
   "src/components/PriceHistoryChart.tsx": {
@@ -955,8 +955,8 @@
     "semantic_hash": ""
   },
   "backend/routers/ask_property.py": {
-    "mtime": 1792380432.835453,
-    "ast_hash": "a040d2ded3e330f3e5a705aa4d7846b1",
+    "mtime": 1793012428.5191047,
+    "ast_hash": "e1ed224227a3a548fc6d723b21c67f48",
     "semantic_hash": ""
   },
   "backend/test_news.py": {
@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "src/components/AskYieldSense.tsx": {
-    "mtime": 1792380473.8368769,
-    "ast_hash": "38f88c6f263a53803cc187fd3029c920",
+    "mtime": 1793012599.0557427,
+    "ast_hash": "38e8c8788d79f006f152bba1e99b6b3d",
     "semantic_hash": ""
   },
   "ai_search.md": {
@@ -975,8 +975,8 @@
     "semantic_hash": ""
   },
   "backend/ask/geo_discovery.py": {
-    "mtime": 1789549361.770861,
-    "ast_hash": "cf2824d32dee91a3562bfeef788dc838",
+    "mtime": 1793012375.4693668,
+    "ast_hash": "a01f895a1d89466bcc34b1e52e7b2ea5",
     "semantic_hash": ""
   },
   ".agents/AGENTS.md": {
@@ -1045,8 +1045,8 @@
     "semantic_hash": ""
   },
   "backend/ask/metric_registry.py": {
-    "mtime": 1789713915.2973604,
-    "ast_hash": "1a9cb2cefadce4874abd5fb60cfbdb05",
+    "mtime": 1793012364.8918364,
+    "ast_hash": "e9821100b3d7ae2d5000fbef9a4a12c9",
     "semantic_hash": ""
   },
   "backend/ask/observability.py": {
@@ -1095,8 +1095,8 @@
     "semantic_hash": ""
   },
   "backend/graph/graph_discovery.py": {
-    "mtime": 1789549221.4373226,
-    "ast_hash": "6e3fb7c364355c0e7b4ff602452389be",
+    "mtime": 1793012384.7289608,
+    "ast_hash": "d9651ad85d836bdbe8d0dfe672cf5e6b",
     "semantic_hash": ""
   },
   "backend/graph/graph_router.py": {
@@ -1155,8 +1155,8 @@
     "semantic_hash": ""
   },
   "backend/routers/suburbs_sqm.py": {
-    "mtime": 1792380446.600918,
-    "ast_hash": "77ef9be97e08f3f75ea892d015c40958",
+    "mtime": 1793012441.1835868,
+    "ast_hash": "ad548a629ffe242c54b9cbfab88543de",
     "semantic_hash": ""
   },
   "backend/routers/user_data.py": {
@@ -1330,8 +1330,8 @@
     "semantic_hash": ""
   },
   "src/components/PropertyListings.tsx": {
-    "mtime": 1788845793.4316137,
-    "ast_hash": "1c37186c05867573dcae032ac777cbe4",
+    "mtime": 1793012667.24852,
+    "ast_hash": "95eb73d63391ba4b24fc39e7c88e27f5",
     "semantic_hash": ""
   },
   "src/components/ROICalculator.tsx": {
@@ -1340,8 +1340,8 @@
     "semantic_hash": ""
   },
   "src/components/SampleReport.tsx": {
-    "mtime": 1790628389.602378,
-    "ast_hash": "eb6a12eb4f095add40b32c88435e3d32",
+    "mtime": 1793012585.2212138,
+    "ast_hash": "e6e3c9fabf2ca6aac674f21c796df92d",
     "semantic_hash": ""
   },
   "src/components/SettingsPage.tsx": {
@@ -1360,8 +1360,8 @@
     "semantic_hash": ""
   },
   "src/components/SuburbHero.tsx": {
-    "mtime": 1790628318.4452357,
-    "ast_hash": "30cc3e2c321bfa00881af5570072cc0b",
+    "mtime": 1793013029.5948138,
+    "ast_hash": "c4ffc5d7deff67fe67a658de3503601a",
     "semantic_hash": ""
   },
   "src/components/SuburbPersonalitySummary.tsx": {
@@ -1380,8 +1380,8 @@
     "semantic_hash": ""
   },
   "src/components/SuburbStoryPanel.tsx": {
-    "mtime": 1791339155.3158267,
-    "ast_hash": "010170074161e2f567782c3e899b2665",
+    "mtime": 1793012798.8626368,
+    "ast_hash": "dacce5cf5d6e349b739423a0d701eff1",
     "semantic_hash": ""
   },
   "src/components/TierGateOverlay.tsx": {
@@ -1390,8 +1390,8 @@
     "semantic_hash": ""
   },
   "src/components/UnifiedSearchView.tsx": {
-    "mtime": 1789697794.6975625,
-    "ast_hash": "55a46fea739ce460ecfc7d7f65f27756",
+    "mtime": 1793012616.9891427,
+    "ast_hash": "7e2c821eaad38b0f7d65a6ea669ec525",
     "semantic_hash": ""
   },
   "src/components/UpcomingAuctionsBadge.tsx": {

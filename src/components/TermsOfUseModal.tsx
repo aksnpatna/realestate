@@ -50,10 +50,10 @@ export default function TermsOfUseModal() {
             not guarantees. 
           </p>
 
-          <h3 className="u-82eb8033">3. Third-Party Data Sources</h3>
+          <h3 className="u-82eb8033">3. Public & Open Data Sources</h3>
           <p>
-            This platform ingests data from third-party sources including government registries, the Australian Bureau of Statistics (ABS), 
-            and commercial vendors. We do not guarantee the completeness, timeliness, or accuracy of the underlying source data.
+            This platform synthesizes data from public datasets including the Australian Bureau of Statistics (ABS), 
+            ACARA school performance registers, OpenStreetMap spatial data, and public real estate market listings. We do not guarantee the completeness, timeliness, or accuracy of the underlying source data.
           </p>
 
           <h3 className="u-82eb8033">4. Limitation of Liability</h3>

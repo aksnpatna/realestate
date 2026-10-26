@@ -29,7 +29,7 @@ export function PropertyListings({
   properties = [
     {
       id: 1,
-      address: '11 Peppertree Grove',
+      address: '4-Bed Family Residence',
       suburb: 'Quakers Hill, NSW 2763',
       price: '$850,000',
       rent: '$550 pw',
@@ -40,11 +40,11 @@ export function PropertyListings({
       image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop',
       equity: '+$600k',
       timeframe: 'in 48 months',
-      badge: 'SECURED FOR CLIENT'
+      badge: 'MARKET BENCHMARK'
     },
     {
       id: 2,
-      address: '14 Barley Court',
+      address: '3-Bed Established Home',
       suburb: 'Delahey, VIC 3037',
       price: '$680,000',
       rent: '$420 pw',
@@ -54,12 +54,12 @@ export function PropertyListings({
       area: 500,
       image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop',
       equity: '+$100k',
-      timeframe: 'before settlement',
-      badge: 'SECURED FOR CLIENT'
+      timeframe: 'in 12 months',
+      badge: 'MARKET BENCHMARK'
     },
     {
       id: 3,
-      address: '1 Burleigh Drive',
+      address: 'Regional Growth Asset',
       suburb: 'Grovedale, VIC 3216',
       price: '$720,000',
       rent: '$440 pw',
@@ -70,11 +70,11 @@ export function PropertyListings({
       image: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2070&auto=format&fit=crop',
       equity: '+$60k',
       timeframe: 'in 3 months',
-      badge: 'SECURED FOR CLIENT'
+      badge: 'MARKET BENCHMARK'
     },
     {
       id: 4,
-      address: '1310 Riverway Drive',
+      address: 'High-Yield Regional House',
       suburb: 'Kelso, QLD 4815',
       price: '$520,000',
       rent: '$380 pw',
@@ -85,11 +85,11 @@ export function PropertyListings({
       image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef934?q=80&w=2070&auto=format&fit=crop',
       equity: '+$230k',
       timeframe: 'in 24 months',
-      badge: 'SECURED FOR CLIENT'
+      badge: 'MARKET BENCHMARK'
     },
     {
       id: 5,
-      address: '2 Deed Court',
+      address: 'Middle-Ring Modernized House',
       suburb: 'Sunshine West, VIC 3020',
       price: '$650,000',
       rent: '$410 pw',
@@ -100,11 +100,11 @@ export function PropertyListings({
       image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2070&auto=format&fit=crop',
       equity: '+$85k',
       timeframe: 'in 6 months',
-      badge: 'SECURED FOR CLIENT'
+      badge: 'MARKET BENCHMARK'
     }
   ],
-  title = 'What it looks like when it goes right',
-  subtitle = 'A selection of recent client purchases — each one researched, assessed and negotiated by us, and $1.9M+ in combined estimated equity* between them.',
+  title = 'Sample Market Growth Profiles',
+  subtitle = 'Illustrative property case studies showing growth and yield performance in high-conviction investment corridors.',
   showEquity = true
 }: PropertyListingsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);

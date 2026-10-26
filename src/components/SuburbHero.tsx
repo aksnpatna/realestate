@@ -16,40 +16,41 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
     return null;
   }
 
-  const medianPrice = suburb.houseMedianPrice ? `$${(suburb.houseMedianPrice / 1000000).toFixed(2)}M` : 'N/A';
+  const price = suburb.houseMedianPrice || (suburb.metrics as any)?.medianPrice;
+  const medianPrice = price
+    ? (price >= 1000000 ? `$${(price / 1000000).toFixed(2)}M` : `$${Math.round(price / 1000)}k`)
+    : 'N/A';
   const priceChange = (suburb as any).houseMedianPrice12mChangePct || 0;
   
-  const rentalYield = (suburb as any).houseGrossRentalYield != null ? `${(suburb.houseGrossRentalYield as number).toFixed(1)}%` : 'N/A';
+  const yieldVal = (suburb as any).houseGrossRentalYield ?? (suburb as any).rentalYield ?? (suburb.metrics as any)?.rentalYield;
+  const rentalYield = yieldVal != null ? `${Number(yieldVal).toFixed(1)}%` : 'N/A';
   
   // Extract scores or fallback to null
   const growthScore = (suburb as any).growthScore || null;
-  const yieldScore = (suburb as any).yieldScore || null;
+  const vacancyVal = (suburb as any).vacancyRate;
+  const vacancyRate = vacancyVal != null ? `${Number(vacancyVal).toFixed(1)}%` : 'N/A';
   const dqScore = (suburb as any).dqScore || null;
-
-  // Use state-specific gradient — no property photos (suburb-level platform)
 
   // Generate investment thesis headline
   const getDecisionHeadline = () => {
     const isGrowth = growthScore && growthScore > 70;
-    const isHighYield = yieldScore && yieldScore > 4.5;
-    const isAffordable = (suburb as any).houseMedianPrice < 700000;
+    const isHighYield = yieldVal && Number(yieldVal) > 4.5;
+    const isAffordable = typeof price === 'number' && price > 0 && price < 700000;
 
     if (isGrowth && isHighYield) {
-      return "A suburb for people who want strong growth potential without sacrificing rental income.";
+      return "A high-conviction suburb combining strong historical capital momentum with above-average rental yields.";
     } else if (isGrowth) {
-      return "A suburb for people who want long-term capital appreciation without paying inner-city premiums.";
+      return "A growth-oriented market offering capital upside without inner-ring price premiums.";
     } else if (isHighYield) {
-      return "A suburb for people who want strong cashflow without paying for prestige.";
+      return "A cashflow-positive asset profile suited for yield generation and debt-servicing stability.";
     } else if (isAffordable) {
-      return "A suburb for people who want an accessible entry point without sacrificing essential amenities.";
+      return "An accessible entry corridor balancing purchase affordability with established infrastructure.";
     } else {
-      return "A suburb for people who want a stable, established lifestyle without exposing themselves to high volatility.";
+      return "A stable, established residential enclave with defensive fundamentals and low historical volatility.";
     }
   };
 
   const decisionHeadline = getDecisionHeadline();
-
-
 
   // Background: state-specific gradient with a dark overlay for legibility
   const backgroundStyles = {
@@ -69,7 +70,7 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
     left: 0,
     width: '100%',
     height: '100%',
-    background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.70) 0%, rgba(15, 23, 42, 0.92) 100%)',
+    background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.75) 0%, rgba(15, 23, 42, 0.95) 100%)',
   };
 
   return (
@@ -80,24 +81,27 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
       
       <div className="sh-container">
         <div className="sh-header">
-          <div className="sh-eyebrow">
-            {suburb.state} · {suburb.postcode} · {suburb.region || 'Australian Suburb'}
-          </div>
-          
-          <div className="sh-heading">
-            <h1 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "3.5rem", letterSpacing: "-1px", marginBottom: "0.5rem" }}>
-              {suburb.name}
-            </h1>
-            <p style={{ fontSize: "1.35rem", color: "#e2e8f0", maxWidth: "800px", lineHeight: "1.5" }}>
-              {decisionHeadline}
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                <Icon name="clock" size={14} /> Updated recently
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                <Icon name="check" size={14} /> Based on ABS Census & Government Data
-              </span>
+          <div className="sh-header-main">
+            <div className="sh-eyebrow">
+              {suburb.state} · {suburb.postcode} · {suburb.region || (suburb as any).metroCBD || 'Metro Region'}
+            </div>
+            
+            <div className="sh-heading">
+              <h1>{suburb.name}</h1>
+              <p>{decisionHeadline}</p>
+              <div className="sh-badges">
+                <span className="sh-badge">
+                  <Icon name="clock" size={14} /> Updated recently
+                </span>
+                <span className="sh-badge">
+                  <Icon name="check" size={14} /> ABS Census & Public Records
+                </span>
+                {dqScore && (
+                  <span className="sh-badge" style={{ color: dqScore >= 80 ? '#4ade80' : '#facc15' }}>
+                    Data Quality: {Math.round(dqScore)}/100
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -107,11 +111,11 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
                 navigator.share({ title: `${suburb.name} Profile`, url: window.location.href });
               }
             }}>
-              <Icon name="share" size={20} />
+              <Icon name="share" size={18} />
               <span>Share</span>
             </button>
             <button className={`sh-action-btn ${isSaved ? 'saved' : ''}`} onClick={onToggleSave}>
-              <Icon name="heart" size={20} />
+              <Icon name="heart" size={18} />
               <span>{isSaved ? 'Saved' : 'Save'}</span>
             </button>
           </div>
@@ -123,7 +127,7 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
             <div className="sh-metric-value">{medianPrice}</div>
             {priceChange !== 0 && (
               <div className={`sh-metric-change ${priceChange > 0 ? 'positive' : 'negative'}`}>
-                {priceChange > 0 ? '+' : ''}{priceChange.toFixed(1)}%
+                {priceChange > 0 ? '+' : ''}{priceChange.toFixed(1)}% 12m
               </div>
             )}
           </div>
@@ -131,11 +135,23 @@ export function SuburbHero({ suburb, isSaved, onToggleSave, persona = 'first_hom
           <div className="sh-metric">
             <div className="sh-metric-label">Gross Yield</div>
             <div className="sh-metric-value">{rentalYield}</div>
+            <div className="sh-metric-sub">Annualised rent / price</div>
           </div>
 
           <div className="sh-metric">
-            <div className="sh-metric-label">5yr Growth</div>
-            <div className="sh-metric-value">{growthScore ? `${growthScore}%` : 'N/A'}</div>
+            <div className="sh-metric-label">Market Momentum</div>
+            <div className="sh-metric-value" style={{ color: '#60a5fa' }}>
+              {growthScore ? `${Math.round(growthScore)}/100` : '—'}
+            </div>
+            <div className="sh-metric-sub">Composite demand score</div>
+          </div>
+
+          <div className="sh-metric">
+            <div className="sh-metric-label">Vacancy Rate</div>
+            <div className="sh-metric-value" style={{ color: vacancyVal && vacancyVal < 2 ? '#4ade80' : '#facc15' }}>
+              {vacancyRate}
+            </div>
+            <div className="sh-metric-sub">Rental availability</div>
           </div>
         </div>
       </div>

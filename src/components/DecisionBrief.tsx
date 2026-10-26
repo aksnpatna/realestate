@@ -148,7 +148,7 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
             🏦 Pre-Approval & Broker Handoff
           </div>
           <div className="u-ea633243">
-            Your <strong>Buyer Fit</strong> is high and the <strong>ASX Market Predictor</strong> indicates a score of {selectedResult.market_timing_score || 50}/100 for this suburb's capital growth phase. 
+            Your <strong>Buyer Fit</strong> is high and the <strong>Market Timing Model</strong> indicates a score of {selectedResult.market_timing_score || 50}/100 for this suburb's capital growth phase. 
             Lock in your borrowing capacity to action this brief.
           </div>
           <button 
@@ -172,19 +172,19 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
         </div>
 
         {/* Responsible Next Steps */}
-        <div className="db__compliance u-4a682385">
-          <div className="db__compliance-title">Responsible Next Steps — outside this app</div>
-          <div className="u-df6a5298">
+        <details className="db__compliance u-4a682385" style={{ padding: '10px 14px', borderRadius: '8px', cursor: 'pointer' }}>
+          <summary className="db__compliance-title" style={{ fontWeight: 600 }}>Responsible Next Steps — outside this app</summary>
+          <div className="u-df6a5298" style={{ marginTop: '8px' }}>
             <div>1. Obtain a formal serviceability assessment from a licensed broker or lender.</div>
             <div>2. Inspect actual listings and compare recent sales prices in this suburb.</div>
             <div>3. Arrange strata, building, planning, flood and bushfire checks as relevant.</div>
             <div>4. Verify current rent, vacancy rates and outgoings with local property managers.</div>
             <div>5. Seek legal, tax and financial advice appropriate to your circumstances.</div>
           </div>
-          <div className="u-ff6484f1">
+          <div className="u-ff6484f1" style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
             This tool is a decision-support aid. It is not lender approval, financial advice, a property valuation or a price forecast.
           </div>
-        </div>
+        </details>
       </div>
     )
   }
@@ -253,21 +253,21 @@ export default memo(function DecisionBrief({ activeSuburb, setActiveTab, selecte
       </div>
 
       {/* Responsible Next Steps — Journey 7 */}
-      <div className="u-019240f4">
-        <div className="u-41b6eb3e">
+      <details className="u-019240f4" style={{ padding: '10px 14px', borderRadius: '8px', cursor: 'pointer', marginTop: '16px' }}>
+        <summary className="u-41b6eb3e" style={{ fontWeight: 600 }}>
           📋 Responsible Next Steps — outside this app
-        </div>
-        <div className="u-df6a5298">
+        </summary>
+        <div className="u-df6a5298" style={{ marginTop: '8px' }}>
           <div>1. Obtain a formal serviceability assessment from a licensed broker or lender.</div>
           <div>2. Inspect actual listings and compare recent sales prices in this suburb.</div>
           <div>3. Arrange strata, building, planning, flood and bushfire checks as relevant.</div>
           <div>4. Verify current rent, vacancy rates and outgoings with local property managers.</div>
           <div>5. Seek legal, tax and financial advice appropriate to your circumstances.</div>
         </div>
-        <div className="u-ff6484f1">
+        <div className="u-ff6484f1" style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
           This tool is a decision-support aid. It is not lender approval, financial advice, a property valuation or a price forecast.
         </div>
-      </div>
+      </details>
     </div>
   )
 })

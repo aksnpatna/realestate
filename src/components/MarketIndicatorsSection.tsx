@@ -35,7 +35,7 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
       label: 'Demand / Supply Ratio',
       value: s.supplyDemandRatio != null ? Number(s.supplyDemandRatio).toFixed(2) : '—',
       trend: s.supplyDemandRatio != null ? (s.supplyDemandRatio < 0.5 ? 'up' : 'down') : null,
-      impact: 'Demand-to-supply is Boomscore\'s anchor: low ratio = tight market precedes price pressure.',
+      impact: 'Demand-to-supply balance is a key leading indicator: lower ratio denotes tight available supply preceding upward price pressure.',
       key_metric: true,
     },
     {

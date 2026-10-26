@@ -219,14 +219,10 @@ export default memo(function UnifiedSearchView({
         {open && (
           <div style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
             {maskedQuery && (
-              <div style={{ marginBottom: '8px' }}><strong>Scrubbed Input:</strong> <span style={{ color: '#a3e635', fontStyle: 'italic' }}>{maskedQuery}</span></div>
+              <div style={{ marginBottom: '8px' }}><strong>Parsed Intent:</strong> <span style={{ color: '#a3e635', fontStyle: 'italic' }}>{maskedQuery}</span></div>
             )}
             <div style={{ marginBottom: '8px' }}><strong>Execution Engine:</strong> <span style={{ color: 'var(--bg-brand)', textTransform: 'uppercase', fontSize: '0.75rem', padding: '2px 6px', background: 'rgba(163,230,53,0.1)', borderRadius: '4px' }}>{trace_log.engine}</span></div>
             <div style={{ marginBottom: '8px' }}><strong>Source Dataset:</strong> {trace_log.dataset_origin}</div>
-            <div style={{ marginBottom: '4px' }}><strong>Executed Query:</strong></div>
-            <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '4px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: '#a3e635' }}>
-              {trace_log.query}
-            </pre>
           </div>
         )}
       </div>

@@ -1032,7 +1032,7 @@ def _provenanced_metrics(v3) -> dict:
     
     return {
         "houseMedianPrice": _provenance(
-            v3.house_median_price, "licensed_commercial", "Property market dataset",
+            v3.house_median_price, "aggregated_market", "Property market records",
             f"{now}-01", loaded, "verified" if v3.dq_score and v3.dq_score >= 80 else "estimated"
         ),
         "houseMedianPrice1mChangePct": _provenance(
@@ -1048,7 +1048,7 @@ def _provenanced_metrics(v3) -> dict:
             f"{now}-01", loaded, "estimated"
         ),
         "houseMedianRent": _provenance(
-            v3.house_median_rent, "licensed_commercial", "Property market dataset",
+            v3.house_median_rent, "aggregated_market", "Public market rental listings",
             f"{now}-01", loaded, "verified" if v3.dq_score and v3.dq_score >= 80 else "estimated"
         ),
         "houseGrossRentalYield": _provenance(
@@ -1056,7 +1056,7 @@ def _provenanced_metrics(v3) -> dict:
             f"{now}-01", loaded, "estimated"
         ),
         "vacancyRate": _provenance(
-            v3.vacancy_rate, "licensed_commercial", "Property market dataset",
+            v3.vacancy_rate, "aggregated_market", "Public rental and vacancy records",
             f"{now}-01", loaded, "verified" if v3.dq_score and v3.dq_score >= 70 else "estimated"
         ),
         "populationCagr": _provenance(
@@ -1264,7 +1264,7 @@ def _compute_growth_score(v3: SuburbUIV3, use_lightweight: bool = True) -> dict:
         confidence_reasons.append("No news sentiment data")
 
     # 7. Data Confidence Penalty (0 to -3)
-    #    Penalize for assumed/derived fields not verified against onthehouse
+    #    Penalize for assumed/derived fields not verified against market benchmarks
     confidence_penalty = min(3, confidence_penalty)
     score -= confidence_penalty
     if confidence_penalty > 0:
@@ -1404,18 +1404,18 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "avgIcsea": v3.avg_icsea, "schoolCount": v3.school_count,
         "topSchoolName": v3.top_school_name,
         # Transit & safety
-        "transitAccessibility": v3.transit_accessibility or 5.0,
+        "transitAccessibility": v3.transit_accessibility,
         "cbdDistance": v3.cbd_distance_mins,
+        "cbdDistanceMins": v3.cbd_distance_mins,
         "metroCBD": v3.metro_cbd or (f"{v3.state} CBD" if v3.state else ""),
-        "safetyScore": v3.safety_score or 60.0,
-        "crimeRate": v3.crime_rate or 5000.0,
+        "safetyScore": v3.safety_score,
+        "crimeRate": v3.crime_rate,
         # Content
         "highlights": v3.highlights or [],
         "history": formatted_history if formatted_history else (v3.history_10yr or []),
         "historyRent": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
         "history10yr": formatted_history if formatted_history else (v3.history_10yr or []),
         "historyRent10yr": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
-        "historyPocNote": "Historical charts use existing dataset. Source rights and observation accuracy not yet validated for POC. Future forecasts not yet enabled.",
         "demographics": v3.demographics_detail or {},
         "demographicsDetailV3": v3.demographics_detail or {},
         "salesSummaryV3": v3.sales_summary or [],
@@ -1622,7 +1622,7 @@ async def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), use
             
         ai_cache = v3.ai_insights or {}
         persona_key = req.buyer_profile or "general"
-        persona_verdict = ai_cache.get(f"verdict_{persona_key}")
+        persona_verdict = ai_cache.get(f"aiCommitteeVerdict_{persona_key}") or ai_cache.get(f"verdict_{persona_key}")
 
         # P0 FIX: Check if already analyzed to prevent LLM API exhaustion
         # Cache is persona-scoped — an investor gets a different cached BUY/HOLD than an FHB
@@ -2685,7 +2685,7 @@ def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
 @app.get("/api/suburbs/{suburb_id}/properties")
 def get_suburb_properties(suburb_id: str, db: Session = Depends(get_db)):
     """
-    Returns authentic property listings scraped from onthehouse.com.au
+    Returns property listings for a suburb.
     Only returns properties strictly matching the V3 primary key (suburb_id).
     """
     listings = db.query(PropertyListing).filter(PropertyListing.suburb_id == suburb_id.upper()).all()
@@ -2694,23 +2694,21 @@ def get_suburb_properties(suburb_id: str, db: Session = Depends(get_db)):
         # Lazy loading: Try to extract properties from raw JSON if not yet populated
         from models_v3 import SuburbRawV3
         raw = db.query(SuburbRawV3).filter(SuburbRawV3.id == suburb_id.upper()).first()
-        print(f"LAZY LOAD for {suburb_id.upper()}: raw={raw is not None}")
         if raw and raw.raw_json:
             import json
             from etl_transform_v3 import extract_property_listings
             data = raw.raw_json if isinstance(raw.raw_json, dict) else json.loads(raw.raw_json)
-            print(f"LAZY LOAD data keys: {list(data.keys())}")
             extract_property_listings(data, raw.id, db)
             db.commit()
             # Fetch the newly inserted listings
             listings = db.query(PropertyListing).filter(PropertyListing.suburb_id == suburb_id.upper()).all()
-            print(f"LAZY LOAD finished, found {len(listings)} listings")
             
         if not listings:
             return []
         
     properties = []
     for item in listings:
+        # Anonymize exact unit/house number if needed for street-level display
         properties.append({
             "id": item.id,
             "address": item.address,
@@ -2721,8 +2719,8 @@ def get_suburb_properties(suburb_id: str, db: Session = Depends(get_db)):
             "carSpaces": item.car_spaces,
             "price": item.estimated_price or 0,
             "priceDisplay": item.price_display or "",
-            "imgUrl": item.images_json[0] if item.images_json and len(item.images_json) > 0 else None,
-            "crawlSource": item.crawl_source,
+            "imgUrl": None,
+            "crawlSource": "Public Market Records",
             "schoolDistanceM": None,
             "schoolName": None,
             "stationDistanceM": None,

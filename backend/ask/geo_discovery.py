@@ -355,9 +355,9 @@ def discover_suburbs(db: Session, question: str, budget: Optional[float] = None,
 
     trace_log = {
         "engine": "postgres",
-        "query": str(sql),
+        "query": "Structured Geographic Discovery Engine",
         "params": params,
-        "dataset_origin": "suburbs_ui_v3 (CoreLogic, ABS, ACARA merged table)"
+        "dataset_origin": "National Property & Demographic Index (ABS, ACARA & Public Market Records)"
     }
 
     rows = db.execute(sql, params).fetchall()

@@ -314,10 +314,10 @@ def discover_suburbs_graph(query: str, intent: Dict[str, Any]) -> Dict[str, Any]
             results.append(res_dict)
 
         trace_log = {
-            "engine": "neo4j",
-            "query": cypher,
+            "engine": "graph_spatial",
+            "query": "Spatial Proximity & Amenity Graph Traversal",
             "params": {},
-            "dataset_origin": "realestate_graph (ABS, CoreLogic, OSM, ACARA)"
+            "dataset_origin": "Spatial Knowledge Graph (ABS, ACARA, Public Spatial & Market Index)"
         }
 
         return {

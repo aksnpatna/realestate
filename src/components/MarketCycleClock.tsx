@@ -5,19 +5,19 @@ interface Props {
 }
 
 export default memo(function MarketCycleClock({ suburb }: Props) {
-  const priceChange = Number(suburb.houseMedianPrice12mChangePct) || 0;
-  const vacancyRate = Number(suburb.vacancyRate) || 0;
+  const hasVacancy = suburb.vacancyRate != null;
+  const vacancyRate = hasVacancy ? Number(suburb.vacancyRate) : null;
   const dom = Number(suburb.houseDaysOnMarket) || 0;
 
   // Determine Cycle Position (1 to 12 o'clock)
   // 12 = Peak, 3 = Declining, 6 = Bottom, 9 = Recovering
   const clockState = useMemo(() => {
-    if (priceChange > 8 && vacancyRate < 1.5) return { time: 11, label: 'Approaching Peak', color: '#10b981', desc: 'Prices are rising rapidly, vacancy is tight.' };
-    if (priceChange > 3 && vacancyRate < 1.0) return { time: 12, label: 'Peak of Market', color: '#f59e0b', desc: 'Market is at maximum heat, high competition.' };
-    if (priceChange > 0 && vacancyRate < 2.0) return { time: 8, label: 'Starting to Recover', color: '#3b82f6', desc: 'Prices are starting to climb, demand returning.' };
-    if (priceChange < -2 && vacancyRate > 2.5) return { time: 2, label: 'Starting to Decline', color: '#f97316', desc: 'Prices softening, days on market expanding.' };
-    if (priceChange < -5 && vacancyRate > 3.0) return { time: 4, label: 'Approaching Bottom', color: '#ef4444', desc: 'Significant price drops, high vacancy.' };
-    if (priceChange > -2 && priceChange < 2 && vacancyRate > 2.5) return { time: 6, label: 'Bottom of Market', color: '#6366f1', desc: 'Prices have stabilized at cyclical lows.' };
+    if (priceChange > 8 && vacancyRate !== null && vacancyRate < 1.5) return { time: 11, label: 'Approaching Peak', color: '#10b981', desc: 'Prices are rising rapidly, vacancy is tight.' };
+    if (priceChange > 3 && vacancyRate !== null && vacancyRate < 1.0) return { time: 12, label: 'Peak of Market', color: '#f59e0b', desc: 'Market is at maximum heat, high competition.' };
+    if (priceChange > 0 && vacancyRate !== null && vacancyRate < 2.0) return { time: 8, label: 'Starting to Recover', color: '#3b82f6', desc: 'Prices are starting to climb, demand returning.' };
+    if (priceChange < -5 && vacancyRate !== null && vacancyRate > 3.0) return { time: 4, label: 'Approaching Bottom', color: '#ef4444', desc: 'Significant price drops, high vacancy.' };
+    if (priceChange < -2 && vacancyRate !== null && vacancyRate > 2.5) return { time: 2, label: 'Starting to Decline', color: '#f97316', desc: 'Prices softening, days on market expanding.' };
+    if (priceChange > -2 && priceChange < 2 && vacancyRate !== null && vacancyRate > 2.5) return { time: 6, label: 'Bottom of Market', color: '#6366f1', desc: 'Prices have stabilized at cyclical lows.' };
     if (priceChange > -2 && priceChange < 2 && dom > 40) return { time: 6, label: 'Bottom of Market', color: '#6366f1', desc: 'Prices have stabilized, but market is slow.' };
     
     // Default fallback based purely on price change

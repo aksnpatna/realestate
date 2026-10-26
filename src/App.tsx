@@ -925,61 +925,57 @@ function App() {
                     persona={persona}
                   />
 
-                  {/* Suburb Story Panel */}
-                  <SuburbStoryPanel suburb={activeSuburb} persona={persona} />
+                  {/* Section Navigation Placed Prominently Below Compact Hero */}
+                  <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
+                  <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'overview' ? 'block' : 'none', marginTop: '1.25rem'}} {...{ [SECTION_ATTR]: 'overview' }}>
+                    {/* Suburb Story Panel */}
+                    <SuburbStoryPanel suburb={activeSuburb} persona={persona} />
 
-                  {/* How It Compares */}
-                  {benchmarks && benchmarks.length > 0 && (
-                    <div style={{ marginBottom: '4rem' }}>
-                      <h2 style={{ fontSize: '1.75rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '1.5rem', fontWeight: 700 }}>
-                        How It Compares
-                      </h2>
-                      <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
-                        Understanding this suburb's performance relative to broader market baselines.
-                      </p>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
-                        {benchmarks.map((bm, i) => (
-                          <div key={i} style={{ 
-                            padding: '1.5rem', 
-                            background: 'var(--bg-card)', 
-                            borderRadius: '12px',
-                            borderLeft: `4px solid ${
-                              (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct 
-                                ? '#10b981' 
-                                : '#f59e0b'
-                            }`,
-                            boxShadow: 'var(--shadow-sm)',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                          }}>
-                            <div>
-                              <div style={{ fontWeight: 600, color: 'var(--brand-navy)', fontSize: '1.1rem' }}>{bm.name} <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 400 }}>{bm.symbol}</span></div>
-                              <div style={{ color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '#10b981' : '#f59e0b', fontSize: '0.9rem', marginTop: '0.25rem', fontWeight: 500 }}>
-                                {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '✓ Outperforming benchmark' : '↓ Trailing benchmark'}
+                    {/* How It Compares Benchmark Strip */}
+                    {benchmarks && benchmarks.length > 0 && (
+                      <div style={{ marginBottom: '2rem' }}>
+                        <h3 style={{ fontSize: '1.2rem', fontFamily: "'DM Sans', sans-serif", color: 'var(--brand-navy)', marginBottom: '0.75rem', fontWeight: 700 }}>
+                          Macro Market Benchmarks
+                        </h3>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.95rem' }}>
+                          Performance comparison relative to broader asset class baselines.
+                        </p>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.85rem' }}>
+                          {benchmarks.map((bm, i) => (
+                            <div key={i} style={{ 
+                              padding: '1rem 1.25rem', 
+                              background: 'var(--bg-card)', 
+                              borderRadius: '10px',
+                              borderLeft: `4px solid ${
+                                (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct 
+                                  ? '#10b981' 
+                                  : '#f59e0b'
+                              }`,
+                              boxShadow: 'var(--shadow-sm)',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}>
+                              <div>
+                                <div style={{ fontWeight: 600, color: 'var(--brand-navy)', fontSize: '1rem' }}>{bm.name} <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 400 }}>{bm.symbol}</span></div>
+                                <div style={{ color: (Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '#10b981' : '#f59e0b', fontSize: '0.82rem', marginTop: '0.2rem', fontWeight: 500 }}>
+                                  {(Number(activeSuburb.houseMedianPrice12mChangePct) || 0) > bm.growth_1y_pct ? '✓ Outperforming benchmark' : '↓ Trailing benchmark'}
+                                </div>
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>1Y Growth</div>
+                                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: bm.growth_1y_pct >= 0 ? '#10b981' : '#f43f5e' }}>
+                                  {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
+                                </div>
                               </div>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>1Y Growth</div>
-                              <div style={{ fontSize: '1.25rem', fontWeight: 700, color: bm.growth_1y_pct >= 0 ? '#10b981' : '#f43f5e' }}>
-                                {bm.growth_1y_pct >= 0 ? '+' : ''}{bm.growth_1y_pct}%
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-
-
-                    <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
-
-                   <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'overview' ? 'block' : 'none'}} {...{ [SECTION_ATTR]: 'overview' }}>
-                    
                     {/* Quick ROI Calculator — Promoted inside Overview tab */}
-
                     {persona !== 'first_home_buyer' && (
                       <Suspense fallback={<div className="u-66be495e">Loading ROI...</div>}>
                         <QuickRoiCalculator 
@@ -1135,21 +1131,21 @@ function App() {
                             { label:'Building Approvals (est)', value: (s as any).buildingApprovals12m ? `${(s as any).buildingApprovals12m} (est.)` : '—', icon:'🔨' },
                           ]},
                           { label: 'Demand', items: [
-                            { label:'Rental Yield', value: (s as any).houseGrossRentalYield + '%', icon:'💰' },
+                            { label:'Rental Yield', value: (s as any).houseGrossRentalYield != null ? `${Number((s as any).houseGrossRentalYield).toFixed(1)}%` : '—', icon:'💰' },
                             { label:'Days on Market', value: (s as any).houseDaysOnMarket || '—', icon:'⏱️' },
-                            { label:'Vacancy Rate', value: (s as any).vacancyRate?.toFixed(1) + '%' || '—', icon:'🏚️' },
+                            { label:'Vacancy Rate', value: (s as any).vacancyRate != null ? `${Number((s as any).vacancyRate).toFixed(1)}%` : '—', icon:'🏚️' },
                             { label:'Auction Clearance', value: (s as any).houseAuctionClearanceRate || '—', icon:'🔨' },
                           ]},
                           { label: 'Affordability', items: [
                             { label:'Mortgage Band', value: (s as any).estimatedMortgageRepayment ? '$' + (s as any).estimatedMortgageRepayment.toLocaleString(undefined, {maximumFractionDigits: 0}) + '/mo' : ((s as any).typicalMortgageBand || '—'), icon:'💳' },
                             { label:'3yr Price Growth', value: yr3growth, icon:'📈' },
                             { label:'CBD Mins', value: (s as any).cbdDistance ? `${(s as any).cbdDistance} min` : '—', icon:'🚗' },
-                            { label:'Prof. Occupation', value: (s as any).ownerOccupierRate + '%' || '—', icon:'👔' },
+                            { label:'Owner Occupier', value: (s as any).ownerOccupierRate != null ? `${Math.min(100, Math.round(Number((s as any).ownerOccupierRate)))}%` : '—', icon:'👔' },
                           ]},
                           { label: 'Income & Jobs', items: [
                             { label:'Median Annual Income', value: (s as any).demographics?.median_annual_income_abs ? '$' + Number((s as any).demographics.median_annual_income_abs).toLocaleString() + '/yr' : '—', icon:'💵' },
                             { label:'Predominant Band', value: demo.predominant_income_band || '—', icon:'📊' },
-                            { label:'Population CAGR', value: (s as any).populationCagr?.toFixed(1) + '%' || '—', icon:'👥' },
+                            { label:'Population CAGR', value: (s as any).populationCagr != null ? `${Number((s as any).populationCagr).toFixed(1)}%` : '—', icon:'👥' },
                             { label:'Median Age', value: s.medianAge || '—', icon:'🎂' },
                             { label:'Unemployment (est)', value: (s as any).unemploymentRate ? `${(s as any).unemploymentRate}% (est.)` : '—', icon:'📉' },
                           ]},
@@ -1176,28 +1172,6 @@ function App() {
                   </div>
                     {/* Bottom Row: Charts */}
                     <div className="u-8f5d5c7e">
-                      {/* 10-Year Historical Chart */}
-                      {activeSuburb.history && activeSuburb.history.length >= 2 && (
-                        <div className="u-89b1b35e">
-                          <h4 className="u-e65a1c30">10-Year Historical Median Price</h4>
-                          <p className="u-dc5b9519">House median price tracking over time</p>
-                          <div className="u-171e172a">
-                            <ResponsiveContainer width="100%" height="100%">
-                              <LineChart data={(activeSuburb.history as any[]).map((pt: any) => ({
-                                year: typeof pt.date === 'string' ? pt.date.substring(0, 4) : String(pt.date || ''),
-                                price: typeof pt.value === 'number' ? pt.value : 0
-                              }))} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
-                                <XAxis dataKey="year" stroke="var(--text-secondary)" fontSize={11} tick={{fill: 'var(--text-secondary)'}} />
-                                <YAxis stroke="var(--text-secondary)" fontSize={11} tickFormatter={(val) => `$${Math.round(val / 1000)}k`} />
-                                <RechartsTooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Price']} contentStyle={{ backgroundColor: 'var(--bg-card)', border: 'none', borderRadius: '8px' }} />
-                                <Line type="monotone" dataKey="price" stroke="var(--accent-cyan)" strokeWidth={3} dot={false} />
-                              </LineChart>
-                            </ResponsiveContainer>
-                          </div>
-                        </div>
-                      )}
-
                     </div>
                   </div>
                   </details>
@@ -1560,30 +1534,6 @@ function App() {
                                     <span className="u-b6872c2a" style={{color: 'var(--accent-cyan)'}}>{bldCount}</span>
                                   </div>
                                 )}
-                                  
-                                {total > 0 && (
-                                  <div className="u-55f14def">
-                                    <div className="u-a3f91f62">
-                                      🗺️ Land Use Within 2.5km ({total.toFixed(3)} km²)
-                                    </div>
-                                    <div className="u-b7a1de0b">
-                                      {constr > 0 && <div title={`Construction: ${constr.toFixed(3)} km²`} className="u-908acfd2" style={{flex: constr}} />}
-                                      {brown > 0 && <div title={`Brownfield: ${brown.toFixed(3)} km²`} className="u-7e922fad" style={{flex: brown}} />}
-                                      {green > 0 && <div title={`Greenfield: ${green.toFixed(3)} km²`} className="u-f45953b3" style={{flex: green}} />}
-                                    </div>
-                                    <div className="u-dcda70d0">
-                                      {constr > 0 && <span className="u-bfead528">🔴 Construction {constr.toFixed(3)} km²</span>}
-                                      {brown > 0 && <span className="u-0ce679a0">🟡 Brownfield {brown.toFixed(3)} km²</span>}
-                                      {green > 0 && <span className="u-b5e3c3ba">🟢 Greenfield {green.toFixed(3)} km²</span>}
-                                    </div>
-                                  </div>
-                                )}
-                                {bldCount != null && bldCount > 0 && (
-                                  <div className="u-cc72d3ab">
-                                    <span className="u-f3d28ad1">🔨 Buildings Under Construction</span>
-                                    <span className="u-78377f03">{bldCount}</span>
-                                  </div>
-                                )}
                                 {bldCount != null && bldCount === 0 && total > 0 && (
                                   <div className="u-8d08922a">
                                     No active building construction detected
@@ -1613,8 +1563,8 @@ function App() {
                         <div className="u-cb89a99b">
                           <h4 className="u-11046430">🏗️ Development & Social Context</h4>
                           <div className="u-f3b30b0d">
-                            <div>Social Housing Density: <strong className="u-c154f6c6">{((activeSuburb as any).demographics?.socialHousingPct) !== undefined ? `${((activeSuburb as any).demographics?.socialHousingPct)}%` : '—'}</strong></div>
-                            <div>Public Housing Dwellings: <strong className="u-c154f6c6">{((activeSuburb as any).demographics?.publicHousingDwellings) !== undefined ? ((activeSuburb as any).demographics?.publicHousingDwellings)?.toLocaleString() : '—'}</strong></div>
+                            <div>Social Housing Density: <strong className="u-c154f6c6">{((activeSuburb as any).socialHousingPct ?? (activeSuburb as any).demographics?.socialHousingPct) != null ? `${((activeSuburb as any).socialHousingPct ?? (activeSuburb as any).demographics?.socialHousingPct)}%` : '—'}</strong></div>
+                            <div>Public Housing Dwellings: <strong className="u-c154f6c6">{((activeSuburb as any).publicHousingDwellings ?? (activeSuburb as any).demographics?.publicHousingDwellings) != null ? Number((activeSuburb as any).publicHousingDwellings ?? (activeSuburb as any).demographics?.publicHousingDwellings).toLocaleString() : '—'}</strong></div>
                             {(((activeSuburb as any).avgBlockSqm) || ((activeSuburb as any).market?.avgBlockSqm)) && (
                               <div>Avg Residential Block: <strong className="u-c154f6c6">{((activeSuburb as any).avgBlockSqm || (activeSuburb as any).market?.avgBlockSqm)} sqm</strong></div>
                             )}
@@ -1864,12 +1814,7 @@ function App() {
         </div>
       )}
       <footer className="u-864cf9fe">
-        <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational purposes only and does not constitute financial, investment, or real estate advice. Forecasts are statistical models based on historical data and do not guarantee future performance.</p>
-        <p className="u-66b0f03a"><strong>State Data Attributions:</strong> 
-          (NSW) Contains property sales information provided under licence from the Valuer General NSW. 
-          (VIC) The State of Victoria owns the copyright in the Property Sales Data and reproduction without consent will constitute a breach of the Copyright Act 1968 (Cth). 
-          (QLD) Based on or contains data provided by the State of Queensland (Department of Resources).
-        </p>
+        <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational and research purposes only and does not constitute financial, investment, lending, or real estate advice. Statistical models and property estimates are compiled from open government datasets (ABS Census 2021, ACARA School Profiles, OpenStreetMap) and aggregated public market listings for independent research.</p>
         <p className="u-66b0f03a">
           <button onClick={() => setActiveTab('privacy')} style={{background:'none',border:'none',color:'var(--bg-brand)',cursor:'pointer',fontSize:'inherit',padding:0,textDecoration:'underline'}}>Privacy Policy</button>
           &nbsp;·&nbsp;

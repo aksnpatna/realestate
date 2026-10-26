@@ -58,30 +58,30 @@ def _build() -> Dict[str, MetricEntry]:
 
     return {
         # ── Price & Rent ──
-        "median_price":         e("median_price",          "Median Price",            "$",      "CoreLogic/NPG", 45, "contextual",
+        "median_price":         e("median_price",          "Median Price",            "$",      "Aggregated Market & Settlement Records", 45, "contextual",
                                    h_col="house_median_price", u_col="unit_median_price"),
-        "median_rent":          e("median_rent",           "Median Rent",             "$/week",  "CoreLogic/NPG", 45, "higher_better",
+        "median_rent":          e("median_rent",           "Median Rent",             "$/week",  "Public Market Listings Feed", 45, "higher_better",
                                    h_col="house_median_rent", u_col="unit_median_rent"),
-        "median_price_12m_change_pct": e("median_price_12m_change_pct", "Price 12-Month Change", "%", "CoreLogic/NPG", 45, "higher_better",
+        "median_price_12m_change_pct": e("median_price_12m_change_pct", "Price 12-Month Change", "%", "Aggregated Market & Settlement Records", 45, "higher_better",
                                    h_col="house_median_price_12m_change_pct", u_col="unit_median_price_12m_change_pct"),
-        "rent_12m_change":      e("rent_12m_change",       "Rent 12-Month Change",    "$",      "CoreLogic/NPG", 45, "contextual",
+        "rent_12m_change":      e("rent_12m_change",       "Rent 12-Month Change",    "$",      "Public Market Listings Feed", 45, "contextual",
                                    h_col="house_median_rent_12m_change", u_col="house_median_rent_12m_change"),
-        "gross_yield":          e("gross_yield",           "Gross Yield",             "%",      "CoreLogic/NPG", 45, "higher_better",
+        "gross_yield":          e("gross_yield",           "Gross Yield",             "%",      "Aggregated Market Records", 45, "higher_better",
                                    h_col="house_gross_rental_yield", u_col="unit_gross_rental_yield",
                                    calc="rent×52 ÷ price"),
-        "yield_trend":          e("yield_trend",           "Yield Trend (12m)",       "% pts",   "CoreLogic/NPG", 45, "higher_better",
+        "yield_trend":          e("yield_trend",           "Yield Trend (12m)",       "% pts",   "Aggregated Market Records", 45, "higher_better",
                                    h_col="house_gross_rental_yield_trend", u_col="unit_gross_rental_yield_trend"),
 
         # ── Market Activity ──
-        "days_on_market":       e("days_on_market",        "Days on Market",          "days",   "CoreLogic/NPG", 45, "lower_better",
+        "days_on_market":       e("days_on_market",        "Days on Market",          "days",   "Public Market Listings Feed", 45, "lower_better",
                                    h_col="house_days_on_market", u_col="unit_days_on_market"),
-        "auction_clearance":    e("auction_clearance",     "Auction Clearance Rate",  "%",      "CoreLogic/NPG", 45, "higher_better",
+        "auction_clearance":    e("auction_clearance",     "Auction Clearance Rate",  "%",      "Public Market Listings Feed", 45, "higher_better",
                                    col="house_auction_clearance_rate"),
-        "stock_on_market":      e("stock_on_market",       "Stock on Market",         "count",  "CoreLogic/NPG", 45, "contextual",
+        "stock_on_market":      e("stock_on_market",       "Stock on Market",         "count",  "Public Market Listings Feed", 45, "contextual",
                                    col="house_stock_on_market"),
-        "sold_12m":             e("sold_12m",              "Sold (12 Months)",        "count",  "CoreLogic/NPG", 90, "contextual",
+        "sold_12m":             e("sold_12m",              "Sold (12 Months)",        "count",  "Aggregated Market & Settlement Records", 90, "contextual",
                                    col="house_sold_12m"),
-        "vacancy_rate":         e("vacancy_rate",          "Vacancy Rate",            "%",      "SQM Research",  45, "lower_better",
+        "vacancy_rate":         e("vacancy_rate",          "Vacancy Rate",            "%",      "Public Rental & Vacancy Index",  45, "lower_better",
                                    col="vacancy_rate"),
         "supply_demand_ratio":  e("supply_demand_ratio",   "Supply-Demand Ratio",     "ratio",  "Derived",      45, "contextual",
                                    col="supply_demand_ratio"),
@@ -157,9 +157,9 @@ def _build() -> Dict[str, MetricEntry]:
                                    col="social_housing_pct"),
 
         # ── History & Projection ──
-        "history_10yr":         e("history_10yr",          "10-Year Price History",   "series", "CoreLogic/NPG", 45, "contextual",
+        "history_10yr":         e("history_10yr",          "10-Year Price History",   "series", "Aggregated Settlement Records", 45, "contextual",
                                    col="history_10yr"),
-        "history_rent_10yr":    e("history_rent_10yr",     "10-Year Rent History",    "series", "CoreLogic/NPG", 45, "contextual",
+        "history_rent_10yr":    e("history_rent_10yr",     "10-Year Rent History",    "series", "Public Rental Index", 45, "contextual",
                                    col="history_rent_10yr"),
         "price_volatility_10yr": e("price_volatility_10yr", "Price Volatility (10yr)", "%", "Derived (stdev of annual returns)", 45, "lower_better",
                                    col=None, calc="stdev(year-over-year % returns, 10yr)"),
@@ -171,7 +171,7 @@ def _build() -> Dict[str, MetricEntry]:
                                    col="nearby_suburbs"),
 
         # ── Extra from evidence packs ──
-        "rental_stock":         e("rental_stock",          "Rental Stock",            "count",  "CoreLogic/NPG", 45, "contextual",
+        "rental_stock":         e("rental_stock",          "Rental Stock",            "count",  "Public Market Listings Feed", 45, "contextual",
                                    col="rental_stock"),
     }
 
