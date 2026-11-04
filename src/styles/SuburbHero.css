@@ -127,8 +127,8 @@
 
 .sh-metrics {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
   margin-bottom: 0;
   animation: fadeInUp 0.4s ease-out 0.1s both;
 }

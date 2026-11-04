@@ -25,4 +25,14 @@
   color: var(--bg-brand); border-bottom-color: var(--bg-brand);
   background: var(--bg-brand-subtle); font-weight: 800;
 }
+.psn__tab--ai-hero {
+  color: #0f766e;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%);
+  border-radius: 8px 8px 0 0;
+}
+.psn__tab--ai-hero.psn__tab--active {
+  color: #047857;
+  border-bottom-color: #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.22) 100%);
+}
 .psn__icon { margin-right: 10px; font-size: 1.3rem; vertical-align: middle; }

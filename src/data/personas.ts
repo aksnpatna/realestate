@@ -44,7 +44,7 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     description:
       'Affordability and serviceability focus. Personalised fit matters more than market indicators.',
     weights: { affordability: 35, income: 25, livability: 20, access: 15, evidence: 5 },
-    visible_profile_sections: ['overview', 'market', 'market_pulse', 'people', 'infrastructure', 'risk', 'ai'],
+    visible_profile_sections: ['overview', 'ai', 'market', 'market_pulse', 'people', 'infrastructure', 'risk'],
     show_technical: false,
     headline_score: 'buyer_fit',
   },
@@ -54,7 +54,7 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     description:
       'Yield, momentum, demand/supply and cashflow first. Market indicators take priority.',
     weights: { affordability: 20, income: 20, livability: 15, access: 15, evidence: 30 },
-    visible_profile_sections: ['overview', 'market', 'market_pulse', 'people', 'infrastructure', 'risk', 'ai'],
+    visible_profile_sections: ['overview', 'ai', 'market', 'market_pulse', 'people', 'infrastructure', 'risk'],
     show_technical: false,
     headline_score: 'growth',
   },
@@ -66,6 +66,7 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     weights: { affordability: 25, income: 20, livability: 20, access: 15, evidence: 20 },
     visible_profile_sections: [
       'overview',
+      'ai',
       'market',
       'market_pulse',
       'people',
@@ -73,7 +74,6 @@ export const PERSONAS: Record<PersonaId, Persona> = {
       'listings',
       'risk',
       'pockets',
-      'ai',
       'technical',
     ],
     show_technical: true,
@@ -85,7 +85,7 @@ export const PERSONAS: Record<PersonaId, Persona> = {
     description:
       'Serviceability and risk assessment focus. Borrowing capacity rules above all.',
     weights: { affordability: 50, income: 30, livability: 0, access: 0, evidence: 20 },
-    visible_profile_sections: ['overview', 'market', 'market_pulse', 'risk', 'technical'],
+    visible_profile_sections: ['overview', 'ai', 'market', 'market_pulse', 'risk', 'technical'],
     show_technical: true,
     headline_score: 'buyer_fit',
   },

@@ -201,7 +201,8 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
   const suburb = activeSuburb as any
   const newsScore = suburb.metrics?._newsScore
   const macroIntel = suburb.metrics?._macroIntelligence || suburb._antiMarketData?.macro_intelligence || null
-  const antiMarketData = suburb._antiMarketData || null
+  const antiMarketData = suburb._antiMarketData || suburb.antiMarket || null
+  const hasFullAntiMarket = !!suburb._antiMarketData
   const hasSentiment = suburb.metrics?.aiNewsSentiment && !['Click "Analyze Live News"', 'Error', 'Unavailable'].includes(suburb.metrics.aiNewsSentiment)
   const hasVerdict = !!suburb.aiVerdict
 
@@ -577,7 +578,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                 cursor: isLoadingAntiMarket ? 'not-allowed' : 'pointer',
               }}
             >
-              {isLoadingAntiMarket ? 'Scanning...' : antiMarketData ? 'Refresh Anti-Market Check' : 'Run Anti-Market Check'}
+              {isLoadingAntiMarket ? 'Scanning...' : hasFullAntiMarket ? 'Refresh Anti-Market Check' : 'Run Anti-Market Check'}
             </button>
           </div>
 
@@ -612,10 +613,18 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                       {antiMarketData.trend_label}
                     </div>
                     <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                      12m Alpha vs {activeSuburb.state} Median ({antiMarketData.state_median_12m_growth >= 0 ? '+' : ''}{antiMarketData.state_median_12m_growth}%):{' '}
-                      <strong style={{ color: antiMarketData.alpha_12m >= 0 ? '#10b981' : '#ef4444' }}>
-                        {antiMarketData.alpha_12m >= 0 ? '+' : ''}{antiMarketData.alpha_12m}%
-                      </strong>
+                      {(() => {
+                        const alphaVal = antiMarketData.alpha_12m ?? antiMarketData.alpha_12m_pct ?? 0
+                        const stateMed = antiMarketData.state_median_12m_growth ?? antiMarketData.state_avg_12m_growth_pct ?? 0
+                        return (
+                          <>
+                            12m Alpha vs {activeSuburb.state} Median ({stateMed >= 0 ? '+' : ''}{stateMed}%):{' '}
+                            <strong style={{ color: alphaVal >= 0 ? '#10b981' : '#ef4444' }}>
+                              {alphaVal >= 0 ? '+' : ''}{alphaVal}%
+                            </strong>
+                          </>
+                        )
+                      })()}
                     </div>
                   </div>
                 </div>

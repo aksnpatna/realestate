@@ -11,6 +11,7 @@ interface Section {
 
 export const ALL_SECTIONS: Section[] = [
   { id: 'overview', label: 'Overview', icon: '📊' },
+  { id: 'ai', label: 'AI & Trap Radar', icon: '✨' },
   { id: 'market', label: 'Market', icon: '📈' },
   { id: 'market_pulse', label: 'Market Pulse', icon: '💓' },
   { id: 'people', label: 'People', icon: '👥' },
@@ -18,7 +19,6 @@ export const ALL_SECTIONS: Section[] = [
   { id: 'listings', label: 'Listings', icon: '🏠' },
   { id: 'risk', label: 'Risk', icon: '⚠️' },
   { id: 'pockets', label: 'Pockets', icon: '🗺️' },
-  { id: 'ai', label: 'AI Insights', icon: '🤖' },
   { id: 'technical', label: 'Technical', icon: '📋' },
 ]
 
@@ -51,7 +51,7 @@ const ProfileSectionNav = memo(function ProfileSectionNav({
           key={s.id}
           role="tab"
           aria-selected={activeSection === s.id}
-          className={`psn__tab ${activeSection === s.id ? 'psn__tab--active' : ''}`}
+          className={`psn__tab ${s.id === 'ai' ? 'psn__tab--ai-hero' : ''} ${activeSection === s.id ? 'psn__tab--active' : ''}`}
           onClick={() => onSectionChange(s.id)}
         >
           <span className="psn__icon" aria-hidden="true">{s.icon}</span>

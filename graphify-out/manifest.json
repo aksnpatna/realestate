@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1793266733.8020859,
-    "ast_hash": "f54665a56afffb31ac375b24d9f65262",
+    "mtime": 1793771548.3721294,
+    "ast_hash": "34c9f9d138d41a4be53ac6bd5c2a5297",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -465,8 +465,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1793765449.3119168,
-    "ast_hash": "38f393be6b3b5c02a5c6f270dab3b167",
+    "mtime": 1793771511.8928928,
+    "ast_hash": "d28a9c0a9278d47e0d22a6c9b776491e",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "backend/persona_presets.py": {
-    "mtime": 1784288442.6921523,
-    "ast_hash": "2f5522629da6728de731197378244466",
+    "mtime": 1793771434.7725198,
+    "ast_hash": "517549ec3a3d61422431fbf86e608791",
     "semantic_hash": ""
   },
   "backend/score_meta.py": {
@@ -735,8 +735,8 @@
     "semantic_hash": ""
   },
   "src/components/ProfileSectionNav.tsx": {
-    "mtime": 1788649476.7455094,
-    "ast_hash": "9c1a153be6aa7f4c4d028a88b4f3b387",
+    "mtime": 1793771406.1921277,
+    "ast_hash": "0619dba651a0c3a275e9a9aa5e3d3b96",
     "semantic_hash": ""
   },
   "src/components/PromoBanner.tsx": {
@@ -760,8 +760,8 @@
     "semantic_hash": ""
   },
   "src/data/personas.ts": {
-    "mtime": 1792467052.6245787,
-    "ast_hash": "b827f324b38cfc17b7bc42666d377efa",
+    "mtime": 1793771410.4710364,
+    "ast_hash": "724167452443c7394aa2d6bac5ffefd6",
     "semantic_hash": ""
   },
   "src/services/analytics.ts": {
@@ -1360,8 +1360,8 @@
     "semantic_hash": ""
   },
   "src/components/SuburbHero.tsx": {
-    "mtime": 1793013029.5948138,
-    "ast_hash": "c4ffc5d7deff67fe67a658de3503601a",
+    "mtime": 1793771475.7406533,
+    "ast_hash": "4577d32e531f82ebcb3d2b91421752c0",
     "semantic_hash": ""
   },
   "src/components/SuburbPersonalitySummary.tsx": {

@@ -923,12 +923,82 @@ function App() {
                     isSaved={activeSuburb && favorites.includes(activeSuburb.id)}
                     onToggleSave={() => activeSuburb && toggleFavorite(activeSuburb.id)}
                     persona={persona}
+                    onOpenAiTab={() => setActiveProfileSection('ai')}
                   />
 
                   {/* Section Navigation Placed Prominently Below Compact Hero */}
                   <ProfileSectionNav activePersona={persona} activeSection={activeProfileSection} onSectionChange={setActiveProfileSection} />
 
                   <div className="highlights-section u-e87e972e" style={{display: activeProfileSection === 'overview' ? 'block' : 'none', marginTop: '1.25rem'}} {...{ [SECTION_ATTR]: 'overview' }}>
+                    {/* Hero AI & Anti-Market Executive Callout */}
+                    {(() => {
+                      const s = activeSuburb as any;
+                      const am = s._antiMarketData || s.antiMarket || null;
+                      const isTrap = Boolean(am?.is_value_trap || (s.vacancyRate != null && Number(s.vacancyRate) >= 3.5 && (Number(s.houseMedianPrice12mChangePct) || 0) < 0));
+                      const headlineSignal = isTrap
+                        ? (am?.trap_signals?.[0] || `Elevated vacancy (${Number(s.vacancyRate || 0).toFixed(2)}%) and negative 12m momentum (${Number(s.houseMedianPrice12mChangePct || 0).toFixed(2)}%) detected.`)
+                        : (am?.resilience_drivers?.[0] || 'Check 5-Axis RBA rate sensitivity, buyer\'s agent amenity claims, and counter-cyclical suburb alternatives.');
+                      return (
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '1rem',
+                            padding: '1rem 1.25rem',
+                            marginBottom: '1.25rem',
+                            borderRadius: '12px',
+                            background: isTrap
+                              ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.08))'
+                              : 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.08))',
+                            border: `1px solid ${isTrap ? 'rgba(239, 68, 68, 0.35)' : 'rgba(16, 185, 129, 0.3)'}`,
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flex: '1 1 320px' }}>
+                            <div
+                              style={{
+                                fontSize: '1.5rem',
+                                fontWeight: 800,
+                                padding: '0.35rem 0.75rem',
+                                borderRadius: '8px',
+                                background: isTrap ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                                color: isTrap ? '#dc2626' : '#059669',
+                              }}
+                            >
+                              {am?.anti_market_score != null ? `${am.anti_market_score}/100` : '✨ AI'}
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 700, fontSize: '0.98rem', color: 'var(--brand-navy)' }}>
+                                {isTrap ? '⚠️ Value Trap & Oversupply Alert' : `🛡️ ${am?.trend_label || 'AI & Counter-Cyclical Radar'}`}
+                                {s.aiVerdict ? ` · Committee Verdict: ${s.aiVerdict}` : ''}
+                              </div>
+                              <div style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', marginTop: '0.15rem' }}>
+                                {headlineSignal}
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setActiveProfileSection('ai')}
+                            style={{
+                              padding: '0.55rem 1.1rem',
+                              borderRadius: '8px',
+                              border: 'none',
+                              fontWeight: 700,
+                              fontSize: '0.88rem',
+                              cursor: 'pointer',
+                              background: isTrap ? '#ef4444' : '#0f766e',
+                              color: '#fff',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            Open ✨ AI & Trap Radar →
+                          </button>
+                        </div>
+                      );
+                    })()}
+
                     {/* Suburb Story Panel */}
                     <SuburbStoryPanel suburb={activeSuburb} persona={persona} />
 
@@ -1576,7 +1646,7 @@ function App() {
 
                    {/* PANEL D: AI Insights — News Sentiment + Investment Committee */}
                   <div className="u-e87e972e" style={{display: activeProfileSection === 'ai' ? 'block' : 'none'}}>
-                    <h3 className="u-6f328805">🧠 AI Committee (Debate & Sentiment)</h3>
+                    <h3 className="u-6f328805">✨ AI Insights, 5-Axis Macro & Anti-Market Trap Radar</h3>
                     <div className="u-3e72e63f" id="ai-insight-panel" {...{ [SECTION_ATTR]: 'ai' }}>
                       <AIInsightPanel
                         activeSuburb={activeSuburb}
