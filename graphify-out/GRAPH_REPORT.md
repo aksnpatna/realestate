@@ -1,7 +1,7 @@
 # Graph Report - realestate  (2026-11-04)
 
 ## Corpus Check
-- 313 files · ~15,322,858 words
+- 313 files · ~15,322,865 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7f4ed869`
+- Built from commit: `10a932ab`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -490,8 +490,8 @@ Cohesion: 0.33
 Nodes (9): compute_per_metric_winners(), _fmt(), generate_tradeoffs(), _is_lower_better(), _percent_diff(), verdict.py — Deterministic comparison reasoning engine. Code decides leaders, ed, Generate human-readable trade-off statements from the metrics data., Input: {metric_key: {suburb_name: value_or_None, ...}, ...}     Returns per-metr (+1 more)
 
 ### Community 114 - "Community 114"
-Cohesion: 0.32
-Nodes (4): cached_ai(), cache_utils.py — Redis-primary + DB-fallback caching layer for AI features. Prov, Decorator that caches function results in Redis with automatic DB fallback., TestCachedAI
+Cohesion: 0.24
+Nodes (5): cached_ai(), cache_utils.py — Redis-primary + DB-fallback caching layer for AI features. Prov, Decorator that caches function results in Redis with automatic DB fallback., Unit tests for AI sentiment analysis and caching layer. Run: cd backend && pytho, TestCachedAI
 
 ### Community 115 - "Community 115"
 Cohesion: 0.29
@@ -530,8 +530,8 @@ Cohesion: 0.39
 Nodes (3): _keyword_sentiment(), Keyword-based sentiment scoring as fallback. Returns 1-10 score., TestSentimentKeywordFallback
 
 ### Community 125 - "Community 125"
-Cohesion: 0.24
-Nodes (5): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Unit tests for AI sentiment analysis and caching layer. Run: cd backend && pytho, TestIDNormalization
+Cohesion: 0.32
+Nodes (4): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, TestIDNormalization
 
 ### Community 127 - "Community 127"
 Cohesion: 0.25
