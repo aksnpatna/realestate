@@ -14,10 +14,10 @@ export default function SqmDashboard({ suburbId }: SqmDashboardProps) {
   useEffect(() => {
     if (!suburbId) return;
     setLoading(true);
-    fetch(`/api/suburbs/${suburbId}/sqm`)
+    fetch(`/api/suburbs/${suburbId}/market-history`)
       .then(res => res.json())
       .then(json => {
-        if (json.has_sqm_data) {
+        if (json.has_trend_data) {
           setData(json.data);
         } else {
           setData(null);
@@ -40,7 +40,7 @@ export default function SqmDashboard({ suburbId }: SqmDashboardProps) {
   }
 
   return (
-    <div className="sqm-dashboard">
+    <div className="market-trends-dashboard">
       <h3 style={{ marginBottom: '1.5rem' }}>Recent Sold Properties</h3>
       <SoldScatterplot sqmData={data} />
       

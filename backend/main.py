@@ -1130,17 +1130,48 @@ def _provenanced_metrics(v3) -> dict:
         ),
     }
 
+def _quantize_price(val: float | int | None) -> int | None:
+    if val is None or val <= 0:
+        return None
+    return int(round(float(val) / 1000.0) * 1000)
+
+
+def _quantize_rent(val: float | int | None) -> int | None:
+    if val is None or val <= 0:
+        return None
+    return int(round(float(val) / 5.0) * 5)
+
+
+def _quantize_pct(val: float | int | None) -> float | None:
+    if val is None:
+        return None
+    return round(float(val), 1)
+
+
+def _sanitize_demographics_detail(v3) -> dict:
+    raw = dict(v3.demographics_detail or {})
+    trend_source = raw.pop("sqm_data", None) or raw.get("market_trends")
+    if trend_source:
+        try:
+            from routers.suburbs_sqm import sanitize_and_smooth_market_trends
+            raw["market_trends"] = sanitize_and_smooth_market_trends(trend_source, v3.id or "")
+        except Exception:
+            raw["market_trends"] = trend_source
+    return raw
+
+
 def _get_sqm_stock(v3) -> int | None:
     try:
-        if v3.demographics_detail and "sqm_data" in v3.demographics_detail:
-            stock_array = v3.demographics_detail["sqm_data"].get("stock")
-            if stock_array and len(stock_array) > 0:
-                latest = stock_array[-1]
-                # Sum r30, r60, r90, r180, r180p
-                keys = ["r30", "r60", "r90", "r180", "r180p"]
-                total = sum(int(latest.get(k, 0)) for k in keys)
-                if total > 0:
-                    return total
+        if v3.demographics_detail:
+            trend_obj = v3.demographics_detail.get("market_trends") or v3.demographics_detail.get("sqm_data")
+            if trend_obj:
+                stock_array = trend_obj.get("stock")
+                if stock_array and len(stock_array) > 0:
+                    latest = stock_array[-1]
+                    keys = ["r30", "r60", "r90", "r180", "r180p"]
+                    total = sum(int(latest.get(k, 0)) for k in keys)
+                    if total > 0:
+                        return total
     except Exception:
         pass
     return None
@@ -1328,14 +1359,14 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
     """V3-only endpoint — all data from suburbs_ui_v3 (self-sufficient)."""
     v3 = _get_suburb_or_404(suburb_id, db)
     
-    current_median = v3.current_median_price or v3.house_median_price
+    current_median = _quantize_price(v3.current_median_price or v3.house_median_price)
     
     growth = _compute_growth_score(v3, use_lightweight=False)
     
     # Query optimized time-series table for history
     history_records = db.query(SuburbPriceHistory).filter(SuburbPriceHistory.suburb_id == v3.id).order_by(SuburbPriceHistory.record_date.asc()).all()
-    formatted_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_price} for r in history_records if r.median_price]
-    formatted_rent_history = [{"date": r.record_date.strftime("%Y-%m"), "value": r.median_rent} for r in history_records if r.median_rent]
+    formatted_history = [{"date": r.record_date.strftime("%Y-%m"), "value": _quantize_price(r.median_price)} for r in history_records if r.median_price]
+    formatted_rent_history = [{"date": r.record_date.strftime("%Y-%m"), "value": _quantize_rent(r.median_rent)} for r in history_records if r.median_rent]
 
     # Get property images for this suburb
     property_listings = db.query(PropertyListing).filter(PropertyListing.suburb_id == v3.id).limit(5).all()
@@ -1353,6 +1384,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
     print(f"[DEBUG] Calling _compute_volatility_and_sharpe with formatted_history: {len(formatted_history) if isinstance(formatted_history, list) else type(formatted_history)}")
     volatility, sharpe_ratio = _compute_volatility_and_sharpe(formatted_history)
     print(f"[DEBUG] Volatility: {volatility}, Sharpe ratio: {sharpe_ratio}")
+    sanitized_demographics = _sanitize_demographics_detail(v3)
     
     response = {
         "images_json": unique_images,
@@ -1371,28 +1403,28 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "dqIssues": v3.dq_issues,
         # House — current AVM median for display, V3 history for charts
         "medianPrice": current_median,
-        "weeklyRent": v3.house_median_rent,
-        "rentalYield": v3.house_gross_rental_yield,
+        "weeklyRent": _quantize_rent(v3.house_median_rent),
+        "rentalYield": _quantize_pct(v3.house_gross_rental_yield),
         "houseMedianPrice": current_median,
-        "houseMedianPrice1mChangePct": v3.house_median_price_1m_change_pct,
-        "houseMedianPrice3mChangePct": v3.house_median_price_3m_change_pct,
-        "houseMedianPrice12mChangePct": v3.house_median_price_12m_change_pct,
-        "houseMedianRent": v3.house_median_rent,
-        "houseGrossRentalYield": _cap_yield(v3.house_gross_rental_yield),
+        "houseMedianPrice1mChangePct": _quantize_pct(v3.house_median_price_1m_change_pct),
+        "houseMedianPrice3mChangePct": _quantize_pct(v3.house_median_price_3m_change_pct),
+        "houseMedianPrice12mChangePct": _quantize_pct(v3.house_median_price_12m_change_pct),
+        "houseMedianRent": _quantize_rent(v3.house_median_rent),
+        "houseGrossRentalYield": _quantize_pct(_cap_yield(v3.house_gross_rental_yield)),
         "houseGrossRentalYieldTrend": v3.house_gross_rental_yield_trend,
         "houseDaysOnMarket": v3.house_days_on_market,
-        "houseAuctionClearanceRate": v3.house_auction_clearance_rate,
+        "houseAuctionClearanceRate": _quantize_pct(v3.house_auction_clearance_rate),
         "houseStockOnMarket": v3.house_stock_on_market,
         "houseSold12m": v3.house_sold_12m,
         # Unit
-        "unitMedianPrice": v3.unit_median_price,
-        "unitMedianPrice12mChangePct": v3.unit_median_price_12m_change_pct,
-        "unitMedianRent": v3.unit_median_rent,
-        "unitGrossRentalYield": _cap_yield(v3.unit_gross_rental_yield),
+        "unitMedianPrice": _quantize_price(v3.unit_median_price),
+        "unitMedianPrice12mChangePct": _quantize_pct(v3.unit_median_price_12m_change_pct),
+        "unitMedianRent": _quantize_rent(v3.unit_median_rent),
+        "unitGrossRentalYield": _quantize_pct(_cap_yield(v3.unit_gross_rental_yield)),
         "unitGrossRentalYieldTrend": v3.unit_gross_rental_yield_trend,
         "unitDaysOnMarket": v3.unit_days_on_market,
         # Market
-        "vacancyRate": v3.vacancy_rate,
+        "vacancyRate": _quantize_pct(v3.vacancy_rate),
         "supplyDemandRatio": v3.supply_demand_ratio,
         "priceToRentRatio": v3.price_to_rent_ratio,
         "priceToIncomeRatio": v3.price_to_income_ratio,
@@ -1449,8 +1481,8 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "historyRent": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
         "history10yr": formatted_history if formatted_history else (v3.history_10yr or []),
         "historyRent10yr": formatted_rent_history if formatted_rent_history else (v3.history_rent_10yr or []),
-        "demographics": v3.demographics_detail or {},
-        "demographicsDetailV3": v3.demographics_detail or {},
+        "demographics": sanitized_demographics,
+        "demographicsDetailV3": sanitized_demographics,
         "salesSummaryV3": v3.sales_summary or [],
         "nearbySuburbsV3": v3.nearby_suburbs or [],
         "ai_insights": v3.ai_insights or {},

@@ -898,7 +898,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ask_conversation",
-      "community": 220,
+      "community": 130,
       "norm_label": "conversation.py"
     },
     {
@@ -908,7 +908,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ask_conversation_get_latest_brief",
-      "community": 220,
+      "community": 130,
       "norm_label": "get_latest_brief()"
     },
     {
@@ -918,7 +918,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "backend_ask_conversation_py_session",
-      "community": 220,
+      "community": 130,
       "norm_label": "session"
     },
     {
@@ -928,7 +928,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "backend_ask_conversation_py_askbrief",
-      "community": 220,
+      "community": 130,
       "norm_label": "askbrief"
     },
     {
@@ -938,7 +938,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "ask_conversation_merge_intent",
-      "community": 220,
+      "community": 130,
       "norm_label": "merge_intent()"
     },
     {
@@ -948,7 +948,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "backend_ask_conversation_py_any",
-      "community": 220,
+      "community": 130,
       "norm_label": "any"
     },
     {
@@ -958,7 +958,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "ask_conversation_to_list",
-      "community": 220,
+      "community": 130,
       "norm_label": "_to_list()"
     },
     {
@@ -968,7 +968,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ask_conversation_rationale_1",
-      "community": 220,
+      "community": 130,
       "norm_label": "conversation.py \u2014 multi-turn slot merging for ask yieldsense. when a conversatio"
     },
     {
@@ -978,7 +978,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "ask_conversation_rationale_32",
-      "community": 220,
+      "community": 130,
       "norm_label": "merge a prior intent (from a previous brief in the conversation) with     the ne"
     },
     {
@@ -1078,7 +1078,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ask_evidence",
-      "community": 70,
+      "community": 60,
       "norm_label": "evidence.py"
     },
     {
@@ -1088,7 +1088,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ask_evidence_compute_volatility_and_sharpe",
-      "community": 70,
+      "community": 60,
       "norm_label": "_compute_volatility_and_sharpe()"
     },
     {
@@ -1148,7 +1148,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "ask_evidence_extract_evidence",
-      "community": 70,
+      "community": 60,
       "norm_label": "extract_evidence()"
     },
     {
@@ -1178,7 +1178,7 @@
       "source_location": "L255",
       "_origin": "ast",
       "id": "ask_evidence_check_pack_minimum",
-      "community": 70,
+      "community": 60,
       "norm_label": "check_pack_minimum()"
     },
     {
@@ -1188,7 +1188,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ask_evidence_rationale_1",
-      "community": 70,
+      "community": 60,
       "norm_label": "evidence.py \u2014 provenance-backed evidence extraction + data-quality scoring. phas"
     },
     {
@@ -1198,7 +1198,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "ask_evidence_rationale_19",
-      "community": 70,
+      "community": 60,
       "norm_label": "derive price_volatility_10yr and price_sharpe_ratio from 10yr price history."
     },
     {
@@ -1208,7 +1208,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "ask_evidence_rationale_75",
-      "community": 70,
+      "community": 60,
       "norm_label": "extract evidence from suburbuiv3 using goal-driven evidence packs.     reads tru"
     },
     {
@@ -2358,7 +2358,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ask_repository",
-      "community": 220,
+      "community": 87,
       "norm_label": "repository.py"
     },
     {
@@ -2368,7 +2368,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "ask_repository_sanitize",
-      "community": 14,
+      "community": 87,
       "norm_label": "_sanitize()"
     },
     {
@@ -2378,7 +2378,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_ask_repository_py_any",
-      "community": 220,
+      "community": 110,
       "norm_label": "any"
     },
     {
@@ -2388,7 +2388,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ask_repository_generate_share_token",
-      "community": 220,
+      "community": 87,
       "norm_label": "generate_share_token()"
     },
     {
@@ -2398,7 +2398,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "ask_repository_hash_token",
-      "community": 220,
+      "community": 87,
       "norm_label": "hash_token()"
     },
     {
@@ -2408,7 +2408,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "ask_repository_create_conversation",
-      "community": 220,
+      "community": 87,
       "norm_label": "create_conversation()"
     },
     {
@@ -2418,7 +2418,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "backend_ask_repository_py_session",
-      "community": 220,
+      "community": 87,
       "norm_label": "session"
     },
     {
@@ -2428,7 +2428,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "askconversation",
-      "community": 220,
+      "community": 110,
       "norm_label": "askconversation"
     },
     {
@@ -2438,7 +2438,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "ask_repository_get_conversation",
-      "community": 220,
+      "community": 87,
       "norm_label": "get_conversation()"
     },
     {
@@ -2448,7 +2448,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "ask_repository_add_message",
-      "community": 220,
+      "community": 87,
       "norm_label": "add_message()"
     },
     {
@@ -2458,7 +2458,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "askmessage",
-      "community": 220,
+      "community": 110,
       "norm_label": "askmessage"
     },
     {
@@ -2468,7 +2468,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "ask_repository_save_ask_brief",
-      "community": 14,
+      "community": 87,
       "norm_label": "save_ask_brief()"
     },
     {
@@ -2478,7 +2478,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "backend_ask_repository_py_askbrief",
-      "community": 220,
+      "community": 110,
       "norm_label": "askbrief"
     },
     {
@@ -2488,7 +2488,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "ask_repository_get_brief",
-      "community": 220,
+      "community": 87,
       "norm_label": "get_brief()"
     },
     {
@@ -2498,7 +2498,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "ask_repository_share_brief",
-      "community": 220,
+      "community": 87,
       "norm_label": "share_brief()"
     },
     {
@@ -2508,7 +2508,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "ask_repository_get_shared_brief",
-      "community": 220,
+      "community": 87,
       "norm_label": "get_shared_brief()"
     },
     {
@@ -2518,7 +2518,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "ask_repository_redact_brief_for_public",
-      "community": 220,
+      "community": 110,
       "norm_label": "redact_brief_for_public()"
     },
     {
@@ -2528,7 +2528,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "ask_repository_rationale_14",
-      "community": 14,
+      "community": 87,
       "norm_label": "recursively convert non-json-serializable types to safe primitives."
     },
     {
@@ -2538,7 +2538,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "ask_repository_rationale_26",
-      "community": 220,
+      "community": 87,
       "norm_label": "generates a raw token and its hash."
     },
     {
@@ -2548,7 +2548,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "ask_repository_rationale_90",
-      "community": 220,
+      "community": 87,
       "norm_label": "generates a share token for a brief and sets visibility to public."
     },
     {
@@ -2558,7 +2558,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ask_repository_rationale_109",
-      "community": 220,
+      "community": 110,
       "norm_label": "redacts sensitive financial data for public viewing."
     },
     {
@@ -3298,7 +3298,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_clustering",
-      "community": 239,
+      "community": 66,
       "norm_label": "clustering.py"
     },
     {
@@ -3308,7 +3308,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "backend_clustering_find_similar_suburbs",
-      "community": 239,
+      "community": 66,
       "norm_label": "find_similar_suburbs()"
     },
     {
@@ -3318,7 +3318,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "backend_clustering_compute_anti_market_score",
-      "community": 239,
+      "community": 66,
       "norm_label": "compute_anti_market_score()"
     },
     {
@@ -3328,7 +3328,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "backend_clustering_find_anti_market_alternatives",
-      "community": 239,
+      "community": 66,
       "norm_label": "find_anti_market_alternatives()"
     },
     {
@@ -3338,7 +3338,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_clustering_rationale_10",
-      "community": 239,
+      "community": 66,
       "norm_label": "finds cheaper suburbs that share similar institutional-grade characteristics"
     },
     {
@@ -3348,7 +3348,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "backend_clustering_rationale_141",
-      "community": 239,
+      "community": 66,
       "norm_label": "compute the counter-cyclical / anti-market resilience score (0-100) and     valu"
     },
     {
@@ -3358,7 +3358,7 @@
       "source_location": "L303",
       "_origin": "ast",
       "id": "backend_clustering_rationale_303",
-      "community": 239,
+      "community": 66,
       "norm_label": "find counter-cyclical / anti-market resilient alternative suburbs in the same"
     },
     {
@@ -3368,7 +3368,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_committee_memory",
-      "community": 105,
+      "community": 136,
       "norm_label": "committee_memory.py"
     },
     {
@@ -3378,7 +3378,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "backend_committee_memory_store_analysis",
-      "community": 105,
+      "community": 136,
       "norm_label": "store_analysis()"
     },
     {
@@ -3388,7 +3388,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "backend_committee_memory_detect_llm_provider",
-      "community": 105,
+      "community": 136,
       "norm_label": "_detect_llm_provider()"
     },
     {
@@ -3398,7 +3398,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "backend_committee_memory_retrieve_similar",
-      "community": 105,
+      "community": 136,
       "norm_label": "retrieve_similar()"
     },
     {
@@ -3408,7 +3408,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_committee_memory_rationale_1",
-      "community": 105,
+      "community": 136,
       "norm_label": "committee_memory.py \u2014 postgresql-backed committee analysis memory. stores past a"
     },
     {
@@ -3418,7 +3418,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "backend_committee_memory_rationale_20",
-      "community": 105,
+      "community": 136,
       "norm_label": "persist a committee analysis to the db for future retrieval."
     },
     {
@@ -3428,7 +3428,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "backend_committee_memory_rationale_78",
-      "community": 105,
+      "community": 136,
       "norm_label": "find the most similar past committee analyses in the same state.          qualit"
     },
     {
@@ -6108,7 +6108,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_main",
-      "community": 6,
+      "community": 239,
       "norm_label": "main.py"
     },
     {
@@ -6118,7 +6118,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "backend_main_ai_circuit_allowed",
-      "community": 6,
+      "community": 239,
       "norm_label": "_ai_circuit_allowed()"
     },
     {
@@ -6128,7 +6128,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "backend_main_ai_circuit_record_failure",
-      "community": 6,
+      "community": 239,
       "norm_label": "_ai_circuit_record_failure()"
     },
     {
@@ -6148,7 +6148,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "backend_main_request_log_middleware",
-      "community": 6,
+      "community": 239,
       "norm_label": "request_log_middleware()"
     },
     {
@@ -6158,7 +6158,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "backend_main_py_request",
-      "community": 153,
+      "community": 157,
       "norm_label": "request"
     },
     {
@@ -6168,7 +6168,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "backend_main_rl_check",
-      "community": 6,
+      "community": 239,
       "norm_label": "_rl_check()"
     },
     {
@@ -6178,7 +6178,7 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "backend_main_check_auth_rate",
-      "community": 6,
+      "community": 239,
       "norm_label": "_check_auth_rate()"
     },
     {
@@ -6268,7 +6268,7 @@
       "source_location": "L356",
       "_origin": "ast",
       "id": "backend_main_get_db",
-      "community": 6,
+      "community": 239,
       "norm_label": "get_db()"
     },
     {
@@ -6348,7 +6348,7 @@
       "source_location": "L450",
       "_origin": "ast",
       "id": "backend_main_send_verification_email",
-      "community": 6,
+      "community": 239,
       "norm_label": "send_verification_email()"
     },
     {
@@ -6358,7 +6358,7 @@
       "source_location": "L486",
       "_origin": "ast",
       "id": "backend_main_hash_password",
-      "community": 6,
+      "community": 239,
       "norm_label": "hash_password()"
     },
     {
@@ -6368,7 +6368,7 @@
       "source_location": "L489",
       "_origin": "ast",
       "id": "backend_main_verify_password",
-      "community": 6,
+      "community": 239,
       "norm_label": "verify_password()"
     },
     {
@@ -6378,7 +6378,7 @@
       "source_location": "L495",
       "_origin": "ast",
       "id": "backend_main_get_current_user",
-      "community": 6,
+      "community": 157,
       "norm_label": "get_current_user()"
     },
     {
@@ -6398,7 +6398,7 @@
       "source_location": "L516",
       "_origin": "ast",
       "id": "backend_main_register",
-      "community": 6,
+      "community": 239,
       "norm_label": "register()"
     },
     {
@@ -6408,7 +6408,7 @@
       "source_location": "L564",
       "_origin": "ast",
       "id": "backend_main_write_analytics_event_bg",
-      "community": 153,
+      "community": 239,
       "norm_label": "_write_analytics_event_bg()"
     },
     {
@@ -6418,7 +6418,7 @@
       "source_location": "L577",
       "_origin": "ast",
       "id": "backend_main_track_analytics_event",
-      "community": 153,
+      "community": 157,
       "norm_label": "track_analytics_event()"
     },
     {
@@ -6438,7 +6438,7 @@
       "source_location": "L607",
       "_origin": "ast",
       "id": "backend_main_login",
-      "community": 6,
+      "community": 239,
       "norm_label": "login()"
     },
     {
@@ -6468,7 +6468,7 @@
       "source_location": "L643",
       "_origin": "ast",
       "id": "backend_main_record_consent",
-      "community": 6,
+      "community": 157,
       "norm_label": "record_consent()"
     },
     {
@@ -6478,7 +6478,7 @@
       "source_location": "L668",
       "_origin": "ast",
       "id": "backend_main_get_me",
-      "community": 153,
+      "community": 239,
       "norm_label": "get_me()"
     },
     {
@@ -6518,7 +6518,7 @@
       "source_location": "L727",
       "_origin": "ast",
       "id": "backend_main_get_poc_config",
-      "community": 6,
+      "community": 239,
       "norm_label": "get_poc_config()"
     },
     {
@@ -6538,7 +6538,7 @@
       "source_location": "L842",
       "_origin": "ast",
       "id": "backend_main_bust_suburbs_cache",
-      "community": 6,
+      "community": 239,
       "norm_label": "bust_suburbs_cache()"
     },
     {
@@ -6548,7 +6548,7 @@
       "source_location": "L850",
       "_origin": "ast",
       "id": "backend_main_test_endpoint",
-      "community": 6,
+      "community": 239,
       "norm_label": "test_endpoint()"
     },
     {
@@ -6632,10 +6632,50 @@
       "norm_label": "_provenanced_metrics()"
     },
     {
-      "label": "_get_sqm_stock()",
+      "label": "_quantize_price()",
       "file_type": "code",
       "source_file": "backend/main.py",
       "source_location": "L1133",
+      "_origin": "ast",
+      "id": "backend_main_quantize_price",
+      "community": 239,
+      "norm_label": "_quantize_price()"
+    },
+    {
+      "label": "_quantize_rent()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L1139",
+      "_origin": "ast",
+      "id": "backend_main_quantize_rent",
+      "community": 239,
+      "norm_label": "_quantize_rent()"
+    },
+    {
+      "label": "_quantize_pct()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L1145",
+      "_origin": "ast",
+      "id": "backend_main_quantize_pct",
+      "community": 239,
+      "norm_label": "_quantize_pct()"
+    },
+    {
+      "label": "_sanitize_demographics_detail()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L1151",
+      "_origin": "ast",
+      "id": "backend_main_sanitize_demographics_detail",
+      "community": 239,
+      "norm_label": "_sanitize_demographics_detail()"
+    },
+    {
+      "label": "_get_sqm_stock()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L1163",
       "_origin": "ast",
       "id": "backend_main_get_sqm_stock",
       "community": 239,
@@ -6645,7 +6685,7 @@
       "label": "_calibrate_dq()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1149",
+      "source_location": "L1180",
       "_origin": "ast",
       "id": "backend_main_calibrate_dq",
       "community": 239,
@@ -6655,7 +6695,7 @@
       "label": "_compute_growth_score()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1162",
+      "source_location": "L1193",
       "_origin": "ast",
       "id": "backend_main_compute_growth_score",
       "community": 239,
@@ -6665,7 +6705,7 @@
       "label": "SuburbUIV3",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1162",
+      "source_location": "L1193",
       "_origin": "ast",
       "id": "backend_main_py_suburbuiv3",
       "community": 153,
@@ -6675,7 +6715,7 @@
       "label": "get_suburb()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1327",
+      "source_location": "L1358",
       "_origin": "ast",
       "id": "backend_main_get_suburb",
       "community": 239,
@@ -6685,7 +6725,7 @@
       "label": "get_scores_meta()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1505",
+      "source_location": "L1537",
       "_origin": "ast",
       "id": "backend_main_get_scores_meta",
       "community": 192,
@@ -6695,7 +6735,7 @@
       "label": "get_personas()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1512",
+      "source_location": "L1544",
       "_origin": "ast",
       "id": "backend_main_get_personas",
       "community": 190,
@@ -6705,7 +6745,7 @@
       "label": "get_suburb_evidence()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1518",
+      "source_location": "L1550",
       "_origin": "ast",
       "id": "backend_main_get_suburb_evidence",
       "community": 239,
@@ -6715,17 +6755,17 @@
       "label": "get_decision_brief()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1603",
+      "source_location": "L1635",
       "_origin": "ast",
       "id": "backend_main_get_decision_brief",
-      "community": 239,
+      "community": 66,
       "norm_label": "get_decision_brief()"
     },
     {
       "label": "AnalyzeRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1632",
+      "source_location": "L1664",
       "_origin": "ast",
       "id": "backend_main_analyzerequest",
       "community": 153,
@@ -6735,47 +6775,47 @@
       "label": "analyze_suburb()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1639",
+      "source_location": "L1671",
       "_origin": "ast",
       "id": "backend_main_analyze_suburb",
-      "community": 6,
+      "community": 239,
       "norm_label": "analyze_suburb()"
     },
     {
       "label": "get_similar_suburbs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1797",
+      "source_location": "L1829",
       "_origin": "ast",
       "id": "backend_main_get_similar_suburbs",
-      "community": 239,
+      "community": 66,
       "norm_label": "get_similar_suburbs()"
     },
     {
       "label": "_normalize_suburb_id()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1839",
+      "source_location": "L1871",
       "_origin": "ast",
       "id": "backend_main_normalize_suburb_id",
-      "community": 239,
+      "community": 66,
       "norm_label": "_normalize_suburb_id()"
     },
     {
       "label": "_get_suburb_or_404()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1845",
+      "source_location": "L1877",
       "_origin": "ast",
       "id": "backend_main_get_suburb_or_404",
-      "community": 239,
+      "community": 66,
       "norm_label": "_get_suburb_or_404()"
     },
     {
       "label": "get_market_news()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1860",
+      "source_location": "L1892",
       "_origin": "ast",
       "id": "backend_main_get_market_news",
       "community": 6,
@@ -6785,7 +6825,7 @@
       "label": "get_news_sentiment()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1894",
+      "source_location": "L1926",
       "_origin": "ast",
       "id": "backend_main_get_news_sentiment",
       "community": 66,
@@ -6795,17 +6835,17 @@
       "label": "get_suburb_anti_market()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L1976",
+      "source_location": "L2008",
       "_origin": "ast",
       "id": "backend_main_get_suburb_anti_market",
-      "community": 239,
+      "community": 66,
       "norm_label": "get_suburb_anti_market()"
     },
     {
       "label": "reload_suburbs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2056",
+      "source_location": "L2088",
       "_origin": "ast",
       "id": "backend_main_reload_suburbs",
       "community": 18,
@@ -6815,7 +6855,7 @@
       "label": "update_news_batch()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2068",
+      "source_location": "L2100",
       "_origin": "ast",
       "id": "backend_main_update_news_batch",
       "community": 6,
@@ -6825,7 +6865,7 @@
       "label": "ROICalcRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2130",
+      "source_location": "L2162",
       "_origin": "ast",
       "id": "backend_main_roicalcrequest",
       "community": 153,
@@ -6835,37 +6875,37 @@
       "label": "calculate_stamp_duty()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2147",
+      "source_location": "L2179",
       "_origin": "ast",
       "id": "backend_main_calculate_stamp_duty",
-      "community": 6,
+      "community": 239,
       "norm_label": "calculate_stamp_duty()"
     },
     {
       "label": "calculate_roi()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2212",
+      "source_location": "L2244",
       "_origin": "ast",
       "id": "backend_main_calculate_roi",
-      "community": 6,
+      "community": 239,
       "norm_label": "calculate_roi()"
     },
     {
       "label": "get_mortgage_rate()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2291",
+      "source_location": "L2323",
       "_origin": "ast",
       "id": "backend_main_get_mortgage_rate",
-      "community": 6,
+      "community": 239,
       "norm_label": "get_mortgage_rate()"
     },
     {
       "label": "get_suburbs_v3()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2317",
+      "source_location": "L2349",
       "_origin": "ast",
       "id": "backend_main_get_suburbs_v3",
       "community": 66,
@@ -6875,17 +6915,17 @@
       "label": "api_get_school_zone()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2410",
+      "source_location": "L2442",
       "_origin": "ast",
       "id": "backend_main_api_get_school_zone",
-      "community": 6,
+      "community": 239,
       "norm_label": "api_get_school_zone()"
     },
     {
       "label": "export_suburbs_csv()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2448",
+      "source_location": "L2480",
       "_origin": "ast",
       "id": "backend_main_export_suburbs_csv",
       "community": 6,
@@ -6895,7 +6935,7 @@
       "label": "FavoriteRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2481",
+      "source_location": "L2513",
       "_origin": "ast",
       "id": "backend_main_favoriterequest",
       "community": 153,
@@ -6905,7 +6945,7 @@
       "label": "get_favorites()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2485",
+      "source_location": "L2517",
       "_origin": "ast",
       "id": "backend_main_get_favorites",
       "community": 6,
@@ -6915,7 +6955,7 @@
       "label": "toggle_favorite()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2491",
+      "source_location": "L2523",
       "_origin": "ast",
       "id": "backend_main_toggle_favorite",
       "community": 6,
@@ -6925,7 +6965,7 @@
       "label": "PortfolioPropertyRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2503",
+      "source_location": "L2535",
       "_origin": "ast",
       "id": "backend_main_portfoliopropertyrequest",
       "community": 153,
@@ -6935,7 +6975,7 @@
       "label": "get_portfolio()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2510",
+      "source_location": "L2542",
       "_origin": "ast",
       "id": "backend_main_get_portfolio",
       "community": 6,
@@ -6945,7 +6985,7 @@
       "label": "add_portfolio_property()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2523",
+      "source_location": "L2555",
       "_origin": "ast",
       "id": "backend_main_add_portfolio_property",
       "community": 6,
@@ -6955,17 +6995,17 @@
       "label": "get_metrics_docs()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2544",
+      "source_location": "L2576",
       "_origin": "ast",
       "id": "backend_main_get_metrics_docs",
-      "community": 6,
+      "community": 239,
       "norm_label": "get_metrics_docs()"
     },
     {
       "label": "SlackLLMRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2547",
+      "source_location": "L2579",
       "_origin": "ast",
       "id": "backend_main_slackllmrequest",
       "community": 153,
@@ -6975,17 +7015,17 @@
       "label": "proxy_slack_llm()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2552",
+      "source_location": "L2584",
       "_origin": "ast",
       "id": "backend_main_proxy_slack_llm",
-      "community": 6,
+      "community": 239,
       "norm_label": "proxy_slack_llm()"
     },
     {
       "label": "get_suburb_v3()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2566",
+      "source_location": "L2598",
       "_origin": "ast",
       "id": "backend_main_get_suburb_v3",
       "community": 239,
@@ -6995,7 +7035,7 @@
       "label": "get_osm_livability()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2641",
+      "source_location": "L2673",
       "_origin": "ast",
       "id": "backend_main_get_osm_livability",
       "community": 66,
@@ -7005,7 +7045,7 @@
       "label": "get_osm_boundary()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2719",
+      "source_location": "L2751",
       "_origin": "ast",
       "id": "backend_main_get_osm_boundary",
       "community": 66,
@@ -7015,7 +7055,7 @@
       "label": "get_suburb_pockets()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2729",
+      "source_location": "L2761",
       "_origin": "ast",
       "id": "backend_main_get_suburb_pockets",
       "community": 6,
@@ -7025,7 +7065,7 @@
       "label": "get_suburb_properties()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2866",
+      "source_location": "L2898",
       "_origin": "ast",
       "id": "backend_main_get_suburb_properties",
       "community": 6,
@@ -7035,7 +7075,7 @@
       "label": "metrics()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2914",
+      "source_location": "L2946",
       "_origin": "ast",
       "id": "backend_main_metrics",
       "community": 121,
@@ -7045,17 +7085,17 @@
       "label": "risk_what_if()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2920",
+      "source_location": "L2952",
       "_origin": "ast",
       "id": "backend_main_risk_what_if",
-      "community": 132,
+      "community": 105,
       "norm_label": "risk_what_if()"
     },
     {
       "label": "ModelDiaryEntry",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2945",
+      "source_location": "L2977",
       "_origin": "ast",
       "id": "backend_main_modeldiaryentry",
       "community": 153,
@@ -7065,7 +7105,7 @@
       "label": "create_model_diary_entry()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2957",
+      "source_location": "L2989",
       "_origin": "ast",
       "id": "backend_main_create_model_diary_entry",
       "community": 6,
@@ -7075,7 +7115,7 @@
       "label": "get_model_diary()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L2977",
+      "source_location": "L3009",
       "_origin": "ast",
       "id": "backend_main_get_model_diary",
       "community": 6,
@@ -7085,7 +7125,7 @@
       "label": "get_model_diary_summary()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3004",
+      "source_location": "L3036",
       "_origin": "ast",
       "id": "backend_main_get_model_diary_summary",
       "community": 6,
@@ -7095,7 +7135,7 @@
       "label": "buy_finder_rank()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3027",
+      "source_location": "L3059",
       "_origin": "ast",
       "id": "backend_main_buy_finder_rank",
       "community": 6,
@@ -7105,7 +7145,7 @@
       "label": "SaveSnapshotRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3092",
+      "source_location": "L3124",
       "_origin": "ast",
       "id": "backend_main_savesnapshotrequest",
       "community": 153,
@@ -7115,7 +7155,7 @@
       "label": "save_decision_snapshot()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3100",
+      "source_location": "L3132",
       "_origin": "ast",
       "id": "backend_main_save_decision_snapshot",
       "community": 6,
@@ -7125,7 +7165,7 @@
       "label": "list_decision_snapshots()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3123",
+      "source_location": "L3155",
       "_origin": "ast",
       "id": "backend_main_list_decision_snapshots",
       "community": 6,
@@ -7135,7 +7175,7 @@
       "label": "SaveClientRequest",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3145",
+      "source_location": "L3177",
       "_origin": "ast",
       "id": "backend_main_saveclientrequest",
       "community": 153,
@@ -7145,7 +7185,7 @@
       "label": "get_clients()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3150",
+      "source_location": "L3182",
       "_origin": "ast",
       "id": "backend_main_get_clients",
       "community": 6,
@@ -7155,7 +7195,7 @@
       "label": "save_client()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3155",
+      "source_location": "L3187",
       "_origin": "ast",
       "id": "backend_main_save_client",
       "community": 6,
@@ -7165,7 +7205,7 @@
       "label": "get_decision_snapshot()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L3169",
+      "source_location": "L3201",
       "_origin": "ast",
       "id": "backend_main_get_decision_snapshot",
       "community": 6,
@@ -7208,7 +7248,7 @@
       "source_location": "L578",
       "_origin": "ast",
       "id": "backend_main_rationale_578",
-      "community": 153,
+      "community": 157,
       "norm_label": "privacy-compliant analytics event tracking. persists to user_activities."
     },
     {
@@ -7218,7 +7258,7 @@
       "source_location": "L644",
       "_origin": "ast",
       "id": "backend_main_rationale_644",
-      "community": 6,
+      "community": 157,
       "norm_label": "records a legally binding click-wrap agreement to the database with ip tracing."
     },
     {
@@ -7238,7 +7278,7 @@
       "source_location": "L728",
       "_origin": "ast",
       "id": "backend_main_rationale_728",
-      "community": 6,
+      "community": 239,
       "norm_label": "returns active poc configuration so the showcase can be verified."
     },
     {
@@ -7258,7 +7298,7 @@
       "source_location": "L843",
       "_origin": "ast",
       "id": "backend_main_rationale_843",
-      "community": 6,
+      "community": 239,
       "norm_label": "invalidate the in-memory suburbs list cache. call after any pipeline run."
     },
     {
@@ -7268,7 +7308,7 @@
       "source_location": "L851",
       "_origin": "ast",
       "id": "backend_main_rationale_851",
-      "community": 6,
+      "community": 239,
       "norm_label": "simple test endpoint without any dependencies."
     },
     {
@@ -7345,9 +7385,9 @@
       "label": "Return the actual DQ Score computed by the ETL pipeline.     Apply a harsh penal",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1150",
+      "source_location": "L1181",
       "_origin": "ast",
-      "id": "backend_main_rationale_1150",
+      "id": "backend_main_rationale_1181",
       "community": 239,
       "norm_label": "return the actual dq score computed by the etl pipeline.     apply a harsh penal"
     },
@@ -7355,9 +7395,9 @@
       "label": "Compute a 0-92 growth score from real V3 metrics.     Version: 1.3.0 \u2014 Lightweig",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1163",
+      "source_location": "L1194",
       "_origin": "ast",
-      "id": "backend_main_rationale_1163",
+      "id": "backend_main_rationale_1194",
       "community": 239,
       "norm_label": "compute a 0-92 growth score from real v3 metrics.     version: 1.3.0 \u2014 lightweig"
     },
@@ -7365,9 +7405,9 @@
       "label": "V3-only endpoint \u2014 all data from suburbs_ui_v3 (self-sufficient).",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1328",
+      "source_location": "L1359",
       "_origin": "ast",
-      "id": "backend_main_rationale_1328",
+      "id": "backend_main_rationale_1359",
       "community": 239,
       "norm_label": "v3-only endpoint \u2014 all data from suburbs_ui_v3 (self-sufficient)."
     },
@@ -7375,9 +7415,9 @@
       "label": "Plain-English metadata (name, range, meaning, caveat) for the scores     surface",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1506",
+      "source_location": "L1538",
       "_origin": "ast",
-      "id": "backend_main_rationale_1506",
+      "id": "backend_main_rationale_1538",
       "community": 192,
       "norm_label": "plain-english metadata (name, range, meaning, caveat) for the scores     surface"
     },
@@ -7385,9 +7425,9 @@
       "label": "Persona presets (weights + visible profile sections + meta).     Frontend uses t",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1513",
+      "source_location": "L1545",
       "_origin": "ast",
-      "id": "backend_main_rationale_1513",
+      "id": "backend_main_rationale_1545",
       "community": 190,
       "norm_label": "persona presets (weights + visible profile sections + meta).     frontend uses t"
     },
@@ -7395,9 +7435,9 @@
       "label": "Evidence contract: trace every material metric to its source.     Returns null o",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1519",
+      "source_location": "L1551",
       "_origin": "ast",
-      "id": "backend_main_rationale_1519",
+      "id": "backend_main_rationale_1551",
       "community": 239,
       "norm_label": "evidence contract: trace every material metric to its source.     returns null o"
     },
@@ -7405,39 +7445,39 @@
       "label": "Returns a versioned decision snapshot for the Decision Brief UI component.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1604",
+      "source_location": "L1636",
       "_origin": "ast",
-      "id": "backend_main_rationale_1604",
-      "community": 239,
+      "id": "backend_main_rationale_1636",
+      "community": 66,
       "norm_label": "returns a versioned decision snapshot for the decision brief ui component."
     },
     {
       "label": "Convert frontend ID format (parramatta-nsw-2150) to DB format (NSW_PARRAMATTA_21",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1840",
+      "source_location": "L1872",
       "_origin": "ast",
-      "id": "backend_main_rationale_1840",
-      "community": 239,
+      "id": "backend_main_rationale_1872",
+      "community": 66,
       "norm_label": "convert frontend id format (parramatta-nsw-2150) to db format (nsw_parramatta_21"
     },
     {
       "label": "Look up a SuburbUIV3 by normalized ID. Raises 404 if not found.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1846",
+      "source_location": "L1878",
       "_origin": "ast",
-      "id": "backend_main_rationale_1846",
-      "community": 239,
+      "id": "backend_main_rationale_1878",
+      "community": 66,
       "norm_label": "look up a suburbuiv3 by normalized id. raises 404 if not found."
     },
     {
       "label": "Return top macro market news. Mocked for now to support UI.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1861",
+      "source_location": "L1893",
       "_origin": "ast",
-      "id": "backend_main_rationale_1861",
+      "id": "backend_main_rationale_1893",
       "community": 6,
       "norm_label": "return top macro market news. mocked for now to support ui."
     },
@@ -7445,9 +7485,9 @@
       "label": "On-demand news sentiment & 5-axis macro intelligence for a suburb.     Caching:",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1895",
+      "source_location": "L1927",
       "_origin": "ast",
-      "id": "backend_main_rationale_1895",
+      "id": "backend_main_rationale_1927",
       "community": 66,
       "norm_label": "on-demand news sentiment & 5-axis macro intelligence for a suburb.     caching:"
     },
@@ -7455,19 +7495,19 @@
       "label": "Returns Counter-Cyclical / Anti-Market Resilience Score, Value Trap diagnostics,",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L1977",
+      "source_location": "L2009",
       "_origin": "ast",
-      "id": "backend_main_rationale_1977",
-      "community": 239,
+      "id": "backend_main_rationale_2009",
+      "community": 66,
       "norm_label": "returns counter-cyclical / anti-market resilience score, value trap diagnostics,"
     },
     {
       "label": "Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2057",
+      "source_location": "L2089",
       "_origin": "ast",
-      "id": "backend_main_rationale_2057",
+      "id": "backend_main_rationale_2089",
       "community": 18,
       "norm_label": "triggers v3 pipeline enrichment from unpacked table (replaces old transform_data"
     },
@@ -7475,9 +7515,9 @@
       "label": "Background endpoint triggered by cron to update news sentiment in batches.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2069",
+      "source_location": "L2101",
       "_origin": "ast",
-      "id": "backend_main_rationale_2069",
+      "id": "backend_main_rationale_2101",
       "community": 6,
       "norm_label": "background endpoint triggered by cron to update news sentiment in batches."
     },
@@ -7485,19 +7525,19 @@
       "label": "Default indicative mortgage rate.     Not connected to a live rate feed \u2014 this i",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2292",
+      "source_location": "L2324",
       "_origin": "ast",
-      "id": "backend_main_rationale_2292",
-      "community": 6,
+      "id": "backend_main_rationale_2324",
+      "community": 239,
       "norm_label": "default indicative mortgage rate.     not connected to a live rate feed \u2014 this i"
     },
     {
       "label": "Returns V3-enriched suburbs for the institutional dashboard view.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2318",
+      "source_location": "L2350",
       "_origin": "ast",
-      "id": "backend_main_rationale_2318",
+      "id": "backend_main_rationale_2350",
       "community": 66,
       "norm_label": "returns v3-enriched suburbs for the institutional dashboard view."
     },
@@ -7505,9 +7545,9 @@
       "label": "Exports the V3 suburbs table to a CSV file.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2449",
+      "source_location": "L2481",
       "_origin": "ast",
-      "id": "backend_main_rationale_2449",
+      "id": "backend_main_rationale_2481",
       "community": 6,
       "norm_label": "exports the v3 suburbs table to a csv file."
     },
@@ -7515,9 +7555,9 @@
       "label": "Returns full V3 institutional data for a single suburb.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2567",
+      "source_location": "L2599",
       "_origin": "ast",
-      "id": "backend_main_rationale_2567",
+      "id": "backend_main_rationale_2599",
       "community": 239,
       "norm_label": "returns full v3 institutional data for a single suburb."
     },
@@ -7525,9 +7565,9 @@
       "label": "Returns local POI data and livability scores from PostGIS OSM tables.     Replac",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2642",
+      "source_location": "L2674",
       "_origin": "ast",
-      "id": "backend_main_rationale_2642",
+      "id": "backend_main_rationale_2674",
       "community": 66,
       "norm_label": "returns local poi data and livability scores from postgis osm tables.     replac"
     },
@@ -7535,9 +7575,9 @@
       "label": "Returns suburb boundary geojson and center coordinates from local PostGIS.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2720",
+      "source_location": "L2752",
       "_origin": "ast",
-      "id": "backend_main_rationale_2720",
+      "id": "backend_main_rationale_2752",
       "community": 66,
       "norm_label": "returns suburb boundary geojson and center coordinates from local postgis."
     },
@@ -7545,9 +7585,9 @@
       "label": "Pocket risk layer geojson with per-suburb risk signals.          Currently uses",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2730",
+      "source_location": "L2762",
       "_origin": "ast",
-      "id": "backend_main_rationale_2730",
+      "id": "backend_main_rationale_2762",
       "community": 6,
       "norm_label": "pocket risk layer geojson with per-suburb risk signals.          currently uses"
     },
@@ -7555,9 +7595,9 @@
       "label": "Returns property listings for a suburb.     Only returns properties strictly mat",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2867",
+      "source_location": "L2899",
       "_origin": "ast",
-      "id": "backend_main_rationale_2867",
+      "id": "backend_main_rationale_2899",
       "community": 6,
       "norm_label": "returns property listings for a suburb.     only returns properties strictly mat"
     },
@@ -7565,9 +7605,9 @@
       "label": "Prometheus-compatible metrics endpoint for AI observability.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2915",
+      "source_location": "L2947",
       "_origin": "ast",
-      "id": "backend_main_rationale_2915",
+      "id": "backend_main_rationale_2947",
       "community": 121,
       "norm_label": "prometheus-compatible metrics endpoint for ai observability."
     },
@@ -7575,19 +7615,19 @@
       "label": "Backend what-if scenario using the same Monte Carlo engine as the committee.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2927",
+      "source_location": "L2959",
       "_origin": "ast",
-      "id": "backend_main_rationale_2927",
-      "community": 132,
+      "id": "backend_main_rationale_2959",
+      "community": 105,
       "norm_label": "backend what-if scenario using the same monte carlo engine as the committee."
     },
     {
       "label": "Persist a prediction for later outcome tracking.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2958",
+      "source_location": "L2990",
       "_origin": "ast",
-      "id": "backend_main_rationale_2958",
+      "id": "backend_main_rationale_2990",
       "community": 6,
       "norm_label": "persist a prediction for later outcome tracking."
     },
@@ -7595,9 +7635,9 @@
       "label": "Retrieve historical predictions for a suburb.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L2978",
+      "source_location": "L3010",
       "_origin": "ast",
-      "id": "backend_main_rationale_2978",
+      "id": "backend_main_rationale_3010",
       "community": 6,
       "norm_label": "retrieve historical predictions for a suburb."
     },
@@ -7605,9 +7645,9 @@
       "label": "Summary of model prediction performance.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L3005",
+      "source_location": "L3037",
       "_origin": "ast",
-      "id": "backend_main_rationale_3005",
+      "id": "backend_main_rationale_3037",
       "community": 6,
       "norm_label": "summary of model prediction performance."
     },
@@ -7615,9 +7655,9 @@
       "label": "Versioned backend ranking endpoint for the POC Buyer Fit Score.",
       "file_type": "rationale",
       "source_file": "backend/main.py",
-      "source_location": "L3028",
+      "source_location": "L3060",
       "_origin": "ast",
-      "id": "backend_main_rationale_3028",
+      "id": "backend_main_rationale_3060",
       "community": 6,
       "norm_label": "versioned backend ranking endpoint for the poc buyer fit score."
     },
@@ -7988,7 +8028,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_models_v3",
-      "community": 220,
+      "community": 110,
       "norm_label": "models_v3.py"
     },
     {
@@ -8038,7 +8078,7 @@
       "source_location": "L283",
       "_origin": "ast",
       "id": "backend_models_v3_committeememory",
-      "community": 220,
+      "community": 110,
       "norm_label": "committeememory"
     },
     {
@@ -8068,7 +8108,7 @@
       "source_location": "L370",
       "_origin": "ast",
       "id": "backend_models_v3_etlrunlog",
-      "community": 220,
+      "community": 110,
       "norm_label": "etlrunlog"
     },
     {
@@ -8078,7 +8118,7 @@
       "source_location": "L381",
       "_origin": "ast",
       "id": "backend_models_v3_askconversation",
-      "community": 220,
+      "community": 110,
       "norm_label": "askconversation"
     },
     {
@@ -8088,7 +8128,7 @@
       "source_location": "L391",
       "_origin": "ast",
       "id": "backend_models_v3_askmessage",
-      "community": 220,
+      "community": 110,
       "norm_label": "askmessage"
     },
     {
@@ -8098,7 +8138,7 @@
       "source_location": "L399",
       "_origin": "ast",
       "id": "backend_models_v3_askbrief",
-      "community": 220,
+      "community": 110,
       "norm_label": "askbrief"
     },
     {
@@ -8118,7 +8158,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_models_v3_rationale_1",
-      "community": 220,
+      "community": 110,
       "norm_label": "models_v3.py \u2014 clean etl architecture v3 ======================================="
     },
     {
@@ -8138,7 +8178,7 @@
       "source_location": "L284",
       "_origin": "ast",
       "id": "backend_models_v3_rationale_284",
-      "community": 220,
+      "community": 110,
       "norm_label": "store committee analyses for similarity-based few-shot retrieval."
     },
     {
@@ -8898,7 +8938,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "backend_predictive_ai_engine_has_synthetic_recommendation_inputs",
-      "community": 99,
+      "community": 9,
       "norm_label": "has_synthetic_recommendation_inputs()"
     },
     {
@@ -8978,7 +9018,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_risk_engine",
-      "community": 132,
+      "community": 105,
       "norm_label": "risk_engine.py"
     },
     {
@@ -8988,7 +9028,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "backend_risk_engine_compute_risk_rating",
-      "community": 132,
+      "community": 105,
       "norm_label": "compute_risk_rating()"
     },
     {
@@ -8998,7 +9038,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_risk_engine_rationale_1",
-      "community": 132,
+      "community": 105,
       "norm_label": "risk_engine.py \u2014 quantitative risk assessment for ai investment committee. runs"
     },
     {
@@ -9008,7 +9048,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "backend_risk_engine_rationale_32",
-      "community": 132,
+      "community": 105,
       "norm_label": "run a monte carlo scenario simulation of property price trajectories.      impor"
     },
     {
@@ -9148,7 +9188,7 @@
       "source_location": "L662",
       "_origin": "ast",
       "id": "routers_ask_property_ask_yieldsense",
-      "community": 14,
+      "community": 87,
       "norm_label": "ask_yieldsense()"
     },
     {
@@ -9392,24 +9432,64 @@
       "norm_label": "suburbs_sqm.py"
     },
     {
-      "label": "get_suburb_sqm()",
+      "label": "_suburb_micro_factor()",
       "file_type": "code",
       "source_file": "backend/routers/suburbs_sqm.py",
       "source_location": "L12",
       "_origin": "ast",
-      "id": "routers_suburbs_sqm_get_suburb_sqm",
+      "id": "routers_suburbs_sqm_suburb_micro_factor",
       "community": 172,
-      "norm_label": "get_suburb_sqm()"
+      "norm_label": "_suburb_micro_factor()"
     },
     {
-      "label": "Fetch the market data payload (sold scatterplot, auctions, yields, history) for",
+      "label": "sanitize_and_smooth_market_trends()",
+      "file_type": "code",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "routers_suburbs_sqm_sanitize_and_smooth_market_trends",
+      "community": 172,
+      "norm_label": "sanitize_and_smooth_market_trends()"
+    },
+    {
+      "label": "get_suburb_market_history()",
+      "file_type": "code",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L103",
+      "_origin": "ast",
+      "id": "routers_suburbs_sqm_get_suburb_market_history",
+      "community": 172,
+      "norm_label": "get_suburb_market_history()"
+    },
+    {
+      "label": "Deterministic suburb-specific micro-shrinkage factor in [-0.006, +0.006]     der",
       "file_type": "rationale",
       "source_file": "backend/routers/suburbs_sqm.py",
       "source_location": "L13",
       "_origin": "ast",
       "id": "routers_suburbs_sqm_rationale_13",
       "community": 172,
-      "norm_label": "fetch the market data payload (sold scatterplot, auctions, yields, history) for"
+      "norm_label": "deterministic suburb-specific micro-shrinkage factor in [-0.006, +0.006]     der"
+    },
+    {
+      "label": "Apply 2-period EMA smoothing and natural domain quantization ($1,000 for prices,",
+      "file_type": "rationale",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "routers_suburbs_sqm_rationale_25",
+      "community": 172,
+      "norm_label": "apply 2-period ema smoothing and natural domain quantization ($1,000 for prices,"
+    },
+    {
+      "label": "Fetch the smoothed & quantized market trend series for a given suburb.",
+      "file_type": "rationale",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "routers_suburbs_sqm_rationale_104",
+      "community": 172,
+      "norm_label": "fetch the smoothed & quantized market trend series for a given suburb."
     },
     {
       "label": "user_data.py",
@@ -9948,7 +10028,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment",
-      "community": 114,
+      "community": 125,
       "norm_label": "test_ai_sentiment.py"
     },
     {
@@ -10188,7 +10268,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testmacrointelligenceandvaluetrapguardrails_test_anti_market_score_and_alternatives",
-      "community": 239,
+      "community": 66,
       "norm_label": ".test_anti_market_score_and_alternatives()"
     },
     {
@@ -10198,7 +10278,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_testmacrointelligenceandvaluetrapguardrails_test_risk_engine_flags_churchill_high_risk",
-      "community": 132,
+      "community": 5,
       "norm_label": ".test_risk_engine_flags_churchill_high_risk()"
     },
     {
@@ -10208,7 +10288,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_test_ai_sentiment_rationale_1",
-      "community": 114,
+      "community": 125,
       "norm_label": "unit tests for ai sentiment analysis and caching layer. run: cd backend && pytho"
     },
     {
@@ -11996,7 +12076,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "check_id",
-      "community": 220,
+      "community": 110,
       "norm_label": "check_id.py"
     },
     {
@@ -13152,7 +13232,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_appshell",
-      "community": 90,
+      "community": 119,
       "norm_label": "appshell.tsx"
     },
     {
@@ -13162,7 +13242,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_appshell_viewid",
-      "community": 90,
+      "community": 119,
       "norm_label": "viewid"
     },
     {
@@ -13172,7 +13252,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "components_appshell_appshellprops",
-      "community": 90,
+      "community": 119,
       "norm_label": "appshellprops"
     },
     {
@@ -13182,7 +13262,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "components_appshell_sidebar_groups",
-      "community": 90,
+      "community": 119,
       "norm_label": "sidebar_groups"
     },
     {
@@ -13192,7 +13272,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "components_appshell_mobile_tabs",
-      "community": 90,
+      "community": 119,
       "norm_label": "mobile_tabs"
     },
     {
@@ -13202,7 +13282,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "components_appshell_appshell",
-      "community": 90,
+      "community": 119,
       "norm_label": "appshell()"
     },
     {
@@ -13712,7 +13792,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_chatview",
-      "community": 84,
+      "community": 132,
       "norm_label": "chatview.tsx"
     },
     {
@@ -13722,7 +13802,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_chatview_discoveryresponse",
-      "community": 84,
+      "community": 132,
       "norm_label": "discoveryresponse"
     },
     {
@@ -13732,7 +13812,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_chatview_askresponsev2",
-      "community": 84,
+      "community": 132,
       "norm_label": "askresponsev2"
     },
     {
@@ -13742,7 +13822,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "components_chatview_chatmessage",
-      "community": 84,
+      "community": 132,
       "norm_label": "chatmessage"
     },
     {
@@ -13962,7 +14042,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_landingpage",
-      "community": 84,
+      "community": 132,
       "norm_label": "landingpage.tsx"
     },
     {
@@ -13972,7 +14052,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_landingpage_landingpageprops",
-      "community": 84,
+      "community": 132,
       "norm_label": "landingpageprops"
     },
     {
@@ -13982,7 +14062,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_landingpage_landingpage",
-      "community": 84,
+      "community": 132,
       "norm_label": "landingpage()"
     },
     {
@@ -14162,7 +14242,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_personaswitcher",
-      "community": 109,
+      "community": 90,
       "norm_label": "personaswitcher.tsx"
     },
     {
@@ -14182,7 +14262,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "components_personaswitcher_icons",
-      "community": 109,
+      "community": 90,
       "norm_label": "icons"
     },
     {
@@ -14192,7 +14272,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "components_personaswitcher_personaswitcher",
-      "community": 109,
+      "community": 90,
       "norm_label": "personaswitcher"
     },
     {
@@ -14482,7 +14562,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_propertycard",
-      "community": 84,
+      "community": 126,
       "norm_label": "propertycard.tsx"
     },
     {
@@ -14492,7 +14572,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_propertycard_propertycardprops",
-      "community": 84,
+      "community": 126,
       "norm_label": "propertycardprops"
     },
     {
@@ -14502,7 +14582,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_propertycard_propertycard",
-      "community": 84,
+      "community": 126,
       "norm_label": "propertycard()"
     },
     {
@@ -14512,7 +14592,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_propertylistings",
-      "community": 84,
+      "community": 126,
       "norm_label": "propertylistings.tsx"
     },
     {
@@ -14522,7 +14602,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_propertylistings_property",
-      "community": 84,
+      "community": 126,
       "norm_label": "property"
     },
     {
@@ -14532,7 +14612,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "components_propertylistings_propertylistingsprops",
-      "community": 84,
+      "community": 126,
       "norm_label": "propertylistingsprops"
     },
     {
@@ -14542,7 +14622,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "components_propertylistings_propertylistings",
-      "community": 84,
+      "community": 126,
       "norm_label": "propertylistings()"
     },
     {
@@ -14762,7 +14842,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_settingspage",
-      "community": 84,
+      "community": 183,
       "norm_label": "settingspage.tsx"
     },
     {
@@ -14772,7 +14852,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_settingspage_settingspageprops",
-      "community": 84,
+      "community": 183,
       "norm_label": "settingspageprops"
     },
     {
@@ -14782,7 +14862,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_settingspage_settingspage",
-      "community": 84,
+      "community": 183,
       "norm_label": "settingspage()"
     },
     {
@@ -15122,7 +15202,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_suburbpropertylistings",
-      "community": 84,
+      "community": 126,
       "norm_label": "suburbpropertylistings.tsx"
     },
     {
@@ -15132,7 +15212,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_suburbpropertylistings_suburbproperty",
-      "community": 84,
+      "community": 126,
       "norm_label": "suburbproperty"
     },
     {
@@ -15142,7 +15222,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "components_suburbpropertylistings_suburbpropertylistingsprops",
-      "community": 84,
+      "community": 126,
       "norm_label": "suburbpropertylistingsprops"
     },
     {
@@ -15152,7 +15232,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "components_suburbpropertylistings_suburbpropertylistings",
-      "community": 84,
+      "community": 126,
       "norm_label": "suburbpropertylistings()"
     },
     {
@@ -15992,7 +16072,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_badge",
-      "community": 84,
+      "community": 108,
       "norm_label": "badge.tsx"
     },
     {
@@ -16002,7 +16082,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "ui_badge_badgevariant",
-      "community": 84,
+      "community": 108,
       "norm_label": "badgevariant"
     },
     {
@@ -16012,7 +16092,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "ui_badge_badgeprops",
-      "community": 84,
+      "community": 108,
       "norm_label": "badgeprops"
     },
     {
@@ -16022,7 +16102,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "ui_badge_iconforvariant",
-      "community": 84,
+      "community": 108,
       "norm_label": "iconforvariant"
     },
     {
@@ -16032,7 +16112,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ui_badge_badge",
-      "community": 84,
+      "community": 108,
       "norm_label": "badge()"
     },
     {
@@ -16042,7 +16122,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_button",
-      "community": 84,
+      "community": 183,
       "norm_label": "button.tsx"
     },
     {
@@ -16052,7 +16132,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "ui_button_buttonprops",
-      "community": 84,
+      "community": 183,
       "norm_label": "buttonprops"
     },
     {
@@ -16062,7 +16142,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "ui_button_button",
-      "community": 84,
+      "community": 183,
       "norm_label": "button()"
     },
     {
@@ -16192,7 +16272,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_emptystate",
-      "community": 84,
+      "community": 108,
       "norm_label": "emptystate.tsx"
     },
     {
@@ -16202,7 +16282,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "ui_emptystate_emptystateprops",
-      "community": 84,
+      "community": 108,
       "norm_label": "emptystateprops"
     },
     {
@@ -16212,7 +16292,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "ui_emptystate_emptystate",
-      "community": 84,
+      "community": 108,
       "norm_label": "emptystate()"
     },
     {
@@ -16222,7 +16302,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_icon",
-      "community": 84,
+      "community": 108,
       "norm_label": "icon.tsx"
     },
     {
@@ -16232,7 +16312,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "ui_icon_iconname",
-      "community": 84,
+      "community": 108,
       "norm_label": "iconname"
     },
     {
@@ -16242,7 +16322,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "ui_icon_paths",
-      "community": 84,
+      "community": 108,
       "norm_label": "paths"
     },
     {
@@ -16252,7 +16332,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "ui_icon_iconprops",
-      "community": 84,
+      "community": 108,
       "norm_label": "iconprops"
     },
     {
@@ -16262,7 +16342,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "ui_icon_icon",
-      "community": 84,
+      "community": 132,
       "norm_label": "icon()"
     },
     {
@@ -16272,7 +16352,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_sheet",
-      "community": 84,
+      "community": 119,
       "norm_label": "sheet.tsx"
     },
     {
@@ -16282,7 +16362,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "ui_sheet_sheetprops",
-      "community": 84,
+      "community": 119,
       "norm_label": "sheetprops"
     },
     {
@@ -16292,7 +16372,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "ui_sheet_sheet",
-      "community": 84,
+      "community": 119,
       "norm_label": "sheet()"
     },
     {
@@ -16302,7 +16382,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "ui_sheet_bottomsheetprops",
-      "community": 84,
+      "community": 119,
       "norm_label": "bottomsheetprops"
     },
     {
@@ -16312,7 +16392,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "ui_sheet_bottomsheet",
-      "community": 84,
+      "community": 119,
       "norm_label": "bottomsheet()"
     },
     {
@@ -16362,7 +16442,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_tabs",
-      "community": 84,
+      "community": 108,
       "norm_label": "tabs.tsx"
     },
     {
@@ -16372,7 +16452,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "ui_tabs_tab",
-      "community": 84,
+      "community": 108,
       "norm_label": "tab"
     },
     {
@@ -16382,7 +16462,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "ui_tabs_tabsprops",
-      "community": 84,
+      "community": 108,
       "norm_label": "tabsprops"
     },
     {
@@ -16392,7 +16472,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "ui_tabs_tabs",
-      "community": 84,
+      "community": 108,
       "norm_label": "tabs()"
     },
     {
@@ -16422,7 +16502,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "data_buyerfittypes_buyerfitweights",
-      "community": 109,
+      "community": 90,
       "norm_label": "buyerfitweights"
     },
     {
@@ -16472,7 +16552,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "data_personas",
-      "community": 109,
+      "community": 90,
       "norm_label": "personas.ts"
     },
     {
@@ -16502,7 +16582,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "data_personas_headlinescore",
-      "community": 109,
+      "community": 90,
       "norm_label": "headlinescore"
     },
     {
@@ -16512,7 +16592,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "data_personas_persona",
-      "community": 109,
+      "community": 90,
       "norm_label": "persona"
     },
     {
@@ -16522,7 +16602,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "data_personas_personas",
-      "community": 109,
+      "community": 90,
       "norm_label": "personas"
     },
     {
@@ -16542,7 +16622,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "data_personas_loadstoredpersona",
-      "community": 109,
+      "community": 90,
       "norm_label": "loadstoredpersona()"
     },
     {
@@ -16552,7 +16632,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "data_personas_storepersona",
-      "community": 109,
+      "community": 90,
       "norm_label": "storepersona()"
     },
     {
@@ -16562,7 +16642,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "data_personas_personaids",
-      "community": 109,
+      "community": 90,
       "norm_label": "personaids()"
     },
     {
@@ -16572,7 +16652,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "data_personas_refreshpersonasfrombackend",
-      "community": 109,
+      "community": 90,
       "norm_label": "refreshpersonasfrombackend()"
     },
     {
@@ -16592,7 +16672,7 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "data_personas_pricingtier",
-      "community": 109,
+      "community": 90,
       "norm_label": "pricingtier"
     },
     {
@@ -36695,6 +36775,36 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
+      "source_location": "L1145",
+      "weight": 1.0,
+      "source": "backend_main",
+      "target": "backend_main_quantize_pct",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L1133",
+      "weight": 1.0,
+      "source": "backend_main",
+      "target": "backend_main_quantize_price",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L1139",
+      "weight": 1.0,
+      "source": "backend_main",
+      "target": "backend_main_quantize_rent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
       "source_location": "L338",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -36770,6 +36880,16 @@
       "confidence_score": 1.0,
       "source": "backend_main",
       "target": "backend_main_roicalcrequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L1151",
+      "weight": 1.0,
+      "source": "backend_main",
+      "target": "backend_main_sanitize_demographics_detail",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -39768,6 +39888,61 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
+      "source_location": "L1362",
+      "weight": 1.0,
+      "source": "backend_main_get_suburb",
+      "target": "backend_main_quantize_price",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L1369",
+      "weight": 1.0,
+      "source": "backend_main_get_suburb",
+      "target": "backend_main_quantize_rent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L1407",
+      "weight": 1.0,
+      "source": "backend_main_get_suburb",
+      "target": "backend_main_quantize_pct",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L1387",
+      "weight": 1.0,
+      "source": "backend_main_get_suburb",
+      "target": "backend_main_sanitize_demographics_detail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/main.py",
+      "source_location": "L1157",
+      "weight": 1.0,
+      "source": "backend_main_sanitize_demographics_detail",
+      "target": "routers_suburbs_sqm_sanitize_and_smooth_market_trends"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
       "source_location": "L1234",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -39822,11 +39997,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1150",
+      "source_location": "L1181",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1150",
-      "target": "backend_main_calibrate_dq"
+      "source": "backend_main_rationale_1181",
+      "target": "backend_main_calibrate_dq",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -39865,11 +40040,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1163",
+      "source_location": "L1194",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1163",
-      "target": "backend_main_compute_growth_score"
+      "source": "backend_main_rationale_1194",
+      "target": "backend_main_compute_growth_score",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -39947,11 +40122,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1328",
+      "source_location": "L1359",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1328",
-      "target": "backend_main_get_suburb"
+      "source": "backend_main_rationale_1359",
+      "target": "backend_main_get_suburb",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -39968,11 +40143,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1506",
+      "source_location": "L1538",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1506",
-      "target": "backend_main_get_scores_meta"
+      "source": "backend_main_rationale_1538",
+      "target": "backend_main_get_scores_meta",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -39989,11 +40164,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1513",
+      "source_location": "L1545",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1513",
-      "target": "backend_main_get_personas"
+      "source": "backend_main_rationale_1545",
+      "target": "backend_main_get_personas",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40010,11 +40185,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1519",
+      "source_location": "L1551",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1519",
-      "target": "backend_main_get_suburb_evidence"
+      "source": "backend_main_rationale_1551",
+      "target": "backend_main_get_suburb_evidence",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40031,11 +40206,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1604",
+      "source_location": "L1636",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1604",
-      "target": "backend_main_get_decision_brief"
+      "source": "backend_main_rationale_1636",
+      "target": "backend_main_get_decision_brief",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -40176,11 +40351,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1840",
+      "source_location": "L1872",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1840",
-      "target": "backend_main_normalize_suburb_id"
+      "source": "backend_main_rationale_1872",
+      "target": "backend_main_normalize_suburb_id",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40208,21 +40383,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1846",
+      "source_location": "L1878",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1846",
-      "target": "backend_main_get_suburb_or_404"
+      "source": "backend_main_rationale_1878",
+      "target": "backend_main_get_suburb_or_404",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1861",
+      "source_location": "L1893",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1861",
-      "target": "backend_main_get_market_news"
+      "source": "backend_main_rationale_1893",
+      "target": "backend_main_get_market_news",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40250,11 +40425,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1895",
+      "source_location": "L1927",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1895",
-      "target": "backend_main_get_news_sentiment"
+      "source": "backend_main_rationale_1927",
+      "target": "backend_main_get_news_sentiment",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40271,31 +40446,31 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L1977",
+      "source_location": "L2009",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_1977",
-      "target": "backend_main_get_suburb_anti_market"
+      "source": "backend_main_rationale_2009",
+      "target": "backend_main_get_suburb_anti_market",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2057",
+      "source_location": "L2089",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2057",
-      "target": "backend_main_reload_suburbs"
+      "source": "backend_main_rationale_2089",
+      "target": "backend_main_reload_suburbs",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2069",
+      "source_location": "L2101",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2069",
-      "target": "backend_main_update_news_batch"
+      "source": "backend_main_rationale_2101",
+      "target": "backend_main_update_news_batch",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -40403,31 +40578,31 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2292",
+      "source_location": "L2324",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2292",
-      "target": "backend_main_get_mortgage_rate"
+      "source": "backend_main_rationale_2324",
+      "target": "backend_main_get_mortgage_rate",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2318",
+      "source_location": "L2350",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2318",
-      "target": "backend_main_get_suburbs_v3"
+      "source": "backend_main_rationale_2350",
+      "target": "backend_main_get_suburbs_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2449",
+      "source_location": "L2481",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2449",
-      "target": "backend_main_export_suburbs_csv"
+      "source": "backend_main_rationale_2481",
+      "target": "backend_main_export_suburbs_csv",
+      "confidence_score": 1.0
     },
     {
       "relation": "uses",
@@ -40646,11 +40821,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2567",
+      "source_location": "L2599",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2567",
-      "target": "backend_main_get_suburb_v3"
+      "source": "backend_main_rationale_2599",
+      "target": "backend_main_get_suburb_v3",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40667,11 +40842,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2642",
+      "source_location": "L2674",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2642",
-      "target": "backend_main_get_osm_livability"
+      "source": "backend_main_rationale_2674",
+      "target": "backend_main_get_osm_livability",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40688,31 +40863,31 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2720",
+      "source_location": "L2752",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2720",
-      "target": "backend_main_get_osm_boundary"
+      "source": "backend_main_rationale_2752",
+      "target": "backend_main_get_osm_boundary",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2730",
+      "source_location": "L2762",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2730",
-      "target": "backend_main_get_suburb_pockets"
+      "source": "backend_main_rationale_2762",
+      "target": "backend_main_get_suburb_pockets",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2867",
+      "source_location": "L2899",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2867",
-      "target": "backend_main_get_suburb_properties"
+      "source": "backend_main_rationale_2899",
+      "target": "backend_main_get_suburb_properties",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40729,21 +40904,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2915",
+      "source_location": "L2947",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2915",
-      "target": "backend_main_metrics"
+      "source": "backend_main_rationale_2947",
+      "target": "backend_main_metrics",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2927",
+      "source_location": "L2959",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2927",
-      "target": "backend_main_risk_what_if"
+      "source": "backend_main_rationale_2959",
+      "target": "backend_main_risk_what_if",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40821,31 +40996,31 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2958",
+      "source_location": "L2990",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2958",
-      "target": "backend_main_create_model_diary_entry"
+      "source": "backend_main_rationale_2990",
+      "target": "backend_main_create_model_diary_entry",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L2978",
+      "source_location": "L3010",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_2978",
-      "target": "backend_main_get_model_diary"
+      "source": "backend_main_rationale_3010",
+      "target": "backend_main_get_model_diary",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L3005",
+      "source_location": "L3037",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_3005",
-      "target": "backend_main_get_model_diary_summary"
+      "source": "backend_main_rationale_3037",
+      "target": "backend_main_get_model_diary_summary",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -40862,11 +41037,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/main.py",
-      "source_location": "L3028",
+      "source_location": "L3060",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_main_rationale_3028",
-      "target": "backend_main_buy_finder_rank"
+      "source": "backend_main_rationale_3060",
+      "target": "backend_main_buy_finder_rank",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -43537,11 +43712,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "source": "routers_suburbs_sqm",
+      "target": "routers_suburbs_sqm_get_suburb_market_history",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "routers_suburbs_sqm",
+      "target": "routers_suburbs_sqm_sanitize_and_smooth_market_trends",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/suburbs_sqm.py",
       "source_location": "L12",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "routers_suburbs_sqm",
-      "target": "routers_suburbs_sqm_get_suburb_sqm"
+      "target": "routers_suburbs_sqm_suburb_micro_factor",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -43549,9 +43744,51 @@
       "source_file": "backend/routers/suburbs_sqm.py",
       "source_location": "L13",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "routers_suburbs_sqm_rationale_13",
-      "target": "routers_suburbs_sqm_get_suburb_sqm"
+      "target": "routers_suburbs_sqm_suburb_micro_factor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "routers_suburbs_sqm_sanitize_and_smooth_market_trends",
+      "target": "routers_suburbs_sqm_suburb_micro_factor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "routers_suburbs_sqm_get_suburb_market_history",
+      "target": "routers_suburbs_sqm_sanitize_and_smooth_market_trends",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "routers_suburbs_sqm_rationale_25",
+      "target": "routers_suburbs_sqm_sanitize_and_smooth_market_trends",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/suburbs_sqm.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "routers_suburbs_sqm_rationale_104",
+      "target": "routers_suburbs_sqm_get_suburb_market_history",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -58286,5 +58523,5 @@
       "source_file": "parse_out.txt"
     }
   ],
-  "built_at_commit": "be8550935f41a272548d01874d3549bc5c859d29"
+  "built_at_commit": "ab53101c6df53f5b47466c1b28e2efe22080873a"
 }

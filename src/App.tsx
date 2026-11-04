@@ -1099,7 +1099,7 @@ function App() {
                     <div style={{ display: activeProfileSection === 'market' ? 'block' : 'none' }}>
                       
                       <PriceHistoryChart history10yr={(activeSuburb as any).history10yr} historyRent10yr={(activeSuburb as any).historyRent10yr} />
-                      <SqmHistoricalChart sqmData={(activeSuburb as any).demographicsDetailV3?.sqm_data} />
+                      <SqmHistoricalChart sqmData={(activeSuburb as any).demographicsDetailV3?.market_trends || (activeSuburb as any).demographicsDetailV3?.sqm_data} />
                     </div>
 
                     {/* Visuals Grid (Charts) */}
