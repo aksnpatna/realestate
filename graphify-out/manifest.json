@@ -10,8 +10,8 @@
     "semantic_hash": "51c44f4dc7252e46845983ea0657e6fe"
   },
   "backend/ai_agent.py": {
-    "mtime": 1791341888.6738298,
-    "ast_hash": "5086472f82420d14fa5d4afb4df719e7",
+    "mtime": 1793765349.8436112,
+    "ast_hash": "d49c0bfe3aab5289e9b536de8baec87d",
     "semantic_hash": ""
   },
   "backend/downloader.py": {
@@ -20,8 +20,8 @@
     "semantic_hash": "71615260d40cb5546a0f1215df75a631"
   },
   "backend/main.py": {
-    "mtime": 1793012558.6901376,
-    "ast_hash": "429edd050f5e8e0f1996d1b81c257fe5",
+    "mtime": 1793764644.6337383,
+    "ast_hash": "584ec4b5844fa68a1589f25a6f68d630",
     "semantic_hash": ""
   },
   "backend/scheduler.py": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1793012975.1820953,
-    "ast_hash": "b768b2731027f7a14913b713757b74b0",
+    "mtime": 1793266733.8020859,
+    "ast_hash": "f54665a56afffb31ac375b24d9f65262",
     "semantic_hash": ""
   },
   "src/components/AffordabilityCalculator.tsx": {
@@ -55,13 +55,13 @@
     "semantic_hash": ""
   },
   "src/components/CashflowGearing.tsx": {
-    "mtime": 1785646802.8765044,
-    "ast_hash": "7ba485b1f8c0af99c6c1d0fb95c39f4e",
+    "mtime": 1793267063.2078307,
+    "ast_hash": "070db65fc41383adaf7d0032cc472480",
     "semantic_hash": ""
   },
   "src/components/SuburbMap.tsx": {
-    "mtime": 1785646737.1539361,
-    "ast_hash": "47883c263c5ddd0136cfc68520b5489b",
+    "mtime": 1793266733.804326,
+    "ast_hash": "666ade7634d26bf7fb297ebc3432647a",
     "semantic_hash": ""
   },
   "src/data/enriched_suburbs.json": {
@@ -145,8 +145,8 @@
     "semantic_hash": "5b484283dd2ee6e4058586aad8c06ea1"
   },
   "index.html": {
-    "mtime": 1788565957.8033097,
-    "ast_hash": "b0e8e9bb54eb5ec1f0648edaf15e2499",
+    "mtime": 1793267398.245003,
+    "ast_hash": "f5520b1af30c27e1567174b07f84a9ca",
     "semantic_hash": ""
   },
   "public/favicon.svg": {
@@ -190,9 +190,9 @@
     "semantic_hash": ""
   },
   "backend/clustering.py": {
-    "mtime": 1783429541.5877373,
-    "ast_hash": "5fd2dfd6787044da719ed823be5132b8",
-    "semantic_hash": "5fd2dfd6787044da719ed823be5132b8"
+    "mtime": 1793765375.152519,
+    "ast_hash": "bf7aa48052244abc97131185cfdb450c",
+    "semantic_hash": ""
   },
   "backend/import_acara.py": {
     "mtime": 1788649193.7424123,
@@ -215,8 +215,8 @@
     "semantic_hash": ""
   },
   "src/components/MyPurchasePlan.tsx": {
-    "mtime": 1792465865.8222363,
-    "ast_hash": "4a74aa7e6f67fdf7c2b90f29e89aed97",
+    "mtime": 1793267063.210848,
+    "ast_hash": "66df48fef66fd808015d221c2fa187e5",
     "semantic_hash": ""
   },
   "graphify-out/converted/SchoolLocation2025_d4fcd1a0.md": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "backend/osm_local.py": {
-    "mtime": 1788986982.9911294,
-    "ast_hash": "7a2bde1e10709812b535dbf9562aa75f",
+    "mtime": 1793764702.1723747,
+    "ast_hash": "d864bf14c64f79072b37aabc068b2a35",
     "semantic_hash": ""
   },
   "backend/predictive_ai_engine.py": {
@@ -445,8 +445,8 @@
     "semantic_hash": ""
   },
   "src/components/TermsOfUseModal.tsx": {
-    "mtime": 1793012677.3982024,
-    "ast_hash": "659dc344ab37886051e0943a103c9e5f",
+    "mtime": 1793266733.8099377,
+    "ast_hash": "b4813519419cea3ed7e5748d2852377f",
     "semantic_hash": ""
   },
   "src/components/UserFavoritesTab.tsx": {
@@ -465,8 +465,8 @@
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.tsx": {
-    "mtime": 1789077635.7752373,
-    "ast_hash": "a477237c46f40b869859d37b9aa85786",
+    "mtime": 1793765449.3119168,
+    "ast_hash": "38f393be6b3b5c02a5c6f270dab3b167",
     "semantic_hash": ""
   },
   ".kilo/plans/1783841406962-ai-usage-enhancement-plan.md": {
@@ -480,13 +480,13 @@
     "semantic_hash": ""
   },
   "backend/test_ai_sentiment.py": {
-    "mtime": 1788649193.7464123,
-    "ast_hash": "7a2d0c028e457d2fdd10cdaf212689c8",
+    "mtime": 1793765396.9089823,
+    "ast_hash": "090332e306f4e0b21d08e3127e448d48",
     "semantic_hash": ""
   },
   "src/components/AIInsightPanel.test.tsx": {
-    "mtime": 1789083087.7354908,
-    "ast_hash": "d9005ba87bdc38a590ebfb941e7d0e0e",
+    "mtime": 1793765172.386781,
+    "ast_hash": "d69a19f96a51b6d619ef55b11b9c3711",
     "semantic_hash": ""
   },
   "backend/warm_cache.py": {
@@ -495,13 +495,13 @@
     "semantic_hash": ""
   },
   "backend/policy_rules.json": {
-    "mtime": 1783851942.1558762,
-    "ast_hash": "010601c772beb32f7778a85117201b1c",
+    "mtime": 1793764307.7304084,
+    "ast_hash": "10d71541968f252e021f0b976bb92c27",
     "semantic_hash": ""
   },
   "backend/risk_engine.py": {
-    "mtime": 1783946279.7318823,
-    "ast_hash": "8580b52179a5540b40e3550966266a54",
+    "mtime": 1793764290.838645,
+    "ast_hash": "c1279866a1d43f46845f911f703f6bbd",
     "semantic_hash": ""
   },
   "backend/agent_router.py": {
@@ -715,13 +715,13 @@
     "semantic_hash": ""
   },
   "src/components/LandingPage.tsx": {
-    "mtime": 1792464761.4873421,
-    "ast_hash": "6e920c92e755e2dc69cd7f5da9fe4745",
+    "mtime": 1793267052.7796454,
+    "ast_hash": "e4c354501ce98f32dc1900cec30fb9c4",
     "semantic_hash": ""
   },
   "src/components/MarketIndicatorsSection.tsx": {
-    "mtime": 1793012627.8627841,
-    "ast_hash": "06c40e994380b4d60823bcaa33d59c1c",
+    "mtime": 1793267063.2084625,
+    "ast_hash": "c64b50afae5cc9a5de19894e2902426f",
     "semantic_hash": ""
   },
   "src/components/PersonaSwitcher.tsx": {
@@ -730,8 +730,8 @@
     "semantic_hash": ""
   },
   "src/components/PocketRiskMap.tsx": {
-    "mtime": 1785646737.1563702,
-    "ast_hash": "e41faf3b1e41055a69a9d3501dbeeb0b",
+    "mtime": 1793267063.2087972,
+    "ast_hash": "124e2d4628e8e1aa5dea3938c1985d33",
     "semantic_hash": ""
   },
   "src/components/ProfileSectionNav.tsx": {
@@ -755,8 +755,8 @@
     "semantic_hash": ""
   },
   "src/components/TechnicalProvenanceSection.tsx": {
-    "mtime": 1792467039.286858,
-    "ast_hash": "9edb1e6419f7fc0320613595172c3403",
+    "mtime": 1793266733.7993577,
+    "ast_hash": "651370238f37a702a0144c6f5e540dd5",
     "semantic_hash": ""
   },
   "src/data/personas.ts": {
@@ -810,8 +810,8 @@
     "semantic_hash": ""
   },
   "src/components/MacroBenchmarkPanel.tsx": {
-    "mtime": 1785646737.1581526,
-    "ast_hash": "13713957250ef2dd2753c013b31e2543",
+    "mtime": 1793267063.2102444,
+    "ast_hash": "7c3c75dae2e2e0e6a9c1ac689780a3dd",
     "semantic_hash": ""
   },
   "src/components/SchoolZonesLayer.tsx": {
@@ -845,8 +845,8 @@
     "semantic_hash": ""
   },
   "src/components/MarketCycleClock.tsx": {
-    "mtime": 1793012914.899576,
-    "ast_hash": "afd2aa6ff1cc3ae5fb36a466b034b403",
+    "mtime": 1793046298.4246652,
+    "ast_hash": "d1f7940e3137826abaefeb4ecf7f9b06",
     "semantic_hash": ""
   },
   "src/components/PriceHistoryChart.tsx": {
@@ -965,8 +965,8 @@
     "semantic_hash": ""
   },
   "src/components/AskYieldSense.tsx": {
-    "mtime": 1793012599.0557427,
-    "ast_hash": "38e8c8788d79f006f152bba1e99b6b3d",
+    "mtime": 1793267398.2415352,
+    "ast_hash": "24effae284df5cb4de8f9208d2d9b1a7",
     "semantic_hash": ""
   },
   "ai_search.md": {
@@ -1045,8 +1045,8 @@
     "semantic_hash": ""
   },
   "backend/ask/metric_registry.py": {
-    "mtime": 1793012364.8918364,
-    "ast_hash": "e9821100b3d7ae2d5000fbef9a4a12c9",
+    "mtime": 1793267366.0047019,
+    "ast_hash": "41a4262cfdac87a49e3da269f58ab81f",
     "semantic_hash": ""
   },
   "backend/ask/observability.py": {
@@ -1290,8 +1290,8 @@
     "semantic_hash": ""
   },
   "src/components/AskSuburbly.tsx": {
-    "mtime": 1792380480.4526272,
-    "ast_hash": "927fe82eac9b047d4fb06d2e141822cc",
+    "mtime": 1793267398.2433748,
+    "ast_hash": "e27712e0e9473f5fccc912574c77c2c9",
     "semantic_hash": ""
   },
   "src/components/AskYieldSense.test.tsx": {
@@ -1340,13 +1340,13 @@
     "semantic_hash": ""
   },
   "src/components/SampleReport.tsx": {
-    "mtime": 1793012585.2212138,
-    "ast_hash": "e6e3c9fabf2ca6aac674f21c796df92d",
+    "mtime": 1793266733.8081374,
+    "ast_hash": "cc72703c5dc495a516e039af05a1cb05",
     "semantic_hash": ""
   },
   "src/components/SettingsPage.tsx": {
-    "mtime": 1792380579.8840194,
-    "ast_hash": "1b23c8060e2fc029deb8cd8ec59e969a",
+    "mtime": 1793267398.241188,
+    "ast_hash": "3bf3703378d1ebd4d2af2484df1eb36b",
     "semantic_hash": ""
   },
   "src/components/SoldScatterplot.tsx": {
@@ -1390,8 +1390,8 @@
     "semantic_hash": ""
   },
   "src/components/UnifiedSearchView.tsx": {
-    "mtime": 1793012616.9891427,
-    "ast_hash": "7e2c821eaad38b0f7d65a6ea669ec525",
+    "mtime": 1793267063.2105231,
+    "ast_hash": "6023fa3b1aebba5a6b87411a23a1612c",
     "semantic_hash": ""
   },
   "src/components/UpcomingAuctionsBadge.tsx": {
@@ -1515,13 +1515,13 @@
     "semantic_hash": ""
   },
   "src/pages/SampleReportsLanding.tsx": {
-    "mtime": 1792380494.758092,
-    "ast_hash": "16878ff4f0021ade3523fea03d3a5f29",
+    "mtime": 1793266733.806008,
+    "ast_hash": "e75240fdf80a918d8182329e85c78cf4",
     "semantic_hash": ""
   },
   "src/pages/TermsOfUse.tsx": {
-    "mtime": 1792465865.8334625,
-    "ast_hash": "5a3f5df59f596c950682822c2a76e0de",
+    "mtime": 1793266733.806426,
+    "ast_hash": "97ea9341da86dc3415dc66e2e5b0c2bc",
     "semantic_hash": ""
   },
   "src/utils/SuburbGradients.ts": {

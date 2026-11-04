@@ -211,4 +211,96 @@ describe('AIInsightPanel', () => {
       expect(screen.getByText('Refresh AI Committee')).toBeInTheDocument()
     })
   })
+
+  describe('5-Axis Macro Intelligence & Anti-Market Tab', () => {
+    it('renders 5-Axis Macro & RBA Reality Check in Sentiment tab when available', () => {
+      const suburb = {
+        ...baseSuburb,
+        metrics: {
+          ...baseSuburb.metrics,
+          aiNewsSentiment: 'Bearish (2.8/10)',
+          _newsScore: 2.8,
+          _macroIntelligence: {
+            rba_rate_sensitivity: {
+              level: 'HIGH',
+              summary: 'Net yield ~2.74% vs ~6.20% mortgage rate leaves a -3.46% negative carry spread.',
+            },
+            supply_dilution_risk: {
+              level: 'HIGH',
+              summary: 'Vacancy at 4.48% exceeds the 3.5% Australian oversupply threshold.',
+            },
+            regulatory_tax_risk: {
+              level: 'HIGH',
+              summary: 'VIC COVID Debt Levy lowers land tax threshold to $50k.',
+            },
+            hype_vs_data_divergence: {
+              level: 'SEVERE',
+              summary: 'Media/agent narrative is bullish while local prices are falling (-9.86% 3m).',
+            },
+            amenity_claim_check: {
+              risk_level: 'HIGH_PITCH_RISK',
+              warnings: [
+                'Hospital/Employer Spillover Check: Local vacancy is 4.48% — regional hospital demand is absorbed by primary hub.',
+              ],
+            },
+          },
+        },
+      }
+      renderPanel(suburb)
+      expect(screen.getByText(/5-Axis Macro & RBA Reality Check/)).toBeInTheDocument()
+      expect(screen.getByText(/Hype Divergence: SEVERE/)).toBeInTheDocument()
+      expect(screen.getByText(/Hospital\/Employer Spillover Check/)).toBeInTheDocument()
+    })
+
+    it('switches to Anti-Market tab and displays Value Trap Warning and alternatives', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          suburb_id: 'VIC_CHURCHILL_3842',
+          anti_market_score: 5,
+          trend_label: 'Value Trap Warning',
+          is_value_trap: true,
+          state_median_12m_growth: -0.9,
+          alpha_12m: -1.54,
+          trap_signals: [
+            'High rental vacancy (4.48% >= 3.5% oversupply threshold)',
+            'Accelerating 3-month price drop (-9.86%)',
+          ],
+          resilience_drivers: [],
+          macro_intelligence: {
+            amenity_claim_check: {
+              warnings: ['School Quality Check: Average local ICSEA is 953 (below 1000 national benchmark).'],
+            },
+          },
+          alternatives: [
+            {
+              id: 'VIC_DELACOMBE_3356',
+              name: 'Delacombe',
+              postcode: '3356',
+              anti_market_score: 79,
+              house_median_price: 545000,
+              price_12m_change_pct: 6.2,
+              vacancy_rate: 1.2,
+              rental_yield: 4.5,
+              why_resilient: ['Tight 1.2% vacancy and +7.1% alpha vs VIC median'],
+            },
+          ],
+        }),
+      })
+
+      renderPanel()
+      fireEvent.click(screen.getByText('🛡️ Anti-Market'))
+      expect(screen.getByText('Counter-Cyclical & Value Trap Radar')).toBeInTheDocument()
+
+      fireEvent.click(screen.getByText('Run Anti-Market Check'))
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith('/api/suburbs/nsw-parramatta-2150/anti-market')
+      })
+
+      await waitFor(() => {
+        expect(mockSetActiveSuburb).toHaveBeenCalled()
+      })
+    })
+  })
 })

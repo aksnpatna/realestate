@@ -90,22 +90,21 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
           </div>
 
           {/* Intent Questionnaire */}
-          <div className="lp-intent-section" style={{ marginTop: '2rem', padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-            <h3 style={{ fontSize: '1.2rem', color: '#fff', marginBottom: '1.5rem', fontWeight: 500 }}>What are you trying to achieve?</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="lp-intent-section">
+            <h3 className="lp-intent-title">What are you trying to achieve?</h3>
+            <div className="lp-intent-list">
               <button 
                 className="lp-intent-btn"
                 onClick={() => {
                   sessionStorage.setItem('initial_intent', 'first_home');
                   onRegisterClick();
                 }}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="lp-intent-label">
                   <Icon name="home" size={24} color="#10b981" />
                   <span>I'm researching suburbs for my first home</span>
                 </div>
-                <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
+                <Icon name="arrow-right" size={20} color="#64748b" />
               </button>
               
               <button 
@@ -114,13 +113,12 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
                   sessionStorage.setItem('initial_intent', 'investment');
                   onRegisterClick();
                 }}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="lp-intent-label">
                   <Icon name="chart" size={24} color="#f59e0b" />
                   <span>I'm comparing suburbs for investment</span>
                 </div>
-                <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
+                <Icon name="arrow-right" size={20} color="#64748b" />
               </button>
 
               <button 
@@ -129,13 +127,12 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
                   sessionStorage.setItem('initial_intent', 'upgrade');
                   onRegisterClick();
                 }}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s ease' }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className="lp-intent-label">
                   <Icon name="users" size={24} color="#3b82f6" />
                   <span>I'm looking for a family-friendly suburb</span>
                 </div>
-                <Icon name="arrow-right" size={20} color="rgba(255,255,255,0.5)" />
+                <Icon name="arrow-right" size={20} color="#64748b" />
               </button>
             </div>
           </div>
@@ -164,7 +161,7 @@ export default function LandingPage({ onLoginClick, onRegisterClick, onViewSampl
               <span className="lp-dot">•</span>
               <span>ACARA</span>
               <span className="lp-dot">•</span>
-              <span>OpenStreetMap</span>
+              <span>Open Spatial Data</span>
             </div>
           </div>
         </div>

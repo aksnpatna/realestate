@@ -24,10 +24,17 @@
     },
     {
       "id": "high_vacancy_risk",
-      "description": "Vacancy rates above 5% indicate oversupply",
-      "condition": { "field": "vacancy_rate", "operator": "gte", "value": 5.0 },
+      "description": "Vacancy rates above 3.5% indicate rental oversupply",
+      "condition": { "field": "vacancy_rate", "operator": "gte", "value": 3.5 },
       "action": "downgrade",
-      "message": "Vacancy rate above 5% — suggest HOLD or PASS. Rental income may be unreliable; factor in 2‑3 month vacancy periods."
+      "message": "Vacancy rate >= 3.5% (balanced benchmark is 2.0-3.0%) — indicates rental oversupply or tenant exodus. Suggest HOLD or PASS and factor in extended vacancy buffers."
+    },
+    {
+      "id": "negative_price_momentum",
+      "description": "Negative 12-month price change indicates active market correction",
+      "condition": { "field": "12m_growth_pct", "operator": "lt", "value": 0.0 },
+      "action": "downgrade",
+      "message": "Suburb median price is declining year-on-year (<0% 12m growth). Verify 3-month velocity and investor sell-off risk before committing capital."
     },
     {
       "id": "low_yield_single_dwelling",

@@ -53,7 +53,7 @@ export default function TermsOfUseModal() {
           <h3 className="u-82eb8033">3. Public & Open Data Sources</h3>
           <p>
             This platform synthesizes data from public datasets including the Australian Bureau of Statistics (ABS), 
-            ACARA school performance registers, OpenStreetMap spatial data, and public real estate market listings. We do not guarantee the completeness, timeliness, or accuracy of the underlying source data.
+            ACARA school performance registers, open spatial data, and public real estate market listings. We do not guarantee the completeness, timeliness, or accuracy of the underlying source data.
           </p>
 
           <h3 className="u-82eb8033">4. Limitation of Liability</h3>

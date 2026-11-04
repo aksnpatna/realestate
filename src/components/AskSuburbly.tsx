@@ -382,7 +382,7 @@ export const AskSuburbly: React.FC<AskSuburblyProps> = ({ financialProfile, setF
   return (
     <div data-build="v2-loadingfix" className="u-ca2f13f6">
       <div className="u-9f1799ee">
-        <h2 className="u-0800748b">Ask Suburbly ✨</h2>
+        <h2 className="u-0800748b">Ask PropertyIQ ✨</h2>
         <p className="u-472b060e">Natural-language property research powered by verified data — not opinions.</p>
       </div>
 

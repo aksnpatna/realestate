@@ -262,7 +262,7 @@ export default memo(function SuburbMap({ center, pois, schools, suburbName, stat
                     </div>
                   </div>
                   <div className="u-5106857b">
-                    {school.stateRank ? `State Rank: #${school.stateRank} | Score: ${school.score}/100 (Est.)` : 'OSM Extracted Data'}
+                    {school.stateRank ? `State Rank: #${school.stateRank} | Score: ${school.score}/100 (Est.)` : 'Open spatial data'}
                   </div>
                   <div className="u-f555fd52">
                     Click marker to load Official Catchment Zone

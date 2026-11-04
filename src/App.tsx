@@ -1005,7 +1005,7 @@ function App() {
                             <div className="u-9a063d22">{avgBlock} <span className="u-192d3ffc">sqm</span></div>
                           </div>
                           <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                            Cadastral footprint estimate (OpenStreetMap)
+                            Cadastral footprint estimate (open spatial data)
                           </div>
                         </div>
                       );
@@ -1216,7 +1216,7 @@ function App() {
                         );
                       })()}
                       <div className="metric-box">
-                        <div className="metric-label">Walkability (OSM)</div>
+                        <div className="metric-label">Walkability</div>
                         <div className="metric-value">
                           {livabilityData?.walkabilityScore != null ? `${livabilityData.walkabilityScore}/100` : (loadingLivability ? "Scanning..." : "—")}
                         </div>
@@ -1236,7 +1236,7 @@ function App() {
                     </div>
                     {loadingLivability && (
                       <div className="u-791db4a4">
-                        <p className="u-c7477801">Scanning neighborhood via OpenStreetMap...</p>
+                        <p className="u-c7477801">Scanning neighbourhood amenities...</p>
                         <div className="metrics-grid u-127b72f0">
                           <div className="metric-box">
                             <div className="metric-label">Walkability Score</div>
@@ -1287,7 +1287,7 @@ function App() {
                         )}
                         {livabilityData.schools.length > 0 && (
                           <div className="u-8e545338">
-                            <strong>Local Schools (OSM): </strong>
+                            <strong>Local Schools: </strong>
                             <span className="u-2007e35f">
                               {livabilityData.schools.slice(0, 5).map(c => c.name).join(', ')}{livabilityData.schools.length > 5 ? '...' : ''}
                             </span>
@@ -1814,7 +1814,7 @@ function App() {
         </div>
       )}
       <footer className="u-864cf9fe">
-        <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational and research purposes only and does not constitute financial, investment, lending, or real estate advice. Statistical models and property estimates are compiled from open government datasets (ABS Census 2021, ACARA School Profiles, OpenStreetMap) and aggregated public market listings for independent research.</p>
+        <p><strong>Legal Disclaimer:</strong> The information provided on this platform is for general informational and research purposes only and does not constitute financial, investment, lending, or real estate advice. Statistical models and property estimates are compiled from open government datasets (ABS Census 2021, ACARA School Profiles, open spatial data) and aggregated public market listings for independent research.</p>
         <p className="u-66b0f03a">
           <button onClick={() => setActiveTab('privacy')} style={{background:'none',border:'none',color:'var(--bg-brand)',cursor:'pointer',fontSize:'inherit',padding:0,textDecoration:'underline'}}>Privacy Policy</button>
           &nbsp;·&nbsp;

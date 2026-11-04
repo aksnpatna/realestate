@@ -209,27 +209,227 @@ def fetch_news_node(state: CommitteeState):
         return {"news_articles": f"Error fetching news: {str(e)}"}
 
 
-def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
-    """On-demand news sentiment for a single suburb.
-    Uses keyword sentiment analysis only for minimal resource consumption.
-    Cached externally via cache_utils.cached_ai decorator.
-    Returns: {score, label, summary, articles, fetched_at, provider_used}
+def _build_macro_intelligence(
+    suburb_name: str,
+    state_code: str,
+    combined_text: str = "",
+    articles: list | None = None,
+    raw_keyword_score: float = 5.0,
+    metrics: Dict[str, Any] | None = None,
+    raw_news_score: float | None = None,
+) -> dict:
     """
-    try:
-        query_suburb = f"{suburb_name} {state_code} Australia real estate market news prices outlook 2026"
-        
-        articles = robust_search(query_suburb, max_results=2)  # Reduce to 2 articles
+    Synthesize 5-axis Macro & Catalyst Intelligence combining news text with
+    suburb fundamentals (RBA rate sensitivity, state tax risk, supply dilution,
+    buyer's agent pitch fact-check, and hype-vs-data divergence).
+    """
+    if raw_news_score is not None:
+        raw_keyword_score = raw_news_score
+    m = metrics or {}
+    vac = m.get("vacancyRate") if m.get("vacancyRate") is not None else m.get("vacancy_rate")
+    yld = m.get("houseRentalYield") or m.get("rentalYield") or m.get("rental_yield")
+    g12 = (
+        m.get("12mGrowthPct")
+        if m.get("12mGrowthPct") is not None
+        else (
+            m.get("priceChange12mPct")
+            if m.get("priceChange12mPct") is not None
+            else m.get("house_median_price_12m_change_pct")
+        )
+    )
+    g3 = (
+        m.get("3mGrowthPct")
+        if m.get("3mGrowthPct") is not None
+        else (
+            m.get("priceChange3mPct")
+            if m.get("priceChange3mPct") is not None
+            else m.get("house_median_price_3m_change_pct")
+        )
+    )
+    pop_cagr = m.get("populationCagr") if m.get("populationCagr") is not None else m.get("population_cagr")
+    unemp = m.get("unemploymentRate") if m.get("unemploymentRate") is not None else m.get("unemployment_rate")
+    icsea = m.get("avgIcsea") if m.get("avgIcsea") is not None else m.get("avg_icsea")
+    inv_rate = m.get("investorRate") if m.get("investorRate") is not None else m.get("investor_rate")
+    hospitals_in_suburb = m.get("hospitalsCount") if m.get("hospitalsCount") is not None else m.get("hospitalCount")
+    cbd_mins = m.get("cbdDistanceMins") if m.get("cbdDistanceMins") is not None else m.get("cbd_distance_mins")
 
-        # Build combined text for keyword analysis
-        combined_text = " ".join(
-            f"{(a.get('title') or '').lower()} {(a.get('content') or '').lower()}"
-            for a in articles
+    # 1. RBA Rate Sensitivity & Carry Spread
+    effective_mortgage_rate = 6.2
+    net_yield_est = (float(yld) * 0.72) if yld else 2.8
+    carry_spread = round(net_yield_est - effective_mortgage_rate, 2)
+    if (yld and float(yld) < 4.2 and (unemp or 4.0) > 5.5) or carry_spread < -3.0:
+        rba_level = "High"
+        rba_msg = (
+            f"High vulnerability to RBA rate tightening: estimated net yield ({net_yield_est:.1f}%) "
+            f"trails mortgage rates (~{effective_mortgage_rate:.1f}%) by {abs(carry_spread):.1f}%, "
+            f"creating negative cashflow pressure for leveraged buyers."
+        )
+    elif carry_spread < -1.8:
+        rba_level = "Moderate"
+        rba_msg = (
+            f"Moderate rate sensitivity: net rental carry spread is {carry_spread:.1f}% against "
+            f"current mortgage servicing rates."
+        )
+    else:
+        rba_level = "Low"
+        rba_msg = (
+            f"Resilient cashflow buffer: gross yield ({float(yld or 4.5):.1f}%) helps cushion "
+            f"against RBA interest rate hikes."
         )
 
-        # Use keyword sentiment analysis only (no remote LLM calls)
-        from ai_sentiment import _keyword_sentiment
-        score = _keyword_sentiment(combined_text)
-        
+    # 2. State Tax & Regulatory Headwinds
+    state_up = (state_code or "").upper()
+    if state_up == "VIC" and (inv_rate or 25) >= 25 and (yld or 4.0) < 4.5:
+        reg_level = "High"
+        reg_msg = (
+            "VIC Land Tax threshold ($50k) & expanded VRLT squeeze investor net yields in this bracket, "
+            "increasing risk of investor stock sell-offs."
+        )
+    elif state_up == "VIC":
+        reg_level = "Moderate"
+        reg_msg = "Factor in progressive VIC land tax ($50k threshold) and minimum rental compliance standards."
+    else:
+        reg_level = "Low"
+        reg_msg = f"Standard {state_up or 'state'} property holding and stamp duty regime applies."
+
+    # 3. Supply Pipeline vs. Organic Demand Dilution
+    has_supply_news = any(
+        kw in combined_text
+        for kw in ("rezone", "rezoning", "precinct structure plan", "development application", "subdivision", "land release", "new estate")
+    )
+    if (vac and float(vac) >= 3.5) and (has_supply_news or (pop_cagr is not None and float(pop_cagr) < 1.0)):
+        supply_level = "High"
+        supply_msg = (
+            f"Supply dilution warning: planning/development activity detected while vacancy is already elevated "
+            f"({float(vac):.1f}%) and organic population growth is slow ({float(pop_cagr or 0):.2f}%/yr)."
+        )
+    elif vac and float(vac) >= 3.0:
+        supply_level = "Moderate"
+        supply_msg = f"Loosening rental supply ({float(vac):.1f}% vacancy); new dwelling completions may take longer to absorb."
+    else:
+        supply_level = "Low"
+        supply_msg = (
+            f"Tight rental absorption ({float(vac):.1f}% vacancy) supports existing dwelling values."
+            if vac is not None else "No major oversupply catalysts detected in current news."
+        )
+
+    # 4. Buyer's Agent Pitch / Amenity Reality Check
+    warnings = []
+    if hospitals_in_suburb == 0:
+        warnings.append(
+            f"Hospital Halo Check: 0 tertiary hospitals inside {suburb_name} boundary (local clinics/pharmacies only; verify distance to regional base hospital)."
+        )
+    if icsea is not None and float(icsea) < 970:
+        warnings.append(
+            f"School Quality Check: Suburb average ACARA ICSEA is {float(icsea):.0f} (below national median of 1,000) — unlikely to command school-zone price premiums."
+        )
+    if vac is not None and float(vac) >= 3.5:
+        warnings.append(
+            f"Rental Demand Check: Vacancy rate is {float(vac):.2f}% (above 2-3% healthy band), contradicting 'high tenant demand' claims."
+        )
+    if pop_cagr is not None and float(pop_cagr) < 1.0:
+        warnings.append(
+            f"Demographic Growth Check: Annualized population growth is only {float(pop_cagr):.2f}%/yr."
+        )
+    if unemp is not None and float(unemp) >= 6.0:
+        warnings.append(
+            f"Local Employment Check: Unemployment is {float(unemp):.1f}% (above ~4.1% national benchmark), limiting local owner-occupier bidding power."
+        )
+
+    # 5. Media Hype vs. Market Data Divergence
+    is_falling_or_distressed = (
+        (g12 is not None and float(g12) < 0)
+        or (g3 is not None and float(g3) < -3.0)
+        or (vac is not None and float(vac) >= 3.5)
+    )
+    hype_divergence = bool(raw_keyword_score >= 6.0 and is_falling_or_distressed)
+    if hype_divergence:
+        divergence_msg = (
+            f"⚠️ Hype vs. Data Divergence: Online articles use bullish language, but realized market data shows "
+            f"12m price change of {float(g12 or 0):.2f}%, 3m change of {float(g3 or 0):.2f}%, and {float(vac or 0):.2f}% vacancy."
+        )
+    elif is_falling_or_distressed:
+        divergence_msg = (
+            f"Market fundamentals show headwinds (12m: {float(g12 or 0):.2f}%, 3m: {float(g3 or 0):.2f}%, vacancy: {float(vac or 0):.2f}%)."
+        )
+    else:
+        divergence_msg = "Media sentiment is broadly aligned with observed price and vacancy fundamentals."
+
+    return {
+        "rba_rate_sensitivity": {
+            "level": rba_level,
+            "net_carry_spread_pct": carry_spread,
+            "analysis": rba_msg,
+            "summary": rba_msg,
+        },
+        "regulatory_tax_risk": {
+            "level": reg_level,
+            "analysis": reg_msg,
+            "summary": reg_msg,
+        },
+        "supply_dilution_risk": {
+            "level": supply_level,
+            "analysis": supply_msg,
+            "summary": supply_msg,
+        },
+        "amenity_claim_check": {
+            "status": "High Risk" if len(warnings) >= 3 else ("Caution" if warnings else "Verified"),
+            "risk_level": "HIGH_PITCH_RISK" if len(warnings) >= 3 else ("MODERATE_PITCH_RISK" if warnings else "VERIFIED"),
+            "warnings": warnings,
+        },
+        "hype_vs_data_divergence": {
+            "detected": hype_divergence,
+            "level": "SEVERE" if hype_divergence else ("ELEVATED" if is_falling_or_distressed else "ALIGNED"),
+            "analysis": divergence_msg,
+            "summary": divergence_msg,
+        },
+    }
+
+
+def get_news_sentiment(suburb_name: str, state_code: str, metrics: Dict[str, Any] | None = None) -> dict:
+    """On-demand news & macro intelligence for a single suburb.
+    Combines suburb-level news with RBA/macro headwinds and cross-checks
+    media sentiment against quantitative suburb fundamentals.
+    Returns: {score, label, summary, articles, fetched_at, provider_used, explanation, macro_intelligence, article_snippets}
+    """
+    try:
+        query_suburb = f"{suburb_name} {state_code} Australia real estate market news prices vacancy outlook 2026"
+        articles = robust_search(query_suburb, max_results=3)
+
+        # Also fetch macro/state property policy & RBA rate context when few suburb articles exist
+        macro_query = f"RBA interest rate {state_code} Australia property market land tax investor vacancy 2026"
+        macro_articles = robust_search(macro_query, max_results=2)
+        all_articles = articles + [a for a in macro_articles if a not in articles]
+
+        # Build combined text for sentiment + keyword analysis
+        combined_text = " ".join(
+            f"{(a.get('title') or '').lower()} {(a.get('content') or '').lower()}"
+            for a in all_articles
+        )
+
+        from ai_sentiment import _keyword_sentiment, _extract_keywords
+        raw_score = _keyword_sentiment(combined_text)
+        explanation = _extract_keywords(combined_text)
+
+        macro_intel = _build_macro_intelligence(
+            suburb_name, state_code, combined_text, all_articles, raw_score, metrics
+        )
+
+        # Reality-adjusted score: prevent spruiker blog keywords from producing a
+        # "Bullish" score when the suburb is actively falling with high vacancy.
+        score = raw_score
+        if metrics:
+            vac = metrics.get("vacancyRate") if metrics.get("vacancyRate") is not None else metrics.get("vacancy_rate")
+            g12 = metrics.get("12mGrowthPct") if metrics.get("12mGrowthPct") is not None else metrics.get("house_median_price_12m_change_pct")
+            g3 = metrics.get("3mGrowthPct") if metrics.get("3mGrowthPct") is not None else metrics.get("house_median_price_3m_change_pct")
+            if vac is not None and float(vac) >= 3.5:
+                score -= 1.5
+            if g12 is not None and float(g12) < 0:
+                score -= 1.0
+            if g3 is not None and float(g3) < -5.0:
+                score -= 1.0
+            score = max(1.0, min(10.0, round(score, 1)))
+
         if score >= 7:
             label = "Bullish"
         elif score >= 4.5:
@@ -239,21 +439,28 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
 
         # Collect article summaries
         summaries = []
-        for art in articles:
+        article_snippets = []
+        for art in all_articles[:4]:
             title = (art.get("title") or "")
+            snippet = (art.get("content") or "")[:180]
             if title:
                 summaries.append(title[:120])
+                article_snippets.append({"title": title[:120], "snippet": snippet})
 
         logger.info(
             f"[news-sentiment] {suburb_name}, {state_code}: "
-            f"score={score} label={label} provider=keyword articles={len(articles)}"
+            f"score={score} (raw={raw_score}) label={label} provider=keyword+macro articles={len(all_articles)}"
         )
 
         return {
             "score": score,
+            "raw_media_score": raw_score,
             "label": label,
             "summary": "; ".join(summaries[:3]) if summaries else "No relevant articles found.",
-            "articles": len(articles),
+            "articles": len(all_articles),
+            "article_snippets": article_snippets,
+            "explanation": explanation,
+            "macro_intelligence": macro_intel,
             "fetched_at": __import__("datetime").datetime.utcnow().isoformat(),
             "provider_used": "keyword",
         }
@@ -264,9 +471,20 @@ def get_news_sentiment(suburb_name: str, state_code: str) -> dict:
             "label": "Neutral",
             "summary": f"Error: {str(e)[:100]}",
             "articles": 0,
+            "explanation": [],
+            "macro_intelligence": _build_macro_intelligence(suburb_name, state_code, "", [], 5.0, metrics),
             "fetched_at": None,
             "provider_used": "keyword",
         }
+
+AUSTRALIAN_MARKET_BENCHMARKS = """
+MANDATORY AUSTRALIAN REAL ESTATE BENCHMARKS (DO NOT VIOLATE):
+- Vacancy Rate: <1.5% is tight/undersupplied (Bullish); 1.5%-2.9% is balanced; 3.0%-3.9% is elevated oversupply (Bearish); >=4.0% is severe rental distress/oversupply (Strongly Bearish — NEVER describe >=3.5% vacancy as "low" or "tight").
+- Price Momentum: 12mGrowthPct < 0% or 3mGrowthPct < -3.0% indicates an active price correction/downturn.
+- School Quality (avgIcsea): 1000 is the Australian national median. <970 is below-average socio-economic advantage.
+- Population Growth (populationCagr): <1.0%/yr is slow/stagnant; 1.0%-2.0%/yr is moderate; >2.0%/yr is strong.
+- Unemployment Rate: >5.5% indicates local economic fragility compared to the ~4.1% national benchmark.
+"""
 
 def bull_agent_node(state: CommitteeState):
     llm = get_llm(task="realestate")
@@ -275,7 +493,7 @@ def bull_agent_node(state: CommitteeState):
     You are 'The Bull'. Your job is to find the most compelling reasons to BUY this property market.
     Analyze the following suburb: {state['suburb']}, {state['state']}.
     Metrics: {metrics}
-    
+    {AUSTRALIAN_MARKET_BENCHMARKS}
     If the metrics contain insufficient evidence to make an argument, state exactly "INSUFFICIENT_EVIDENCE". Do not invent reasons or catalysts not present in the data.
     Otherwise, provide a 2-sentence argument focused on Yield, Population Growth, and Days on Market.
     """
@@ -289,9 +507,9 @@ def bear_agent_node(state: CommitteeState):
     You are 'The Bear'. Your job is to find the most compelling reasons to AVOID this property market.
     Analyze the following suburb: {state['suburb']}, {state['state']}.
     Metrics: {metrics}
-    
+    {AUSTRALIAN_MARKET_BENCHMARKS}
     If the metrics contain insufficient evidence to make an argument, state exactly "INSUFFICIENT_EVIDENCE". Do not invent risks not present in the data.
-    Otherwise, provide a 2-sentence argument focused on Supply, Vacancy, and Affordability constraints.
+    Otherwise, provide a 2-sentence argument focused on Supply, Vacancy (flagging >=3.0% as oversupplied), negative 3m/12m price momentum, and Affordability/Rate constraints.
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     return {"bear_argument": msg.content}
@@ -303,10 +521,10 @@ def urban_planner_node(state: CommitteeState):
     You are 'The Urban Planner'. You care about gentrification, lifestyle, and demographics.
     Analyze the following suburb: {state['suburb']}, {state['state']}.
     Metrics: {metrics}
-    
-    Focus on: ACARA ICSEA School Quality, True Population CAGR, Walk/Liveability score proxies, and Density.
-    Even if some of these specific data points are missing, synthesize the available metrics (like median age, owner occupier rate, and population growth) to provide a 2-sentence argument regarding the long-term desirability and gentrification potential.
-    Do not hallucinate amenities, but do infer demographic trends.
+    {AUSTRALIAN_MARKET_BENCHMARKS}
+    Focus on: ACARA ICSEA School Quality (avgIcsea vs 1000 national average), True Annual Population CAGR, Walk/Liveability score proxies, Social Housing %, and Density.
+    Synthesize the available metrics to provide a 2-sentence argument regarding long-term desirability and gentrification potential.
+    Do not hallucinate amenities (e.g. do not claim a hospital exists if hospitalsCount is 0), and never call a vacancy rate >=3.5% "low".
     """
     msg = llm.invoke([SystemMessage(content=prompt)])
     return {"urban_argument": msg.content}
@@ -324,13 +542,16 @@ def supervisor_and_playbook_node(state: CommitteeState):
     prompt = f"""
     You are the Chief Investment Officer.
     You have received reports from your committee on {state['suburb']}, {state['state']}.
-    
+    Metrics: {state['metrics']}
+    {AUSTRALIAN_MARKET_BENCHMARKS}
     {past_context}
     
     Bull's Argument: {state['bull_argument']}
     Bear's Argument: {state['bear_argument']}
     Urban Planner's Argument: {state['urban_argument']}
     News: {state['news_articles']}
+    
+    CRITICAL RULE: If vacancyRate >= 3.5% AND 12mGrowthPct < 0%, the suburb is experiencing both price decline and rental oversupply — your verdict MUST be "HOLD" or "PASS", NEVER "BUY".
     
     Return a single JSON object with no additional text. The JSON must have exactly these fields:
     {{
@@ -370,6 +591,21 @@ def supervisor_and_playbook_node(state: CommitteeState):
         data = json.loads(content)
         validated = CommitteeVerdict(**data)
         
+        # Deterministic guardrail against "Value Trap BUY" hallucinations
+        m = state.get("metrics") or {}
+        vac = m.get("vacancyRate") if m.get("vacancyRate") is not None else m.get("vacancy_rate")
+        g12 = m.get("12mGrowthPct") if m.get("12mGrowthPct") is not None else m.get("house_median_price_12m_change_pct")
+        g3 = m.get("3mGrowthPct") if m.get("3mGrowthPct") is not None else m.get("house_median_price_3m_change_pct")
+        if validated.verdict == "BUY" and vac is not None and float(vac) >= 3.5 and (
+            (g12 is not None and float(g12) < 0) or (g3 is not None and float(g3) < -4.0)
+        ):
+            validated.verdict = "PASS" if float(vac) >= 4.2 else "HOLD"
+            validated.reality_check = (
+                f"Guardrail Override ({validated.verdict}): Elevated vacancy ({float(vac):.2f}%) combined with "
+                f"falling prices (12m: {float(g12 or 0):.2f}%, 3m: {float(g3 or 0):.2f}%) signals a Value Trap. "
+                + (validated.reality_check or "")
+            ).strip()
+
         catalysts = [d.claim for d in validated.drivers]
         
         return {
@@ -421,6 +657,17 @@ if _policy_path.exists():
         pass
 
 
+FIELD_ALIASES = {
+    "vacancy_rate": ["vacancy_rate", "vacancyRate"],
+    "rental_yield": ["rental_yield", "houseRentalYield", "rentalYield", "grossYield", "gross_rental_yield"],
+    "population_cagr": ["population_cagr", "populationCagr", "populationCAGR"],
+    "12m_growth_pct": ["12m_growth_pct", "12mGrowthPct", "priceChange12mPct", "houseMedianPrice12mChangePct", "house_median_price_12m_change_pct"],
+    "flood_risk": ["flood_risk", "floodRisk"],
+    "bushfire_zone": ["bushfire_zone", "bushfireZone"],
+    "heritage_listed": ["heritage_listed", "heritageListed"],
+}
+
+
 def _evaluate_policy_rules(metrics: Dict[str, Any], state_code: str) -> list:
     """Evaluate policy rules against a suburb's metrics. Returns list of applicable messages."""
     applicable = []
@@ -430,9 +677,14 @@ def _evaluate_policy_rules(metrics: Dict[str, Any], state_code: str) -> list:
         value = cond.get("value")
         op = cond.get("operator", "equals")
 
-        actual = metrics.get(field, "state_code_placeholder" if field == "state" else None)
+        actual = None
         if field == "state":
             actual = state_code
+        else:
+            for candidate_key in FIELD_ALIASES.get(field, [field]):
+                if metrics.get(candidate_key) is not None:
+                    actual = metrics.get(candidate_key)
+                    break
 
         if actual is None:
             continue
@@ -542,9 +794,24 @@ def run_investment_committee(suburb: str, state: str, metrics: Dict[str, Any], f
     try:
         from risk_engine import compute_risk_rating
         price = metrics.get("houseMedianPrice") or metrics.get("medianPrice") or 800000
-        yld = metrics.get("rentalYield") or (metrics.get("houseMedianRent", 0) * 52 / price * 100 if metrics.get("houseMedianRent") else 4.0) or 4.0
+        yld = (
+            metrics.get("houseRentalYield")
+            or metrics.get("rentalYield")
+            or (metrics.get("houseMedianRent", 0) * 52 / price * 100 if metrics.get("houseMedianRent") else 4.0)
+            or 4.0
+        )
         gs = metrics.get("growthScore") or 50
-        risk_assessment = compute_risk_rating(price, yld, gs)
+        vac = metrics.get("vacancyRate") if metrics.get("vacancyRate") is not None else metrics.get("vacancy_rate")
+        g12 = metrics.get("12mGrowthPct") if metrics.get("12mGrowthPct") is not None else metrics.get("house_median_price_12m_change_pct")
+        g3 = metrics.get("3mGrowthPct") if metrics.get("3mGrowthPct") is not None else metrics.get("house_median_price_3m_change_pct")
+        risk_assessment = compute_risk_rating(
+            price,
+            yld,
+            gs,
+            vacancy_rate=vac,
+            price_12m_change_pct=g12,
+            price_3m_change_pct=g3,
+        )
     except Exception as e:
         risk_assessment = {"risk_rating": "Unavailable", "error": str(e)[:100]}
     

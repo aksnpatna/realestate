@@ -20,7 +20,8 @@ CATEGORIES = {
     "train_station": ("railway", ("station",)), # Specific category for train stations
     "school":     ("amenity", ("school", "college", "university", "kindergarten", "childcare")),
     "shopping":   ("shop",    ("mall", "supermarket", "department_store", "convenience", "bakery", "butcher")),
-    "hospital":   ("amenity", ("hospital", "clinic", "pharmacy", "doctors", "dentist")),
+    "hospital":   ("amenity", ("hospital",)),
+    "medical_clinic": ("amenity", ("clinic", "pharmacy", "doctors", "dentist")),
     "sports":     ("leisure", ("sports_centre", "fitness_centre", "stadium", "pitch", "golf_course", "swimming_pool")),
     "worship":    ("amenity", ("place_of_worship", "church", "mosque", "temple", "synagogue")),
     "shelter":    ("amenity", ("shelter",)),
@@ -53,6 +54,7 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
 
     result = {cat: [] for cat in categories}
     
+    db_query_succeeded = False
     try:
         lat_rad = abs(math.radians(lat))
         mercator_radius = radius_m / math.cos(lat_rad)
@@ -86,7 +88,8 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
                     WHEN public_transport IN ('station', 'stop_position') OR railway IN ('tram_stop', 'halt') OR highway IN ('bus_stop') OR amenity IN ('bus_station', 'ferry_terminal') THEN 'transit'
                     WHEN amenity IN ('school', 'college', 'university', 'kindergarten', 'childcare') THEN 'school'
                     WHEN shop IN ('mall', 'supermarket', 'department_store', 'convenience', 'bakery', 'butcher') THEN 'shopping'
-                    WHEN amenity IN ('hospital', 'clinic', 'pharmacy', 'doctors', 'dentist') THEN 'hospital'
+                    WHEN amenity IN ('hospital') THEN 'hospital'
+                    WHEN amenity IN ('clinic', 'pharmacy', 'doctors', 'dentist') THEN 'medical_clinic'
                     WHEN leisure IN ('sports_centre', 'fitness_centre', 'stadium', 'pitch', 'golf_course', 'swimming_pool') THEN 'sports'
                     WHEN amenity IN ('place_of_worship', 'church', 'mosque', 'temple', 'synagogue') THEN 'worship'
                     WHEN amenity IN ('shelter') THEN 'shelter'
@@ -109,6 +112,7 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
         with engine.connect() as conn:
             rows = conn.execute(text(sql)).fetchall()
             conn.commit()
+        db_query_succeeded = True
             
         for r in rows:
             cat = r[0]
@@ -123,7 +127,7 @@ def get_pois(lat, lng, radius_m=2500, categories=None):
         print(f"  OSM query error: {e}")
 
     total_items = sum(len(v) for v in result.values())
-    if total_items == 0:
+    if not db_query_succeeded or (total_items == 0 and len(categories) > 3):
         import requests
         print("Local DB empty or query failed, falling back to Overpass API...")
         overpass_url = "http://overpass-api.de/api/interpreter"
@@ -188,6 +192,8 @@ def compute_scores(pois):
     schools = len(pois.get("school", []))
     shops = len(pois.get("shopping", []))
     hospitals = len(pois.get("hospital", []))
+    medical_clinics = len(pois.get("medical_clinic", []))
+    healthcare_total = hospitals + medical_clinics
     sports = len(pois.get("sports", []))
 
     worship = len(pois.get("worship", []))
@@ -201,7 +207,7 @@ def compute_scores(pois):
                diminishing_score(transit, 20, 30) +
                diminishing_score(schools, 5, 10) +
                diminishing_score(shops, 10, 5) +
-               diminishing_score(hospitals, 10, 5))
+               diminishing_score(healthcare_total, 10, 5))
 
     transit_score = min(100, transit * 4)
 
@@ -227,6 +233,7 @@ def compute_scores(pois):
             "schools": schools,
             "shops": shops,
             "hospitals": hospitals,
+            "medicalClinics": medical_clinics,
             "sports": sports,
             "worship": worship,
             "shelters": shelters,

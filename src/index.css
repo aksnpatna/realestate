@@ -268,10 +268,10 @@
 :root {
   /* World-Class Premium Theme */
   --bg-dark: #e2e8f0; /* Slate 200 */
-  --bg-card: #f8fafc; /* Slate 50 */
-  --bg-card-glass: rgba(255, 255, 255, 0.7);
-  --border-glass: rgba(226, 232, 240, 0.8); /* Slate 200 with opacity */
-  --border-glass-strong: rgba(203, 213, 225, 0.6);
+  --bg-card: #ffffff;
+  --bg-card-glass: #ffffff;
+  --border-glass: #cbd5e1; /* Slate 300, solid for clearer panel edges */
+  --border-glass-strong: #94a3b8;
   
   /* Text */
   --text-primary: #0f172a; /* Slate 900 */
@@ -289,7 +289,7 @@
   --success: #10b981; /* Emerald 500 */
   --warning: #f59e0b; /* Amber 500 */
   --danger: #ef4444; /* Red 500 */
-  --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-glass: #ffffff;
   
   /* Legacy aliases */
   --accent: var(--accent-cyan);
@@ -313,8 +313,6 @@
 /* Glassmorphism utility classes */
 .glass-panel {
   background: var(--bg-card-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-md);
   border-radius: var(--radius-md);
@@ -956,13 +954,13 @@ header {
 
 .schools-table td {
   padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-glass);
   color: var(--text-primary);
   font-size: 0.95rem;
 }
 
 .schools-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-surface-sunken);
 }
 
 .school-name-cell {
@@ -974,7 +972,7 @@ header {
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface-sunken);
 }
 
 .type-primary {
@@ -1001,7 +999,7 @@ header {
 .score-bar-bg {
   width: 100px;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface-sunken);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -1656,7 +1654,7 @@ header {
 
 .breakdown-bar {
   height: 10px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface-sunken);
   border-radius: 5px;
   overflow: hidden;
 }

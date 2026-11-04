@@ -89,7 +89,7 @@
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg-brand, #a3e635);
-  color: #000;
+  color: var(--text-on-brand, #fff);
   font-size: 0.65rem;
   font-weight: 700;
   padding: 3px 12px;
@@ -215,7 +215,7 @@
 
 .srl__card:hover .srl__card-btn {
   background: var(--bg-brand, #a3e635);
-  color: #000;
+  color: var(--text-on-brand, #fff);
 }
 
 /* Email capture */
@@ -271,7 +271,7 @@
   border: none;
   border-radius: 8px;
   background: var(--bg-brand, #a3e635);
-  color: #000;
+  color: var(--text-on-brand, #fff);
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;

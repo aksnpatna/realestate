@@ -265,7 +265,7 @@ export const SampleReport: React.FC<{ reportId: string; onBack?: () => void }> =
         <p className="sr__footer-meta">
           Report ID: {r.request_id} • Generated: {new Date().toLocaleString('en-AU')} •
           Pipeline: {r.versions?.pipeline || 'ask-v2'} •
-          Data sources: ABS Census, ACARA, OpenStreetMap, Government Open Data
+          Data sources: ABS Census, ACARA, open spatial data, Government Open Data
         </p>
         <p className="sr__footer-brand">PropertyIQ — Transparent Australian suburb research.</p>
       </div>

@@ -45,9 +45,11 @@ except ImportError:
     run_investment_committee = None
 
 try:
-    from clustering import find_similar_suburbs
+    from clustering import find_similar_suburbs, compute_anti_market_score, find_anti_market_alternatives
 except ImportError:
     find_similar_suburbs = None
+    compute_anti_market_score = None
+    find_anti_market_alternatives = None
 
 load_dotenv()
 
@@ -941,6 +943,21 @@ def _annualize_cagr(val) -> float:
     except (ValueError, TypeError):
         return 0
 
+
+def _true_annual_pop_cagr(v3) -> Optional[float]:
+    """Compute true annual population CAGR from 2016 and 2021 census counts when available."""
+    pop_16 = getattr(v3, "population_2016", None)
+    pop_21 = getattr(v3, "population_2021", None)
+    if pop_16 and pop_21 and pop_16 > 0:
+        try:
+            return round(((float(pop_21) / float(pop_16)) ** (1.0 / 5.0) - 1.0) * 100.0, 2)
+        except Exception:
+            pass
+    raw = getattr(v3, "population_cagr", None)
+    if raw is not None:
+        return round(_annualize_cagr(raw), 2)
+    return None
+
 def _compute_volatility_and_sharpe(history_data) -> tuple:
     """Derive price_volatility_10yr and price_sharpe_ratio from 10yr price history.
     Returns (volatility_pct, sharpe_ratio) or (None, None) if insufficient data.
@@ -1201,10 +1218,23 @@ def _compute_growth_score(v3: SuburbUIV3, use_lightweight: bool = True) -> dict:
             cagr = ((last / first) ** (1 / years) - 1) * 100
             # 4.5 points per 1% CAGR, max 25 pts (~5.5% CAGR for max)
             price_cagr_pts = min(25, max(0, round(cagr * 4.5)))
-            score += price_cagr_pts
     else:
         confidence_penalty += 1
         confidence_reasons.append("No 10-year history; price growth assumed")
+
+    # Short-term momentum check: prevent a 10yr historical boom from masking an active downturn
+    g12 = getattr(v3, "house_median_price_12m_change_pct", None)
+    g3 = getattr(v3, "house_median_price_3m_change_pct", None)
+    if g12 is not None and float(g12) < 0:
+        deduct_12m = min(10, max(2, round(abs(float(g12)) * 1.5)))
+        price_cagr_pts -= deduct_12m
+        confidence_reasons.append(f"12m price contraction ({float(g12):.1f}%) penalizes historical CAGR (-{deduct_12m}pts)")
+    if g3 is not None and float(g3) < -3.0:
+        deduct_3m = min(8, max(2, round(abs(float(g3)) * 0.6)))
+        price_cagr_pts -= deduct_3m
+        confidence_reasons.append(f"3m momentum drop ({float(g3):.1f}%) penalizes growth score (-{deduct_3m}pts)")
+    price_cagr_pts = max(-10, price_cagr_pts)
+    score += price_cagr_pts
 
     # 2. Population CAGR (0-15 pts, reduced from 0-20)
     pop_cagr = v3.population_cagr or 0
@@ -1237,13 +1267,16 @@ def _compute_growth_score(v3: SuburbUIV3, use_lightweight: bool = True) -> dict:
         sd_pts = max(0, min(8, round((1 - min(sd, 1)) * 8)))
         score += sd_pts
 
-    # 5. Vacancy Rate (0-5 pts, reduced from 0-8)
+    # 5. Vacancy Rate (-8 to +5 pts)
     vac = v3.vacancy_rate
     if vac is not None:
         if vac < 1: vac_pts = 5
         elif vac < 2: vac_pts = 3
         elif vac < 3: vac_pts = 1
-        else: vac_pts = 0
+        elif vac < 3.5: vac_pts = 0
+        else:
+            vac_pts = -max(2, min(8, round((vac - 3.0) * 3)))
+            confidence_reasons.append(f"Elevated vacancy ({vac:.1f}%) indicates rental oversupply ({vac_pts}pts)")
         score += vac_pts
 
     # 6. News Sentiment (-3 to +5)
@@ -1372,7 +1405,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "predominantAgeGroup": v3.predominant_age_group,
         "predominantOccupation": v3.predominant_occupation,
         "averageHouseholdSize": v3.average_household_size,
-        "populationCagr": round(_annualize_cagr(v3.population_cagr), 2) if v3.population_cagr else None,
+        "populationCagr": _true_annual_pop_cagr(v3),
         "population": v3.population or v3.population_2021,
         "population_baseline": v3.population or v3.population_2021,
         # Geo & infrastructure
@@ -1459,6 +1492,7 @@ def get_suburb(suburb_id: str, db: Session = Depends(get_db), current_user = Dep
         "growthFactors": growth["factors"],
         "growthFactorsLabeled": enrich_growth_factors(growth["factors"]),
         "confidenceNotes": growth.get("confidence_notes", []),
+        "antiMarket": compute_anti_market_score(v3) if "compute_anti_market_score" in globals() else None,
         "lastUpdated": str(v3.last_updated) if v3.last_updated else None,
         "dataAgeDays": ((datetime.utcnow() - v3.last_updated).days + 1) if v3.last_updated else None,
         "dataStale": ((datetime.utcnow() - v3.last_updated).days > 60) if v3.last_updated else True,
@@ -1624,12 +1658,72 @@ async def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), use
         persona_key = req.buyer_profile or "general"
         persona_verdict = ai_cache.get(f"aiCommitteeVerdict_{persona_key}") or ai_cache.get(f"verdict_{persona_key}")
 
+        # Compile rich V3 metrics for the AI to analyze
+        try:
+            etf_data = get_vap_etf()
+        except Exception:
+            etf_data = None
+
+        true_pop_cagr = _true_annual_pop_cagr(v3)
+        gs_val = _compute_growth_score(v3, use_lightweight=False)["score"]
+        metrics = {
+            "houseMedianPrice": v3.house_median_price,
+            "houseMedianRent": v3.house_median_rent,
+            "houseRentalYield": v3.house_gross_rental_yield,
+            "12mGrowthPct": v3.house_median_price_12m_change_pct,
+            "3mGrowthPct": v3.house_median_price_3m_change_pct,
+            "1mGrowthPct": v3.house_median_price_1m_change_pct,
+            "populationCagr": true_pop_cagr,
+            "ownerOccupierRate": v3.owner_occupier_rate,
+            "investorRate": v3.investor_rate,
+            "vacancyRate": v3.vacancy_rate,
+            "supplyDemandRatio": v3.supply_demand_ratio,
+            "typicalMortgageBand": v3.typical_mortgage_band,
+            "estimatedMortgageRepayment": v3.estimated_mortgage_repayment,
+            "averageHouseholdSize": v3.average_household_size,
+            "medianAge": v3.median_age,
+            "predominantOccupation": v3.predominant_occupation,
+            "avgIcsea": v3.avg_icsea,
+            "schoolCount": v3.school_count,
+            "unemploymentRate": v3.unemployment_rate,
+            "socialHousingPct": v3.social_housing_pct,
+            "cbdDistanceMins": v3.cbd_distance_mins,
+            "growthScore": gs_val,
+            "macro_benchmark_etf": etf_data,
+        }
+
         # P0 FIX: Check if already analyzed to prevent LLM API exhaustion
         # Cache is persona-scoped — an investor gets a different cached BUY/HOLD than an FHB
         if persona_verdict and ai_cache.get("fetched_at"):
             try:
                 fetched_dt = datetime.fromisoformat(ai_cache["fetched_at"])
                 if (datetime.utcnow() - fetched_dt).total_seconds() < AI_CACHE_TTL_SECONDS:
+                    # Enforce Value Trap guardrail on cached verdicts & refresh risk/policy
+                    vac = v3.vacancy_rate
+                    g12 = v3.house_median_price_12m_change_pct
+                    g3 = v3.house_median_price_3m_change_pct
+                    reality_check = ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("reality_check", "")
+                    if str(persona_verdict).upper().startswith("BUY") and vac is not None and float(vac) >= 3.5 and (
+                        (g12 is not None and float(g12) < 0) or (g3 is not None and float(g3) < -4.0)
+                    ):
+                        persona_verdict = "PASS" if float(vac) >= 4.2 else "HOLD"
+                        if "Guardrail Override" not in (reality_check or ""):
+                            reality_check = (
+                                f"Guardrail Override ({persona_verdict}): Elevated vacancy ({float(vac):.2f}%) combined with "
+                                f"falling prices (12m: {float(g12 or 0):.2f}%, 3m: {float(g3 or 0):.2f}%) signals a Value Trap. "
+                                + (reality_check or "")
+                            ).strip()
+                    from ai_agent import _evaluate_policy_rules
+                    from risk_engine import compute_risk_rating
+                    policy_warnings = _evaluate_policy_rules(metrics, v3.state or req.state)
+                    risk_assessment = compute_risk_rating(
+                        v3.house_median_price or 800000,
+                        v3.house_gross_rental_yield or 4.0,
+                        gs_val,
+                        vacancy_rate=vac,
+                        price_12m_change_pct=g12,
+                        price_3m_change_pct=g3,
+                    )
                     return {
                         "status": "success",
                         "cached": True,
@@ -1638,42 +1732,17 @@ async def analyze_suburb(req: AnalyzeRequest, db: Session = Depends(get_db), use
                             "bull": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("bull", ""),
                             "bear": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("bear", ""),
                             "urban": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("urban", ""),
-                            "reality_check": ai_cache.get(f"aiCommitteeDebate_{persona_key}", {}).get("reality_check", ""),
+                            "reality_check": reality_check,
                             "verdict": persona_verdict,
                             "playbook": ai_cache.get(f"aiCommitteePlaybook_{persona_key}", ""),
                             "catalysts": v3.highlights or [],
                             "source_snippets": ai_cache.get("source_snippets", []),
-                            "risk_assessment": ai_cache.get("risk_assessment"),
-                            "policy_warnings": ai_cache.get("policy_warnings", []),
+                            "risk_assessment": risk_assessment,
+                            "policy_warnings": policy_warnings,
                         }
                     }
             except (ValueError, TypeError):
                 pass
-            
-        # Compile rich V3 metrics for the AI to analyze
-        # Fetch ETF for macro benchmark comparison
-        try:
-            etf_data = get_vap_etf()
-        except:
-            etf_data = None
-            
-        metrics = {
-            "houseMedianPrice": v3.house_median_price,
-            "houseMedianRent": v3.house_median_rent,
-            "houseRentalYield": v3.house_gross_rental_yield,
-            "12mGrowthPct": v3.house_median_price_12m_change_pct,
-            "populationCagr": v3.population_cagr,
-            "ownerOccupierRate": v3.owner_occupier_rate,
-            "investorRate": v3.investor_rate,
-            "vacancyRate": v3.vacancy_rate,
-            "supplyDemandRatio": v3.supply_demand_ratio,
-        "typicalMortgageBand": v3.typical_mortgage_band,
-        "estimatedMortgageRepayment": v3.estimated_mortgage_repayment,
-            "averageHouseholdSize": v3.average_household_size,
-            "medianAge": v3.median_age,
-            "predominantOccupation": v3.predominant_occupation,
-            "macro_benchmark_etf": etf_data
-        }
 
         # Run the full multi-agent committee in a thread pool to avoid blocking the event loop
         loop = asyncio.get_event_loop()
@@ -1823,7 +1892,7 @@ def get_market_news(db: Session = Depends(get_db)):
 
 @app.post("/api/suburbs/{suburb_id}/news-sentiment")
 def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session = Depends(get_db)):
-    """On-demand news sentiment for a suburb.
+    """On-demand news sentiment & 5-axis macro intelligence for a suburb.
     Caching: DB (TTL=600) → Redis (TTL=600) → Tavily+Transformers.
     """
     if not ENABLE_AI_INSIGHTS:
@@ -1832,6 +1901,28 @@ def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session 
     NEWS_SENTIMENT_TTL = 600 # 10 minutes
 
     v3 = _get_suburb_or_404(suburb_id, db)
+
+    hospitals_in_suburb = None
+    if v3.coordinates and len(v3.coordinates) >= 2:
+        try:
+            from osm_local import get_pois
+            h_pois = get_pois(v3.coordinates[0], v3.coordinates[1], radius_m=2500, categories=["hospital"])
+            hospitals_in_suburb = len(h_pois.get("hospital", []))
+        except Exception:
+            hospitals_in_suburb = None
+
+    suburb_metrics = {
+        "vacancyRate": v3.vacancy_rate,
+        "houseRentalYield": v3.house_gross_rental_yield,
+        "12mGrowthPct": v3.house_median_price_12m_change_pct,
+        "3mGrowthPct": v3.house_median_price_3m_change_pct,
+        "populationCagr": _true_annual_pop_cagr(v3),
+        "unemploymentRate": v3.unemployment_rate,
+        "avgIcsea": v3.avg_icsea,
+        "investorRate": v3.investor_rate,
+        "hospitalsCount": hospitals_in_suburb,
+        "cbdDistanceMins": v3.cbd_distance_mins,
+    }
     
     # Layer 1: DB cache
     if not force_refresh:
@@ -1843,6 +1934,11 @@ def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session 
                     from datetime import datetime
                     fetched_dt = datetime.fromisoformat(fetched)
                     if (datetime.utcnow() - fetched_dt).total_seconds() < NEWS_SENTIMENT_TTL:
+                        if "macro_intelligence" not in cached:
+                            from ai_agent import _build_macro_intelligence
+                            cached["macro_intelligence"] = _build_macro_intelligence(
+                                v3.name or "", v3.state or "", cached.get("summary", "").lower(), [], cached.get("score", 5.0), suburb_metrics
+                            )
                         return {
                             "cached": True,
                             "cache_ttl": NEWS_SENTIMENT_TTL,
@@ -1861,7 +1957,7 @@ def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session 
     cache_key = f"ai_sentiment:{v3.name}:{v3.state}"
     
     def _fetch():
-        return fetch_sentiment(v3.name or "", v3.state or "")
+        return fetch_sentiment(v3.name or "", v3.state or "", metrics=suburb_metrics)
     
     result = get_cached_or_query(cache_key, _fetch, expire_secs=NEWS_SENTIMENT_TTL)
     
@@ -1873,6 +1969,86 @@ def get_news_sentiment(suburb_id: str, force_refresh: bool = False, db: Session 
         "cached": False,
         "cache_ttl": NEWS_SENTIMENT_TTL,
         **result,
+    }
+
+
+@app.get("/api/suburbs/{suburb_id}/anti-market")
+def get_suburb_anti_market(suburb_id: str, db: Session = Depends(get_db)):
+    """
+    Returns Counter-Cyclical / Anti-Market Resilience Score, Value Trap diagnostics,
+    Buyer's Agent Pitch / Amenity Reality Check, and up to 4 Anti-Market Resilient
+    alternative suburbs in the same state and price bracket.
+    """
+    v3 = _get_suburb_or_404(suburb_id, db)
+    if not compute_anti_market_score or not find_anti_market_alternatives:
+        raise HTTPException(status_code=503, detail="Anti-market analysis engine unavailable")
+
+    state_avg_12m = (
+        db.query(func.avg(SuburbUIV3.house_median_price_12m_change_pct))
+        .filter(
+            SuburbUIV3.state == v3.state,
+            SuburbUIV3.is_enriched == True,
+            SuburbUIV3.house_median_price_12m_change_pct.isnot(None),
+        )
+        .scalar()
+    ) or 0.0
+
+    anti_market = compute_anti_market_score(v3, state_median_12m=float(state_avg_12m))
+
+    hospitals_in_suburb = None
+    if v3.coordinates and len(v3.coordinates) >= 2:
+        try:
+            from osm_local import get_pois
+            h_pois = get_pois(v3.coordinates[0], v3.coordinates[1], radius_m=2500, categories=["hospital"])
+            hospitals_in_suburb = len(h_pois.get("hospital", []))
+        except Exception:
+            hospitals_in_suburb = None
+
+    from ai_agent import _build_macro_intelligence
+    macro_intel = _build_macro_intelligence(
+        v3.name or "",
+        v3.state or "",
+        ((v3.news_sentiment or {}).get("summary") or "").lower() if isinstance(v3.news_sentiment, dict) else "",
+        [],
+        ((v3.news_sentiment or {}).get("score") or 5.0) if isinstance(v3.news_sentiment, dict) else 5.0,
+        {
+            "vacancyRate": v3.vacancy_rate,
+            "houseRentalYield": v3.house_gross_rental_yield,
+            "12mGrowthPct": v3.house_median_price_12m_change_pct,
+            "3mGrowthPct": v3.house_median_price_3m_change_pct,
+            "populationCagr": _true_annual_pop_cagr(v3),
+            "unemploymentRate": v3.unemployment_rate,
+            "avgIcsea": v3.avg_icsea,
+            "investorRate": v3.investor_rate,
+            "hospitalsCount": hospitals_in_suburb,
+            "cbdDistanceMins": v3.cbd_distance_mins,
+        },
+    )
+
+    candidate_rows = (
+        db.query(SuburbUIV3)
+        .filter(
+            SuburbUIV3.state == v3.state,
+            SuburbUIV3.is_enriched == True,
+            SuburbUIV3.house_sold_12m >= 25,
+            SuburbUIV3.vacancy_rate < 2.2,
+            SuburbUIV3.house_median_price_12m_change_pct > 2.0,
+        )
+        .all()
+    )
+    alternatives = find_anti_market_alternatives(
+        v3, candidate_rows, state_median_12m=float(state_avg_12m), limit=4
+    )
+
+    return {
+        "suburb_id": v3.id.lower(),
+        "name": v3.name,
+        "state": v3.state,
+        "postcode": v3.postcode,
+        "state_avg_12m_growth_pct": round(float(state_avg_12m), 2),
+        "anti_market": anti_market,
+        "macro_intelligence": macro_intel,
+        "alternatives": alternatives,
     }
 def reload_suburbs():
     """Triggers V3 pipeline enrichment from unpacked table (replaces old transform_data)."""
@@ -2494,6 +2670,7 @@ def get_osm_livability(lat: float, lng: float, radius: int = 2500, suburb_id: st
         "schools": _format_pois("school"),
         "shops": _format_pois("shopping"),
         "hospitals": _format_pois("hospital"),
+        "medical_clinics": _format_pois("medical_clinic"),
         "sports": _format_pois("sports"),
         "worship": _format_pois("worship"),
         "shelters": _format_pois("shelter"),
@@ -2648,7 +2825,7 @@ def get_suburb_pockets(suburb_id: str, db: Session = Depends(get_db)):
                 f"{'Small lots indicate higher-density residential character.' if min_lot and min_lot < 300 else 'Moderate density.' if min_lot else ''}"
             ) if avg_lot or min_lot
             else "No lot-size data available.",
-            "source": "OSM building footprints (real) / NSW Planning (real)" if min_lot else "OSM building footprints",
+            "source": "Open spatial data (building footprints) / NSW Planning" if min_lot else "Open spatial data (building footprints)",
             "precision": "suburb",
             "detail": {
                 "approved_subdivisions_12m": v3.approved_subdivisions_12m,

@@ -6,7 +6,7 @@
 import { useState } from 'react'
 import type { SuburbData } from '../data/suburbs'
 
-type AnalysisTab = 'sentiment' | 'committee'
+type AnalysisTab = 'sentiment' | 'committee' | 'antimarket'
 type AnalysisStep = 'idle' | 'fetchNews' | 'bull' | 'bear' | 'urban' | 'final'
 
 interface AIInsightPanelProps {
@@ -18,6 +18,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
   const [activeTab, setActiveTab] = useState<AnalysisTab>('sentiment')
   const [isAnalyzingNews, setIsAnalyzingNews] = useState(false)
   const [isAnalyzingAI, setIsAnalyzingAI] = useState(false)
+  const [isLoadingAntiMarket, setIsLoadingAntiMarket] = useState(false)
   const [analysisStep, setAnalysisStep] = useState<AnalysisStep>('idle')
   const [error, setError] = useState<string | null>(null)
   const [aiDisabled, setAiDisabled] = useState(false)
@@ -86,12 +87,13 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
         ...prev,
         metrics: {
           ...prev.metrics,
-                                    aiNewsSentiment: `${sentimentLabel} (${data.score}/10)`,
-                                    aiNewsSummary: data.summary || `${data.articles || 0} articles analyzed`,
-                                    _newsScore: data.score,
-                                    _newsLabel: sentimentLabel,
-                                    _newsArticles: data.articles || [],
-                                    _newsExplanation: data.explanation || [],
+          aiNewsSentiment: `${sentimentLabel} (${data.score}/10)`,
+          aiNewsSummary: data.summary || `${data.articles || 0} articles analyzed`,
+          _newsScore: data.score,
+          _newsLabel: sentimentLabel,
+          _newsArticles: data.articles || [],
+          _newsExplanation: data.explanation || [],
+          _macroIntelligence: data.macro_intelligence || null,
         },
       }))
     } catch (e: any) {
@@ -170,8 +172,36 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
     }
   }
 
+  const handleAntiMarket = async () => {
+    if (isLoadingAntiMarket) return
+    setIsLoadingAntiMarket(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/suburbs/${activeSuburb.id}/anti-market`)
+      if (!res || typeof res.json !== 'function') return
+      if (!res.ok) {
+        throw new Error(`Server error (${res.status})`)
+      }
+      const data = await res.json()
+      setActiveSuburb((prev: any) => ({
+        ...prev,
+        _antiMarketData: data,
+        metrics: {
+          ...prev?.metrics,
+          _macroIntelligence: data.macro_intelligence || prev?.metrics?._macroIntelligence || null,
+        },
+      }))
+    } catch (e: any) {
+      setError(e.message || 'Anti-market analysis failed')
+    } finally {
+      setIsLoadingAntiMarket(false)
+    }
+  }
+
   const suburb = activeSuburb as any
   const newsScore = suburb.metrics?._newsScore
+  const macroIntel = suburb.metrics?._macroIntelligence || suburb._antiMarketData?.macro_intelligence || null
+  const antiMarketData = suburb._antiMarketData || null
   const hasSentiment = suburb.metrics?.aiNewsSentiment && !['Click "Analyze Live News"', 'Error', 'Unavailable'].includes(suburb.metrics.aiNewsSentiment)
   const hasVerdict = !!suburb.aiVerdict
 
@@ -188,7 +218,7 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
           <button
             onClick={() => setActiveTab('sentiment')}
             className="u-4f776c24" style={{background: activeTab === 'sentiment' ? 'var(--accent-cyan)' : 'var(--bg-glass)', color: activeTab === 'sentiment' ? '#000' : 'var(--text-primary)', fontWeight: activeTab === 'sentiment' ? 'bold' : 'normal'}}
-            title="News-based market sentiment score (0-10)"
+            title="News-based market sentiment score (0-10) & 5-axis macro intelligence"
           >
             📰 News Sentiment
           </button>
@@ -198,6 +228,13 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
             title="Multi-agent investment committee (Bull/Bear/Urban Planner)"
           >
             🏛️ Committee
+          </button>
+          <button
+            onClick={() => setActiveTab('antimarket')}
+            className="u-4f776c24" style={{background: activeTab === 'antimarket' ? '#10b981' : 'var(--bg-glass)', color: activeTab === 'antimarket' ? '#000' : 'var(--text-primary)', fontWeight: activeTab === 'antimarket' ? 'bold' : 'normal'}}
+            title="Counter-cyclical resilience, Buyer's Agent due diligence check & anti-market alternatives"
+          >
+            🛡️ Anti-Market
           </button>
         </div>
       </div>
@@ -300,6 +337,80 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
                   </span>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* 5-Axis Macro, RBA & Buyer's Agent Reality Check */}
+          {macroIntel && (
+            <div style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '1rem', borderRadius: '10px', background: 'rgba(15, 23, 42, 0.35)', border: '1px solid var(--border-glass)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-primary)' }}>
+                  🧭 5-Axis Macro & RBA Reality Check
+                </span>
+                {macroIntel.hype_vs_data_divergence?.level && (
+                  <span style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    padding: '0.2rem 0.55rem',
+                    borderRadius: '999px',
+                    background: macroIntel.hype_vs_data_divergence.level === 'SEVERE' ? 'rgba(239,68,68,0.2)' : macroIntel.hype_vs_data_divergence.level === 'ELEVATED' ? 'rgba(234,179,8,0.2)' : 'rgba(16,185,129,0.2)',
+                    color: macroIntel.hype_vs_data_divergence.level === 'SEVERE' ? '#ef4444' : macroIntel.hype_vs_data_divergence.level === 'ELEVATED' ? '#eab308' : '#10b981',
+                  }}>
+                    Hype Divergence: {macroIntel.hype_vs_data_divergence.level}
+                  </span>
+                )}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '0.65rem', fontSize: '0.82rem' }}>
+                {macroIntel.rba_rate_sensitivity && (
+                  <div style={{ padding: '0.65rem', borderRadius: '8px', background: 'var(--bg-glass)' }}>
+                    <div style={{ fontWeight: 600, marginBottom: '0.25rem', color: String(macroIntel.rba_rate_sensitivity.level).toUpperCase() === 'HIGH' ? '#ef4444' : String(macroIntel.rba_rate_sensitivity.level).toUpperCase() === 'MODERATE' ? '#eab308' : '#10b981' }}>
+                      🏦 RBA Rate Sensitivity: {macroIntel.rba_rate_sensitivity.level}
+                    </div>
+                    <div style={{ color: 'var(--text-secondary)', lineHeight: 1.4 }}>{macroIntel.rba_rate_sensitivity.summary || macroIntel.rba_rate_sensitivity.analysis}</div>
+                  </div>
+                )}
+
+                {macroIntel.supply_dilution_risk && (
+                  <div style={{ padding: '0.65rem', borderRadius: '8px', background: 'var(--bg-glass)' }}>
+                    <div style={{ fontWeight: 600, marginBottom: '0.25rem', color: String(macroIntel.supply_dilution_risk.level).toUpperCase() === 'HIGH' ? '#ef4444' : String(macroIntel.supply_dilution_risk.level).toUpperCase() === 'MODERATE' ? '#eab308' : '#10b981' }}>
+                      🏘️ Supply & Vacancy Risk: {macroIntel.supply_dilution_risk.level}
+                    </div>
+                    <div style={{ color: 'var(--text-secondary)', lineHeight: 1.4 }}>{macroIntel.supply_dilution_risk.summary || macroIntel.supply_dilution_risk.analysis}</div>
+                  </div>
+                )}
+
+                {macroIntel.regulatory_tax_risk && (
+                  <div style={{ padding: '0.65rem', borderRadius: '8px', background: 'var(--bg-glass)' }}>
+                    <div style={{ fontWeight: 600, marginBottom: '0.25rem', color: String(macroIntel.regulatory_tax_risk.level).toUpperCase() === 'HIGH' ? '#ef4444' : '#eab308' }}>
+                      ⚖️ Holding Tax & Policy: {macroIntel.regulatory_tax_risk.level}
+                    </div>
+                    <div style={{ color: 'var(--text-secondary)', lineHeight: 1.4 }}>{macroIntel.regulatory_tax_risk.summary || macroIntel.regulatory_tax_risk.analysis}</div>
+                  </div>
+                )}
+
+                {macroIntel.hype_vs_data_divergence && (
+                  <div style={{ padding: '0.65rem', borderRadius: '8px', background: 'var(--bg-glass)' }}>
+                    <div style={{ fontWeight: 600, marginBottom: '0.25rem', color: macroIntel.hype_vs_data_divergence.level === 'SEVERE' ? '#ef4444' : macroIntel.hype_vs_data_divergence.level === 'ELEVATED' ? '#eab308' : '#10b981' }}>
+                      📉 Hype vs. Data Check
+                    </div>
+                    <div style={{ color: 'var(--text-secondary)', lineHeight: 1.4 }}>{macroIntel.hype_vs_data_divergence.summary || macroIntel.hype_vs_data_divergence.analysis}</div>
+                  </div>
+                )}
+              </div>
+
+              {macroIntel.amenity_claim_check?.warnings?.length > 0 && (
+                <div style={{ padding: '0.75rem', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.08)', borderLeft: '3px solid #ef4444' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.84rem', color: '#ef4444', marginBottom: '0.35rem' }}>
+                    🚨 Buyer&apos;s Agent Pitch & Amenity Due Diligence Warnings
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '1.1rem', color: 'var(--text-secondary)', fontSize: '0.81rem', lineHeight: 1.5 }}>
+                    {macroIntel.amenity_claim_check.warnings.map((w: string, idx: number) => (
+                      <li key={idx} style={{ marginBottom: '0.2rem' }}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -443,6 +554,154 @@ export default function AIInsightPanel({ activeSuburb, setActiveSuburb }: AIInsi
               Click "Run AI Committee" to convene the multi-agent investment committee.
               <br />
               <span className="u-c0024dfb">3 agents will debate {activeSuburb.name}'s investment potential.</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Anti-Market Resilience & Value Trap Check Tab */}
+      {activeTab === 'antimarket' && (
+        <div>
+          <div className="u-2a64d94f">
+            <span className="u-a8922ee9">
+              Counter-Cyclical & Value Trap Radar
+              <span title="Evaluates whether a suburb bucks RBA interest rate hikes (tight vacancy + positive alpha) or exhibits Value Trap characteristics (high vacancy + falling prices despite buyer's agent hype)." className="u-9b96534b">ⓘ</span>
+            </span>
+            <button
+              disabled={isLoadingAntiMarket}
+              onClick={handleAntiMarket}
+              className="u-93cbfad3"
+              style={{
+                background: isLoadingAntiMarket ? 'var(--bg-glass)' : '#10b981',
+                color: isLoadingAntiMarket ? 'var(--text-secondary)' : '#000',
+                cursor: isLoadingAntiMarket ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {isLoadingAntiMarket ? 'Scanning...' : antiMarketData ? 'Refresh Anti-Market Check' : 'Run Anti-Market Check'}
+            </button>
+          </div>
+
+          {antiMarketData ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem', marginTop: '0.75rem' }}>
+              {/* Score & Trend Banner */}
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '1rem',
+                padding: '1.1rem',
+                borderRadius: '10px',
+                background: antiMarketData.is_value_trap ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.08)',
+                border: `1px solid ${antiMarketData.is_value_trap ? 'rgba(239, 68, 68, 0.35)' : 'rgba(16, 185, 129, 0.3)'}`,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{
+                    fontSize: '2rem',
+                    fontWeight: 800,
+                    color: antiMarketData.anti_market_score >= 70 ? '#10b981' : antiMarketData.anti_market_score >= 50 ? 'var(--accent-cyan)' : '#ef4444',
+                  }}>
+                    {antiMarketData.anti_market_score}/100
+                  </div>
+                  <div>
+                    <div style={{
+                      fontWeight: 700,
+                      fontSize: '1.02rem',
+                      color: antiMarketData.is_value_trap ? '#ef4444' : '#10b981',
+                    }}>
+                      {antiMarketData.trend_label}
+                    </div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                      12m Alpha vs {activeSuburb.state} Median ({antiMarketData.state_median_12m_growth >= 0 ? '+' : ''}{antiMarketData.state_median_12m_growth}%):{' '}
+                      <strong style={{ color: antiMarketData.alpha_12m >= 0 ? '#10b981' : '#ef4444' }}>
+                        {antiMarketData.alpha_12m >= 0 ? '+' : ''}{antiMarketData.alpha_12m}%
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Trap Signals & Resilience Drivers */}
+              {antiMarketData.trap_signals?.length > 0 && (
+                <div style={{ padding: '0.85rem 1rem', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.08)', borderLeft: '3px solid #ef4444' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#ef4444', marginBottom: '0.35rem' }}>
+                    ⚠️ Quantitative Value Trap Signals
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.83rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    {antiMarketData.trap_signals.map((sig: string, i: number) => (
+                      <li key={i} style={{ marginBottom: '0.2rem' }}>{sig}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {antiMarketData.resilience_drivers?.length > 0 && (
+                <div style={{ padding: '0.85rem 1rem', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.08)', borderLeft: '3px solid #10b981' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#10b981', marginBottom: '0.35rem' }}>
+                    ✅ Counter-Cyclical Resilience Drivers
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.83rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    {antiMarketData.resilience_drivers.map((drv: string, i: number) => (
+                      <li key={i} style={{ marginBottom: '0.2rem' }}>{drv}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Buyer's Agent Pitch / Amenity Reality Check */}
+              {antiMarketData.macro_intelligence?.amenity_claim_check?.warnings?.length > 0 && (
+                <div style={{ padding: '0.85rem 1rem', borderRadius: '8px', background: 'rgba(234, 179, 8, 0.08)', borderLeft: '3px solid #eab308' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#eab308', marginBottom: '0.35rem' }}>
+                    🔍 Buyer&apos;s Agent Pitch vs. Data Reality Check
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.83rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    {antiMarketData.macro_intelligence.amenity_claim_check.warnings.map((w: string, i: number) => (
+                      <li key={i} style={{ marginBottom: '0.2rem' }}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Counter-Cyclical Alternative Suburbs */}
+              {antiMarketData.alternatives?.length > 0 && (
+                <div style={{ marginTop: '0.25rem' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                    🛡️ Counter-Cyclical Alternatives in {activeSuburb.state} (Similar Price Bracket)
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
+                    {antiMarketData.alternatives.map((alt: any) => (
+                      <div key={alt.id} style={{ padding: '0.85rem', borderRadius: '8px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                          <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {alt.name} ({alt.postcode})
+                          </span>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.15rem 0.45rem', borderRadius: '999px', background: 'rgba(16,185,129,0.2)', color: '#10b981' }}>
+                            Score {alt.anti_market_score}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                          <span>Median: <strong>${Math.round((alt.house_median_price || 0) / 1000)}k</strong></span>
+                          <span style={{ color: '#10b981' }}>12m: <strong>+{alt.price_12m_change_pct}%</strong></span>
+                          <span>Vacancy: <strong>{alt.vacancy_rate}%</strong></span>
+                          <span>Yield: <strong>{alt.rental_yield}%</strong></span>
+                        </div>
+                        {alt.why_resilient?.length > 0 && (
+                          <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                            {alt.why_resilient[0]}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="u-632878cd">
+              <div className="u-a1831ecd">🛡️</div>
+              Click &quot;Run Anti-Market Check&quot; to test {activeSuburb.name} against RBA rate hikes, vacancy oversupply traps, and buyer&apos;s agent amenity pitches.
+              <br />
+              <span className="u-c0024dfb">Also surfaces counter-cyclical alternative suburbs in the same price band.</span>
             </div>
           )}
         </div>

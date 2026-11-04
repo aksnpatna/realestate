@@ -230,11 +230,11 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     if (status === 'submitted') return <div className="u-12d8a56f" style={{ marginTop: '16px', color: 'var(--bg-brand)', fontSize: '0.85rem' }}>✓ Feedback received. Thank you!</div>;
 
     return (
-      <div className="u-12d8a56f" style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+      <div className="u-12d8a56f" style={{ marginTop: '16px', borderTop: '1px solid var(--border-glass)', paddingTop: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
           <span>Was this research helpful?</span>
-          <button onClick={() => submitFeedback('upvote')} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👍 Yes</button>
-          <button onClick={() => setStatus('downvoted')} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👎 No</button>
+          <button onClick={() => submitFeedback('upvote')} style={{ background: 'none', border: '1px solid var(--border-glass)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👍 Yes</button>
+          <button onClick={() => setStatus('downvoted')} style={{ background: 'none', border: '1px solid var(--border-glass)', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer', color: 'var(--text-primary)' }}>👎 No</button>
         </div>
         
         {status === 'downvoted' && (
@@ -244,7 +244,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
               placeholder="What did you expect instead? (Optional Correction)" 
               value={comment}
               onChange={e => setComment(e.target.value)}
-              style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px', borderRadius: '4px', color: '#fff', fontSize: '0.85rem' }}
+              style={{ flex: 1, background: '#ffffff', border: '1px solid var(--border-glass)', padding: '8px', borderRadius: '4px', color: 'var(--text-primary)', fontSize: '0.85rem' }}
             />
             <button onClick={() => { submitFeedback('downvote', comment); setStatus('submitted'); }} style={{ background: 'var(--bg-brand)', color: '#000', border: 'none', borderRadius: '4px', padding: '8px 16px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 'bold' }}>
               Submit Correction
@@ -260,7 +260,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
     const [open, setOpen] = useState(false);
     if (!trace_log) return null;
     return (
-      <div className="u-12d8a56f" style={{ marginTop: '16px', background: 'rgba(15,23,42,0.4)', borderRadius: '8px', padding: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+      <div className="u-12d8a56f" style={{ marginTop: '16px', background: 'var(--bg-surface-sunken)', borderRadius: '8px', padding: '12px', border: '1px solid var(--border-glass)' }}>
         <button onClick={() => setOpen(!open)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           {open ? 'Hide Data Lineage Trace' : 'Show Data Lineage Trace (Data Audit)'}
@@ -479,7 +479,7 @@ export const AskYieldSense: React.FC<AskYieldSenseProps> = ({ financialProfile, 
   return (
     <div data-build="v2-loadingfix" className="u-ca2f13f6">
       <div className="u-9f1799ee">
-        <h2 className="u-0800748b">Ask YieldSense ✨</h2>
+        <h2 className="u-0800748b">Ask PropertyIQ ✨</h2>
         <p className="u-472b060e">Natural-language property research powered by verified data — not opinions.</p>
       </div>
 

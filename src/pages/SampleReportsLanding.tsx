@@ -186,7 +186,7 @@ export const SampleReportsLanding: React.FC<{ onBack?: () => void }> = ({ onBack
           <p>
             <strong>Disclaimer:</strong> All reports are general research only and do not constitute financial,
             investment, legal, tax, or valuation advice. Historical data does not guarantee future performance.
-            Data sourced from ABS Census, ACARA, OpenStreetMap, and Government Open Data.
+            Data sourced from ABS Census, ACARA, open spatial data, and Government Open Data.
           </p>
         </div>
       </div>

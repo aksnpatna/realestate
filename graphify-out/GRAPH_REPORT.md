@@ -1,16 +1,16 @@
-# Graph Report - realestate  (2026-10-26)
+# Graph Report - realestate  (2026-11-04)
 
 ## Corpus Check
-- 313 files · ~15,317,922 words
+- 313 files · ~15,322,858 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2184 nodes · 3442 edges · 241 communities (186 shown, 55 thin omitted)
-- Extraction: 82% EXTRACTED · 18% INFERRED · 0% AMBIGUOUS · INFERRED: 627 edges (avg confidence: 0.56)
+- 2199 nodes · 3482 edges · 232 communities (178 shown, 54 thin omitted)
+- Extraction: 82% EXTRACTED · 18% INFERRED · 0% AMBIGUOUS · INFERRED: 642 edges (avg confidence: 0.57)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e15ed2f7`
+- Built from commit: `7f4ed869`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -90,7 +90,6 @@
 - [[_COMMUNITY_Community 83|Community 83]]
 - [[_COMMUNITY_Community 84|Community 84]]
 - [[_COMMUNITY_Community 86|Community 86]]
-- [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
@@ -109,9 +108,7 @@
 - [[_COMMUNITY_Community 105|Community 105]]
 - [[_COMMUNITY_Community 106|Community 106]]
 - [[_COMMUNITY_Community 107|Community 107]]
-- [[_COMMUNITY_Community 108|Community 108]]
 - [[_COMMUNITY_Community 109|Community 109]]
-- [[_COMMUNITY_Community 110|Community 110]]
 - [[_COMMUNITY_Community 111|Community 111]]
 - [[_COMMUNITY_Community 112|Community 112]]
 - [[_COMMUNITY_Community 113|Community 113]]
@@ -120,24 +117,20 @@
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
 - [[_COMMUNITY_Community 118|Community 118]]
-- [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 120|Community 120]]
 - [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
 - [[_COMMUNITY_Community 123|Community 123]]
 - [[_COMMUNITY_Community 124|Community 124]]
 - [[_COMMUNITY_Community 125|Community 125]]
-- [[_COMMUNITY_Community 126|Community 126]]
 - [[_COMMUNITY_Community 127|Community 127]]
 - [[_COMMUNITY_Community 128|Community 128]]
 - [[_COMMUNITY_Community 129|Community 129]]
-- [[_COMMUNITY_Community 130|Community 130]]
 - [[_COMMUNITY_Community 131|Community 131]]
 - [[_COMMUNITY_Community 132|Community 132]]
 - [[_COMMUNITY_Community 133|Community 133]]
 - [[_COMMUNITY_Community 134|Community 134]]
 - [[_COMMUNITY_Community 135|Community 135]]
-- [[_COMMUNITY_Community 136|Community 136]]
 - [[_COMMUNITY_Community 137|Community 137]]
 - [[_COMMUNITY_Community 138|Community 138]]
 - [[_COMMUNITY_Community 139|Community 139]]
@@ -158,7 +151,6 @@
 - [[_COMMUNITY_Community 154|Community 154]]
 - [[_COMMUNITY_Community 155|Community 155]]
 - [[_COMMUNITY_Community 156|Community 156]]
-- [[_COMMUNITY_Community 157|Community 157]]
 - [[_COMMUNITY_Community 158|Community 158]]
 - [[_COMMUNITY_Community 159|Community 159]]
 - [[_COMMUNITY_Community 160|Community 160]]
@@ -171,7 +163,6 @@
 - [[_COMMUNITY_Community 177|Community 177]]
 - [[_COMMUNITY_Community 178|Community 178]]
 - [[_COMMUNITY_Community 179|Community 179]]
-- [[_COMMUNITY_Community 183|Community 183]]
 - [[_COMMUNITY_Community 184|Community 184]]
 - [[_COMMUNITY_Community 185|Community 185]]
 - [[_COMMUNITY_Community 187|Community 187]]
@@ -204,7 +195,7 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `SuburbUIV3` - 49 edges
-2. `Session` - 45 edges
+2. `Session` - 46 edges
 3. `ask_query()` - 44 edges
 4. `BuyFinderRequest` - 40 edges
 5. `BuyFinderWeights` - 38 edges
@@ -219,12 +210,12 @@
   test_prompt.py → backend/ai_agent.py
 - `analyze_sentiment()` --calls--> `record_sentiment_call()`  [INFERRED]
   backend/ai_sentiment.py → backend/observability.py
-- `Session` --uses--> `AskBrief`  [INFERRED]
-  backend/ask/conversation.py → backend/models_v3.py
-- `AskBrief` --uses--> `AskBrief`  [INFERRED]
-  backend/ask/conversation.py → backend/models_v3.py
 - `Session` --uses--> `SuburbReference`  [INFERRED]
   backend/ask/intent.py → backend/ask/schemas.py
+- `Any` --uses--> `Direction`  [INFERRED]
+  backend/ask/verdict.py → backend/ask/metric_registry.py
+- `ask_query()` --calls--> `incr_ask_request()`  [INFERRED]
+  backend/routers/ask_property.py → backend/ask/observability.py
 
 ## Import Cycles
 - None detected.
@@ -240,15 +231,15 @@
 - **OnTheHouse Data Scraping Pipeline** — concept_onthehouse_scraping, concept_playwright_scraping, script_data, test_scrape, concept_cotality_data [EXTRACTED 1.00]
 - **App.tsx Parse Output Snapshots (Old/New/Baseline)** — new_parse_out, old_parse_out, parse_out, concept_suburb_data_model, concept_bull_bear_price_projection [INFERRED 0.85]
 
-## Communities (241 total, 55 thin omitted)
+## Communities (232 total, 54 thin omitted)
 
 ### Community 0 - "TSConfig App Compiler Options"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection, moduleResolution (+10 more)
 
 ### Community 1 - "ETL Transform V3 Pipeline"
-Cohesion: 0.17
-Nodes (18): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+10 more)
+Cohesion: 0.20
+Nodes (16): batch_loop(), compute_derived_indicators(), extract_demographics(), extract_nearby_suburbs(), extract_property_listings(), extract_sales_summary(), find_metric(), get_metrics_section() (+8 more)
 
 ### Community 2 - "V3 Scheduler Orchestration"
 Cohesion: 0.17
@@ -263,12 +254,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 5 - "Frontend Property Calculators"
-Cohesion: 0.14
-Nodes (18): DecisionBriefSnapshot, Persisted Decision Brief to create a durable, shareable artifact.     Solves the, Session, BriefBrokerRequest, BriefCreateRequest, get_decision_brief(), get_shared_brief(), request_broker_handoff() (+10 more)
+Cohesion: 0.24
+Nodes (8): _build_macro_intelligence(), _evaluate_policy_rules(), get_news_sentiment(), Any, Synthesize 5-axis Macro & Catalyst Intelligence combining news text with     sub, On-demand news & macro intelligence for a single suburb.     Combines suburb-lev, Evaluate policy rules against a suburb's metrics. Returns list of applicable mes, TestMacroIntelligenceAndValueTrapGuardrails
 
 ### Community 6 - "Database Models & Scrapers"
-Cohesion: 0.04
-Nodes (81): add_portfolio_property(), _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), _annualize_cagr(), bust_suburbs_cache(), buy_finder_rank(), calculate_roi() (+73 more)
+Cohesion: 0.05
+Nodes (60): add_portfolio_property(), _ai_circuit_allowed(), _ai_circuit_record_failure(), analyze_suburb(), bust_suburbs_cache(), buy_finder_rank(), calculate_roi(), calculate_stamp_duty() (+52 more)
 
 ### Community 7 - "JSON Unpack Pipeline"
 Cohesion: 0.23
@@ -279,8 +270,8 @@ Cohesion: 0.25
 Nodes (10): compute_school_quality_score(), load_location_data(), load_profile_data(), main(), ACARA School ICSEA Import Script Merges School Profile 2025 (ICSEA scores) + Sch, Update SuburbUIV3 DB with ACARA school data., Load school lat/lon keyed by ACARA SML ID., Load school profiles with ICSEA, merging location data. (+2 more)
 
 ### Community 9 - "Predictive AI Engine"
-Cohesion: 0.31
-Nodes (7): ASXPredictor, calculate_predictive_score(), fetch_environmental_risks(), fetch_infrastructure_zoning_data(), has_synthetic_recommendation_inputs(), predictive_ai_engine.py — Demo-only predictive analysis engine.  Production (DEM, run_predictive_engine()
+Cohesion: 0.36
+Nodes (6): ASXPredictor, calculate_predictive_score(), fetch_environmental_risks(), fetch_infrastructure_zoning_data(), predictive_ai_engine.py — Demo-only predictive analysis engine.  Production (DEM, run_predictive_engine()
 
 ### Community 10 - "ETL Extract V3 Pipeline"
 Cohesion: 0.27
@@ -300,7 +291,7 @@ Nodes (7): baseSuburb, mockFetch, mockSetActiveSuburb, renderPanel(), ErrorBound
 
 ### Community 14 - "ABS Building Approvals"
 Cohesion: 0.07
-Nodes (34): check_off_topic(), mask_pii(), Enterprise Data Privacy: Scans and masks Personally Identifiable Information (PI, Enterprise Guardrail: Prevents prompt injection and off-topic conversations, check_numeric_claims_in_text(), policy.py — Content policy validator v2. Expanded from 6 forbidden phrases to: f, Validate an Ask response against content policy.     Returns {"status": "valid"}, Verify every dollar figure in the text against evidence values within ±1%.     R (+26 more)
+Nodes (36): check_off_topic(), mask_pii(), Enterprise Data Privacy: Scans and masks Personally Identifiable Information (PI, Enterprise Guardrail: Prevents prompt injection and off-topic conversations, check_numeric_claims_in_text(), policy.py — Content policy validator v2. Expanded from 6 forbidden phrases to: f, Validate an Ask response against content policy.     Returns {"status": "valid"}, Verify every dollar figure in the text against evidence values within ±1%.     R (+28 more)
 
 ### Community 15 - "Data Quality Report V3"
 Cohesion: 0.33
@@ -367,12 +358,12 @@ Cohesion: 0.15
 Nodes (10): DiscoveryCards(), DiscoveryMetrics, DiscoveryResponse, DiscoveryResult, DQWarning(), EvidenceTable(), PersonaVerdict, VerdictBlock (+2 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.23
-Nodes (15): bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict, EvidenceClaim, fetch_news_node(), get_llm(), get_news_sentiment() (+7 more)
+Cohesion: 0.26
+Nodes (13): bear_agent_node(), bull_agent_node(), CommitteeState, CommitteeVerdict, EvidenceClaim, fetch_news_node(), get_llm(), Tries DuckDuckGo (Free) first, falls back to Tavily if it fails or returns 0 res (+5 more)
 
 ### Community 66 - "Community 66"
-Cohesion: 0.18
-Nodes (13): get_osm_boundary(), Returns suburb boundary geojson and center coordinates from local PostGIS., compute_scores(), get_boundary(), get_livability(), get_pois(), osm_local.py — Local PostGIS OSM queries (replaces Overpass API) ===============, Compute walkability, transit, and liveability scores from POI counts.      Same (+5 more)
+Cohesion: 0.11
+Nodes (20): get_cached_or_query(), get_news_sentiment(), get_osm_boundary(), get_osm_livability(), get_suburbs_v3(), On-demand news sentiment & 5-axis macro intelligence for a suburb.     Caching:, Returns V3-enriched suburbs for the institutional dashboard view., Returns local POI data and livability scores from PostGIS OSM tables.     Replac (+12 more)
 
 ### Community 67 - "Community 67"
 Cohesion: 0.11
@@ -388,7 +379,7 @@ Nodes (6): startup_event(), V3 Tiered Update Scheduler.     Monthly metro (~3,95
 
 ### Community 70 - "Community 70"
 Cohesion: 0.21
-Nodes (17): calculate_data_quality(), check_pack_minimum(), _compute_volatility_and_sharpe(), extract_evidence(), get_suburb_ui(), evidence.py — Provenance-backed evidence extraction + data-quality scoring. Phas, Derive price_volatility_10yr and price_sharpe_ratio from 10yr price history., DQ formula: 100 × (0.45·coverage + 0.30·freshness + 0.15·sample_confidence + 0.1 (+9 more)
+Nodes (16): calculate_data_quality(), check_pack_minimum(), _compute_volatility_and_sharpe(), extract_evidence(), get_suburb_ui(), evidence.py — Provenance-backed evidence extraction + data-quality scoring. Phas, Derive price_volatility_10yr and price_sharpe_ratio from 10yr price history., DQ formula: 100 × (0.45·coverage + 0.30·freshness + 0.15·sample_confidence + 0.1 (+8 more)
 
 ### Community 79 - "Community 79"
 Cohesion: 0.13
@@ -407,24 +398,20 @@ Cohesion: 0.12
 Nodes (16): Anti-Bot Measures, Architecture, Audit Trail, Automated (systemd), Computed Metrics, Data Flow per Postcode, Database Tables, DQ Bounds (Transform Stage) (+8 more)
 
 ### Community 84 - "Community 84"
-Cohesion: 0.18
-Nodes (12): Card(), CardBody(), CardFooter(), CardHeader(), CardProps, ChartToggle(), ChartToggleProps, Chip() (+4 more)
+Cohesion: 0.05
+Nodes (42): AskResponseV2, ChatMessage, DiscoveryResponse, LandingPageProps, PropertyCard(), PropertyCardProps, Property, PropertyListingsProps (+34 more)
 
 ### Community 86 - "Community 86"
 Cohesion: 0.07
 Nodes (29): AIInsightPanelProps, AnalysisStep, AnalysisTab, CashflowGearingProps, GearingResult, BuyerProfile, MyPurchasePlanProps, PortfolioProperty (+21 more)
-
-### Community 87 - "Community 87"
-Cohesion: 0.17
-Nodes (12): Badge(), BadgeProps, BadgeVariant, iconForVariant, EmptyState(), EmptyStateProps, IconName, IconProps (+4 more)
 
 ### Community 88 - "Community 88"
 Cohesion: 0.16
 Nodes (13): analyze_sentiment(), _call_cloud_llm(), _call_remote_llm(), _detect_non_english(), _extract_keywords(), ai_sentiment.py — Sentiment analysis via remote LLM (Ollama / llama.cpp GGUF). C, Call the remote Qwen model over HTTP for sentiment classification.     Supports, Analyze sentiment of text. Tries remote Qwen 3B first, falls back to keyword. (+5 more)
 
 ### Community 90 - "Community 90"
-Cohesion: 0.10
-Nodes (25): icons, PersonaSwitcher, icons, PricingTierSwitcher, Props, tierColors, TierGateOverlay(), TierGateOverlayProps (+17 more)
+Cohesion: 0.11
+Nodes (20): AppShell(), AppShellProps, MOBILE_TABS, SIDEBAR_GROUPS, ViewId, icons, PricingTierSwitcher, Props (+12 more)
 
 ### Community 91 - "Community 91"
 Cohesion: 0.17
@@ -460,7 +447,7 @@ Nodes (25): OnboardingTour(), PriceHistoryChartProps, PromoBanner(), QuickRoiCal
 
 ### Community 99 - "Community 99"
 Cohesion: 0.05
-Nodes (35): _build_evidence_ids(), calculate_stamp_duty(), calibrate_dq(), clamp(), compute_borrowing_capacity(), compute_buyer_fit(), compute_repayment(), _excluded_result() (+27 more)
+Nodes (36): _build_evidence_ids(), calculate_stamp_duty(), calibrate_dq(), clamp(), compute_borrowing_capacity(), compute_buyer_fit(), compute_repayment(), _excluded_result() (+28 more)
 
 ### Community 102 - "Community 102"
 Cohesion: 0.17
@@ -475,8 +462,8 @@ Cohesion: 0.08
 Nodes (20): AiMetricTooltipProps, BackendResultCard, BuyFinderLocalResponse, mockFetch, DecisionBriefProps, DecisionSnapshot, mockFetch, mockResult (+12 more)
 
 ### Community 105 - "Community 105"
-Cohesion: 0.18
-Nodes (10): agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), _evaluate_policy_rules(), Any, Evaluate policy rules against a suburb's metrics. Returns list of applicable mes, Run the multi-agent LangGraph investment committee for a suburb.      Pipeline (, run_investment_committee() (+2 more)
+Cohesion: 0.13
+Nodes (13): agent_router.py — Rules-based dynamic agent selection for the investment committ, Determine which committee agents to run for a given suburb.      Rules (evaluate, route_agents(), Run the multi-agent LangGraph investment committee for a suburb.      Pipeline (, run_investment_committee(), _detect_llm_provider(), committee_memory.py — PostgreSQL-backed committee analysis memory. Stores past a, Persist a committee analysis to the DB for future retrieval. (+5 more)
 
 ### Community 106 - "Community 106"
 Cohesion: 0.18
@@ -486,17 +473,9 @@ Nodes (6): Wait for task completion with polling.                  Args:        
 Cohesion: 0.35
 Nodes (9): AskIntent, ScenarioAssumptions, _normalize_intent(), Accept either Pydantic AskIntent or raw dict from intent pipeline., synthesize_research(), Any, AskIntent, EvidenceMetric (+1 more)
 
-### Community 108 - "Community 108"
-Cohesion: 0.18
-Nodes (9): AppShell(), AppShellProps, MOBILE_TABS, SIDEBAR_GROUPS, ViewId, BottomSheet(), BottomSheetProps, Sheet() (+1 more)
-
 ### Community 109 - "Community 109"
-Cohesion: 0.25
-Nodes (8): Props, Props, ALL_SECTIONS, ProfileSectionNav, Props, Section, PersonaId, ProfileSectionId
-
-### Community 110 - "Community 110"
-Cohesion: 0.22
-Nodes (6): PropertyCard(), PropertyCardProps, Property, PropertyListingsProps, SuburbProperty, SuburbPropertyListingsProps
+Cohesion: 0.13
+Nodes (18): icons, PersonaSwitcher, Props, Props, ALL_SECTIONS, ProfileSectionNav, Props, Section (+10 more)
 
 ### Community 111 - "Community 111"
 Cohesion: 0.18
@@ -511,8 +490,8 @@ Cohesion: 0.33
 Nodes (9): compute_per_metric_winners(), _fmt(), generate_tradeoffs(), _is_lower_better(), _percent_diff(), verdict.py — Deterministic comparison reasoning engine. Code decides leaders, ed, Generate human-readable trade-off statements from the metrics data., Input: {metric_key: {suburb_name: value_or_None, ...}, ...}     Returns per-metr (+1 more)
 
 ### Community 114 - "Community 114"
-Cohesion: 0.24
-Nodes (5): cached_ai(), cache_utils.py — Redis-primary + DB-fallback caching layer for AI features. Prov, Decorator that caches function results in Redis with automatic DB fallback., Unit tests for AI sentiment analysis and caching layer. Run: cd backend && pytho, TestCachedAI
+Cohesion: 0.32
+Nodes (4): cached_ai(), cache_utils.py — Redis-primary + DB-fallback caching layer for AI features. Prov, Decorator that caches function results in Redis with automatic DB fallback., TestCachedAI
 
 ### Community 115 - "Community 115"
 Cohesion: 0.29
@@ -529,10 +508,6 @@ Nodes (7): CalcType, CHART_COLORS, PropertyType, STATE_OPTIONS, PRESETS, ROICalc
 ### Community 118 - "Community 118"
 Cohesion: 0.20
 Nodes (9): 📱 Accessibility, Background Image Not Displaying, ✅ Completed Tasks, CSS Not Being Included in Compiled Bundle, Current Status (Sep 7, 2026), 📋 Next Steps, ⚠️ Pending Issues, SuburbHero Component Enhancement Summary (+1 more)
-
-### Community 119 - "Community 119"
-Cohesion: 0.28
-Nodes (8): get_latest_brief(), merge_intent(), conversation.py — Multi-turn slot merging for Ask YieldSense. When a conversatio, Merge a prior intent (from a previous brief in the conversation) with     the ne, _to_list(), Any, AskBrief, Session
 
 ### Community 120 - "Community 120"
 Cohesion: 0.31
@@ -555,12 +530,8 @@ Cohesion: 0.39
 Nodes (3): _keyword_sentiment(), Keyword-based sentiment scoring as fallback. Returns 1-10 score., TestSentimentKeywordFallback
 
 ### Community 125 - "Community 125"
-Cohesion: 0.32
-Nodes (4): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, TestIDNormalization
-
-### Community 126 - "Community 126"
-Cohesion: 0.25
-Nodes (5): AskResponseV2, ChatMessage, DiscoveryResponse, LandingPageProps, Icon()
+Cohesion: 0.24
+Nodes (5): normalize_suburb_id(), Suburb ID utilities — no heavy dependencies so tests can import freely., Convert frontend ID format (east-melbourne-vic-3002) to DB format (VIC_EAST_MELB, Unit tests for AI sentiment analysis and caching layer. Run: cd backend && pytho, TestIDNormalization
 
 ### Community 127 - "Community 127"
 Cohesion: 0.25
@@ -574,16 +545,12 @@ Nodes (8): Comprehensive Platform Audit v2, Missing API Endpoints (No Code Writt
 Cohesion: 0.25
 Nodes (7): 1. NLP Ask Path (`/api/v3/ask/query`) — 12 tests, 2. Manual Ranking Path (`/api/buy-finder/rank`) — 10 tests, 3. Security & robustness, 4. Recommendations (priority order), Key observations, Scope, Unified Search — Test Summary
 
-### Community 130 - "Community 130"
-Cohesion: 0.33
-Nodes (6): _detect_llm_provider(), committee_memory.py — PostgreSQL-backed committee analysis memory. Stores past a, Persist a committee analysis to the DB for future retrieval., Find the most similar past committee analyses in the same state.          Qualit, retrieve_similar(), store_analysis()
-
 ### Community 131 - "Community 131"
 Cohesion: 0.38
 Nodes (5): SuburbHero(), SuburbHeroProps, AustralianState, getStateGradient(), STATE_GRADIENTS
 
 ### Community 132 - "Community 132"
-Cohesion: 0.33
+Cohesion: 0.29
 Nodes (5): Backend what-if scenario using the same Monte Carlo engine as the committee., risk_what_if(), compute_risk_rating(), risk_engine.py — Quantitative risk assessment for AI investment committee. Runs, Run a Monte Carlo scenario simulation of property price trajectories.      IMPOR
 
 ### Community 133 - "Community 133"
@@ -597,10 +564,6 @@ Nodes (3): Benchmark, MacroBenchmarkPanel, MarketNewsItem
 ### Community 135 - "Community 135"
 Cohesion: 0.22
 Nodes (8): model_diary_refresh.py — Idempotent Model Diary outcome evaluation.  Uses the ca, refresh_outcomes(), _make_diary_predictions(), _make_suburb(), Model Diary persistence, refresh lifecycle, and idempotency tests.  Uses the can, Seed minimal diary fixtures with 400-day-old predictions., Proves refresh lifecycle, idempotency, and outcome rules., TestModelDiaryRefresh
-
-### Community 136 - "Community 136"
-Cohesion: 0.33
-Nodes (3): SettingsPageProps, Button(), ButtonProps
 
 ### Community 137 - "Community 137"
 Cohesion: 0.33
@@ -647,24 +610,20 @@ Cohesion: 0.29
 Nodes (3): _is_test_database(), pytest_configure(), conftest.py — Pytest configuration and fixtures for the Buyer Fit POC test suite
 
 ### Community 153 - "Community 153"
-Cohesion: 0.21
-Nodes (49): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyersAgentClient, BuyFinderRequest, BuyFinderWeights (+41 more)
+Cohesion: 0.20
+Nodes (50): BuyFinderRequest, BuyFinderWeights, ActivityRequest, AnalyticsEventRequest, AnalyzeRequest, BuyersAgentClient, BuyFinderRequest, BuyFinderWeights (+42 more)
 
 ### Community 154 - "Community 154"
 Cohesion: 0.67
 Nodes (3): Alternatives (all checked as unregistered .com.au):, Part 1 — Brand Name Recommendation, 🏆 Recommended: **Suburbly**
 
 ### Community 155 - "Community 155"
-Cohesion: 0.30
-Nodes (36): AffordabilityBlock, AskIntentV2, AskQueryRequest, AskResponse, AskResponseV2, Clarification, DiscoveryMetrics, DiscoveryRequest (+28 more)
+Cohesion: 0.28
+Nodes (38): AffordabilityBlock, AskIntentV2, AskQueryRequest, AskResponse, AskResponseV2, Clarification, DiscoveryMetrics, DiscoveryRequest (+30 more)
 
 ### Community 156 - "Community 156"
 Cohesion: 0.05
 Nodes (38): Confirmed decisions, H10 — P1 · Config staleness alert (closes P9), H11 — P1 · Freshness surfaced in UI (closes P11), H12 — P1 · Structured request logs (closes P14), H13 — P1 · Concurrency model for AI (closes P15), H14 — P2 · Scraper robots/ToS posture (closes P4 follow-up), H15 — P2 · Test scaffolding for the new invariants, H1 — P0 · Kill the random-JWT_SECRET foot-gun (closes P1, P10) (+30 more)
-
-### Community 157 - "Community 157"
-Cohesion: 0.15
-Nodes (13): get_cached_or_query(), get_decision_brief(), get_news_sentiment(), get_osm_livability(), _get_suburb_or_404(), get_suburbs_v3(), _normalize_suburb_id(), Returns a versioned decision snapshot for the Decision Brief UI component. (+5 more)
 
 ### Community 158 - "Community 158"
 Cohesion: 0.13
@@ -759,27 +718,27 @@ Cohesion: 0.50
 Nodes (3): ShareReport(), ShareReportProps, trackEvent()
 
 ### Community 220 - "Community 220"
-Cohesion: 0.14
-Nodes (26): add_message(), create_conversation(), generate_share_token(), get_brief(), get_conversation(), get_shared_brief(), hash_token(), Redacts sensitive financial data for public viewing. (+18 more)
+Cohesion: 0.06
+Nodes (50): get_latest_brief(), merge_intent(), conversation.py — Multi-turn slot merging for Ask YieldSense. When a conversatio, Merge a prior intent (from a previous brief in the conversation) with     the ne, _to_list(), add_message(), create_conversation(), generate_share_token() (+42 more)
 
 ### Community 239 - "Community 239"
-Cohesion: 0.50
-Nodes (3): find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, get_similar_suburbs()
+Cohesion: 0.07
+Nodes (40): compute_anti_market_score(), find_anti_market_alternatives(), find_similar_suburbs(), Finds cheaper suburbs that share similar institutional-grade characteristics, Compute the Counter-Cyclical / Anti-Market Resilience Score (0-100) and     Valu, Find Counter-Cyclical / Anti-Market Resilient alternative suburbs in the same, _annualize_cagr(), _calibrate_dq() (+32 more)
 
 ## Knowledge Gaps
 - **588 isolated node(s):** `@kilocode/plugin`, `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components` (+583 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **55 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **54 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `SuburbUIV3` connect `Community 153` to `Community 69`, `Community 70`, `Database Models & Scrapers`, `Community 135`, `Predictive AI Engine`, `Community 60`, `Community 240`, `ABS Census Integration`, `Community 59`, `Community 220`?**
-  _High betweenness centrality (0.071) - this node is a cross-community bridge._
+  _High betweenness centrality (0.072) - this node is a cross-community bridge._
 - **Why does `get_llm()` connect `Community 65` to `Community 88`, `Community 93`, `Community 142`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
-- **Why does `ask_query()` connect `ABS Building Approvals` to `Community 70`, `Community 107`, `Community 155`, `Community 113`, `Community 220`, `Community 119`, `Community 59`, `Community 92`, `Community 62`, `Community 191`?**
-  _High betweenness centrality (0.033) - this node is a cross-community bridge._
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+- **Why does `ask_query()` connect `ABS Building Approvals` to `Community 70`, `Community 107`, `Community 155`, `Community 92`, `Community 113`, `Community 59`, `Community 220`, `Community 62`, `Community 191`?**
+  _High betweenness centrality (0.026) - this node is a cross-community bridge._
 - **Are the 46 inferred relationships involving `SuburbUIV3` (e.g. with `Any` and `Session`) actually correct?**
   _`SuburbUIV3` has 46 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 7 inferred relationships involving `Session` (e.g. with `BuyFinderRequest` and `BuyFinderWeights`) actually correct?**

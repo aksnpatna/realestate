@@ -25,6 +25,9 @@ def compute_risk_rating(
     macro: dict | None = None,
     iterations: int = DEFAULT_ITERATIONS,
     horizon_months: int = DEFAULT_HORIZON_MONTHS,
+    vacancy_rate: float | None = None,
+    price_12m_change_pct: float | None = None,
+    price_3m_change_pct: float | None = None,
 ) -> dict:
     """
     Run a Monte Carlo scenario simulation of property price trajectories.
@@ -40,6 +43,9 @@ def compute_risk_rating(
         macro: Dict of macro-economic indicators
         iterations: Number of Monte Carlo runs (default 5000)
         horizon_months: Projection period in months (default 12)
+        vacancy_rate: Optional suburb vacancy rate (%)
+        price_12m_change_pct: Optional 12-month realized price change (%)
+        price_3m_change_pct: Optional 3-month realized price change (%)
 
     Returns:
         dict with:
@@ -52,28 +58,53 @@ def compute_risk_rating(
     """
     macro = macro or DEFAULT_MACRO
 
-    # Base monthly growth from growth_score (maps 0-100 → -0.5% to +1.0% monthly)
-    base_monthly = -0.005 + (growth_score / 100.0) * 0.015
+    # Base monthly growth from growth_score (maps 0-100 → -0.4% to +0.6% monthly)
+    base_monthly = -0.004 + (growth_score / 100.0) * 0.010
 
-    # Yield adjustment: higher yield → more stable returns, slightly positive
-    yield_adj = (rental_yield - 3.0) * 0.02
+    # Yield adjustment: higher yield → modestly more stable returns (~1.8% annual per 1% yield above 3%)
+    yield_adj = ((rental_yield - 3.0) * 0.018) / 12.0
+
+    # Normalize rate if caller passed retail mortgage rate (>5.2%) instead of RBA cash rate
+    raw_rate = macro.get("cash_rate", 4.10)
+    effective_cash_rate = (raw_rate - 2.0) if raw_rate > 5.2 else raw_rate
 
     # Macro adjustment:
     # - Higher cash rate → downward pressure
     # - Higher CPI → mixed (asset inflation vs affordability pressure)
     # - Lower unemployment → stronger demand
     macro_adj = (
-        -0.003 * (macro["cash_rate"] - 3.5)          # Cash rate above 3.5% is restrictive
-        + 0.002 * (macro["cpi_annual"] - 2.5)         # CPI above target → asset inflation
-        - 0.002 * (macro["unemployment"] - 4.0)       # Higher unemployment → weaker demand
-        + 0.001 * macro["population_growth"]           # Population growth is positive
+        -0.0025 * (effective_cash_rate - 3.5)          # Cash rate above 3.5% is restrictive
+        + 0.001 * (macro.get("cpi_annual", 3.2) - 2.5) # CPI above target → asset inflation
+        - 0.002 * (macro.get("unemployment", 4.1) - 4.0) # Higher unemployment → weaker demand
+        + 0.001 * macro.get("population_growth", 2.4)  # Population growth is positive
     )
 
-    mu_monthly = base_monthly + yield_adj + macro_adj
+    # Vacancy adjustment: vacancy > 3.0% signals rental oversupply and downward price pressure
+    vac_adj = 0.0
+    if vacancy_rate is not None:
+        if vacancy_rate > 3.0:
+            vac_adj = -0.0025 * min(5.0, vacancy_rate - 3.0)
+        elif vacancy_rate < 1.5:
+            vac_adj = 0.001 * (1.5 - max(0.2, vacancy_rate))
 
-    # Volatility: base 2.5%/month, scaled by macro uncertainty
-    base_vol = 0.025
-    macro_vol_mult = 1.0 + 0.05 * abs(macro["cash_rate"] - 3.5) + 0.03 * abs(macro["cpi_annual"] - 2.5)
+    # Short-term momentum adjustment (prevents 10yr CAGR from masking active 3m/12m downturns)
+    momentum_adj = 0.0
+    if price_3m_change_pct is not None and price_3m_change_pct < -2.0:
+        momentum_adj += max(-0.006, (price_3m_change_pct / 100.0) * 0.15)
+    if price_12m_change_pct is not None and price_12m_change_pct < 0.0:
+        momentum_adj += max(-0.004, (price_12m_change_pct / 100.0) * 0.10)
+
+    mu_monthly = base_monthly + yield_adj + macro_adj + vac_adj + momentum_adj
+
+    # Volatility: base 2.2%/month, scaled by macro uncertainty and vacancy distress
+    base_vol = 0.022
+    vac_vol_penalty = 0.06 * max(0.0, (vacancy_rate or 2.0) - 3.0)
+    macro_vol_mult = (
+        1.0
+        + 0.05 * abs(effective_cash_rate - 3.5)
+        + 0.03 * abs(macro.get("cpi_annual", 3.2) - 2.5)
+        + vac_vol_penalty
+    )
     sigma_monthly = base_vol * macro_vol_mult
 
     # Monte Carlo simulation

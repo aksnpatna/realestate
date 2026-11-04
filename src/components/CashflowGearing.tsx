@@ -442,9 +442,9 @@ export default memo(function CashflowGearing({ suburbsData, defaultSuburbId, def
                       <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(val) => `$${Math.abs(val / 1000)}k`} />
                       <Tooltip 
                         formatter={(value: number) => [`$${Math.abs(value).toLocaleString()}`, value < 0 ? 'Cost' : 'Income']}
-                        contentStyle={{ backgroundColor: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                        contentStyle={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-glass)', borderRadius: '8px' }}
                       />
-                      <ReferenceLine y={0} stroke="rgba(255,255,255,0.2)" />
+                      <ReferenceLine y={0} stroke="#94a3b8" />
                       <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                         {
                           [

@@ -44,7 +44,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           <span className="sp__value">${Number(financialProfile?.annualIncome || 150000).toLocaleString()}</span>
         </div>
       </div>
-      <p className="sp__hint">Edit these directly in Ask YieldSense or Buy Finder — they sync automatically.</p>
+      <p className="sp__hint">Edit these directly in Ask PropertyIQ or Buy Finder — they sync automatically.</p>
     </Card>
 
     <Card className="sp__section">

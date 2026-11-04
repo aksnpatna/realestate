@@ -59,7 +59,7 @@
 .legal-table th {
   text-align: left;
   padding: 10px 12px;
-  background: rgba(15, 23, 42, 0.04);
+  background: var(--bg-surface-sunken);
   border-bottom: 2px solid rgba(15, 23, 42, 0.08);
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -78,7 +78,7 @@
   display: inline-block;
   margin-bottom: 20px;
   padding: 6px 16px;
-  border: 1px solid var(--border-glass, rgba(226, 232, 240, 0.8));
+  border: 1px solid var(--border-glass, #cbd5e1);
   border-radius: 8px;
   background: none;
   color: var(--text-secondary, #334155);

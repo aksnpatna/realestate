@@ -171,7 +171,7 @@ const PocketRiskMap = memo(function PocketRiskMap({ suburbId }: Props) {
             key={layerId}
             style={{
               padding: '10px',
-              background: 'rgba(255,255,255,0.03)',
+              background: 'var(--bg-surface-sunken)',
               border: `1px solid ${severityColors[f.properties.severity]}40`,
               borderLeft: `3px solid ${severityColors[f.properties.severity]}`,
               borderRadius: '6px',

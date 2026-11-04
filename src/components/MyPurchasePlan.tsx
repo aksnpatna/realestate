@@ -344,7 +344,7 @@ export default memo(function MyPurchasePlan({ suburbsData }: MyPurchasePlanProps
           <button 
             onClick={prevStep} 
             disabled={step === 1}
-            className="u-3d089930" style={{color: step === 1 ? 'var(--text-muted)' : '#fff', border: '1px solid ' + (step === 1 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.3)'), cursor: step === 1 ? 'default' : 'pointer'}}
+            className="u-3d089930" style={{color: step === 1 ? 'var(--text-muted)' : 'var(--text-primary)', border: '1px solid var(--border-glass)', cursor: step === 1 ? 'default' : 'pointer'}}
           >
             Back
           </button>

@@ -73,3 +73,86 @@
   /* Red aliases */
   --red-600: var(--negative);
 }
+
+/* ── Restored design-system tokens ───────────────────────────────────────
+ * These were referenced by ~900 declarations (panels, cards, tabs, text) but
+ * were dropped when tokens.css was rewritten, so those rules resolved to
+ * "unset" (transparent backgrounds, default text/border colours).
+ * Brand tokens map onto the current forest palette. */
+:root {
+  /* Primitives */
+  --slate-50:  #F8FAFC; --slate-100: #F1F5F9; --slate-200: #E2E8F0;
+  --slate-300: #CBD5E1; --slate-400: #94A3B8; --slate-500: #64748B;
+  --slate-600: #475569; --slate-700: #334155; --slate-800: #1E293B;
+  --slate-900: #0F172A;
+  --blue-50: #F0F9FF; --blue-100: #E0F2FE; --blue-500: #0EA5E9; --blue-800: #075985;
+  --indigo-50: #EEF2FF; --indigo-100: #E0E7FF; --indigo-700: #4338CA; --indigo-800: #3730A3;
+  --emerald-50: #ECFDF5; --emerald-100: #D1FAE5; --emerald-700: #047857;
+  --amber-50: #FFFBEB; --amber-100: #FEF3C7; --amber-600: #D97706; --amber-700: #B45309;
+  --red-50: #FEF2F2; --red-100: #FEE2E2; --red-700: #B91C1C;
+
+  /* Semantic surfaces: all solid/opaque */
+  --bg-app: var(--slate-100);
+  --bg-primary: #FFFFFF;
+  --bg-secondary: var(--slate-50);
+  --bg-tertiary: var(--slate-100);
+  --bg-surface: #FFFFFF;
+  --bg-surface-raised: #FFFFFF;
+  --bg-surface-sunken: var(--slate-50);
+  --bg-brand: var(--forest);
+  --bg-brand-hover: #0f2a24;
+  --bg-brand-subtle: var(--forest-soft);
+
+  --text-1: var(--slate-900);
+  --text-2: var(--slate-700);
+  --text-3: var(--slate-500);
+  --text-on-brand: #FFFFFF;
+
+  --border-1: var(--slate-200);
+  --border-2: var(--slate-300);
+  --border-focus: var(--forest);
+
+  --primary: var(--forest);
+  --primary-dark: #0f2a24;
+  --primary-light: var(--forest-soft);
+  --accent-blue: #2563EB;
+  --accent-cyan-dark: #1D4ED8;
+  --accent-green: var(--positive);
+  --accent-primary: var(--forest);
+  --border-color: var(--border-1);
+  --success-light: var(--emerald-50);
+  --warning-light: var(--amber-50);
+  --danger-light: var(--red-50);
+
+  /* Status */
+  --status-success-bg: var(--emerald-50); --status-success-text: var(--emerald-700); --status-success-border: #A7F3D0;
+  --status-warning-bg: var(--amber-50);   --status-warning-text: var(--amber-700);   --status-warning-border: #FDE68A;
+  --status-danger-bg: var(--red-50);      --status-danger-text: var(--red-700);      --status-danger-border: #FECACA;
+  --status-info-bg: var(--blue-50);       --status-info-text: #0369A1;               --status-info-border: #BAE6FD;
+
+  /* Data-quality bands */
+  --dq-high-bg: var(--emerald-50);   --dq-high-text: var(--emerald-700);
+  --dq-medium-bg: var(--blue-50);    --dq-medium-text: #0369A1;
+  --dq-limited-bg: var(--amber-50);  --dq-limited-text: var(--amber-700);
+  --dq-unavailable-bg: var(--slate-100); --dq-unavailable-text: var(--slate-500);
+
+  /* Scales */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px;
+  --radius-xs: 4px; --radius-xl: 24px; --radius-full: 999px;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --text-lg: 1.125rem; --text-xl: 1.25rem; --text-2xl: 1.5rem;
+  --text-3xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
+  --text-4xl: clamp(2.1rem, 1.6rem + 2.5vw, 3rem);
+  --shadow-1: 0 1px 2px rgba(15, 23, 42, .06);
+  --shadow-2: 0 4px 6px -1px rgba(15, 23, 42, .08), 0 2px 4px -2px rgba(15, 23, 42, .06);
+  --shadow-3: 0 10px 15px -3px rgba(15, 23, 42, .10), 0 4px 6px -4px rgba(15, 23, 42, .06);
+  --shadow-4: 0 20px 25px -5px rgba(15, 23, 42, .10), 0 8px 10px -6px rgba(15, 23, 42, .05);
+  --dur-fast: 120ms; --dur-med: 200ms; --dur-slow: 300ms;
+  --ease-standard: cubic-bezier(.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(.3, 0, .2, 1);
+  --z-base: 0; --z-sticky: 10; --z-overlay: 100; --z-sheet: 200;
+  --z-modal: 300; --z-toast: 400; --z-tooltip: 500;
+}

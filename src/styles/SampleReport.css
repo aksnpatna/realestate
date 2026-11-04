@@ -13,7 +13,7 @@
   justify-content: space-between;
   margin-bottom: 32px;
   padding-bottom: 16px;
-  border-bottom: 2px solid var(--border-glass, rgba(226,232,240,0.8));
+  border-bottom: 2px solid var(--border-glass, #cbd5e1);
 }
 
 @media print {
@@ -29,7 +29,7 @@
   display: inline-block;
   margin-bottom: 16px;
   padding: 6px 16px;
-  border: 1px solid var(--border-glass, rgba(226,232,240,0.8));
+  border: 1px solid var(--border-glass, #cbd5e1);
   border-radius: 8px;
   background: none;
   color: var(--text-secondary, #334155);
@@ -49,8 +49,8 @@
   align-items: flex-start;
   margin-bottom: 32px;
   padding: 20px;
-  background: rgba(15,23,42,0.03);
-  border: 1px solid var(--border-glass, rgba(226,232,240,0.8));
+  background: var(--bg-surface-sunken);
+  border: 1px solid var(--border-glass, #cbd5e1);
   border-radius: 12px;
 }
 
@@ -87,7 +87,7 @@
 }
 
 .sr__discovery-card {
-  border: 1px solid var(--border-glass, rgba(226,232,240,0.8));
+  border: 1px solid var(--border-glass, #cbd5e1);
   border-radius: 10px;
   padding: 14px;
   position: relative;
@@ -98,7 +98,7 @@
   top: -8px;
   left: 12px;
   background: var(--bg-brand, #a3e635);
-  color: #000;
+  color: var(--text-on-brand, #fff);
   font-size: 0.7rem;
   font-weight: 700;
   padding: 2px 8px;
@@ -127,7 +127,7 @@
 .sr__trace { margin-top: 12px; }
 .sr__trace summary { cursor: pointer; font-size: 0.8rem; color: var(--text-muted, #64748b); }
 .sr__trace pre {
-  background: rgba(15,23,42,0.04);
+  background: var(--bg-surface-sunken);
   padding: 12px;
   border-radius: 6px;
   font-size: 0.72rem;
@@ -166,7 +166,7 @@
 }
 
 .sr__risk-item {
-  border: 1px solid var(--border-glass, rgba(226,232,240,0.8));
+  border: 1px solid var(--border-glass, #cbd5e1);
   border-radius: 8px;
   padding: 10px 12px;
   display: flex;
@@ -206,7 +206,7 @@
 .sr__evidence-table th {
   text-align: left;
   padding: 8px 10px;
-  background: rgba(15,23,42,0.04);
+  background: var(--bg-surface-sunken);
   border-bottom: 2px solid rgba(15,23,42,0.08);
   font-size: 0.7rem;
   text-transform: uppercase;

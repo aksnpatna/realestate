@@ -99,7 +99,7 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
       label: 'Avg Residential Block Size',
       value: s.avgBlockSqm != null ? `${s.avgBlockSqm} sqm` : null,
       impact: 'Estimated average residential parcel footprint in the suburb.',
-      source: 'OpenStreetMap building footprints',
+      source: 'Open spatial data (building footprints)',
     },
     {
       key: 'min_approved_subdivision_sqm',
@@ -115,22 +115,22 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
       key: 'construction_sqkm',
       label: 'Construction SqKm',
       value: s.constructionSqkm != null ? `${Number(s.constructionSqkm).toFixed(2)} km²` : null,
-      impact: 'OSM landuse=construction area — proxy for active development.',
-      source: 'OpenStreetMap',
+      impact: 'Mapped construction-zone land use — proxy for active development.',
+      source: 'Open spatial data',
     },
     {
       key: 'greenfield_sqkm',
       label: 'Greenfield SqKm',
       value: s.greenfieldSqkm != null ? `${Number(s.greenfieldSqkm).toFixed(2)} km²` : null,
       impact: 'Undeveloped or rural-urban fringe land area.',
-      source: 'OpenStreetMap',
+      source: 'Open spatial data',
     },
     {
       key: 'brownfield_sqkm',
       label: 'Brownfield SqKm',
       value: s.brownfieldSqkm != null ? `${Number(s.brownfieldSqkm).toFixed(2)} km²` : null,
       impact: 'Previously-developed land available for redevelopment.',
-      source: 'OpenStreetMap',
+      source: 'Open spatial data',
     },
     {
       key: 'unemployment_rate',
@@ -200,7 +200,7 @@ const TechnicalProvenanceSection = memo(function TechnicalProvenanceSection({ su
         </div>
         <div>
           <h4 className="u-4cdf1ffb">
-            🏗️ Development Activity (OSM)
+            🏗️ Development Activity
           </h4>
           {indicatorGrid(devIndicators)}
         </div>

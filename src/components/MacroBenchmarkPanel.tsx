@@ -52,7 +52,7 @@ const MacroBenchmarkPanel = memo(function MacroBenchmarkPanel() {
             <div
               key={b.symbol}
               style={{
-                background: 'rgba(255,255,255,0.02)',
+                background: 'var(--bg-surface-sunken)',
                 border: `1px solid ${borderColor}`,
                 borderRadius: '10px',
                 padding: '16px',

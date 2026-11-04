@@ -64,8 +64,9 @@ class TestAnalyzeSentiment:
         assert result["label"] == "Bearish"
         assert result["provider"] == "qwen-7b"
 
+    @patch("ai_sentiment._call_cloud_llm", return_value=None)
     @patch("ai_sentiment._call_remote_llm")
-    def test_remote_fallback_to_keyword(self, mock_call):
+    def test_remote_fallback_to_keyword(self, mock_call, mock_cloud):
         mock_call.return_value = None  # Simulate remote failure
         from ai_sentiment import analyze_sentiment
         result = analyze_sentiment("surge boom growth record")
@@ -133,3 +134,97 @@ class TestCachedAI:
 
         assert documented_func.__name__ == "documented_func"
         assert documented_func.__doc__ == "Docstring for test."
+
+
+class TestMacroIntelligenceAndValueTrapGuardrails:
+    def test_churchill_macro_intelligence(self):
+        from ai_agent import _build_macro_intelligence
+        metrics = {
+            "vacancyRate": 4.48,
+            "rentalYield": 3.92,
+            "priceChange12mPct": -2.44,
+            "priceChange3mPct": -9.86,
+            "avgIcsea": 953.0,
+            "populationCagr": 0.58,
+            "hospitalCount": 0,
+            "unemploymentRate": 6.7,
+        }
+        intel = _build_macro_intelligence("Churchill", "VIC", metrics=metrics, raw_news_score=7.5)
+        assert intel["rba_rate_sensitivity"]["level"].upper() == "HIGH"
+        assert intel["supply_dilution_risk"]["level"].upper() == "HIGH"
+        assert intel["regulatory_tax_risk"]["level"].upper() == "HIGH"
+        assert intel["hype_vs_data_divergence"]["level"] == "SEVERE"
+        assert intel["amenity_claim_check"]["risk_level"] == "HIGH_PITCH_RISK"
+        assert len(intel["amenity_claim_check"]["warnings"]) >= 3
+
+    def test_policy_rules_camelcase_aliases(self):
+        from ai_agent import _evaluate_policy_rules
+        metrics = {
+            "vacancyRate": 4.48,
+            "priceChange12mPct": -2.44,
+            "rentalYield": 3.92,
+            "cbdDistanceMins": 120,
+        }
+        warnings = _evaluate_policy_rules(metrics, "VIC")
+        rule_ids = {w["rule_id"] for w in warnings}
+        assert "high_vacancy_risk" in rule_ids
+        assert "negative_price_momentum" in rule_ids
+        assert "vic_land_tax" in rule_ids
+
+    def test_anti_market_score_and_alternatives(self):
+        from types import SimpleNamespace
+        from clustering import compute_anti_market_score, find_anti_market_alternatives
+
+        churchill = SimpleNamespace(
+            id="VIC_CHURCHILL_3842",
+            name="Churchill",
+            postcode="3842",
+            state="VIC",
+            house_median_price=561224.61,
+            house_median_price_12m_change_pct=-2.44,
+            house_median_price_3m_change_pct=-9.86,
+            vacancy_rate=4.48,
+            house_gross_rental_yield=3.92,
+            avg_icsea=953.0,
+            unemployment_rate=6.7,
+            social_housing_pct=6.86,
+            house_sold_12m=60,
+        )
+        res = compute_anti_market_score(churchill, state_median_12m=-0.9)
+        assert res["is_value_trap"] is True
+        assert res["trend_label"] == "Value Trap Warning"
+        assert res["anti_market_score"] < 30
+
+        resilient_peer = SimpleNamespace(
+            id="VIC_DELACOMBE_3356",
+            name="Delacombe",
+            postcode="3356",
+            state="VIC",
+            house_median_price=540000.0,
+            house_median_price_12m_change_pct=6.5,
+            house_median_price_3m_change_pct=2.1,
+            vacancy_rate=1.1,
+            house_gross_rental_yield=4.6,
+            avg_icsea=995.0,
+            unemployment_rate=3.8,
+            social_housing_pct=3.2,
+            house_sold_12m=85,
+        )
+        alts = find_anti_market_alternatives(churchill, [churchill, resilient_peer], state_median_12m=-0.9)
+        assert len(alts) == 1
+        assert alts[0]["id"].upper() == "VIC_DELACOMBE_3356"
+        assert alts[0]["anti_market_score"] >= 65
+
+    def test_risk_engine_flags_churchill_high_risk(self):
+        from risk_engine import compute_risk_rating
+        risk = compute_risk_rating(
+            median_price=561225,
+            rental_yield=3.92,
+            growth_score=42,
+            vacancy_rate=4.48,
+            price_12m_change_pct=-2.44,
+            price_3m_change_pct=-9.86,
+        )
+        assert risk["risk_rating"] == "High"
+        assert risk["expected_return"] < 0
+

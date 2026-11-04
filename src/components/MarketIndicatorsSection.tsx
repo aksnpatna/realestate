@@ -144,7 +144,7 @@ const MarketIndicatorsSection = memo(function MarketIndicatorsSection({ suburb }
             <div
               key={ind.label}
               style={{
-                background: 'rgba(255,255,255,0.03)',
+                background: 'var(--bg-surface-sunken)',
                 border: `1px solid ${borderColor}`,
                 borderRadius: '8px',
                 padding: '10px',
